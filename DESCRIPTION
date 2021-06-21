@@ -1,5 +1,5 @@
 Package: EdSurvey
-Version: 2.7.8000
+Version: 2.7
 Date: 2021-05-11
 Title: Analysis of NCES Education Survey and Assessment Data
 Author: Paul Bailey [aut, cre],
@@ -24,7 +24,7 @@ Imports: data.table (>= 1.11.4), Formula, glm2, haven (>= 2.2.0), LaF
         (>= 0.7), lme4, MASS, Matrix, methods, NAEPprimer, quantreg,
         readxl, tibble, wCorr, NAEPirtparams, WeMix (>= 3.1.7), xtable,
         Dire
-BugReportsa: https://github.com/American-Institutes-for-Research/EdSurvey/issues
+BugReports: https://github.com/American-Institutes-for-Research/EdSurvey/issues
 URL: https://www.air.org/project/nces-data-r-project-edsurvey
 Description: Read in and analyze functions for education survey and assessment data from the National Center for Education Statistics (NCES) <https://nces.ed.gov/>, including National Assessment of Educational Progress (NAEP) data <https://nces.ed.gov/nationsreportcard/> and data from the International Assessment Database: Organisation for Economic Co-operation and Development (OECD) <https://www.oecd.org/>, including Programme for International Student Assessment (PISA), Teaching and Learning International Survey (TALIS), Programme for the International Assessment of Adult Competencies (PIAAC), and International Association for the Evaluation of Educational Achievement (IEA) <https://www.iea.nl/>, including Trends in International Mathematics and Science Study (TIMSS), TIMSS Advanced, Progress in International Reading Literacy Study (PIRLS), International Civic and Citizenship Study (ICCS), International Computer and Information Literacy Study (ICILS), and Civic Education Study (CivEd).
 License: GPL-2

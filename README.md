@@ -32,12 +32,10 @@ Literacy Study (PIRLS), International Civic and Citizenship Study
 (ICCS), International Computer and Information Literacy Study (ICILS),
 and Civic Education Study (CivEd).
 
-## Installation
+## Pre-release Installation
 
 ``` r
-# You can install the released version of EdSurvey from CRAN with:
-install.packages("edsurvey")
-# And the development version from GitHub  with:
+# You can install the development version from GitHub with:
 install.packages("devtools")
 devtools::install_github("American-Institutes-for-Research/edsurvey")
 ```
