@@ -39,3 +39,14 @@ install.packages("devtools")
 devtools::install_github("American-Institutes-for-Research/edsurvey")
 ```
 
+
+## CRAN-release Installation
+
+
+
+
+``` r
+# You can install the released version of EdSurvey from CRAN with:
+install.packages("EdSurvey")
+```
+
