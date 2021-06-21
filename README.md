@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# wCorr
+# EdSurvey
 
 <!-- badges: start -->
 
@@ -35,7 +35,7 @@ and Civic Education Study (CivEd).
 ## Installation
 
 ``` r
-# You can install the released version of wCorr from CRAN with:
+# You can install the released version of EdSurvey from CRAN with:
 install.packages("edsurvey")
 # And the development version from GitHub  with:
 install.packages("devtools")
