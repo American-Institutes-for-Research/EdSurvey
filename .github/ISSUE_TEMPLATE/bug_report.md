@@ -12,7 +12,7 @@ A clear and concise description of what the bug is.
 
 **Check Before Posting**
 We ask that you check a few things before posting an issue
-1. If the issue involves installing EdSurvey, please first try the instructions at []
+1. If the issue involves installing EdSurvey, please first try the instructions at https://www.littlemissdata.com/blog/r-package-install
 2. Search the (EdSurvey Issues)[https://github.com/American-Institutes-for-Research/EdSurvey/issues?q=is%3Aissue]
 3. If you are having trouble finding your data, first check in the operating system if the files are where you think they are. 
 4. Please be sure you are using the latest EdSurvey version by running `update.packages("EdSurvey")` or checking at https://american-institutes-for-research.github.io/EdSurvey/
