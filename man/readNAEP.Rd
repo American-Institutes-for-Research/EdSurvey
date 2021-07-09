@@ -62,6 +62,11 @@ Opens a connection to an NAEP data file residing
 \details{
 The function uses the \code{frPath} file layout (.fr2) data to read in the
 fixed-width data file (.dat) and builds the \code{edsurvey.data.frame}.
+
+NAEP includes both scaled scores and theta scores, with the latter having names ending in \code{\_theta}.
+
+When a NAEP administration includes a linking error variable those variables are included and end in \code{_linking}.
+When present, simply use the \code{_linking} version of a variable to get a standard error estimate that includes linking error.
 }
 \examples{
 # read in the example data (generated, not real student data)

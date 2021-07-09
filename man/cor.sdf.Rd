@@ -16,7 +16,8 @@ cor.sdf(
   recode = NULL,
   condenseLevels = TRUE,
   fisherZ = if (match.arg(method) \%in\% "Pearson") {     TRUE } else {     FALSE },
-  jrrIMax = Inf
+  jrrIMax = Inf,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -27,7 +28,7 @@ cor.sdf(
 \item{data}{an \code{edsurvey.data.frame}, a \code{light.edsurvey.data.frame}, or an \code{edsurvey.data.frame.list}}
 
 \item{method}{a character string indicating which correlation coefficient (or covariance) is to be computed.
-One of \code{Pearson} (default), \code{Spearman}, \code{Polychoric}, or \code{Polyserial}.}
+One of \code{Pearson} (default), \code{Spearman}, \code{Polychoric}, or \code{Polyserial}. For Polyserial, the continuous argument must be \code{x}.}
 
 \item{weightVar}{character indicating the weight variable to use. See Details section in \code{\link{lm.sdf}}.}
 
@@ -64,6 +65,8 @@ for other correlation types.}
                   can be estimated with any number of plausible values, and values larger than the number of 
                   plausible values on the survey (including \code{Inf}) will result in all plausible values being used. 
                   Higher values of \code{jrrIMax} lead to longer computing times and more accurate variance estimates.}
+
+\item{verbose}{a logical value. Set to \code{FALSE} to avoid messages about variable conversion.}
 }
 \value{
 An \code{edsurvey.cor} that has print and summary methods.
@@ -95,6 +98,9 @@ Computes the correlation of two variables on an \code{edsurvey.data.frame},
 \details{
 The \code{\link{getData}} arguments and \code{\link{recode.sdf}} may be useful. (See Examples.)
 The correlation methods are calculated as described in the documentation for the \code{wCorr} package---see \code{browseVignettes(package="wCorr")}.
+
+When \code{method} is set to \code{polyserial}, all \code{x} arguments are assumed to be continuous and all \code{y} assumed discrete. Therefore,
+be mindful of variable selection as this may result in calculations taking a very long time to complete.
 
 The Fisher Z-transformation is both a variance stabilizing  and normalizing transformation
 for the Pearson correlation coefficient (Fisher, 1915).

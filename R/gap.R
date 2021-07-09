@@ -620,7 +620,7 @@ gap <- function(variable, data, groupA = "default", groupB = "default",
             # if the datasets and from the same sample, add covariances and do DoFCorrection
             if(sameSurvey(data$datalist[[i]], data$datalist[[refi]])) {
               if (nrow(resi$varEstInputs$JK) != 0) { # some Level (percentile or achievementLevel) do not have varEstInput data so the subset
-              									   # in line 476 will return an empty data.frame
+                                   # in line 476 will return an empty data.frame
                 resdf$dofAA[i] <- DoFCorrection(resi$varEstInputs, refVarEstInputs, "A", method="JR")
               }
               resdf$covAA[i] <- varEstToCov(resi$varEstInputs, refVarEstInputs, "A", jkSumMultiplier=getAttributes(data$datalist[[i]], "jkSumMultiplier"))
@@ -1076,7 +1076,6 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
     } else {
       SEs <- list(estimateAse = meanA$se)
     }
-    
     maJK <- attributes(meanA)$varEstInputs$JK
     maJK$Level <- maJK$variable
     maJK$variable <- "A"
@@ -1129,9 +1128,21 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
     als <- getALNames(data, variable)
     callalA <- c(callal, list(data=dataA))
     meanA <- do.call(achievementLevels, callalA)
+    if(!is.null(meanA$discrete)) {
+      colnames(meanA$discrete)[grepl("Level$", colnames(meanA$discrete))] <- "Level"
+    }
+    if(!is.null(meanA$cumulative)) {
+      colnames(meanA$cumulative)[grepl("Level$", colnames(meanA$cumulative))] <- "Level"
+    }
     if (!skipB) {
       callalB <- c(callal, list(data=dataB))
       meanB <- do.call(achievementLevels, callalB)
+      if(!is.null(meanB$discrete)) {
+        colnames(meanB$discrete)[grepl("Level$", colnames(meanB$discrete))] <- "Level"
+      }
+      if(!is.null(meanB$cumulative)) {
+        colnames(meanB$cumulative)[grepl("Level$", colnames(meanB$cumulative))] <- "Level"
+      }
     }
     # achievementDiscrete indicates whether we should extract cumulative or discrete achievement level results
     if (achievementDiscrete){
@@ -1152,7 +1163,7 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
         if (typeof(als) == "character") {
           lB <- sapply(achievementLevel, function(al) {
             lal <- addALPrefix(al=al, als=als, discrete=TRUE)
-            grep(lal,meanB$discrete$Level, ignore.case = TRUE)
+            grep(lal, meanB$discrete$Level, ignore.case = TRUE)
           })} else {
             lB <- rep(TRUE, length(als[[achievementLevel]]))
           }
@@ -1433,16 +1444,16 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
             JRdf <- c(JRdf,DoFCorrection(varEstInputsTemp, varA="A", varB="B", method=c("JR")))   
           } # end if (!is.null(varEstInputsTemp$JK))
           else {
-          	cov <- c(cov,NA)
-          	JRdfA <- c(JRdfA,NA)
-          	JRdfB <- c(JRdfB,NA)
-          	JRdf <- c(JRdf,NA)
+          	cov <- c(cov, NA)
+          	JRdfA <- c(JRdfA, NA)
+          	JRdfB <- c(JRdfB, NA)
+          	JRdf <- c(JRdf, NA)
           }
         }
       } #end if (type %in% c("pct","AL")) 
       else {
-        cov <- ifelse(groupA_0 | groupB_0,cov,varEstToCov(varEstInputs, varA="A", varB="B", jkSumMultiplier=getAttributes(data, "jkSumMultiplier")))
-        JRdfA <- ifelse(groupA_0,NA,DoFCorrection(varEstInputs, varA="A", method=c("JR")))
+        cov <- ifelse(groupA_0 | groupB_0, cov, varEstToCov(varEstInputs, varA="A", varB="B", jkSumMultiplier=getAttributes(data, "jkSumMultiplier")))
+        JRdfA <- ifelse(groupA_0, NA, DoFCorrection(varEstInputs, varA="A", method=c("JR")))
         JRdfB <- ifelse(groupB_0, NA, DoFCorrection(varEstInputs, varA="B", method=c("JR")))
         JRdf <- ifelse(groupA_0 | groupB_0, NA, DoFCorrection(varEstInputs, varA="A", varB="B", method=c("JR"))) 
       }

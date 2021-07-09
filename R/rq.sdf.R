@@ -295,16 +295,19 @@ calc.rq.sdf <- function(formula,
   linkingError <- "NAEP" %in% getAttributes(data, "survey") & any(grepl("_linking", yvars, fixed=TRUE))
   lyv <- length(yvars)
   if(any(pvy)) {
-    yvars <- paste0("outcome",1:length(getPlausibleValue(yvars[max(pvy)], data)))
+    pvs <- getPlausibleValue(yvars[max(pvy)], data)
+    yvars <- paste0("outcome",
+                    1:length(pvs),
+                    ifelse(grepl("_imp_", pvs), "_imp",
+                           ifelse(grepl("_samp_", pvs), "_samp", "_est")))
   } else {
     # no PVs, just make sure that this variable is numeric
-    edf[,"yvar"] <- as.numeric(eval(formula[[2]],edf))
+    edf[,"yvar"] <- as.numeric(eval(formula[[2]], edf))
     formula <- update(formula, new=substitute( yvar ~ ., list(yvar=as.name(yvar))))
     yvars <- "yvar"
   } # End of if statment: any(pvy)
   
   yvar0 <- yvars[1]
-  
   # this allows that variable to not be dynamic variable, it is explicitly defined to be yvar0
   if(any(pvy)) {
     for(i in 1:length(yvars)) {
@@ -312,21 +315,21 @@ calc.rq.sdf <- function(formula,
       # first, by PV, rename the ith PVs to be e.g. composite
       for(yvi in 1:length(pvy)) {
         if(pvy[yvi]) {
-          edf[,yvar[yvi]] <- edf[,getPlausibleValue(yvar[yvi], data)[i]]
+          edf[ , yvar[yvi]] <- edf[ , getPlausibleValue(yvar[yvi], data)[i]]
         }
       }
       # then set yvars[i] (e.g. outcome1) to be the evaluation at this PV point
-      edf[,yvars[i]] <- as.numeric(eval(formula[[2]],edf))
+      edf[ , yvars[i]] <- as.numeric(eval(formula[[2]], edf))
     }
     # finally, correctly set yvar0
-    edf$yvar0 <- edf[,yvar0]
+    edf$yvar0 <- edf[ , yvar0]
   } # end if(any(pvy)), no else
   
   # 5) run the main regression
   # run a regression, starting with the first PV or maybe the only outcome variable
   yvar0 <- yvars[1]
   # this allows that variable to not be dynamic variable, it is explicitly defined to be yvar0
-  edf$yvar0 <- edf[,yvar0]
+  edf$yvar0 <- edf[ , yvar0]
   frm <- update(formula, yvar0 ~ .)
   edf$w <- edf[,wgt]
   lm0 <- rq(frm, data=edf, weights=w, tau = tau, ...)
@@ -389,11 +392,12 @@ calc.rq.sdf <- function(formula,
                                    T0 = est$est,
                                    T0Centered = FALSE)
       
-      varM[[1]] <- sampVar$Bi
+      varM <- list(sampVar$Bi)
       varEstInputs[["JK"]] <- sampVar$veiJK
       varEstInputs[["PV"]] <- impVar$veiImp
       # drop r.squared term
-      varm[1, ] <- sampVar$V
+      varm <- matrix(NA, nrow=jrrIMax, ncol=length(coef(lm0)))
+      varm[1, ] <- sampVar$V[-length(sampVar$V)]
       # M just for estimation variables
       M <- length(yvars[grep("_est", yvars)])
       Vimp <- impVar$V
@@ -487,18 +491,25 @@ calc.rq.sdf <- function(formula,
   
   # Deal with estimates with no sampling variance, make sure they return NA for SE
   Vjrr[Vjrr == 0] <- NA
-  
   V <- Vjrr + Vimp
+  coef <- coef[1:length(coef(lm0))]
   names(coef) <- names(coef(lm0))
   se <- sqrt(V)
-  names(se) <- names(coef)
+  names(se) <- names(coef(lm0))
   
   # get fitted and resid based on overall coef
   X <- model.matrix(frm, edf) 
   fitted1 <- as.vector(X%*%coef)
-  Y <- sapply(1:length(yvars), function(yi) {
-    as.vector(edf[,yvars[yi]])
-  }, simplify=TRUE)
+  if(linkingError) {
+    yve <- yvars[grep("_est", yvars)]
+    Y <- sapply(1:length(yve), function(yi) {
+      as.vector(edf[,yve[yi]])
+    }, simplify=TRUE)
+  } else {
+    Y <- sapply(1:length(yvars), function(yi) {
+      as.vector(edf[,yvars[yi]])
+    }, simplify=TRUE)
+  }
   resid1 <- Y - fitted1
   colnames(resid1) <- NULL
   
@@ -515,7 +526,9 @@ calc.rq.sdf <- function(formula,
     if(!is.matrix(coefm)) {
       coefm <- t(as.matrix(coefm))
     }
-    fitted2 <- as.matrix(X%*%t(coefm))
+    # remove r-sq, if present
+    coefm <- coefm[ , 1:length(coef)]
+    fitted2 <- as.matrix(X %*% t(coefm))
     resid2 <- Y - fitted2
   }
   
@@ -553,7 +566,11 @@ calc.rq.sdf <- function(formula,
 
   if(madeB) {
     # equation 2.29 in var Buuren, pp 42
+    # make sure Ubar has the correct dim (k)
+    k <- length(coef)
+    B <- B[1:k, 1:k]
     tryCatch(
+      # make sure Ubar has the correct dim
       rbar <- (1+1/M)*(1/nrow(Ubar))*sum(diag(B %*% solve(Ubar))),
       error = function(e){
         rbar <<- (1+1/M)*(1/nrow(Ubar))*sum(diag(B %*% MASS::ginv(Ubar)))

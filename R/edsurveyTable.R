@@ -421,11 +421,22 @@ calcEdsurveyTable <- function(formula,
                                      recode=recode,
                                      addAttributes=TRUE))
   }
-  if((returnMeans | returnSepct) & any(edf[,wgt] <= 0)) {
-    warning("Removing rows with 0 weight from analysis.")
-    edf <- edf[edf[,wgt] > 0,]
+  # remove rows with NA weights
+  if(any(is.na(edf[ , wgt]))) {
+    warning(paste0("Removing ", sum(is.na(edf[ , wgt])), " rows with NA weights from analysis."))
+    edf <- edf[!is.na(edf[ , wgt]), ]
   }
-  
+  # drop rows with 0 weights
+  if((returnMeans | returnSepct) & any(edf[ , wgt] <= 0)) {
+    warning(paste0("Removing ", sum(! (edf[ , wgt] > 0) ), " rows with 0 weight from analysis."))
+    edf <- edf[edf[ , wgt] > 0, ]
+  }
+  # drop rows with missing outcomes, but only if showing means
+  if(returnMeans && any(is.na(edf[ , yvar0])) ) {
+    warning(paste0("Removing ", sum( is.na(edf[ , yvar0]) ), " rows with missing scale score from analysis."))
+    edf <- edf[!is.na(edf[ , yvar0]), ]
+  }
+  # keep only valid data
   for (var in rhs_vars){
     edf <- edf[!is.na(edf[var]),]
   }
@@ -805,7 +816,6 @@ calcEdsurveyTable <- function(formula,
   }
   rownames(res) <- NULL
   varmeth <- ifelse(varMethod=="t", "Taylor series", "jackknife")
-  
   
   # order the output by the "by" variables
   vnames <- intersect(names(res), all.vars(formula))

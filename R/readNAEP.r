@@ -22,7 +22,12 @@
 #' @details
 #' The function uses the \code{frPath} file layout (.fr2) data to read in the
 #' fixed-width data file (.dat) and builds the \code{edsurvey.data.frame}.
-#'           
+#'
+#' NAEP includes both scaled scores and theta scores, with the latter having names ending in \code{\_theta}.
+#'
+#' When a NAEP administration includes a linking error variable those variables are included and end in \code{_linking}.
+#' When present, simply use the \code{_linking} version of a variable to get a standard error estimate that includes linking error.
+#' 
 #' @return An \code{edsurvey.data.frame} containing the following elements:
 #'    \item{userConditions}{a list containing all user conditions set using the \code{subset.edsurvey.data.frame} method}
 #'    \item{defaultConditions}{the default conditions to be applied to the \code{edsurvey.data.frame}}
@@ -52,7 +57,7 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
   on.exit(options(userOp), add = TRUE)
   
   path <- suppressWarnings(normalizePath(unique(path), winslash = "/")) #give better error later if file not found
-  
+
   hasFRpath <- FALSE
   if(missing(frPath) || !is.character(frPath)){
     # the frPath is not a character, so warn the user we are not using it
@@ -284,12 +289,15 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
                       jkSumMultiplier = 1,
                       fr2Path=studentFR2)
   if("dbapba" %in% colnames(res)) {
+    foundScale <- FALSE
     if(res$subject == "Science") { 
+      foundScale <- TRUE
       subscaleWeights <- c(1,0,0,0)
       subscales <- c("univariate_scale", "physical", "earth", "life")
       composite <- c("univariate_scale")
     }
     if(res$subject == "Civics") {
+      foundScale <- TRUE
       subscaleWeights <- 1
       subscales <- c("civics")
       composite <- c("civics")
@@ -304,16 +312,19 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
     }
     if(res$subject == "History") {
       if(f[["Grade_Level"]] == "Grade 4") {
+        foundScale <- TRUE
         subscaleWeights <- c(0.25, 0.35, 0.25, 0.15)
         subscales <- c("democracy", "cultures", "technology", "world_role")
         composite <- c("composite")
       }
       if(f[["Grade_Level"]] == "Grade 8") {
+        foundScale <- TRUE
         subscaleWeights <- c(0.3, 0.30, 0.20, 0.20)
         subscales <- c("democracy", "cultures", "technology", "world_role")
         composite <- c("composite")
       }
       if(f[["Grade_Level"]] == "Grade 12") {
+        foundScale <- TRUE
         subscaleWeights <- c(0.25, 0.25, 0.25, 0.25)
         subscales <- c("democracy", "cultures", "technology", "world_role")
         composite <- c("composite")
@@ -321,16 +332,19 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
     } 
     if(res$subject == "Mathematics") {
       if(f[["Grade_Level"]] == "Grade 4") {
+        foundScale <- TRUE
         subscaleWeights <- c(0.40, 0.10, 0.15, 0.2, 0.15)
         subscales <- c("num_oper", "da_stat_prob", "algebra", "measurement", "geom")
         composite <- c("composite")
       }
       if(f[["Grade_Level"]] == "Grade 8") {
+        foundScale <- TRUE
         subscaleWeights <- c(0.2, 0.15, 0.30, 0.15, 0.20)
         subscales <- c("num_oper", "da_stat_prob", "algebra", "measurement", "geom")
         composite <- c("composite")
       }
       if(f[["Grade_Level"]] == "Grade 12") {
+        foundScale <- TRUE
         subscaleWeights <- c(0.1, 0.25, 0.35, 0.3)
         subscales <- c("num_oper", "da_stat_prob", "algebra", "measurementgeom")
         composite <- c("composite")
@@ -338,22 +352,37 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
     }
     if(res$subject == "Reading") {
       if(f[["Grade_Level"]] == "Grade 4") {
+        foundScale <- TRUE
         subscaleWeights <- c(0.50, 0.50)
         subscales <- c("literary", "information")
         composite <- c("composite")
       }
       if(f[["Grade_Level"]] == "Grade 8") {
+        foundScale <- TRUE
         subscaleWeights <- c(0.45, 0.55)
         subscales <- c("literary", "information")
         composite <- c("composite")
       }
       if(f[["Grade_Level"]] == "Grade 12") {
+        foundScale <- TRUE
         subscaleWeights <- c(0.30, 0.70)
         subscales <- c("literary", "information")
         composite <- c("composite")
       }
     }
-    res <- linkVarAugment(res, subscaleWeights=subscaleWeights, subscales=subscales, composite=composite)
+    if(res$subject == "Geography") {
+      if(f[["Grade_Level"]] %in% c("Grade 4", "Grade 8", "Grade 12")) {
+        foundScale <- TRUE
+        subscaleWeights <- c(0.40, 0.30, 0.30)
+        subscales <- c("spaceplace", "envsociety", "spatial_dyn")
+        composite <- c("composite")
+      }
+    }
+    if(!foundScale) {
+      warning("Could not find construct weights for this NAEP. Linking error cannot be calculated.")
+    } else {
+      res <- linkVarAugment(res, subscaleWeights=subscaleWeights, subscales=subscales, composite=composite)
+    }
   }
   return(res)
 }
@@ -422,6 +451,10 @@ linkVarAugment <- function(data, subscaleWeights, subscales, composite) {
 
   # for each PV (column in the RAM)
   RAMi <- 1
+  thetaPVscores <- data[DBASS, unlist(thetaPVs)]
+  scaledPVscores <- data[PBASS, unlist(scaledPVs)]
+  repWsDBA <- data[DBASS, repWs]
+  repWsPBA <- data[PBASS, repWs]
   for(n in 1:ncol(RAM)) {
     # for each RAM column (5)
     for(j in 1:nrow(RAM)) {
@@ -432,10 +465,10 @@ linkVarAugment <- function(data, subscaleWeights, subscales, composite) {
       for(k in 1:K) {
         # DBA PV is the jth one
         # scaledPVs[[k]] is for the kth subscale, in that [j] is for the jth plausible value
-        theta_k <- data[DBASS, thetaPVs[[k]][j]]
+        theta_k <- thetaPVscores[ , thetaPVs[[k]][j]]
         # PBApv from RAM
         # PBAPVs[[k]], similar to DBA, inside of that we select the plausilbe value from the RAM for row j
-        x_k <- data[PBASS, scaledPVs[[k]][PBApv] ]
+        x_k <- scaledPVscores[ , scaledPVs[[k]][PBApv] ]
         # mean, std estimates for DBA (theta scale)
         mu_t <- getMu(theta_k, wd)
         s_t <- getS(theta_k, wd, mu=mu_t)
@@ -469,17 +502,17 @@ linkVarAugment <- function(data, subscaleWeights, subscales, composite) {
     # z1 is for PBA
     z1 <- rep(0, nPBA)
     # DBA ith replicate weight
-    wd <- data[DBASS,repWs[i]]
+    wd <- repWsDBA[ , repWs[i]]
     # PBA ith replicate weight
-    wp <- data[PBASS,repWs[i]]
+    wp <- repWsPBA[ , repWs[i]]
     for(k in 1:K) {
       # DBA is theta scale
-      theta_k <- data[DBASS, thetaPVs[[k]][1]]
+      theta_k <- thetaPVscores[ , thetaPVs[[k]][1]]
       # get mean, stdev, DBA, use ith replicate weight
       mu_t <- getMu(theta_k, wd)
       s_t <- getS(theta_k, wd, mu=mu_t)
       # get mean, stdev, PBA, use ith replicate weight
-      x_k <- data[PBASS, scaledPVs[[k]][1]]
+      x_k <- scaledPVscores[ , scaledPVs[[k]][1] ]
       mu_x <- getMu(x_k, wp)
       s_x <- getS(x_k, wp, mu=mu_x)
       # variablle transformations

@@ -8,26 +8,25 @@
   }
   \subsection{STATISTICS}{
     \itemize{
-      \item after subsetting an edsurvey.data.frame, the cache (user defined variables) used to throw errors. This now works.
+      \item \code{achievementLevels} now accepts multiple plausible values at once, allowing joint achievement levels to be calculated. Because of this the \code{discrete} and \code{cumulative} results column names now include the name of the variable. So for a composite score it will now way \code{composite_Level} where it used to say \code{Level}. Also the \code{cutpoints} object now specifies the scores the cutpoints regard.
       \item supports linking error in NAEP Science, Civics, History (grades 4, 8, and 12), Mathematics (grades 4, 8, and 12), and Reading (grades 4, 8, and 12).
       \item we simplified all the code in the statistical methods, including \code{rq.sdf}, \code{lm.sdf}, and \code{percentile}.
       \item \code{percentile} now has a new method \dQuote{symmetric} that is similar to \dQuote{simple} but returns the negative result if all of the values are multiplied by negative one. This method is faster than \dQuote{unbiased} which has a small correction.
       \item \code{percentile} used to report the number of people who were more extreme than any percentile in the \code{nsmall} column. This was not used and so was removed.
       \item \code{percentile} now accepts a \code{dofMethod} argument to allow either of the methods described in \code{DoFCorrection}: \code{WS} for the Welch-Satterthwaite formula or \code{JR} for the Johnson-Rust formula.
+      \item \code{edsurveyTable} now warns and removes rows with non-positive full sample weights or no outcome. The also warnings now include the number of rows removed by the filter. Non-positive and NA weights are removed only if the \code{returnMeans} or \code{returnSepct} are \code{TRUE}. Missing outcome scores are removed only if \code{returnMeans} is \code{TRUE}.
     }
   }
   \subsection{BUG FIXES}{
     \itemize{
       \item after subsetting an edsurvey.data.frame, the cache (user defined variables) used to throw errors. This now works.
-      \item \code{mixed.sdf} used to not correctly identify covariances when outputting the variance tables. Thanks to Endraswara Wiryawan for sharing this bug.
+      \item \code{mixed.sdf} used to not correctly identify covariances when outputting the variance tables. Thanks to Endraswara Wiryawan for identifying this bug.
       \item \code{mixed.sdf} now gives clearer information about groups and weights, similar to the updated \code{WeMix::mix} function.
     }
   }
-  \subsection{BUG FIXES}{
+  \subsection{OTHER}{
     \itemize{
-      \item after subsetting an edsurvey.data.frame, the cache (user defined variables) used to throw errors. This now works.
-      \item \code{mixed.sdf} used to not correctly identify covariances when outputting the variance tables. Thanks to Endraswara Wiryawan for sharing this bug.
-      \item \code{mixed.sdf} now gives clearer information about groups and weights, similar to the updated \code{WeMix::mix} function.
+      \item when \code{EdSurvey} is attached, it nolonger sets the options value of \code{timeout}. Instead it only sets it to the larger of the current value and an hour when downloading files.
     }
   }
 }

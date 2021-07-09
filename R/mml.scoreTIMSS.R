@@ -2,7 +2,7 @@
 #' @description Scoring TIMSS data
 #'
 #' @param edf             a TIMSS \code{light.edsurvey.data.frame} or \code{edsurvey.data.frame}
-#' @param ployParamTab    a dataframe containing IRT parameters for all polytomous items in \code{edf}
+#' @param polyParamTab    a dataframe containing IRT parameters for all polytomous items in \code{edf}
 #' @param dichotParamTab  a dataframe containing IRT parameters for all dichotomous items in \code{edf}
 #' @return                scored \code{edf}
 #' @details This function scores TIMSS data. 

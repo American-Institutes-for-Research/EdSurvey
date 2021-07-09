@@ -200,3 +200,14 @@ fixTimeout <- function() {
   newtimeo <- max(60*60, options()$timeout)
   options(timeout=newtimeo)
 }
+
+cartFactor <- function(fa, fb) {
+  if(!inherits(fa, "factor")) {
+    fa <- factor(fa)
+  }
+  if(!inherits(fb, "factor")) {
+    fb <- factor(fb)
+  }
+  df <- expand.grid(levels(fb), levels(fa))
+  return(paste0(df$Var2, ":", df$Var1))
+}

@@ -445,6 +445,9 @@ calc.lm.sdf <- function(formula,
                       1:length(pvs),
                       ifelse(grepl("_imp_", pvs), "_imp",
                              ifelse(grepl("_samp_", pvs), "_samp", "_est")))
+      if(varMethod == "t") {
+        stop("Taylor series variance estimation not supported with NAEP linking error.")
+      }
     } else { # end if linkingError
       yvars <- paste0("outcome", 1:length(getPlausibleValue(yvars[max(pvy)], data)))
     } # end if(any(pvy))
@@ -1155,7 +1158,11 @@ getLinkingImpVar <- function(data, pvImp, ramCols, stat, wgt, T0, T0Centered, jk
   colnames(V_n) <- names(T0)
   veiPV <- veiPV[ , !names(T0) %in% "r.squared", drop=FALSE]
   npv <- nrow(veiPV)
-  veiList <- lapply(1:(length(T0)-1), function(i) {
+  nT0 <- length(T0)
+  if("r.squared" %in% names(T0)) {
+    nT0 <- nT0 - 1
+  }
+  veiList <- lapply(1:nT0, function(i) {
     data.frame(PV=1:npv, # actually RAM element
                variable=rep(names(T0)[i], npv),
                value=veiPV[ , i] - mean(veiPV[ , i]))
@@ -1199,7 +1206,7 @@ getLinkingSampVar <- function(data, pvSamp, stat, rwgt, T0, T0Centered, jkSumMul
   # for each coefficient, build varEstInputs (vei) for that coefficient
   # skip r-squared with length(T0)-1
   veiList <- lapply(1:length(T0), function(i) {
-    if(names(T0)[i] != "r.squared") {
+    if(!"r.squared" %in% names(T0)[i]) {
       data.frame(PV=rep(1, nrow(resi)),
                  variable=rep(names(T0)[i], nrow(resi)),
                  value=resi[ , i],

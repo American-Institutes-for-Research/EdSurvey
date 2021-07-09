@@ -191,6 +191,10 @@ calc.mvrlm.sdf <- function(formula,
     wgt <- weightVar
   } # End of if/else: is.null(weightVar)
   
+  # checking for linking error and stop
+  if(any(grepl("_linking", all.vars(formula), fixed=TRUE))) {
+    stop("mvrlm.sdf does not support linking error.")
+  }
   # 2) Get the data
   getDataArgs <- list(data=sdf,
                       varnames=c(all.vars(formula), wgt),#, taylorVars),
@@ -201,7 +205,7 @@ calc.mvrlm.sdf <- function(formula,
                       includeNaLabel=TRUE,
                       dropUnusedLevels=TRUE
   )
-  
+
   # # Default conditions should be included only if the user set it. This adds the argument only if needed
   if(!missingDefaultConditions) {
     getDataArgs <- c(getDataArgs, list(defaultConditions=defaultConditions))

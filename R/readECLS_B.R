@@ -32,11 +32,12 @@ readECLS_B <- function(path = getwd(),
   on.exit(options(userOp), add = TRUE)
   
   path <- suppressWarnings(normalizePath(unique(path), winslash = "/"))
+  path <- ifelse(grepl("[.][a-zA-Z]{1,4}$", path, perl=TRUE, ignore.case=TRUE), dirname(path), path)
   
   # 1. Extract data file information from parsed arguments ====
   # a. Data file name
   if (missing(filename)) {
-    filename <- list.files(path,pattern = "\\.dat$",ignore.case=TRUE)
+    filename <- list.files(path, pattern = "\\.dat$", ignore.case=TRUE)
   }
   if (length(filename) > 1) {
     stop(paste0("There is more than one .dat file in ", sQuote(path),". Please specify data file in the ", sQuote(filename), " argument."))

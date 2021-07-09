@@ -1,6 +1,6 @@
 Package: EdSurvey
-Version: 2.7
-Date: 2021-05-11
+Version: 2.6.9.9001
+Date: 2021-07-07
 Title: Analysis of NCES Education Survey and Assessment Data
 Author: Paul Bailey [aut, cre],
         Ahmad Emad [aut],
@@ -24,13 +24,12 @@ Imports: data.table (>= 1.11.4), Formula, glm2, haven (>= 2.2.0), LaF
         (>= 0.7), lme4, MASS, Matrix, methods, NAEPprimer, quantreg,
         readxl, tibble, wCorr, NAEPirtparams, WeMix (>= 3.1.7), xtable,
         Dire
-BugReports: https://github.com/American-Institutes-for-Research/EdSurvey/issues
 URL: https://www.air.org/project/nces-data-r-project-edsurvey
 Description: Read in and analyze functions for education survey and assessment data from the National Center for Education Statistics (NCES) <https://nces.ed.gov/>, including National Assessment of Educational Progress (NAEP) data <https://nces.ed.gov/nationsreportcard/> and data from the International Assessment Database: Organisation for Economic Co-operation and Development (OECD) <https://www.oecd.org/>, including Programme for International Student Assessment (PISA), Teaching and Learning International Survey (TALIS), Programme for the International Assessment of Adult Competencies (PIAAC), and International Association for the Evaluation of Educational Achievement (IEA) <https://www.iea.nl/>, including Trends in International Mathematics and Science Study (TIMSS), TIMSS Advanced, Progress in International Reading Literacy Study (PIRLS), International Civic and Citizenship Study (ICCS), International Computer and Information Literacy Study (ICILS), and Civic Education Study (CivEd).
 License: GPL-2
 VignetteBuilder: knitr
-Suggests: dplyr, knitr, testthat, withr, rmarkdown, RColorBrewer
-LazyData: true
+Suggests: dplyr, knitr, testthat, withr, rmarkdown, RColorBrewer,
+        doParallel, parallel
 RoxygenNote: 7.1.1
 Note: This publication was prepared for NCES under Contract No.
         ED-IES-12-D-0002 with the American Institutes for Research.
@@ -38,4 +37,4 @@ Note: This publication was prepared for NCES under Contract No.
         does not imply endorsement by the U.S. Government.
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2021-06-21 13:57:03 UTC; ebuehler
+Packaged: 2021-07-09 19:44:54 UTC; ebuehler

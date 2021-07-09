@@ -1,7 +1,6 @@
 skip_on_cran()
 require(testthat)
 context("PISA data reads in correctly")
-require(EdSurvey)
 require(WeMix)
 options(width = 500)
 options(useFancyQuotes=FALSE)
@@ -166,3 +165,4 @@ test_that("PISA cor", {
                "    2. No")
   expect_equal(cor1c,cor1REF)
 })
+

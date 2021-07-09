@@ -288,7 +288,7 @@ percentile <- function(variable, percentiles, data,
     # get the jackknife replicate weights for this sdf
     jkw <- getWeightJkReplicates(wgt, data)
     # for each variable to find percentiles in
-    percentileGen <- function(thesePercentiles) {
+    percentileGen <- function(thesePercentiles, pctMethod) {
       # make sure these are not out of bounds
       fnp <- function(pv, w) {
         # data frame with x and w on it. It will eventually get the percentile for that point
@@ -321,7 +321,6 @@ percentile <- function(variable, percentiles, data,
           }
           resv[thesePercentiles > xpw$p[nrow(xpw)]] <- xpw$x[nrow(xpw)]
           return(resv)
-          
         } else if (pctMethod == "unbiased") {
           if (is.matrix(thesePercentiles)) {
             # for lower and upper latent_ci
@@ -372,7 +371,9 @@ percentile <- function(variable, percentiles, data,
               }
             })
           })
-
+          for(i in 1:len) {
+            names(resv)[i] <- paste0("P",thesePercentiles[i])
+          }
           return(resv)
         } else {
           # pctMethod == 'symmetric'
@@ -410,7 +411,6 @@ percentile <- function(variable, percentiles, data,
               }
             }
           }
-
           return(resv)
         }
       }
@@ -473,7 +473,7 @@ percentile <- function(variable, percentiles, data,
       # NOT linkingerror
 
       jkSumMult <- getAttributes(data, "jkSumMultiplier")
-      pctfi <- percentileGen(percentiles)
+      pctfi <- percentileGen(percentiles, pctMethod)
       esti <- getEst(edf, variables, stat=pctfi, wgt=wgt)
       names(esti$est) <- paste0("P",percentiles)
       colnames(esti$coef) <- paste0("P",percentiles)
@@ -748,14 +748,14 @@ percentile <- function(variable, percentiles, data,
       
       if (! pctMethod %in% 'unbiased') {
         # map back to the variable space
-        pctfiCIL <- percentileGen(c(latent_ci[,1]))
+        pctfiCIL <- percentileGen(latent_ci[,1], pctMethod)
         ciL <- getEst(edf, variables, stat=pctfiCIL, wgt=wgt)$est
-        pctfiCIU <- percentileGen(c(latent_ci[,2]))
+        pctfiCIU <- percentileGen(latent_ci[,2], pctMethod)
         ciU <- getEst(edf, variables, stat=pctfiCIU, wgt=wgt)$est
         ci <- data.frame(ci_lower=ciL, ci_upper=ciU)
       } else {
         # map back to the variable space
-        pctfiCIL <- percentileGen(latent_ci)
+        pctfiCIL <- percentileGen(latent_ci, pctMethod)
         ciL <- getEst(edf, variables, stat=pctfiCIL, wgt=wgt)
         ci <- matrix(ciL$est, nrow = length(percentiles), byrow = TRUE)
         colnames(ci) <- c("ci_lower", "ci_upper")

@@ -26,7 +26,8 @@ readBPS_2014 <- function(path = getwd(),
   on.exit(options(userOp), add = TRUE)
   
   path <- suppressWarnings(normalizePath(unique(path), winslash = "/"))
-  
+  path <- ifelse(grepl("[.][a-zA-Z]{1,4}$", path, perl=TRUE, ignore.case=TRUE), dirname(path), path)
+
   if(!dir.exists(path)){
     stop(paste0("Cannot find specified folder path ", sQuote(path), "."))
   }

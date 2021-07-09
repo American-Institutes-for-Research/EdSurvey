@@ -103,6 +103,7 @@ readTIMSS <- function(path,
   
   #validate the folder path(s) the user specified to make sure they exist
   path <- suppressWarnings(normalizePath(unique(path), winslash = "/"))
+  path <- ifelse(grepl("[.][a-zA-Z]{1,4}$", path, perl=TRUE, ignore.case=TRUE), dirname(path), path)
 
   if(!all(dir.exists(path))){
     stop(paste0("The argument ", sQuote("path"), " cannot be located ", pasteItems(dQuote(path[!dir.exists(path)])),"."))
@@ -187,12 +188,12 @@ readTIMSS <- function(path,
                         "btm", #Teacher Background-Mathematics
                         "bts") #Teacher Background-Science
       }
-
+      
       fnames <- NULL # be sure to clear this out so leftovers are not kept from a previous loop
       fnamesNumeracy <- NULL
       yrCodeNumeracy <- unique(fileYrs[substring(fileYrs,1,1)=="n"]) #returns all numeracy codes
       yrCodeNumeracy <- yrCodeNumeracy[convertTIMSSYearCode(yrCodeNumeracy)==convertTIMSSYearCode(yrCode)] #get the numeracy code that only matches our perticular year in the loop
-
+      
       fnames <- sapply(TIMSSfiles, function(f) {
         filenames[(fSubPart %in% paste0(f,cntry, yrCode))] #added check here to only grab files for our specific TIMSS grade level, country, and year
       }, simplify=FALSE)
@@ -639,7 +640,7 @@ processTIMSSGr4 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
 
     ids2 <- grep("^ID", names(stuDF2), ignore.case=TRUE, value=TRUE)
     ids12 <- ids1[ids1 %in% ids2]
-    ids12 <- ids12[!(ids12 %in% c("IDGRADER", "IDPUNCH"))] #omit these vars for merging
+    ids12 <- ids12[!(ids12 %in% c("IDGRADE", "IDGRADER", "IDPUNCH"))] #omit these vars for merging
 
     mm <- mergeTibble(stuDF1,
                       stuDF2,
@@ -667,7 +668,7 @@ processTIMSSGr4 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
 
       ids3 <- grep("^ID", names(stuDF3), ignore.case=TRUE, value=TRUE)
       idsmm3 <- ids12[ids12 %in% ids3]
-      idsmm3 <- idsmm3[!(idsmm3 %in% c("IDGRADER", "IDPUNCH"))] #omit these vars for merging
+      idsmm3 <- idsmm3[!(idsmm3 %in% c("IDGRADE", "IDGRADER", "IDPUNCH"))] #omit these vars for merging
 
       nr <- nrow(mm)
       mm <- mergeTibble(mm,
@@ -700,7 +701,7 @@ processTIMSSGr4 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
       colnames(stuDF4) <- toupper(colnames(stuDF4))
       ids4 <- grep("^ID", names(stuDF4), ignore.case=TRUE, value=TRUE)
       idsmm4 <- idsmm3[idsmm3 %in% ids4]
-      idsmm4 <- idsmm4[!(idsmm4 %in% c("IDGRADER", "IDPUNCH"))] #omit these vars for merging
+      idsmm4 <- idsmm4[!(idsmm4 %in% c("IDGRADE", "IDGRADER", "IDPUNCH"))] #omit these vars for merging
 
       nr <- nrow(mm)
       mm <- mergeTibble(mm,
@@ -739,7 +740,7 @@ processTIMSSGr4 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
     ids1 <- grep("^ID", names(stuTeachDF), ignore.case=TRUE, value=TRUE)
     ids2 <- grep("^ID", names(teachDF), ignore.case=TRUE, value=TRUE)
     ids12 <- ids1[ids1 %in% ids2]
-    ids12 <- ids12[!(ids12 %in% c("IDGRADER", "IDPUNCH"))] #omit these vars for merging
+    ids12 <- ids12[!(ids12 %in% c("IDGRADE", "IDGRADER", "IDPUNCH"))] #omit these vars for merging
 
     mm <- mergeTibble(stuTeachDF,
                       teachDF,
@@ -778,7 +779,7 @@ processTIMSSGr4 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
     dim0 <- c(nrow0, ncol0)
     
     cacheFile <- list(ver=packageVersion("EdSurvey"),
-                      cacheFileVer=4,
+                      cacheFileVer=5,
                       ts=Sys.time(),
                       dataListFF=dataListFF,
                       dim0=dim0)
@@ -881,7 +882,7 @@ processTIMSSGr8 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
     colnames(stuDF2) <- toupper(colnames(stuDF2))
     ids2 <- grep("^ID", names(stuDF2), ignore.case=TRUE, value=TRUE)
     ids12 <- ids1[ids1 %in% ids2]
-    ids12 <- ids12[!(ids12 %in% c("IDGRADER", "IDPUNCH"))] #omit these vars for merging
+    ids12 <- ids12[!(ids12 %in% c("IDGRADE", "IDGRADER", "IDPUNCH"))] #omit these vars for merging
 
     mm <- mergeTibble(stuDF1,
                       stuDF2,
@@ -912,7 +913,7 @@ processTIMSSGr8 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
       colnames(stuDF3) <- toupper(colnames(stuDF3))
       ids3 <- grep("^ID", names(stuDF3), ignore.case=TRUE, value=TRUE)
       idsmm3 <- ids12[ids12 %in% ids3]
-      idsmm3 <- idsmm3[!(idsmm3 %in% c("IDGRADER", "IDPUNCH"))] #omit these vars for merging
+      idsmm3 <- idsmm3[!(idsmm3 %in% c("IDGRADE", "IDGRADER", "IDPUNCH"))] #omit these vars for merging
 
       nr <- nrow(mm)
       mm <- mergeTibble(mm,
@@ -921,7 +922,8 @@ processTIMSSGr8 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
                         all.x=TRUE,
                         all.y=FALSE,
                         suffixes=c("", ".junk"))
-      mm <- mm[,names(mm)[!grepl("\\.junk$",names(mm))]]
+
+      mm <- mm[ , names(mm)[!grepl("\\.junk$",names(mm))]]
 
       if(nr != nrow(mm)) {
         stop(paste0("Failed consistency check for filetype ", sQuote("bsr"), " country code ", sQuote(tolower(countryCode)), ". ",
@@ -953,24 +955,25 @@ processTIMSSGr8 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
     colnames(teachMathDF) <- toupper(colnames(teachMathDF))
     ids2 <- grep("^ID", names(teachMathDF), ignore.case=TRUE, value=TRUE)
     ids12 <- ids1[ids1 %in% ids2]
-    ids12 <- ids12[!(ids12 %in% c("IDGRADER", "IDPUNCH"))] #omit these vars for merging
-
+    ids12 <- ids12[!(ids12 %in% c("IDGRADE", "IDGRADER", "IDPUNCH"))] #omit these vars for merging
+    
     #add a '.math' postfix to the variable name here for a math specific teacher variable as some varnames are duplicated between math/sci teacher files
-    names(teachMathDF) <- sapply(toupper(trimws(names(teachMathDF))), function(tempName){
+    colnames(teachMathDF) <- sapply(toupper(trimws(names(teachMathDF))), function(tempName){
         if(!(tempName %in% toupper(trimws(names(stuTeachDF))))){
           return(paste0(tempName, ".MATH"))
         } else {
           return(paste0(tempName))
         }
     })
-
+    
     mm <- mergeTibble(stuTeachDF,
                       teachMathDF,
                       by=ids12,
                       all.x=TRUE,
                       all.y=FALSE,
                       suffixes=c("", ".junk"))
-    mm <- mm[,names(mm)[!grepl("\\.junk$",names(mm))]]
+
+    mm <- mm[ , names(mm)[!grepl("\\.junk$", names(mm))]]
 
     if(nrow(stuTeachDF) != nrow(mm)) {
       stop(paste0("Failed consistency check for filetype ", sQuote("btm"), " country code ", sQuote(tolower(countryCode)), ". ",
@@ -987,7 +990,7 @@ processTIMSSGr8 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
     colnames(teachSciDF) <- toupper(colnames(teachSciDF))
     ids3 <- grep("^ID", names(teachSciDF), ignore.case=TRUE, value=TRUE)
     idsmm3 <- ids1[ids1 %in% ids3]
-    idsmm3 <- idsmm3[!(idsmm3 %in% c("IDGRADER", "IDPUNCH"))] #omit these vars for merging
+    idsmm3 <- idsmm3[!(idsmm3 %in% c("IDGRADE", "IDGRADER", "IDPUNCH"))] #omit these vars for merging
 
     #add a '.sci' postfix to the variable name here for a math specific teacher variable as some varnames are duplicated between math/sci teacher files
     names(teachSciDF) <- sapply(toupper(trimws(names(teachSciDF))), function(tempName){
@@ -1035,7 +1038,7 @@ processTIMSSGr8 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
     
     #save the cachefile to be read-in for the next call
     cacheFile <- list(ver=packageVersion("EdSurvey"),
-                      cacheFileVer=4,
+                      cacheFileVer=5,
                       ts=Sys.time(),
                       dataListFF=dataListFF,
                       dim0=dim0)
@@ -1092,8 +1095,9 @@ mergeTibble <- function(a, b, by,  ..., suffixes=c("", ".junk")) {
 #writes a tibble object to a fixed-width-format (fwf) datafile, compiles the FileFormat detail of the fwf into a data.frame of needed info
 # contributor: Jeppe Bundsgaard: updates for ICILS 2018
 writeTibbleToFWFReturnFileFormat <- function(spssDF, outF, jkType=c("JK2", "JK1")) {
-  
-  if(!inherits(spssDF, "tbl_df")) stop("spssDF must be a tibble")
+  if(!inherits(spssDF, "tbl_df")) {
+    stop("spssDF must be a tibble")
+  }
 
   fileFormat <- getSPSSFileFormat(spssDF) #from readUTILS.R file
   spssDF <- data.frame(spssDF) #convert to data.frame to mitigate any tibble issues
@@ -1584,14 +1588,14 @@ processTIMSS4AndNumeracy <- function(dataFolderPath, countryCode, fnames, fnames
                       all.x=TRUE,
                       all.y=FALSE,
                       suffixes=c("", ".junk"))
-    mm <- mm[,names(mm)[!grepl("\\.junk$",names(mm))]]
+    mm <- mm[ , names(mm)[!grepl("\\.junk$", names(mm))]]
 
     if(nrow(stuTeachDF) != nrow(mm)) {
       stop(paste0("Failed consistency check for filetype ", sQuote("atg"), " country code ", sQuote(tolower(countryCode)), ". ",
                   "Please email EdSurvey.help@air.org for assistance."))
     }
 
-    teachFP <- file.path(dataFolderPath,paste0("atg", countryCode, yearCode, ".txt"))
+    teachFP <- file.path(dataFolderPath, paste0("atg", countryCode, yearCode, ".txt"))
     ffTeach <- writeTibbleToFWFReturnFileFormat(mm, teachFP)
     #===============================================================
 
@@ -1611,7 +1615,7 @@ processTIMSS4AndNumeracy <- function(dataFolderPath, countryCode, fnames, fnames
     
     #save the cachefile to be read-in for the next call
     cacheFile <- list(ver=packageVersion("EdSurvey"),
-                      cacheFileVer=4,
+                      cacheFileVer=5,
                       ts=Sys.time(),
                       dataListFF=dataListFF,
                       dim0=dim0)

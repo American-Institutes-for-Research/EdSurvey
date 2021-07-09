@@ -211,13 +211,13 @@ test_that("TIMSS getData", {
 
 context("TIMSS showCutPoints")
 test_that("TIMSS showCutPoints",{
-    sw <- c("Achievement Levels:",
-            "  Low International Benchmark:  400",
-            "  Intermediate International Benchmark:  475",
-            "  High International Benchmark:  550",
-            "  Advanced International Benchmark:  625")
-    co <- capture.output(showCutPoints(usa4.07))
-    expect_equal(sw, co)
+  sw <- c("Achievement Levels:",
+          "  Low International Benchmark:  400",
+          "  Intermediate International Benchmark:  475",
+          "  High International Benchmark:  550",
+          "  Advanced International Benchmark:  625")
+  co <- capture.output(showCutPoints(usa4.07))
+  expect_equal(sw, co)
 })
 context("TIMSS userConditions")
 test_that("TIMSS userConditions", {
@@ -337,7 +337,7 @@ test_that("mml.sdf", {
   # run mml
   invisible(withr::with_options(list(digits=4),
     capture.output(
-      mmlTIMSS <- suppressWarnings(mml.sdf(mmat~1, mmlSDF, weightVar='totwgt', verbose=TRUE, fast = TRUE))
+      mmlTIMSS <- suppressWarnings(mml.sdf(mmat~1, mmlSDF, weightVar='totwgt', verbose=TRUE))
       )
     )
   )

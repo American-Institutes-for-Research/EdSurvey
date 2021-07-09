@@ -74,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.6.9.9001</span>
       </span>
     </div>
 
@@ -103,12 +103,7 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li>
-  <a href="https://github.com/American-Institutes-for-Research/EdSurvey/">
-    <span class="fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+        
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -123,7 +118,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Bivariate Correlation</h1>
-    <small class="dont-index">Source: <a href='https://github.com/American-Institutes-for-Research/EdSurvey/blob/master/R/cor.sdf.R'><code>R/cor.sdf.R</code></a></small>
+    
     <div class="hidden name"><code>cor.sdf.Rd</code></div>
     </div>
 
@@ -145,7 +140,8 @@
   recode <span class='op'>=</span> <span class='cn'>NULL</span>,
   condenseLevels <span class='op'>=</span> <span class='cn'>TRUE</span>,
   fisherZ <span class='op'>=</span> <span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/match.arg.html'>match.arg</a></span><span class='op'>(</span><span class='va'>method</span><span class='op'>)</span> <span class='op'>%in%</span> <span class='st'>"Pearson"</span><span class='op'>)</span> <span class='op'>{</span>     <span class='cn'>TRUE</span> <span class='op'>}</span> <span class='kw'>else</span> <span class='op'>{</span>     <span class='cn'>FALSE</span> <span class='op'>}</span>,
-  jrrIMax <span class='op'>=</span> <span class='cn'>Inf</span>
+  jrrIMax <span class='op'>=</span> <span class='cn'>Inf</span>,
+  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -166,7 +162,7 @@
     <tr>
       <th>method</th>
       <td><p>a character string indicating which correlation coefficient (or covariance) is to be computed.
-One of <code>Pearson</code> (default), <code>Spearman</code>, <code>Polychoric</code>, or <code>Polyserial</code>.</p></td>
+One of <code>Pearson</code> (default), <code>Spearman</code>, <code>Polychoric</code>, or <code>Polyserial</code>. For Polyserial, the continuous argument must be <code>x</code>.</p></td>
     </tr>
     <tr>
       <th>weightVar</th>
@@ -220,6 +216,10 @@ for other correlation types.</p></td>
                   plausible values on the survey (including <code>Inf</code>) will result in all plausible values being used. 
                   Higher values of <code>jrrIMax</code> lead to longer computing times and more accurate variance estimates.</p></td>
     </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>a logical value. Set to <code>FALSE</code> to avoid messages about variable conversion.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -248,6 +248,8 @@ for other correlation types.</p></td>
 
     <p>The <code><a href='getData.html'>getData</a></code> arguments and <code><a href='recode.sdf.html'>recode.sdf</a></code> may be useful. (See Examples.)
 The correlation methods are calculated as described in the documentation for the <code>wCorr</code> package---see <code><a href='https://rdrr.io/r/utils/browseVignettes.html'>browseVignettes(package="wCorr")</a></code>.</p>
+<p>When <code>method</code> is set to <code>polyserial</code>, all <code>x</code> arguments are assumed to be continuous and all <code>y</code> assumed discrete. Therefore,
+be mindful of variable selection as this may result in calculations taking a very long time to complete.</p>
 <p>The Fisher Z-transformation is both a variance stabilizing  and normalizing transformation
 for the Pearson correlation coefficient (Fisher, 1915).
 The transformation takes the inverse hybarbolic tangent of the correlation coefficients and then calculates all variances and confidence intervals.

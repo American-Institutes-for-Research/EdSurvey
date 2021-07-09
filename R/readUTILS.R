@@ -741,7 +741,6 @@ writeDF_FWF <- function(df, fileFormat, savePath, verbose){
   
   #======
   for(coli in 1:nrow(fileFormat)){
-    
     if(verbose){
       if(((coli %% 2500)==0) || coli==1){
         if(coli==1){
@@ -773,7 +772,7 @@ writeDF_FWF <- function(df, fileFormat, savePath, verbose){
       fileFormat$Decimal[coli] <- max(decTestLen)
       fileFormat$dataType[coli] <- "numeric"
       
-    }else{ #test there is enough width for character strings too
+    } else { #test there is enough width for character strings too
       
       charTest <- nchar(format(colData, trim=TRUE, scientific = FALSE), keepNA = TRUE)
       charTest[is.na(colData)] <- 0 #this sets the NaN and NA values to nchar of 0
@@ -803,7 +802,7 @@ writeDF_FWF <- function(df, fileFormat, savePath, verbose){
       colData[grepl('\\\\', colData)] <- format(colData[grepl('\\\\', colData)], scientific = FALSE, width = width+1, justify = "right")
     }
     
-    omat[,coli] <- colData
+    omat[ , coli] <- colData
   }#end for(coli in 1:nrow(fileFormat))
   
   #write the file out to the cache location

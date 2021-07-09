@@ -1,6 +1,5 @@
 require(testthat)
 context("read ESDFL")
-require(EdSurvey)
 options(width = 500)
 options(useFancyQuotes=FALSE)
 source("REF-2-esdfl.R") # has REF output in it
@@ -53,14 +52,14 @@ test_that("ESDFL achievementLevels", {
 context("ESDFL cor")
 test_that("ESDFL cor", {
   c1 <- cor.sdf("b017451", "b003501", sdfA,
-						    method="Pearson",
-						    weightVar="origwt")
+                method="Pearson",
+                weightVar="origwt")
   c3 <- cor.sdf("b017451", "b003501", sdfC,
-						    method="Pearson",
-						    weightVar="origwt")
+                method="Pearson",
+                weightVar="origwt")
   c1234 <- cor.sdf("b017451", "b003501", sdfl,
-						       method="Pearson",
-						       weightVar="origwt")
+                   method="Pearson",
+                   weightVar="origwt")
   expect_equal(c1,c1234[[1]])
   expect_equal(c3,c1234[[3]])
 })
@@ -69,7 +68,8 @@ skip_on_cran()
 context("ESDFL edsurveyTable")
 test_that("ESDFL edsurveyTable",{
   et1 <- edsurveyTable(composite ~ b017451 + dsex, sdfl)
-  et1c <- capture.output(et1)
+  et1c <- withr::with_options(list(digits=7), capture.output(et1))
+  expect_equal(et1c, et1REF)
 
   etB <- edsurveyTable(composite ~ b017451+ dsex, sdfB)
   # row names will not agree, homogenize them
@@ -80,8 +80,9 @@ test_that("ESDFL edsurveyTable",{
   for(i in 1:ncol(ss)) {
     mostattributes(ss[,i]) <- attributes(et1$data[,i+1])
   }
-  expect_equal(capture.output(etB$data), capture.output(ss))
-  expect_equal(et1c, et1REF)
+  coetB <- withr::with_options(list(digits=7), capture.output(etB$data))
+  coss <- withr::with_options(list(digits=7), capture.output(ss))
+  expect_equal(coetB, coss)
 })
 
 context("ESDFL edsurveyTable error handling")
@@ -123,17 +124,17 @@ test_that("ESDFL error handling",{
 context("ESDFL gap")
 test_that("ESDFL gap",{
   skip_on_cran()
-	g1 <- gap("composite", sdfl, dsex=="Male", dsex=="Female", returnSimpleDoF=TRUE)
+  g1 <- gap("composite", sdfl, dsex=="Male", dsex=="Female", returnSimpleDoF=TRUE)
   mle <- "Male"
   g1p <- gap("composite", sdfl, dsex==mle, dsex=="Female", returnSimpleDoF=TRUE)
   expect_equal(g1$results, g1p$results)
-	# check that the columns output for just one agree between esdfl and sdf
-	g2 <- gap("composite", sdfC, dsex=="Male", dsex=="Female", returnSimpleDoF=TRUE)
+  # check that the columns output for just one agree between esdfl and sdf
+  g2 <- gap("composite", sdfC, dsex=="Male", dsex=="Female", returnSimpleDoF=TRUE)
   mnames <- names(g2$results)
   mnames <- mnames[mnames %in% names(g1$results)]
   expect_equal(unlist(g2$results[mnames]), unlist(g1$results[3,mnames]))
   # also check that the overall output has not changed.targetLevel="Male"
-	expect_known_value(g1, "gap_esdfl_mean.rds", update=FALSE)
+  expect_known_value(g1, "gap_esdfl_mean.rds", update=FALSE)
   # percentile
   expect_known_value(g_pct <- gap("composite", sdfl, dsex=="Male", percentiles=c(2,50), pctMethod="symmetric"), "gap_esdfl_pct.rds", update=FALSE)
   # achievement level
@@ -181,14 +182,14 @@ context("ESDFL cor")
 test_that("ESDFL cor", {
   skip_on_cran()
   c1 <- cor.sdf("b017451", "b003501", sdfA,
-						    method="Pearson",
-						    weightVar="origwt")
+                method="Pearson",
+                weightVar="origwt")
   c3 <- cor.sdf("b017451", "b003501", sdfC,
-						    method="Pearson",
-						    weightVar="origwt")
+                method="Pearson",
+                weightVar="origwt")
   c1234 <- cor.sdf("b017451", "b003501", sdfl,
-						       method="Pearson",
-						       weightVar="origwt")
+                   method="Pearson",
+                   weightVar="origwt")
   expect_equal(c1,c1234[[1]])
   expect_equal(c3,c1234[[3]])
 })

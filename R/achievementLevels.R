@@ -186,14 +186,14 @@ calAL <- function(achievementVars = NULL,
                   cutpoints = NULL,
                   returnDiscrete = TRUE,
                   returnCumulative = FALSE,
-                  weightVar=NULL,
-                  jrrIMax=1,
-                  omittedLevels=TRUE,
-                  defaultConditions=TRUE,
+                  weightVar = NULL,
+                  jrrIMax = 1,
+                  omittedLevels = TRUE,
+                  defaultConditions = TRUE,
                   recode = NULL,
-                  defaultConditionsMissing=FALSE,
-                  returnVarEstInputs=FALSE,
-                  returnNumberOfPSU=returnNumberOfPSU) {
+                  defaultConditionsMissing = FALSE,
+                  returnVarEstInputs = FALSE,
+                  returnNumberOfPSU = returnNumberOfPSU) {
   assertArgument(data)
   als <- getAttributes(data, "achievementLevels")
   assertArgument(als)
@@ -206,8 +206,7 @@ calAL <- function(achievementVars = NULL,
   
   # Check to see only one variable in all the supplied variables has plausible values
   vars <- unique(c(achievementVars, aggregateBy))
-  has.more.pvs <- sum(sapply(vars, FUN= function(x) hasPlausibleValue(x, data)))
-  assertArgument(has.more.pvs)
+  n.pvs <- sum(sapply(vars, FUN= function(x) hasPlausibleValue(x, data)))
   
   # Determine if weight supplied, otherwise use default weight
   if (is.null(weightVar)) {
@@ -218,61 +217,61 @@ calAL <- function(achievementVars = NULL,
   assertArgument(wgt, data)
   
   # Get yvar, if no yvar is specified 
-  has.pv <- sum(sapply(vars, FUN= function(x) hasPlausibleValue(x, data)))
+  has.pv <- sum(sapply(vars, FUN = function(x) hasPlausibleValue(x, data)))
   
   if(has.pv == 0) {
     achievementVars <- attributes(getAttributes(data, "pvvars"))$default
     vars <- c(vars, achievementVars)
   }
-  
-  yvar <- vars[sapply(vars, FUN= function(x) hasPlausibleValue(x, data))]
+  yvar <- as.list(vars[sapply(vars, FUN= function(x) hasPlausibleValue(x, data))])
   assertArgument(yvar)
   achievementVarsNoPV <- vars[sapply(vars, FUN= function(x) !hasPlausibleValue(x, data))]
   aggregateByNoPV <- unlist(sapply(aggregateBy, function(x) {
-    if (hasPlausibleValue(x, data)) { return("Level")}
+    if (hasPlausibleValue(x, data)) { return("Level") }
     return(x)
   }))
   
   # with yvar in hand check for linking error
   linkingError <- "NAEP" %in% getAttributes(data, "survey") & any(grepl("_linking$", c(yvar)))
 
-  if (length(aggregateByNoPV) == 0) { aggregateByNoPV <- NULL}  
+  if (length(aggregateByNoPV) == 0) {
+    aggregateByNoPV <- NULL
+  }  
   
   if(linkingError) {
-    pvs <- getPlausibleValue(yvar, data)
+    pvs <- list(getPlausibleValue(yvar, data))
     if(jrrIMax != 1) {
       warning("The linking error variance estimator only supports ", dQuote("jrrIMax=1"), ". Resetting to 1.")
       jrrIMax <- 1
     }
   } else {
     # non-linking error case
-    pvs <- getPlausibleValue(yvar, data)
+    pvs <- lapply(yvar, function(x) { getPlausibleValue(x, data)})
   }
-  jrrIMax <- min(jrrIMax, length(pvs))
+  jrrIMax <- min(jrrIMax, sapply(pvs, length))
   
   getDataVarNames <- c(vars, wgt)
   if (returnNumberOfPSU){
       # Get stratum and PSU variable
-      stratumVar <- getAttributes(data,"stratumVar")
-      psuVar <- getAttributes(data,"psuVar")
+      stratumVar <- getAttributes(data, "stratumVar")
+      psuVar <- getAttributes(data, "psuVar")
       if (all(c(stratumVar, psuVar) %in% names(data)) | all(c(stratumVar, psuVar) %in% colnames(data))) {
         getDataVarNames <- c(vars, wgt, stratumVar, psuVar)
     } else {
       warning(paste0("Stratum and PSU variables are required for this call and are not on the incoming data. Ignoring ", dQuote("returnNumberOfPSU=TRUE"),"."))
       returnNumberOfPSU <- FALSE
     }
-
   }
 
   # get the data. This is most of the arguments
-  getDataArgs <- list(data=data,
-                      varnames=getDataVarNames,
-                      returnJKreplicates=TRUE,
-                      drop=FALSE,
-                      omittedLevels=omittedLevels,
-                      recode=recode,
-                      includeNaLabel=TRUE,
-                      dropUnusedLevels=TRUE)
+  getDataArgs <- list(data = data,
+                      varnames = getDataVarNames,
+                      returnJKreplicates = TRUE,
+                      drop = FALSE,
+                      omittedLevels = omittedLevels,
+                      recode = recode,
+                      includeNaLabel = TRUE,
+                      dropUnusedLevels = TRUE)
   # Default conditions should be included only if the user set it. This adds the argument only if needed
   if(!defaultConditionsMissing) {
     getDataArgs <- c(getDataArgs, list(defaultConditions=defaultConditions))
@@ -280,7 +279,21 @@ calAL <- function(achievementVars = NULL,
   # avoid 0 rows warning
   suppressWarnings(edfDT <- do.call(getData, getDataArgs))
   edfDT <- setDT(edfDT)
+  # Remove zero-weight cases
   edfDTnrow <- nrow(edfDT)
+  for(i in seq_along(pvs)) {
+    # only need to filter by first PV
+    vi <- pvs[[i]][1]
+    edfDT <- edfDT[!is.na(get(vi)), ]
+  }
+  # update nrow
+  edfDTnrow <- nrow(edfDT)
+  edfDT <- edfDT[eval(parse(text = paste0(wgt, " > 0", sep = " "))), ]
+  if (nrow(edfDT) < edfDTnrow) {
+    warning("Removing ", edfDTnrow - nrow(edfDT), " rows with nonpositive weight from analysis.")
+    edfDTnrow <- nrow(edfDT)
+  }
+
   stratumAndPSU <- NULL
   if (returnNumberOfPSU) {
     # Combine stratumVar and psuVar
@@ -290,60 +303,85 @@ calAL <- function(achievementVars = NULL,
   }
   assertArgument(edfDT)
   
-  if(length(vars[!vars==yvar]) == 0) {
+  if(length(vars[!vars %in% unlist(yvar)]) == 0) {
     vars <- c(yvar, "1")
   }
   
   # Determine if the user supplied cutpoints.
   # If the user did not supply cutpoints, get the default ones stored in sdf
   if(is.null(cutpoints)) {
-    ALattr <- getAttributes(data, "pvvars")[[yvar]]$achievementLevel
-    temp <- as.numeric(ALattr)
-    names(temp) <- names(ALattr)
-    alsCutpoints <- temp
+    alsCutpoints <- lapply(yvar, function(x) {
+      ALattr <- getAttributes(data, "pvvars")[[x]]$achievementLevel
+      temp <- as.numeric(ALattr)
+      names(temp) <- names(ALattr)
+      return(temp)
+    })
   } else {
-    assertArgument(cutpoints)
+    if(length(yvar) == 1) {
+      if(!is.list(cutpoints)) {
+        cutpoints <- list(cutpoints)
+      }
+    }
+    cutpoints <- lapply(cutpoints, function(x) {
+      xn <- names(x)
+      x <- as.numeric(x)
+      names(x) <- xn
+      return(x)
+      })
+    if(any(is.na(unlist(cutpoints)))) {
+      stop("Cut points must be numeric and non-missing.")
+    }
+    if(length(cutpoints) != length(yvar)) {
+      stop("If you specify the cut points, you must specify them for every plausible value.")
+    }
     alsCutpoints <- cutpoints
   }
   
-  if (is.null(names(alsCutpoints))) {
-    names(alsCutpoints) <- paste0("Level ", seq(1, length(alsCutpoints), 1))
-  }
+  alsCutpoints <- lapply(alsCutpoints, function(x) {
+    if(is.null(names(x))) {
+      names(x) <- paste0("Level ", seq(1, length(x), 1))
+    }
+    return(x)
+  })
+  names(alsCutpoints) <- unlist(yvar)
   
   jkWeights <- getWeightJkReplicates(wgt, data)
-  
-  # Remove zero-weight cases
-  edfDT <- edfDT[eval(parse(text = paste0(wgt, " > 0", sep = " "))), ]
-  if (nrow(edfDT) < edfDTnrow) {
-    warning("Removing ", edfDTnrow - nrow(edfDT), " rows with nonpositive weight from analysis.")
-    edfDTnrow <- nrow(edfDT)
-  }
-  
+
   # Gather information about the call.
+  npv <- min(sapply(pvs, length))
   callVars <- list(achievementVars=achievementVars,
                    aggregateBy=aggregateBy,
-                   cutpoints=as.character(sort(unique(alsCutpoints))),
+                   cutpoints=alsCutpoints,
                    weightVar=wgt,
                    jrrIMax=jrrIMax,
-                   npv=length(pvs),
+                   npv=npv,
                    varMethod="jackknife",
                    njk=length(jkWeights))
-  
   # Show levels of achievement Vars
   levelsOfEdfDT <- sapply(edfDT, levels)
   levelsOfEdfDT[sapply(levelsOfEdfDT, is.null)] <- NULL
   levelsOfEdfDTGrid <- expand.grid(levelsOfEdfDT)
-  levelsOfEdfDTGrid <- levelsOfEdfDTGrid[,intersect(unique(c(aggregateByNoPV,colnames(levelsOfEdfDTGrid))), colnames(levelsOfEdfDTGrid)), drop = FALSE] 
+  levelsOfEdfDTGrid <- levelsOfEdfDTGrid[ , intersect(unique(c(aggregateByNoPV,colnames(levelsOfEdfDTGrid))), colnames(levelsOfEdfDTGrid)), drop = FALSE] 
   # Calculate discrete achievement levels
-  discreteDT <- recodeEdf(edfDT, pvs, alsCutpoints, returnCumulative = FALSE)
-  discreteOrder <- sortALResults(alsCutpoints, returnCumulative = FALSE)
+  pvs <- lapply(pvs, function(x) {
+    return(x[1:npv])
+  })
+  discreteDT <- edfDT
+  for(i in 1:length(pvs)) {
+    discreteDT <- recodeEdf(discreteDT, pvs[[i]], alsCutpoints[[i]], returnCumulative = FALSE)
+  }
+  discreteOrder <- lapply(alsCutpoints, function(x) {
+    sortALResults(x, returnCumulative = FALSE)
+  })
 
   calculateALStatF <- function(achievementVars, data, aggregateBy, cum=FALSE) {
     f <- function(pv, w, short=TRUE) {
       # calculate overall sum of weights
       # eval requested by data.table, unique because some variables will be in both achievementVars and aggregateBy
       aggregateBy2 <- aggregateBy
-      aggregateBy2[aggregateBy2 == "Level"] <- pv
+      for(i in seq_along(aggregateBy2 == "Level")) {
+        aggregateBy2[aggregateBy2 == "Level"][i] <- pv[names(aggregateBy2[aggregateBy2 == "Level"])[i] == names(pv)]
+      }
       byVars <- unique(c(pv, achievementVars, aggregateBy2))
       d1 <- data[,list(N=.N, wtdN = sum(get(w))), by = byVars]
       # make sure every level is populated and ordered for output
@@ -355,11 +393,11 @@ calAL <- function(achievementVars = NULL,
       d1[is.na(d1)] <- 0
       if(cum) {
         # now cumsum by non-aggregateBy
-        nonAgg <- byVars[!byVars %in% c(pv)]
+        nonAgg <- byVars[!byVars %in% pv[1]]
         d1 <- d1[, wtdN2 := cumsum2(.SD$wtdN), by = nonAgg]
         d1 <- d1[, N := cumsum2(.SD$N), by = nonAgg]
         # aggregate by aggregateBy
-        if(pv %in% aggregateBy2) {
+        if(pv[1] %in% aggregateBy2) {
           d1 <- d1[, Denom := sum(.SD$wtdN2), by = aggregateBy2]
         } else {
           d1 <- d1[, Denom := sum(.SD$wtdN), by = aggregateBy2]
@@ -367,13 +405,13 @@ calAL <- function(achievementVars = NULL,
         d1 <- d1[, DenomGroup := .GRP, by = aggregateBy2]
         d1 <- d1[, Percent := wtdN2 * 100 / Denom, by = aggregateBy2]
         # rename levels to cumulative level names
-        x <- d1[,get(pv)]
+        x <- d1[,get(pv[1])]
         lvls <- levels(x)
         lvls[-length(lvls)] <- gsub("^At", "At or Above", lvls[-length(lvls)])
         x <- factor(x, levels(x), lvls)
-        d1 <- d1[,(pv) := x]
+        d1 <- d1[,(pv[1]) := x]
         d1 <- d1[,"Denom" := NULL]
-        if(pv %in% aggregateBy2) {
+        if(pv[1] %in% aggregateBy2) {
           d1 <- d1[,"wtdN" := NULL]
           colnames(d1)[colnames(d1) == "wtdN2"] <- "wtdN"
         } else {
@@ -404,18 +442,23 @@ calAL <- function(achievementVars = NULL,
                                aggregateBy=aggregateByNoPV,
                                cum=TRUE)
   # estimator and also calculates necessary statistics for imputation variance estimator
-  estAL <- paste0(pvs,"_lvl")
+  estAL <- lapply(pvs, function(x) { paste0(x, "_lvl") })
+  names(estAL) <- unlist(yvar)
+  names(pvs) <- unlist(yvar)
 
   if(linkingError) {
-    estAL0 <- estAL
-    impAL <- grepl("_imp_", estAL)
-    sampAL <- grepl("_samp_", estAL)
+    estAL0 <- estAL[[1]]
+    impAL <- grepl("_imp_", estAL0)
+    sampAL <- grepl("_samp_", estAL0)
     # estimation yvars
-    estAL <- estAL0[!(impAL | sampAL)]
+    estAL <- list(estAL0[!(impAL | sampAL)])
+    names(estAL) <- unlist(yvar)
     # imputation yvars
-    impAL <- estAL0[impAL]
+    impAL <- list(estAL0[impAL])
+    names(impAL) <- unlist(yvar)
     # sampling yvars
-    sampAL <- estAL0[sampAL]
+    sampAL <- list(estAL0[sampAL])
+    names(sampAL) <- unlist(yvar)
   }
   if(returnDiscrete) {
     if(linkingError) {
@@ -436,14 +479,15 @@ calAL <- function(achievementVars = NULL,
     cn <- colnames(discreteEst$est)
     cn <- cn[!cn %in% c("N", "wtdN", "Percent")]
     d0 <- cbind(row=paste0("Row", 1:nrow(discreteEst$est)), discreteEst$est[ , cn, drop=FALSE])
-    colnames(d0)[colnames(d0) == "Level"] <- "variable"
+    #renames lit_level to variable1...
+    d0 <- renameLevelsToVariables(d0, estAL)
   }
   if(returnCumulative) {
     if(linkingError) {
       cumEst <- getEstAL(pvEst = estAL,
                          stat = stat_alC,
                          wgt = wgt)
-  } else {
+    } else {
       cumEst <- getEstAL(pvEst = estAL,
                          stat = stat_alC,
                          wgt = wgt)
@@ -456,10 +500,9 @@ calAL <- function(achievementVars = NULL,
     cn <- colnames(cumEst$est)
     cn <- cn[!cn %in% c("N", "wtdN", "Percent")]
     c0 <- cbind(row=paste0("Row", 1:nrow(cumEst$est)), cumEst$est[ , cn, drop=FALSE])
-    colnames(c0)[colnames(c0) == "Level"] <- "variable"
+    c0 <- renameLevelsToVariables(c0, estAL)
   }
   jkSumMult <- getAttributes(data, "jkSumMultiplier")
-
   
   for(pvi in 1:jrrIMax) { # for each PV (up to jrrIMax)
     if(returnDiscrete) {
@@ -467,15 +510,14 @@ calAL <- function(achievementVars = NULL,
         T0 <- discreteEst$est$Percent
         names(T0) <- paste0("Row",1:length(T0))
         dimpVar <- getLinkingImpVar(data=NULL,
-                                    pvImp = impAL,
+                                    pvImp = impAL[[1]],
                                     ramCols = ncol(getRAM()),
                                     stat = stat_al,
                                     wgt = wgt,
                                     T0 = T0,
                                     T0Centered = FALSE)
-                   
         dsampVar <- getLinkingSampVar(data=NULL,
-                                      pvSamp= sampAL,
+                                      pvSamp= sampAL[[1]],
                                       stat = stat_al,
                                       rwgt = jkWeights,
                                       T0 = T0,
@@ -484,8 +526,9 @@ calAL <- function(achievementVars = NULL,
         discVarEstInputs[["JK"]] <- fixALVarEstInputRows(dsampVar$veiJK, d0)
         discVarEstInputs[["PV"]] <- fixALVarEstInputRows(dimpVar$veiImp, d0)
       } else {
+        thispvs <- unlist(lapply(estAL, function(x) { x[pvi] }))
         res <- getVarEstJK(stat = stat_al,
-                           yvar = paste0(pvs[pvi],"_lvl"),
+                           yvar = thispvs,
                            wgtM = jkWeights,
                            co0 = discreteEst$est$Percent - discreteEst$coef[pvi, ],
                            jkSumMult = jkSumMult,
@@ -499,14 +542,14 @@ calAL <- function(achievementVars = NULL,
         T0 <- cumEst$est$Percent
         names(T0) <- paste0("Row",1:length(T0))
         cimpVar <- getLinkingImpVar(data=NULL,
-                                    pvImp = impAL,
+                                    pvImp = impAL[[1]],
                                     ramCols = ncol(getRAM()),
                                     stat = stat_alC,
                                     wgt = wgt,
                                     T0 = T0,
                                     T0Centered = FALSE)
         csampVar <- getLinkingSampVar(data=NULL,
-                                      pvSamp= sampAL,
+                                      pvSamp= sampAL[[1]],
                                       stat = stat_alC,
                                       rwgt = jkWeights,
                                       T0 = T0,
@@ -515,19 +558,17 @@ calAL <- function(achievementVars = NULL,
         cumVarEstInputs[["JK"]] <- fixALVarEstInputRows(csampVar$veiJK, c0)
         cumVarEstInputs[["PV"]] <- fixALVarEstInputRows(cimpVar$veiImp, c0)
       } else { 
+        thispvs <- unlist(lapply(estAL, function(x) { x[pvi] }))
         res <- getVarEstJK(stat = stat_alC,
-                           yvar = paste0(pvs[pvi],"_lvl"),
+                           yvar = thispvs,
                            wgtM = jkWeights,
                            co0 = cumEst$est$Percent - cumEst$coef[pvi, ],
                            jkSumMult = jkSumMult,
                            pvName = pvi)
         jkv <- merge(c0, res$veiJK, by.y="variable", by.x="row", all.x=TRUE, all.y=FALSE)
-        jkv$row <- NULL
-        cn <- colnames(jkv)
-        cn <- cn[!cn %in% c("PV", "JKreplicate", "variable", "value")]
-        jvk <- jkv[,c("PV", "JKreplicate", cn, "variable", "value")]
-        jkv <- jvk[order(jvk$PV, jkv$JKreplicate, jvk$variable), ] 
-        cumVarEstInputs[["JK"]] <- rbind(cumVarEstInputs[["JK"]], jkv)
+        jkv$variable <- NULL
+        colnames(jkv)[colnames(jkv) %in% "row"] <- "variable"
+        cumVarEstInputs[["JK"]] <- rbind(cumVarEstInputs[["JK"]], fixALVarEstInputRows(jkv, c0))
         cvarm[pvi, ] <- res$VsampInp
       }
     }
@@ -557,7 +598,16 @@ calAL <- function(achievementVars = NULL,
           newdf <- pv[ , c(cn, paste0("v", i))]
           colnames(newdf)[colnames(newdf) == paste0("v", i)] <- "value"
           newdf$PV <- i
-          colnames(newdf)[colnames(newdf) %in% "Level"] <- "variable"
+          if(any(grepl("Level$", colnames(newdf)))) {
+            for(i in seq_along(names(estAL))) {
+              if(i == 1) {
+                newdf$variable <- newdf[ , paste0(names(estAL)[i], "_Level")]
+              } else {
+                newdf$variable <- paste0(newdf$variable, ":", newdf[ , paste0(names(estAL)[i], "_Level")])
+              }
+              newdf[ , paste0(names(estAL)[i], "_Level")] <- NULL
+            }
+          }
           v1 <- c("PV","variable", "value")
           newdf <- newdf[ , c("PV", setdiff(colnames(newdf), v1) ,"variable", "value")]
           discVarEstInputs[["PV"]] <- rbind(discVarEstInputs[["PV"]], newdf)
@@ -587,7 +637,16 @@ calAL <- function(achievementVars = NULL,
           newdf <- pv[ , c(cn, paste0("v", i))]
           colnames(newdf)[colnames(newdf) == paste0("v", i)] <- "value"
           newdf$PV <- i
-          colnames(newdf)[colnames(newdf) %in% "Level"] <- "variable"
+          if(any(grepl("Level$", colnames(newdf)))) {
+            for(i in seq_along(names(estAL))) {
+              if(i == 1) {
+                newdf$variable <- newdf[ , paste0(names(estAL)[i], "_Level")]
+              } else {
+                newdf$variable <- paste0(newdf$variable, ":", newdf[ , paste0(names(estAL)[i], "_Level")])
+              }
+              newdf[ , paste0(names(estAL)[i], "_Level")] <- NULL
+            }
+          }
           v1 <- c("PV", "variable", "value")
           newdf <- newdf[ , c("PV", setdiff(colnames(newdf), v1) ,"variable", "value")]
           cumVarEstInputs[["PV"]] <- rbind(cumVarEstInputs[["PV"]], newdf)
@@ -632,9 +691,26 @@ calAL <- function(achievementVars = NULL,
       res <- c(res, list(cumVarEstInputs=cumVarEstInputs))
     }
   }
-  res <- c(res, list(n0=nrow2.edsurvey.data.frame(data),nUsed=edfDTnrow))
+  res <- c(res, list(n0=nrow2.edsurvey.data.frame(data), nUsed=edfDTnrow))
   class(res) <- "achievementLevels"
   return(res)
+}
+
+renameLevelsToVariables <- function(data, estAL) {
+  cn <- colnames(data)
+  levels <- c()
+  data$variable <- ""
+  for(i in seq_along(names(estAL))) {
+    leveli <- paste0(names(estAL)[i], "_Level")
+    if(i == 1){
+      data$variable <- data[ , leveli]
+    } else {
+      levels <- cartFactor(data$variable, data[ , leveli])
+      data$variable <- factor(paste0(as.character(data$variable), ":", as.character(data[ , leveli])), levels=levels, labels=levels)
+    }
+    data[ , leveli] <- NULL
+  }
+  return(data)
 }
 
 # fix pre-varEstInputs from achievementLevels to have all column in variable 
@@ -668,12 +744,6 @@ assertArgument <- function(arguments, data){
            cutpoints <- get("cutpoints", envir = parent.frame())
            if(arguments[1] == "Not Found" & is.null(cutpoints)) {
              stop(paste0("Default achievement levels not found. The ", sQuote("cutpoints"), " argument must be set."))
-           }
-         },
-         "has.more.pvs" = {
-           if(arguments > 1) {
-             stop(paste0("More than one variable with associated plausible values found in the ",
-                         sQuote("achievementVars"), " or ", sQuote("aggregateBy"), " arguments."))
            }
          },
          "wgt" = {
@@ -742,7 +812,7 @@ recodeEdf <- function(edfDT, pvs, als, returnCumulative, cumulativeLevel = 0){
     .SDcols = pvs]
   } else {
     edfDT <- edfDT[,(levelCols) := lapply(.SD, function(c) {
-      ifelse(c < als[cumulativeLevel],"Other", paste0("At or Above ", names(als)[cumulativeLevel]))
+      ifelse(c < als[cumulativeLevel], "Other", paste0("At or Above ", names(als)[cumulativeLevel]))
     }),
     .SDcols = pvs]
   }
@@ -914,7 +984,15 @@ print.achievementLevels <- function(x, printCall=TRUE, printDiscrete=TRUE, print
         cat("\n")
       }
       cat(paste0("Achievement Level Cutpoints:\n"))
-      cat(cv$cutpoints, "\n\n")
+      if(length(cv$cutpoints) > 1) {
+        lapply(names(cv$cutpoints), function(name) {
+          cat(paste0(name, ":\n"))
+          cat(cv$cutpoints[[name]], "\n")
+        })
+        cat("\n")
+      } else {
+        cat(cv$cutpoints[[1]], "\n\n")
+      }
       cat(paste0("Plausible values: ", cv$npv, "\n"))
       cat(paste0("jrrIMax: ", cv$jrrIMax, "\n"))
       cat(paste0("Weight variable: ", sQuote(cv$weight), "\n"))
@@ -939,20 +1017,25 @@ print.achievementLevels <- function(x, printCall=TRUE, printDiscrete=TRUE, print
 
 getEstAL <- function(pvEst, stat, wgt, longReturn=TRUE) {
   # just pass names
-  T_0 <- stat(pv=pvEst[1], w=wgt, short=FALSE)
-  T_n <- matrix(0, ncol = nrow(T_0), nrow = length(pvEst))
+  pv0 <- unlist(lapply(pvEst, function(x) { x[1] }))
+  T_0 <- stat(pv=pv0, w=wgt, short=FALSE)
+  for(i in 1:length(pvEst)) {
+    colnames(T_0)[i] <- paste0(names(pvEst)[i], "_Level")
+  }
+  T_n <- matrix(0, ncol = nrow(T_0), nrow = length(pvEst[[1]]))
   T_n[1, ] <- T_0$Percent
-  if(length(pvEst) > 1) {
-    for(n in 2:length(pvEst)) {
-      st <- stat(pv=pvEst[n], w=wgt, short=FALSE)
+  if(length(pvEst[[1]]) > 1) {
+    for(n in 2:length(pvEst[[1]])) {
+      pvi <- unlist(lapply(pvEst, function(x) { x[n] }))
+      st <- stat(pv=pvi, w=wgt, short=FALSE)
       T_0$wtdN <- T_0$wtdN + st$wtdN
       T_0$N <- T_0$N + st$N
       T_0$Percent <- T_0$Percent + st$Percent
       T_n[n, ] <- st$Percent
     }
   }
-  T_0$wtdN <- T_0$wtdN / length(pvEst)
-  T_0$N <- T_0$N / length(pvEst)
+  T_0$wtdN <- T_0$wtdN / length(pvEst[[1]])
+  T_0$N <- T_0$N / length(pvEst[[1]])
   # force wtdN/denom to agree with percent
   if("wtdN3" %in% colnames(T_0)) {
     # use aggregation weighted N 
@@ -967,11 +1050,14 @@ getEstAL <- function(pvEst, stat, wgt, longReturn=TRUE) {
   Ta <- T_0$Percent
   colnames(T_n) <- paste0("Row",1:ncol(T_n))
   names(Ta) <- paste0("Row",1:ncol(T_n))
-  colnames(T_0)[colnames(T_0) == pvEst[1]] <- "Level"
+  for(i in 1:length(pvEst)) {
+    colnames(T_0)[colnames(T_0) == names(pvEst)[i]] <- paste0(names(pvEst)[i], "_Level")
+  }
   T_n <- -1 * t(t(T_n) - T_0$Percent)
   res <- list(est=T_0, coef=T_n)
   return(res)
 }
+
 
 # helper function to calculate cumulative achievement levels
 cumsum2 <- function(x) {
@@ -979,16 +1065,26 @@ cumsum2 <- function(x) {
 }
 
 fixALVarEstInputRows <- function(vei, namedData) {
-  res <- merge(namedData, vei, by.y="variable", by.x="row", all.x=TRUE, all.y=FALSE)
+  icn <- intersect(colnames(namedData), colnames(vei))
+  icn <- setdiff(icn, "variable")
+  for(vi in icn) {
+    namedData[ , vi] <- NULL
+  }
+  res <- merge(namedData, vei, by.x="row", by.y="variable", all.x=TRUE, all.y=FALSE)
+  vn <- colnames(namedData)
+  vn <- vn[!vn %in% "row"]
   res$row <- NULL
   cn <- colnames(res)
-  cn <- cn[!cn %in% c("PV", "variable", "value")]
-  res <- res[ , c("PV", cn, "variable", "value")]
+  cn <- cn[!cn %in% c("PV", vn, "value")]
+  res <- res[ , c("PV", cn, vn, "value")]
+  ov <- list(res$PV)
   if("JKreplicate" %in% colnames(res)) {
-    res <- res[order(res$PV, res$JKreplicate, res$variable), ] 
-  } else {
-    res <- res[order(res$PV, res$variable), ] 
+    ov <- c(ov, list(res$JKreplicate))
   }
+  for(vni in seq_along(vn)) {
+    ov <- c(ov, list(res[,vn[vni]]))
+  }
+  res <- res[do.call(order, ov), ] 
   return(res)
 }
 

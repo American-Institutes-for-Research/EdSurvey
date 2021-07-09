@@ -301,6 +301,7 @@ calc.glm.sdf <- function(formula,
   if(!family$family %in% c("binomial", "quasibinomial")) {
     stop("Only fits binomial models.")
   }
+
   #############################
   ######### Outline:  #########
   #############################
@@ -456,13 +457,30 @@ calc.glm.sdf <- function(formula,
   # 4) yvar and plausible values
   pvy <- hasPlausibleValue(yvar, data) # pvy is the plausible values of the y variable
   yvars <- yvar
-  linkingError <- ifelse("NAEP" %in% getAttributes(data, "survey") & any(grepl("_imp", yvars, fixed=TRUE)), TRUE, FALSE)
+  linkingError <- ifelse("NAEP" %in% getAttributes(data, "survey") & any(grepl("_linking", yvars, fixed=TRUE)), TRUE, FALSE)
+  if(linkingError){
+    if(varMethod == "t") {
+      stop("Taylor series variance estimation not supported with NAEP linking error.")
+	}
+    if(jrrIMax != 1) {
+      warning("The linking error variance estimator only supports ", dQuote("jrrIMax=1"), ". Resetting to 1.")
+      jrrIMax <- 1
+    }
+  }
+
   lyv <- length(yvars)
   if(any(pvy)) {
-    yvars <- paste0("outcome",1:length(getPlausibleValue(yvars[max(pvy)], data)))
+    if(linkingError) {
+	  pp <- getPlausibleValue(yvars[max(pvy)], data)
+	  suffix <- ifelse(grepl("_imp_", pp, fixed=TRUE), "_imp_", "_est_")
+	  suffix <- ifelse(grepl("_samp_", pp, fixed=TRUE), "_samp_", suffix)
+      yvars <- paste0("outcome",suffix,1:length(pp))
+    } else {
+      yvars <- paste0("outcome",1:length(getPlausibleValue(yvars[max(pvy)], data)))
+    }
   } else {
     # if not, make sure that this variable is numeric
-    edf[,"yvar"] <- as.numeric(eval(formula[[2]],edf))
+    edf[ , "yvar"] <- as.numeric(eval(formula[[2]], edf))
     formula <- update(formula, new=substitute( yvar ~ ., list(yvar=as.name(yvar))))
     yvars <- "yvar"
   } # End of if statment: any(pvy)
@@ -479,16 +497,16 @@ calc.glm.sdf <- function(formula,
         # PV, so we have not evaluated the I() yet (if any)
         for(yvi in 1:length(pvy)) {
           if(pvy[yvi]) {
-            edf[,yvar[yvi]] <- edf[,getPlausibleValue(yvar[yvi], data)[i]]
+            edf[ , yvar[yvi]] <- edf[ , getPlausibleValue(yvar[yvi], data)[i]]
           }
         }
-        edf[,yvars[i]] <- as.numeric(eval(formula[[2]],edf))
+        edf[ , yvars[i]] <- as.numeric(eval(formula[[2]], edf))
       }
-      oneDef <- max(edf[,yvars], na.rm=TRUE)
+      oneDef <- max(edf[ , yvars], na.rm=TRUE)
       for(i in yvars) {
-        edf[,i] <- ifelse(edf[,i] %in% oneDef, 1, 0)
+        edf[ , i] <- ifelse(edf[ , i] %in% oneDef, 1, 0)
       }
-      edf$yvar0 <- edf[,yvar0]
+      edf$yvar0 <- edf[ , yvar0]
     } else {
       # for non-PV, I() has been evaluated
       oneDef <- max(edf[,yvars], na.rm=TRUE)
@@ -546,30 +564,28 @@ calc.glm.sdf <- function(formula,
 
     if(varMethod == "j") {
       if(linkingError) {
-        if(jrrIMax != 1) {
-          warning("The linking error variance estimator only supports ", dQuote("jrrIMax=1"), ". Resetting to 1.")
-          jrrIMax <- 1
-        }
         repWeights <- paste0(wgtl$jkbase, wgtl$jksuffixes)
         # get the mean estimate
         est <- getLinkingEst(data = edf,
                              pvEst = yvars[grep("_est", yvars)],
-                             stat = stat_reg_glm,
+                             stat = stat_reg_glm(fam=TRUE),
                              wgt = wgt)
         # coefficients matrix, r-squared vector
         coefm <- est$coef
+        coef <- apply(coefm, 2, mean)
+        coefm0 <- t(t(coefm) - coef)
         # get imputation variance
         impVar <- getLinkingImpVar(data=edf,
                                    pvImp = yvars[grep("_imp", yvars)],
                                    ramCols = ncol(getRAM()),
-                                   stat = stat_reg_glm,
+                                   stat = stat_reg_glm(fam=TRUE),
                                    wgt = wgt,
                                    T0 = est$est,
                                    T0Centered = FALSE)
         # get sampling variance
         sampVar <- getLinkingSampVar(edf,
                                      pvSamp=yvars[grep("_samp", yvars)],
-                                     stat = stat_reg_glm,
+                                     stat = stat_reg_glm(fam=TRUE),
                                      rwgt = repWeights,
                                      T0 = est$est,
                                      T0Centered = FALSE)
@@ -741,11 +757,20 @@ calc.glm.sdf <- function(formula,
   X <- model.matrix(frm, edf) 
   fittedLatent <- as.vector(X%*%coef)
   fitted1 <- family$linkinv(fittedLatent)
-  Y <- sapply(1:length(yvars), function(yi) {
-    as.vector(edf[,yvars[yi]])
-  }, simplify=TRUE)
-  resid1 <- Y - fitted1
-  colnames(resid1) <- yvars
+  if(linkingError) {
+    ye <- grep("_est_", yvars)
+    Y <- sapply(ye, function(yi) {
+      as.vector(edf[,yvars[yi]])
+    }, simplify=TRUE)
+    resid1 <- Y - fitted1
+    colnames(resid1) <- yvars[ye]
+  } else {
+    Y <- sapply(1:length(yvars), function(yi) {
+      as.vector(edf[,yvars[yi]])
+    }, simplify=TRUE)
+    resid1 <- Y - fitted1
+    colnames(resid1) <- yvars
+  }
   
   # residual df calculation
   nobs <- nrow(edf)

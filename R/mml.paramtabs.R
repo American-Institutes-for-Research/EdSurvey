@@ -298,7 +298,6 @@ timssParam <- function(timssDir, theYear, theLevel, subjectFilter) {
     df1 <- suppressMessages(read_excel(df1File, sheet = subjectFilter))
     df2 <- suppressMessages(read_excel(df2File, sheet = subjectFilter))
     df3 <- suppressMessages(read_excel(df3File, sheet = "T11_Transform"))
-    
   } else if (theYear == 2015) {
     df1Name <- paste0("T15_G", theLevel, "_ItemParameters.xlsx")
     df2Name <- paste0("T15_G", theLevel, "_ItemInformation.xlsx")
@@ -321,7 +320,6 @@ timssParam <- function(timssDir, theYear, theLevel, subjectFilter) {
     df1 <- suppressMessages(read_excel(df1File, sheet = subjectFilter))
     df2 <- suppressMessages(read_excel(df2File, sheet = subjectFilter))
     df3 <- suppressMessages(read_excel(df3File, sheet = subjectFilter))
-    
   } else if (theYear == 2019) {
     df1Name <- paste0("eT19_G", theLevel, "_Item Parameters Adj.xlsx")
     df2Name <- paste0("eT19_G", theLevel, "_Item Information.xlsx")
@@ -346,7 +344,7 @@ timssParam <- function(timssDir, theYear, theLevel, subjectFilter) {
     df3 <- suppressMessages(read_excel(df3File, sheet = subjectFilter))
     
   } else {
-    stop("Item parameters are currently only available for 2011 and 2015.")
+    stop(paste0("Item parameters are currently not available for ", theYear,"."))
   }
   allParams <- timssParamForm(df1, df2, df3, theYear, theLevel, subjectFilter)
   return(allParams)

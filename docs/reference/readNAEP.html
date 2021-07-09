@@ -74,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.6.9.9001</span>
       </span>
     </div>
 
@@ -103,12 +103,7 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li>
-  <a href="https://github.com/American-Institutes-for-Research/EdSurvey/">
-    <span class="fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+        
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -123,7 +118,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Connect to NAEP Data</h1>
-    <small class="dont-index">Source: <a href='https://github.com/American-Institutes-for-Research/EdSurvey/blob/master/R/readNAEP.r'><code>R/readNAEP.r</code></a></small>
+    
     <div class="hidden name"><code>readNAEP.Rd</code></div>
     </div>
 
@@ -202,6 +197,9 @@ parse the specified <code>filepath</code> data file</p></td>
 
     <p>The function uses the <code>frPath</code> file layout (.fr2) data to read in the
 fixed-width data file (.dat) and builds the <code>edsurvey.data.frame</code>.</p>
+<p>NAEP includes both scaled scores and theta scores, with the latter having names ending in <code>\_theta</code>.</p>
+<p>When a NAEP administration includes a linking error variable those variables are included and end in <code>_linking</code>.
+When present, simply use the <code>_linking</code> version of a variable to get a standard error estimate that includes linking error.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Tom Fink and Ahmad Emad</p>

@@ -138,6 +138,7 @@ mixed.sdf <- function(formula,
   if(!missing(family)) {
     stop(paste0("The ", dQuote("family") ," argument is depreciated; plase use the ", dQuote("WeMix"), " package's ", dQuote("mix"), " function direclty for binomial models."))
   }
+
   formula0 <- formula
   # if users specify an edsurvey.data.frame or light.edsurvey.data.frame,
   # weightVars will be defined for each supported survey if not provided.
@@ -171,6 +172,10 @@ mixed.sdf <- function(formula,
   #check if LHS is pv and if so get all values and set flag "pv" to TRUE
   pv <- hasPlausibleValue(yvar,data)
   yvars <- yvar
+  linkingError <- "NAEP" %in% getAttributes(data, "survey") & any(grepl("_linking", yvars, fixed=TRUE))
+  if(linkingError) {
+    stop("mixed.sdf does not support estimation with linking error.")
+  }
   if(pv){
     yvars <- getPlausibleValue(yvar,data)
   }

@@ -28,7 +28,7 @@ cacheMetaReqUpdate <- function(cacheFileMetaVer, surveyName=NULL){
   
   #specify the cacheFileVersion here that is the most up to date version for that specific survey type
   surveyLookup[surveyLookup$survey=="NAEP", "cacheVer"] <- 2
-  surveyLookup[surveyLookup$survey=="TIMSS", "cacheVer"] <- 4
+  surveyLookup[surveyLookup$survey=="TIMSS", "cacheVer"] <- 5
   surveyLookup[surveyLookup$survey=="TIMSS Advanced", "cacheVer"] <- 3
   surveyLookup[surveyLookup$survey=="PIRLS", "cacheVer"] <- 4
   surveyLookup[surveyLookup$survey=="ePIRLS", "cacheVer"] <- 4

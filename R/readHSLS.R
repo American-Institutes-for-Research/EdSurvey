@@ -47,6 +47,7 @@ readHSLS <- function(path = getwd(),
   on.exit(options(userOp), add = TRUE)
   
   path <- suppressWarnings(normalizePath(unique(path), winslash = "/"))
+  path <- ifelse(grepl("[.][a-zA-Z]{1,4}$", path, perl=TRUE, ignore.case=TRUE), dirname(path), path)
   
   #setup file list to work with
   fileList <- list(dataFile=unlist(file.path(path, filename))[1])

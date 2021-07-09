@@ -1,21 +1,21 @@
-#' @title EdSurvey Direct Estimation - NAEP scoring
-#' @description Producing the response-points table for NAEP data for use in \code{mml.sdf}
-#'
-#' @param filename      the name of the .fr2 file for the NAEP data  
-#' @param ployItems     a vector of IDs of polytomous items to be scored, a subset of IDs in .fr2
-#' @param dichotItems   a vector of IDs of dichotomous items to be scored, a subset of IDs in .fr2
-#' @param adjustedData  a dataframe containing adjusted items, including the item ID, 
-#'                      a string of points before adjustment, a and string of points after adjustment
-#' @return              a dataframe containing item ID, response, and points
-#' @details This function reads in the NAEP data's fr2 file and creates a table of the answer choices and 
-#' corresponding number of points for each item. 
-#' For example, "A *" is assigned 1 point and "C" is assigned 0 points for item m085501 in the NAEPprimer data. 
-#' For multiple choice items, "Illegible", "Non-Rateable", and "Off Task" are assigned 0 (incorrect); 
-#' "Multiple" and "Omitted" are assigned 8 (the omitted code); and 
-#' "Not Reached" and "Missing" are assigned NA (missing).
-#' For constructed response items, "Omitted", "Illegible", "Non-Rateable", "Off Task" are assigned 0 (incorrect); 
-#' "Multiple" is assigned 8 (the omitted code); and "Not Reached" and "Missing" are assigned NA (missing).
-
+# @title EdSurvey Direct Estimation - NAEP scoring
+# @description Producing the response-points table for NAEP data for use in \code{mml.sdf}
+#
+# @param filename      the name of the .fr2 file for the NAEP data  
+# @param ployItems     a vector of IDs of polytomous items to be scored, a subset of IDs in .fr2
+# @param dichotItems   a vector of IDs of dichotomous items to be scored, a subset of IDs in .fr2
+# @param adjustedData  a dataframe containing adjusted items, including the item ID, 
+#                      a string of points before adjustment, a and string of points after adjustment
+# @param scoreDict     a data frame described in details
+# @return              a dataframe containing item ID, response, and points
+# @details This function reads in the NAEP data's fr2 file and creates a table of the answer choices and 
+# corresponding number of points for each item. 
+# For example, "A *" is assigned 1 point and "C" is assigned 0 points for item m085501 in the NAEPprimer data. 
+# For multiple choice items, "Illegible", "Non-Rateable", and "Off Task" are assigned 0 (incorrect); 
+# "Multiple" and "Omitted" are assigned 8 (the omitted code); and 
+# "Not Reached" and "Missing" are assigned NA (missing).
+# For constructed response items, "Omitted", "Illegible", "Non-Rateable", "Off Task" are assigned 0 (incorrect); 
+# "Multiple" is assigned 8 (the omitted code); and "Not Reached" and "Missing" are assigned NA (missing).
 getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, scoreDict = defaultNAEPScoreCard()) {
   # all items
   itemColsClean <- c(polyItems, dichotItems)
@@ -41,8 +41,6 @@ getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, sco
   colnames(scoreCard) <- c('key', 'answer', 'score')
   
   # codes in EdSurvey NAEP data
-  # scoreDict <- list(resCat=c("Multiple", "Not Reached", "Missing", "Omitted", "Illegible", "Non-Rateable", "Off Task"),
-  #                       point=c(8, NA, NA, 8, 0, 0, 0))
   
   # items with scores that have been adjusted
   adjustedItems <- adjustedData$NAEPid

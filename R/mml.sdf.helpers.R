@@ -1,11 +1,11 @@
-
 #' @method summary edSurveyMML
 #' @export
-summary.edSurveyMML <- function(x, gradientHessian=FALSE,
+summary.edSurveyMML <- function(object, gradientHessian=FALSE,
                                 varType=c("consistent", "robust", "cluster", "replicate", "Taylor"),
                                 clusterVar=NULL, jkSumMultiplier=1, # cluster
                                 repWeight=NULL, # replicate
                                 strataVar=NULL, PSUVar=NULL, singletonFix=c("drop", "use mean"),...){
+  x <- object
   # sunmary 
   summary <- summary(x$mml, 
                      gradientHessian,
@@ -29,14 +29,12 @@ summary.edSurveyMML <- function(x, gradientHessian=FALSE,
                    class="summary.edSurveyMML"))
 } 
 
-
 #' @method print edSurveyMML
 #' @export
 print.edSurveyMML <- function(x, ...){
   co <- coef(x$mml)
   print(co, ...)
 }
-
 
 #' @method print summary.edSurveyMML
 #' @export

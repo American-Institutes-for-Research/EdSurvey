@@ -34,7 +34,7 @@
 #'                Defaults to \code{TRUE}.
 #' @details
 #' Reads in the unzipped files downloaded from the PISA database using the
-#' OECD Repository (\url{http://www.oecd.org/pisa/}). Users can use
+#' OECD Repository (\url{https://www.oecd.org/pisa/}). Users can use
 #' \code{\link{downloadPISA}} to download all required files.
 #' Student questionnaire files (with weights and plausible values) are used as
 #' main files, which are then
@@ -65,7 +65,7 @@
 #' @example man/examples/readPISA.R
 #'
 #' @references
-#' Organisation for Economic Co-operation and Development. (2017). \emph{PISA 2015 technical report}. Paris, France: OECD Publishing. Retrieved from \emph{\url{http://www.oecd.org/pisa/data/2015-technical-report/}}
+#' Organisation for Economic Co-operation and Development. (2017). \emph{PISA 2015 technical report}. Paris, France: OECD Publishing. Retrieved from \emph{\url{https://www.oecd.org/pisa/data/2015-technical-report/}}
 #'
 #' @export
 readPISA <- function(path,
@@ -104,6 +104,7 @@ readPISA <- function(path,
   }
   
   path <- normalizePath(path, winslash = "/") # to match IEA read-in function
+  path <- ifelse(grepl("[.][a-zA-Z]{1,4}$", path, perl=TRUE, ignore.case=TRUE), dirname(path), path)
   if(!all(dir.exists(path))){
     stop(paste0("The argument ", sQuote("path"), " cannot be located ", pasteItems(path[!dir.exists(path)]),"."))
   }

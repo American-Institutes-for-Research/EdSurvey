@@ -30,7 +30,7 @@
 #'
 #' @details
 #' Reads in the unzipped .csv files downloaded from the PIAAC dataset using
-#' the OECD repository (\url{http://www.oecd.org/skills/piaac/}). Users can use
+#' the OECD repository (\url{https://www.oecd.org/skills/piaac/}). Users can use
 #' \code{\link{downloadPIAAC}} to download all required files automatically. 
 #' 
 #' @return
@@ -41,7 +41,7 @@
 #' 
 #' @example man/examples/readPIAAC.R
 #' @references
-#'  Organisation for Economic Co-operation and Development. (2016). \emph{Technical report of the survey of adult skills (PIAAC)} (2nd ed.). Paris, France: Author. Retrieved from \emph{\url{http://www.oecd.org/skills/piaac/PIAAC_Technical_Report_2nd_Edition_Full_Report.pdf}}
+#'  Organisation for Economic Co-operation and Development. (2016). \emph{Technical report of the survey of adult skills (PIAAC)} (2nd ed.). Paris, France: Author. Retrieved from \emph{\url{https://www.oecd.org/skills/piaac/PIAAC_Technical_Report_2nd_Edition_Full_Report.pdf}}
 #' @importFrom readxl read_excel
 #' @export
 readPIAAC <- function(path, 
@@ -58,6 +58,7 @@ readPIAAC <- function(path,
   
   filepath <- normalizePath(path, winslash = "/") # to match IEA read-in function
   forceRead <- forceReread # to match IEA read-in function
+  filepath <- ifelse(grepl("[.][a-zA-Z]{1,4}$", filepath, perl=TRUE, ignore.case=TRUE), dirname(filepath), filepath)
   
   csvfiles <- list.files(filepath, pattern = "^prg.*\\.csv$", full.names=FALSE, ignore.case=TRUE)
   

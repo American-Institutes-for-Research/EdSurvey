@@ -51,7 +51,7 @@ Opens a connection to a PIAAC data file and
 }
 \details{
 Reads in the unzipped .csv files downloaded from the PIAAC dataset using
-the OECD repository (\url{http://www.oecd.org/skills/piaac/}). Users can use
+the OECD repository (\url{https://www.oecd.org/skills/piaac/}). Users can use
 \code{\link{downloadPIAAC}} to download all required files automatically.
 }
 \examples{
@@ -68,7 +68,7 @@ edsurveyTable(~ c_d05 + ageg10lfs, data = can)
 }
 }
 \references{
-Organisation for Economic Co-operation and Development. (2016). \emph{Technical report of the survey of adult skills (PIAAC)} (2nd ed.). Paris, France: Author. Retrieved from \emph{\url{http://www.oecd.org/skills/piaac/PIAAC_Technical_Report_2nd_Edition_Full_Report.pdf}}
+Organisation for Economic Co-operation and Development. (2016). \emph{Technical report of the survey of adult skills (PIAAC)} (2nd ed.). Paris, France: Author. Retrieved from \emph{\url{https://www.oecd.org/skills/piaac/PIAAC_Technical_Report_2nd_Edition_Full_Report.pdf}}
 }
 \seealso{
 \code{\link{getData}} and \code{\link{downloadPIAAC}}

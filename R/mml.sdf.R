@@ -1,37 +1,68 @@
-#' @title EdSurvey Direct Estimation
-#' @description Performs Direct Estimation in EdSurvey by leveraging Direct Estimation and irtParams packages
+#' @title EdSurvey Direct Estimation 
+#' @description Prepare IRT parameters and score items and then estimate a linear model with direct estimation.
 #'
 #' @param formula    a \ifelse{latex}{\code{formula}}{\code{\link[stats]{formula}}} for the
-#'                   Direct Estimation. If \emph{y} is a variable for a subject scale or subscale,
-#'                   then that subject scale or subscale is used.
-#' @param data       a NAEP or TIMMS \code{edsurvey.data.frame}, a \code{light.edsurvey.data.frame},
-#'                   or an \code{edsurvey.data.frame.list}
+#'                   model.
+#' @param data       an \code{edsurvey.data.frame} for the National Assessment of Educational Progress (NAEP) 
+#'                  and the Trends in International Mathematics and Science Study (TIMSS).
 #' @param weightVar  a character indicating the weight variable to use.
 #'                   The \code{weightVar} must be one of the weights for the
 #'                   \code{edsurvey.data.frame}. If \code{NULL}, it  uses the default
 #'                   for the \code{edsurvey.data.frame}.
 #' @param omittedLevels a logical value. When set to the default value of \code{TRUE}, drops
-#'                      those levels of all factor variables that are specified
+#'                      the levels of all factor variables that are specified
 #'                      in an \code{edsurvey.data.frame}. Use \code{print} on an
 #'                      \code{edsurvey.data.frame} to see the omitted levels.
-#' @param composite  a logical argument, which indicates whether the Direct Estimation should be composite. This argument 
-#'                   defaults to \code{TRUE}. 
-#' @param dctPath a connection that points to the location of a \code{.dct} file. A \code{.dct} file can be used to input custom irt parameters and subtest 
-#'                weights over those provided in the \code{NAEPirtparams} and \code{TIMMSirtparams} packages. Otherwise,
-#'                the argument defaults to NULL and irt parameters and subtest weights from the \code{NAEPirtparams} 
-#'                and \code{TIMMSirtparams} packages are used. 
-#' @param verbose a logical parameter that indicates whether a detailed print-out should display during execution. 
-#' @param minNode the maximum node level searched in \code{mml} call.
-#' @param maxNode the maximum node level searched in \code{mml} call.
-#' @param bobyqaControl the convergence parameter for \code{mml} call. 
-#' @param scoreDict a dataframe that includes guidelines for scoring the provided \code{sdf}. 
-#'                   Defaults to 2005 Mathematics Assessment scoring guidelines. 
-#'                   The default score card can be produced by calling the function 
-#'                   \code{defaultNAEPScoreCard}, edited to the desired format and passed as 
-#'                   the \code{scoreDict} argument. 
+#' @param composite  logical; for a NAEP composite, setting to \code{FALSE} fits the model to all items at once,
+#'                   in a single construct, whereas setting to \code{TRUE} fits the model as a NAEP composite
+#'                   (i.e., a weighted average of the subscales). This argument is not applicable for TIMSS. 
+#' @param dctPath a connection that points to the location of a NAEP dct file. A dct file can be used to input custom item response theory (IRT)
+#'                parameters and subscale/subtest weights for NAEP assessments compared with those provided in the \code{NAEPirtparams} package. Otherwise,
+#'                the argument defaults to NULL and IRT parameters and subscale weights from \code{NAEPirtparams} are used.
+#'                IRT parameters for TIMSS cannot be supplied through a \code{dctPath} and are downloaded by using the \code{\link{downloadTIMSS}} function. 
+#' @param verbose logical; indicates whether a detailed printout should display during execution, only for NAEP data.
+#' @param multiCore allows the \code{foreach} package to be used. You should
+#'                  have already set up
+#' \ifelse{latex}{the \code{registerDoParallel} function in the \code{doParallel} package}{\code{\link[doParallel]{registerDoParallel}}}.
+#' @param numberOfCores the number of cores to be used when using \code{multiCore}. Defaults to 75\% of available cores. Users 
+#'                      can check available cores with \code{detectCores()}. 
+#' @param minNode numeric; minimum integration point in direct estimation; see \ifelse{latex}{\code{mml}}{\code{\link[Dire]{mml}}}.
+#' @param maxNode numeric; maximum integration point in direct estimation; see \ifelse{latex}{\code{mml}}{\code{\link[Dire]{mml}}}.
+#' @param Q integer; number of integration points per student used when integrating over the levels of the latent outcome construct. 
+#' @param scoreDict a \code{data.frame} that includes guidelines for scoring the provided NAEP data. 
+#'                  Here, \emph{scoring} refers to turning item responses into scores on each item.
+#'                  To see the default scoring guidelines, call the function \code{defaultNAEPScoreCard()}, or see the Examples section.
+#'                  See Details for more information on possible scores.
+#' @param idVar a variable that is used to explicitly define the name of the student identifier 
+#'              variable to be used from \code{data}. Defaults to \code{NULL}, and \code{sid} is used 
+#'              as the student identifier. 
+#'
+#' @details 
+#' Typically, models are fit with NAEP data using plausible values to integrate out the uncertainty in the measurement of individual
+#' student outcomes. When direct estimation is used, the measurement error is integrated out explicitly using \code{Q} quadrature points.
+#' See documentation for \ifelse{latex}{\code{mml}}{\code{\link[Dire]{mml}}} in the \code{Dire} package.
+#'
+#' The \code{scoreDict} helps turn response categories that are not simple item responses, such as \code{Not Reached} and \code{Multiple},
+#' to something coded as inputs for the \code{mml} function in \code{Dire}. How \code{mml} treats these values depends on the test.
+#' For NAEP, for a dichotomous item, 8 is scored as the same proportion correct as the guessing parameter for that item, 0 is 
+#' an incorrect response, an NA does not change the student's score, and 1 is correct. TIMSS does not require a \code{scoreDict}.
+#'
+#' @return 
+#' An \code{edSurveyMML} object, which is the outcome from \code{mml.sdf}, with the following elements:
+#'    \item{mml}{an object containing information from the \code{mml} procedure. 
+#'    \code{?mml} can be used for further information.}
+#'    \item{scoreDict}{the scoring used in the \code{mml} procedure}.
+#'    \item{itemMapping}{the item mapping used in the \code{mml} procedure}. 
+#' @references
+#' Cohen, J., & Jiang, T. (1999). Comparison of partially measured latent traits across nominal subgroups.
+#'    \emph{Journal of the American Statistical Association}, \emph{94}(448), 1035--1044. https://doi.org/10.2307/2669917
+#'
 #' @import NAEPirtparams
-#' @import Dire    
-#' @import doParallel
+#' @importFrom Dire mml    
+#' @importFrom stats na.omit
+#' @importFrom utils flush.console
+#' @example /man/examples/mml.sdf.R
+#' @export
 mml.sdf <- function(formula,
                     data,
                     weightVar = NULL,
@@ -39,51 +70,56 @@ mml.sdf <- function(formula,
                     composite = TRUE,
                     dctPath = NULL,
                     verbose = FALSE,
-                    fast = FALSE,
                     multiCore = FALSE,
-                    coreNumber = NULL, 
+                    numberOfCores = NULL, 
                     minNode = -4, 
                     maxNode = 4, 
-                    bobyqaControl = list(maxfun = 1e4),
+                    Q = 34,
                     scoreDict = defaultNAEPScoreCard(),
                     idVar = NULL) {
   # check for parrallel if multiCore True 
+  if(any(grepl("_linking", all.vars(formula), fixed=TRUE))) {
+    stop("mml.sdf does not support linking error.")
+  }
   if(multiCore == TRUE){
-    # check parallel
-    tryCatch(expr = require(parallel), 
-             warning = function(cond) {
-               multiCore <<- FALSE 
-               message(paste0("Unable to load package parallel, setting multiCore to FALSE. Install the ", dQuote("parallel"), " package to use multiCore option."))
-             })
     # check doParallel 
-    tryCatch(expr = require(doParallel), 
-             warning = function(cond) {
-               multiCore <<- FALSE
-               message(paste0("Unable to load package doParallel, setting multiCore to FALSE. Install the ", dQuote("doParallel"), " package to use multiCore option."))
-             })
-    # set coreNumber default if not provided 
-    if(is.null(coreNumber)){
-      coreNumber <- detectCores() * .75
+    if(requireNamespace("doParallel")){
+      # set numberOfCores default if not provided 
+      if(is.null(numberOfCores)){
+        numberOfCores <- parallel::detectCores() * .75
+      }
+    } else {
+      multiCore <- FALSE
+      message(paste0("Unable to find package doParallel, setting multiCore to FALSE. Require the ", dQuote("doParallel"), " package to use multiCore option."))
+    }
+    # https://bugs.r-project.org/bugzilla/show_bug.cgi?id=18119
+    # R on OS X bug that prevents parallel
+    if (grepl("Darwin", Sys.info()[1]) &&
+        getRversion() <= "4.1.0") {
+      multiCore <- FALSE
+      message("Upgrade to R 4.1.1 to use multiCore on Mac OS.")
     }
   }
   sdf <- data
-  # check sdf type 
-  if(class(sdf)[1] != "edsurvey.data.frame"){
-    stop("mml.sdf only supports edsurvey.data.frame, not edsurvey.data.frame.list or objects of other types.")
+  # check for no response
+  if(is.null(getResponse(formula))) {
+    stop("Please specify response variable. Equation should be of the form: y ~ x")
   }
+  ### check for transformations in equations: sqrt(mmat), exp(mmat), mmat^0.5, mmat^(1/3), log(mmat), 
+  if(all(grepl("\\^\\d+|log\\(.*\\)|\\^\\(.*\\)|exp\\(.*\\)|sqrt\\(.*\\)", formula[2:3]))){
+    stop("Please transform variable outside of equations.")
+  } 
+
   # survey checks 
   if (getAttributes(sdf, "survey") == 'TIMSS') {
-    
+    checkDataClass(data, c("edsurvey.data.frame"))
     ### TIMSS data ###
     ### building paramTabs
     # filter IRT params to year, subject, grade level
-    theYear <- as.numeric(getAttributes(sdf,"year"))
+    theYear <- as.numeric(getAttributes(sdf, "year"))
     theSubject <- all.vars(formula[[2]])
     if(length(theSubject) > 1) {
       stop("the response must be a single test score.")
-      if(grep("\\^\\d|log\\(", theSubject)){
-        stop("Please transform variable outside of equations.")
-      }
     }
     # test this is length 1
     theSubject <- theSubject[theSubject %in% c(names(getAttributes(sdf, "pvvars")))]
@@ -175,8 +211,7 @@ mml.sdf <- function(formula,
       stop(paste0(sQuote("data"), " must have more than 0 rows after a call to ",
                   sQuote("getData"), "."))
     }
-    
-    # TODO: save scoring
+
     # scoring 
     edf <- scoreTIMSS(edf, polyParamTab, dichotParamTab)
     
@@ -193,21 +228,18 @@ mml.sdf <- function(formula,
     stuDat <- edf[edf[,idVar] %in% unique(stuItems[,idVar]), c(idVar, indepVars, weightVar, getStratumVar(sdf), getPSUVar(sdf))]
     
     ### warnings
-    if (!is.null(dctPath)) {
-      warning('DCT parse is not used for TIMSS; ignoring argument.')
+    if (!missing(dctPath)) {
+      warning('dctPath is not used for TIMSS; ignoring argument.')
     }
-    if (verbose) {
-      warning('Verbose is not supported for TIMSS.')
-    }
-    if(composite == TRUE){
-      warning('Composite is not used by TIMSS. Switching Composite to FALSE.')
+    if(!missing(composite) && composite) {
+      warning('Composite is not supported in TIMSS.')
     }
     composite <- FALSE 
     itemMapping <- c(`For NAEP only` = NULL) 
     scoreDict <- c(`For NAEP only` = NULL) 
     
   } else if (getAttributes(sdf, "survey") == 'NAEP') {
-    
+    checkDataClass(data, c("edsurvey.data.frame", "light.edsurvey.data.frame"))
     ### NAEP data ###
     ### Option A: using NAEPirtparams instead of dct
     if (is.null(dctPath)) {
@@ -405,13 +437,13 @@ mml.sdf <- function(formula,
     }
 
     # reshape and score items
-    stuItemsWide <- edf[,c(idVar, c(polyParamTab$ItemID, dichotParamTab$ItemID))]
+    stuItemsWide <- edf[ , c(idVar, c(polyParamTab$ItemID, dichotParamTab$ItemID))]
     stuItemsWide <- data.table(stuItemsWide)
     stuItemsLong <- melt(stuItemsWide, id.vars=idVar, measure.vars=c(polyParamTab$ItemID, dichotParamTab$ItemID))
     colnames(stuItemsLong) <- c('id', 'key', 'answer')
     stuItemsLong <- stuItemsLong[!is.na(answer)]
-    stuItems <- merge(stuItemsLong, sCard, by=c('key','answer'), all.x=TRUE)  # score through merge
-    stuItems <- as.data.frame(stuItems[,c("id", "key", "score")])
+    stuItems <- merge(stuItemsLong, sCard, by=c('key', 'answer'), all.x=TRUE)  # score through merge
+    stuItems <- as.data.frame(stuItems[ , c("id", "key", "score")])
     colnames(stuItems)[1] <- idVar
     
     ### create stuDat ###
@@ -453,14 +485,10 @@ mml.sdf <- function(formula,
   if(multiCore){
     # check if cluster is already running 
     if(nrow(showConnections()) == 0) {
-      if (Sys.getenv("RSTUDIO") == "1" && !nzchar(Sys.getenv("RSTUDIO_TERM")) && 
-          Sys.info()["sysname"] == "Darwin" && getRversion() >= "4.0.0") {
-        parallel:::setDefaultClusterOptions(setup_strategy = "sequential")
-      }
-      cores <- round(coreNumber, 0) # use 75 percent of cores 
-      cl <- makeCluster(cores)
+      cores <- round(numberOfCores, 0) # use 75 percent of cores 
+      cl <- parallel::makeCluster(cores)
       startedCluster <- TRUE
-      registerDoParallel(cl, cores=cores)
+      doParallel::registerDoParallel(cl, cores=cores)
     }
   }
   cat("Pre-processing Completed.\nStarting MML Procedure.")
@@ -471,19 +499,18 @@ mml.sdf <- function(formula,
                 dichotParamTab = dichotParamTab,
                 polyParamTab = polyParamTab,
                 testScale = testDat,
-                Q = 34,
+                Q = Q,
                 composite = composite,
                 minNode = minNode,
                 maxNode = maxNode,
                 strataVar = getStratumVar(sdf),
                 PSUVar = getPSUVar(sdf),
                 weightVar = weightVar,
-                bobyqaControl = bobyqaControl,
-                fast = fast,
+                fast = TRUE,
                 multiCore = multiCore)
   # stop cluster, if we started it
   if(multiCore & startedCluster){
-    stopCluster(cl)
+    parallel::stopCluster(cl)
   }
   # get call
   call <- match.call()
@@ -491,3 +518,15 @@ mml.sdf <- function(formula,
   return(structure(list("Call" = call, "mml" = mmlObj, "scoreDict" = scoreDict, "itemMapping" = itemMapping),
                    class="edSurveyMML"))
 }
+
+#' @importFrom stats terms.formula
+getResponse <- function(form) {
+  tf <- terms.formula(form)
+  respIndex <- attr(tf, "response")
+  if(respIndex == 0) {
+    return(NULL)
+  }
+  return(attr(tf,"variables")[[1+attr(tf, "response")]])
+}
+
+

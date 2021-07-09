@@ -74,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.6.9.9001</span>
       </span>
     </div>
 
@@ -103,12 +103,7 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li>
-  <a href="https://github.com/American-Institutes-for-Research/EdSurvey/">
-    <span class="fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+        
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -123,7 +118,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>EdSurvey Percentiles</h1>
-    <small class="dont-index">Source: <a href='https://github.com/American-Institutes-for-Research/EdSurvey/blob/master/R/percentile.R'><code>R/percentile.R</code></a></small>
+    
     <div class="hidden name"><code>percentile.Rd</code></div>
     </div>
 
@@ -147,7 +142,8 @@
   returnVarEstInputs <span class='op'>=</span> <span class='cn'>FALSE</span>,
   returnNumberOfPSU <span class='op'>=</span> <span class='cn'>FALSE</span>,
   pctMethod <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"symmetric"</span>, <span class='st'>"unbiased"</span>, <span class='st'>"simple"</span><span class='op'>)</span>,
-  confInt <span class='op'>=</span> <span class='cn'>TRUE</span>
+  confInt <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  dofMethod <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"JR"</span>, <span class='st'>"WS"</span><span class='op'>)</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -246,6 +242,10 @@ the quantity by negative one.</p></td>
     <tr>
       <th>confInt</th>
       <td><p>a Boolean indicating if the confidence interval should be returned</p></td>
+    </tr>
+    <tr>
+      <th>dofMethod</th>
+      <td><p>passed to <code><a href='DoFCorrection.html'>DoFCorrection</a></code> as the <code>method</code> argument</p></td>
     </tr>
     </table>
 

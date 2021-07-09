@@ -101,7 +101,7 @@ downloadECLS_K <- function(root, years=c(1998, 2011), cache=FALSE, verbose=TRUE)
             cat(paste0("  Unzipping ",sQuote(lst$Name[i]),".\n"))
           }
           
-          tryCatch(unzip(file.path(yroot,bn), files=lst$Name[i], exdir = yroot),
+          tryCatch(unzip(file.path(yroot,bn), files=lst$Name[i], exdir = yroot, unzip=getOption("unzip")),
                    warning = function(w){
                      if(w$message=="zip file is corrupt"){
                        message("Zip format for file ", file.path(yroot,bn), " is not supported. Users need to manually unzip this file. See ?downloadECLS_K for more information.")
@@ -128,7 +128,10 @@ downloadECLS_K <- function(root, years=c(1998, 2011), cache=FALSE, verbose=TRUE)
       notUsed <- readECLS_K1998(path = yroot, verbose = verbose)
     }
     if(year==2011) {
-      warning("Caching is unavailable for ECLS-K 2011 dataset.  See ?downloadECLS_K documentation for further details.")
+      notUsed <- tryCatch(readECLS_K2011(path = yroot, verbose = verbose),
+                          error= function(e) {
+                            warning("Caching is unavailable for ECLS-K 2011 dataset.  See ?downloadECLS_K documentation for further details.")
+                          })
     }
   }
   

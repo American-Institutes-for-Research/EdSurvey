@@ -36,11 +36,11 @@ rename.sdf <- function(x,
   
   if(inherits(x,"edsurvey.data.frame") || inherits(x,"light.edsurvey.data.frame")) {
     # list of elements that is involved in the rename process
-    userConditions <- getAttributes(x,"userConditions")
-    pvvars <- getAttributes(x,"pvvars")
+    userConditions <- getAttributes(x, "userConditions")
+    pvvars <- getAttributes(x, "pvvars")
     weights <- getAttributes(x, "weights")
-    psuVarList <- getAttributes(x,"psuVar")
-    stratumVarList <- getAttributes(x,"stratumVar")
+    psuVarList <- getAttributes(x, "psuVar")
+    stratumVarList <- getAttributes(x, "stratumVar")
     defaultTaylorVar <- TRUE
     if (is.null(psuVarList) || psuVarList == "") {
       psuVarList <- sapply(weights, function(w) w$psuVar)
@@ -50,29 +50,35 @@ rename.sdf <- function(x,
       stratumVarList <- sapply(weights, function(w) w$stratumVar)
       defaultTaylorVar <- FALSE
     }
-    if (inherits(x,"edsurvey.data.frame")) {
-      varnames <-  colnames(x) #names(x$data)
+    if (inherits(x, "edsurvey.data.frame")) {
+      varnames <-  colnames(x) 
     } else {
       varnames <- colnames(x)
     }
     
     #grab the dataList and needed objects within the dataList
-    dataList <- getAttributes(x,"dataList")
+    dataList <- getAttributes(x, "dataList")
     lafObj <- lapply(dataList, function(dl){dl$lafObject})
     fileFormat <- lapply(dataList, function(dl){dl$fileFormat})
     parentMergeVars <- lapply(dataList, function(dl){dl$parentMergeVars})
     mergeVars <- lapply(dataList, function(dl){dl$mergeVars})
     ignoreVars <- lapply(dataList, function(dl){dl$ignoreVars})
     
+    if(any(grepl("_linking", oldnames, fixed=TRUE))) {
+      stop("Cannot rename a PV variable with _linking in the name. These are reserved for linking error.")
+    }
+    if(any(grepl("_linking", newnames, fixed=TRUE))) {
+      stop("Cannot rename a PV variable with _linking in the name. These are reserved for linking error.")
+    }
     for (vari in 1:length(oldnames)) {
       # to avoid duplicates after the operation
       if (newnames[vari] %in% c(varnames, names(weights), names(pvvars))) {
         if (avoid_duplicated) {
-          warning(paste0("Variable name ",sQuote(newnames[vari]), " already exists in the data. Not renaming the variable to avoid duplicates."))
+          warning(paste0("Variable name ", sQuote(newnames[vari]), " already exists in the data. Not renaming the variable to avoid duplicates."))
           next
         } else {
-          warning(paste0("Variable name ",sQuote(newnames[vari]), " already exists in the data. Renaming the variable to ",sQuote(paste0(newnames[vari],"_2")),". "))
-          newnames[vari] <- paste0(newnames[vari],"_2")
+          warning(paste0("Variable name ", sQuote(newnames[vari]), " already exists in the data. Renaming the variable to ",sQuote(paste0(newnames[vari],"_2")),". "))
+          newnames[vari] <- paste0(newnames[vari], "_2")
         }
       }
       ##get specific name of old variable
@@ -94,14 +100,14 @@ rename.sdf <- function(x,
       if(!is.null(pvvars) & length(pvvars) > 0) {
         if (oldnames[vari] %in% names(pvvars)) {
           names(pvvars)[names(pvvars) == oldnames[vari]] <- newnames[vari]
-          attr(pvvars,'default') <- gsub(paste0("\\b", oldnames[vari],"\\b"), newnames[vari], attr(pvvars,'default'))
+          attr(pvvars, 'default') <- gsub(paste0("\\b", oldnames[vari], "\\b"), newnames[vari], attr(pvvars, 'default'))
         }
       }
       
       # change weights
       if (oldnames[vari] %in% names(weights)) {
         names(weights)[names(weights) == oldnames[vari]] <- newnames[vari]
-        attr(weights,"default") <- gsub(paste0("\\b",oldnames[vari],"\\b"), newnames[vari], attr(weights,"default"))
+        attr(weights,"default") <- gsub(paste0("\\b", oldnames[vari], "\\b"), newnames[vari], attr(weights, "default"))
         if (oldnames[vari] %in% varnames) {
           varnames[varnames == oldnames[vari]] <- newnames[vari]
         }
@@ -117,6 +123,7 @@ rename.sdf <- function(x,
           }
         }
       }
+
       if (length(stratumVarList) > 0) {
         if (oldnames[vari] %in% stratumVarList) {
           if (defaultTaylorVar) {
@@ -128,8 +135,7 @@ rename.sdf <- function(x,
       }
       
       if(!oldnames[vari] %in% varnames) {
-        #warning(paste0(oldnames[vari]," is not in the data.\n"))
-        #next
+        # do nothing
       }
       
       ## change name in LaF Objects as well as the LaF 'column_names' attribute which is used when the file connection is open/closed
@@ -137,7 +143,7 @@ rename.sdf <- function(x,
         for(i in 1:length(lafObj)){
           if(varn %in% names(lafObj[[i]])){
             names(lafObj[[i]])[names(lafObj[[i]]) == oldnames[vari]] <- newnames[vari]
-            attr(lafObj[[i]],"column_names") <- names(lafObj[[i]]) #ensure the column_names is changed as well or if connection reopened/closed the col name will be lost!
+            attr(lafObj[[i]], "column_names") <- names(lafObj[[i]]) #ensure the column_names is changed as well or if connection reopened/closed the col name will be lost!
           }
         }
       }
@@ -147,8 +153,8 @@ rename.sdf <- function(x,
       # if the name is one of the plausible values
       if(!is.null(pvvars) & length(pvvars) > 0) {
         for (pvi in 1:length(pvvars)) {
-          pvvars[[pvi]]$varnames <- gsub(paste0("\\b",oldnames[vari],"\\b"),newnames[vari], pvvars[[pvi]]$varnames)
-        }  
+          pvvars[[pvi]]$varnames <- gsub(paste0("\\b", oldnames[vari], "\\b"), newnames[vari], pvvars[[pvi]]$varnames)
+        }
       }
       
       #
@@ -163,21 +169,21 @@ rename.sdf <- function(x,
       ## update parentMergeVars
       if(!is.null(parentMergeVars) && length(parentMergeVars) > 0){
         for(i in 1:length(parentMergeVars)){
-          parentMergeVars[[i]] <- gsub(paste0("\\b",oldnames[vari],"\\b"),newnames[vari],parentMergeVars[[i]])
+          parentMergeVars[[i]] <- gsub(paste0("\\b", oldnames[vari], "\\b"), newnames[vari], parentMergeVars[[i]])
         }
       }
       
       #update the mergeVars
       if(!is.null(mergeVars) && length(mergeVars) > 0){
         for(i in 1:length(mergeVars)){
-          mergeVars[[i]] <- gsub(paste0("\\b",oldnames[vari],"\\b"),newnames[vari],mergeVars[[i]])
+          mergeVars[[i]] <- gsub(paste0("\\b", oldnames[vari], "\\b"), newnames[vari], mergeVars[[i]])
         }
       }
       
       #update the ignoreVars
       if(!is.null(ignoreVars) && length(ignoreVars) > 0){
         for(i in 1:length(ignoreVars)){
-          ignoreVars[[i]] <- gsub(paste0("\\b",oldnames[vari],"\\b"),newnames[vari],ignoreVars[[i]])
+          ignoreVars[[i]] <- gsub(paste0("\\b", oldnames[vari], "\\b"), newnames[vari], ignoreVars[[i]])
         }
       }
       

@@ -10,9 +10,9 @@ sdf <- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprime
 
 context("Multivariate Regression: 2 DVs (2 non PV)")
 test_that("mvrlm.sdf results align with lm.sdf", {
-  mvrlm.fit <- mvrlm.sdf(mrps51 | mrps22 ~ dsex | m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = T)
-  lm.fit.mrps51 <- lm.sdf(mrps51 ~ dsex + m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = T)
-  lm.fit.mrps22 <- lm.sdf(mrps22 ~ dsex + m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = T)
+  mvrlm.fit <- mvrlm.sdf(mrps51 | mrps22 ~ dsex | m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = TRUE)
+  lm.fit.mrps51 <- lm.sdf(mrps51 ~ dsex + m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = TRUE)
+  lm.fit.mrps22 <- lm.sdf(mrps22 ~ dsex + m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = TRUE)
   # compare coefficient tables
   expect_equal(mvrlm.fit$coefmat$mrps51, lm.fit.mrps51$coefmat)
   expect_equal(mvrlm.fit$coefmat$mrps22, lm.fit.mrps22$coefmat)
@@ -31,9 +31,9 @@ test_that("mvrlm.sdf results align with lm.sdf", {
 
 context("Multivariate Regression: 2 DVs (1 PV 1 non PV)")
 test_that("mvrlm.sdf results align with lm.sdf", {
-  mvrlm.fit <- mvrlm.sdf(composite | mrps22 ~ dsex | m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = T)
-  lm.fit.comp <- lm.sdf(composite ~ dsex + m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = T)
-  lm.fit.mrps22 <- lm.sdf(mrps22 ~ dsex + m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = T)
+  mvrlm.fit <- mvrlm.sdf(composite | mrps22 ~ dsex | m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = TRUE)
+  lm.fit.comp <- lm.sdf(composite ~ dsex + m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = TRUE)
+  lm.fit.mrps22 <- lm.sdf(mrps22 ~ dsex + m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = TRUE)
   
   # compare coefficient tables
   expect_equal(mvrlm.fit$coefmat$composite, lm.fit.comp$coefmat)
@@ -60,9 +60,9 @@ context("Multivariate Regression: 2 DVs (both PVs)")
 test_that("mvrlm.sdf results align with lm.sdf", {
   
   # compare coefficient tables
-  mvrlm.fit <- mvrlm.sdf(algebra | geometry ~ dsex | m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = T)
-  lm.fit.alg <- lm.sdf(algebra ~ dsex + m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = T)
-  lm.fit.geom <- lm.sdf(geometry ~ dsex + m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = T)
+  mvrlm.fit <- mvrlm.sdf(algebra | geometry ~ dsex | m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = TRUE)
+  lm.fit.alg <- lm.sdf(algebra ~ dsex + m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = TRUE)
+  lm.fit.geom <- lm.sdf(geometry ~ dsex + m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = TRUE)
   expect_equal(mvrlm.fit$coefmat$algebra, lm.fit.alg$coefmat)
   expect_equal(mvrlm.fit$coefmat$geometry, lm.fit.geom$coefmat)
   
@@ -84,12 +84,12 @@ test_that("mvrlm.sdf results align with lm.sdf", {
 
 context("Multivariate Regression: 3 DVs (all PVs)")
 test_that("mvrlm.sdf results align with lm.sdf",{
-  mvrlm.fit <- mvrlm.sdf(algebra | geometry | measurement ~ dsex | m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = T)
+  mvrlm.fit <- mvrlm.sdf(algebra | geometry | measurement ~ dsex | m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = TRUE)
   
   ### compare coefficients
-  lm.fit.alg <- lm.sdf(algebra ~ dsex + m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = T)
-  lm.fit.geom <- lm.sdf(geometry ~ dsex + m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = T)
-  lm.fit.meas <- lm.sdf(measurement ~ dsex + m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = T)
+  lm.fit.alg <- lm.sdf(algebra ~ dsex + m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = TRUE)
+  lm.fit.geom <- lm.sdf(geometry ~ dsex + m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = TRUE)
+  lm.fit.meas <- lm.sdf(measurement ~ dsex + m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = TRUE)
   expect_equal(mvrlm.fit$coefmat$algebra, lm.fit.alg$coefmat)
   expect_equal(mvrlm.fit$coefmat$geometry, lm.fit.geom$coefmat)
   expect_equal(mvrlm.fit$coefmat$measurement, lm.fit.meas$coefmat)
@@ -121,27 +121,27 @@ test_that("mvrlm.sdf results remain the same", {
   skip_on_cran()
   
   # no pv case
-  mvrlm.fit <- mvrlm.sdf(mrps51 | mrps22 ~ dsex | m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = T)
+  mvrlm.fit <- mvrlm.sdf(mrps51 | mrps22 ~ dsex | m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = TRUE)
   mvrlm2dvnon <- readRDS("mvrlm2dvnon.rds")
   expect_equal(mvrlm.fit$coefmat, mvrlm2dvnon$coefmat)
   expect_equal(mvrlm.fit$residPV, mvrlm2dvnon$residPV)
   expect_equal(mvrlm.fit$residCov, mvrlm2dvnon$residCov)
   
   # mixed DV case 
-  mvrlm.fit <- mvrlm.sdf(composite | mrps22 ~ dsex | m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = T)
+  mvrlm.fit <- mvrlm.sdf(composite | mrps22 ~ dsex | m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = TRUE)
   mvrlm2dvmix <- readRDS("mvrlm2dvmix.rds")
   expect_equal(mvrlm.fit$coefmat, mvrlm2dvmix$coefmat)
   expect_equal(mvrlm.fit$residPV, mvrlm2dvmix$residPV)
   expect_equal(mvrlm.fit$residCov, mvrlm2dvmix$residCov)
 
   # 2 PV case
-  mvrlm.fit <- mvrlm.sdf(algebra | geometry ~ dsex | m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = T)
+  mvrlm.fit <- mvrlm.sdf(algebra | geometry ~ dsex | m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = TRUE)
   mvrlm.sdf.2dv <- readRDS("mvrlm2dv.rds")
   expect_equal(mvrlm.fit$coefmat, mvrlm.sdf.2dv$coefmat)
   expect_equal(mvrlm.fit$residPV, mvrlm.sdf.2dv$residPV)
   expect_equal(mvrlm.fit$residCov, mvrlm.sdf.2dv$residCov)
   # 3 PV case
-  mvrlm.fit <- mvrlm.sdf(algebra | geometry | measurement ~ dsex | m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = T)
+  mvrlm.fit <- mvrlm.sdf(algebra | geometry | measurement ~ dsex | m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = TRUE)
   mvrlm.sdf.3dv <- readRDS("mvrlm3dv.rds")
   expect_equal(mvrlm.fit$coefmat, mvrlm.sdf.3dv$coefmat)
   expect_equal(mvrlm.fit$residPV, mvrlm.sdf.3dv$residPV)
@@ -151,7 +151,7 @@ test_that("mvrlm.sdf results remain the same", {
 context("Wald Test Coefficient restrictions")
 test_that("wald test works",{
   options(digits=2)
-  mvr <- mvrlm.sdf(algebra | geometry ~ dsex | m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = T)
+  mvr <- mvrlm.sdf(algebra | geometry ~ dsex | m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = TRUE)
   hypothesis <- c("geometry_dsexFemale = 0", "algebra_dsexFemale = 0")
   
   test1 <- linearHypothesis.edsurveyMvrlm(mvr, hypothesis = hypothesis, test = "F")

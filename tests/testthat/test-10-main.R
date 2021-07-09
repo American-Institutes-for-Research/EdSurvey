@@ -605,19 +605,19 @@ test_that("achievementLevel basic", {
 
 context("achievementLevel, aggregated")
 test_that("achievementLevel, aggregated", {
-  expect_known_value(test2 <- achievementLevels(aggregateBy = "dsex",returnCumulative = TRUE, data=sdf), file="aLevels_test2.rds")
-  expect_known_value(test3 <- achievementLevels(aggregateBy = "sdracem",returnCumulative = TRUE, data=sdf), file="aLevels_test3.rds")
-  expect_known_value(test4 <- achievementLevels("sdracem",aggregateBy = c("composite"),data=sdf, returnCumulative = TRUE), file="aLevels_test4.rds")
-  expect_known_value(test5 <- achievementLevels("dsex",aggregateBy = c("composite"),data=sdf, returnCumulative = TRUE), file="aLevels_test5.rds")
+  expect_known_value(test2 <- achievementLevels(aggregateBy = "dsex", returnCumulative = TRUE, data=sdf), file="aLevels_test2.rds", update=FALSE)
+  expect_known_value(test3 <- achievementLevels(aggregateBy = "sdracem", returnCumulative = TRUE, data=sdf), file="aLevels_test3.rds", update=FALSE)
+  expect_known_value(test4 <- achievementLevels("sdracem", aggregateBy = c("composite"), data=sdf, returnCumulative = TRUE), file="aLevels_test4.rds", update=FALSE)
+  expect_known_value(test5 <- achievementLevels("dsex", aggregateBy = c("composite"), data=sdf, returnCumulative = TRUE), file="aLevels_test5.rds", update=FALSE)
   # Use recode to change values for specified variables:
-  expect_known_value(test6 <- achievementLevels(c("composite","dsex", "b017451"),
+  expect_known_value(test6 <- achievementLevels(c("composite", "dsex", "b017451"),
                                                 aggregateBy = "dsex", sdf,
                                                 recode=list(b017451=list(from=c("Never or hardly ever",
                                                                                 "Once every few weeks",
                                                                                 "About once a week"),
                                                                          to=c("Infrequently")),
                                                             b017451=list(from=c("2 or 3 times a week","Every day"),
-                                                                         to=c("Frequently")))), file="aLevels_test6.rds")
+                                                                         to=c("Frequently")))), file="aLevels_test6.rds", update=FALSE)
 })
 
 context("achievementLevel many interactions")
@@ -961,7 +961,7 @@ test_that("mml.sdf", {
   # run subtest 
   invisible(withr::with_options(list(digits=4),
                                 capture.output(
-                                  mmlNAEP <- suppressWarnings(mml.sdf(algebra~1, sdf, weightVar='origwt', verbose=TRUE, fast = TRUE))
+                                  mmlNAEP <- suppressWarnings(mml.sdf(algebra~1, sdf, weightVar='origwt', verbose=TRUE))
                                 )
   )
   ) 
@@ -977,7 +977,7 @@ test_that("mml.sdf", {
   # run with regressor 
   invisible(withr::with_options(list(digits=4),
                                 capture.output(
-                                  mmlDsexNaep <- suppressWarnings(mml.sdf(algebra~dsex, sdf, weightVar='origwt', verbose=TRUE, fast = TRUE))
+                                  mmlDsexNaep <- suppressWarnings(mml.sdf(algebra~dsex, sdf, weightVar='origwt', verbose=TRUE))
                                 )
   )
   ) 

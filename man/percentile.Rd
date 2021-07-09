@@ -18,7 +18,8 @@ percentile(
   returnVarEstInputs = FALSE,
   returnNumberOfPSU = FALSE,
   pctMethod = c("symmetric", "unbiased", "simple"),
-  confInt = TRUE
+  confInt = TRUE,
+  dofMethod = c("JR", "WS")
 )
 }
 \arguments{
@@ -87,6 +88,8 @@ but requires that the percentile is symetric to multiplying
 the quantity by negative one.}
 
 \item{confInt}{a Boolean indicating if the confidence interval should be returned}
+
+\item{dofMethod}{passed to \code{\link{DoFCorrection}} as the \code{method} argument}
 }
 \value{
 The return type depends on whether the class of the \code{data} argument is an

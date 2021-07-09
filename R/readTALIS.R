@@ -71,7 +71,8 @@ readTALIS <- function(path,
                 sQuote('a'),", ",sQuote('b'),", or ",sQuote('c'),"."))
   }
   for (filepath in path) { # loop through the vector of path(s)
-    filepath <- gsub("/$","",filepath)
+    filepath <- gsub("/$", "", filepath)
+    filepath <- ifelse(grepl("[.][a-zA-Z]{1,4}$", filepath, perl=TRUE, ignore.case=TRUE), dirname(filepath), filepath)
     if (!dir.exists(filepath)) {
       stop(paste0("Cannot find ", sQuote("filepath"), "value in ", pasteItems(dQuote(filepath[!dir.exists(filepath)])),"."))
     }

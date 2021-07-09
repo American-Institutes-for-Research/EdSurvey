@@ -2,9 +2,9 @@
 # the same as the edsurvey.data.frame
 require(testthat)
 context("read LESDF")
-require(EdSurvey)
 options(width = 500)
 source("REF-1-lesdf.R") # has REF output in it
+options(useFancyQuotes=FALSE)
 
 test_that("read LESDF",{
   sdf <<- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
@@ -68,8 +68,8 @@ test_that("LESDF merge function",{
 
 context("getData addAttributesTRUE returns a LESDF")
 test_that("getData addAttributesTRUE returns a LESDF", {
-	expect_is(sdf, "edsurvey.data.frame")
-	expect_is(lsdf, "light.edsurvey.data.frame")
+  expect_is(sdf, "edsurvey.data.frame")
+  expect_is(lsdf, "light.edsurvey.data.frame")
 })
 
 context("getData ignores defaultConditions when applied twice")
@@ -137,11 +137,11 @@ test_that("LESDF getData warnings",{
   co <-evaluate_promise(getData(sdf, c('composite','dsex', 'b017451', 'origwt'), dropUnusedLevels = FALSE, defaultConditions = FALSE, addAttributes = TRUE, omittedLevels = FALSE))
   expect_equal(unique(co$warnings),character(0))
   expect_warning(co <- getData(sdf,
-  	                           c('composite','dsex', 'b017451', 'm144901', 'origwt'),
-  	                           dropUnusedLevels = FALSE,
-  	                           defaultConditions = FALSE,
-  	                           addAttributes = TRUE,
-  	                           omittedLevels = FALSE), 
+                               c('composite','dsex', 'b017451', 'm144901', 'origwt'),
+                               dropUnusedLevels = FALSE,
+                               defaultConditions = FALSE,
+                               addAttributes = TRUE,
+                               omittedLevels = FALSE), 
                  paste("Updating labels on ",sQuote('m144901')," because there are multiples of the label ", sQuote("Correct"),".",sep =""))
 })
 
@@ -242,28 +242,28 @@ test_that("LESDF cor.sdf",{
 context("LESDF lm.sdf")
 test_that("LESDF lm.sdf",{
   skip_on_cran()
-	sdfoutput <- capture.output(print(sm1 <- summary(lm.sdf(composite ~ dsex + b017451,sdf, jrrIMax=Inf))))
-	gdoutput <- capture.output(print(sm2 <- summary(lm.sdf(composite ~ dsex + b017451,lsdf, jrrIMax=Inf))))
-	expect_equal(sdfoutput, gdoutput)
-	# do not expect the calls to be the same
-	sm1$data <- NULL 
-	sm2$lm0 <- NULL
-	sm1$call <- NULL
-	sm2$call <- NULL
-	expect_equal(sm1, sm2)
+  sdfoutput <- capture.output(print(sm1 <- summary(lm.sdf(composite ~ dsex + b017451,sdf, jrrIMax=Inf))))
+  gdoutput <- capture.output(print(sm2 <- summary(lm.sdf(composite ~ dsex + b017451,lsdf, jrrIMax=Inf))))
+  expect_equal(sdfoutput, gdoutput)
+  # do not expect the calls to be the same
+  sm1$data <- NULL 
+  sm2$lm0 <- NULL
+  sm1$call <- NULL
+  sm2$call <- NULL
+  expect_equal(sm1, sm2)
 })
 
 context("LESDF print")
 test_that("LESDF print",{
   skip_on_cran()
-	sdfoutput <- capture.output(print(sm1 <- lm.sdf(composite ~ dsex + b017451,sdf, jrrIMax=Inf)))
-	gdoutput <- capture.output(print(sm2 <- lm.sdf(composite ~ dsex + b017451,lsdf, jrrIMax=Inf)))
-	expect_equal(gdoutput, sdfoutput)
-	# do not expect the calls to be the same
-	sm1$data <- NULL 
-	sm2$lm0 <- NULL
-	sm1$call <- NULL
-	sm2$call <- NULL
+  sdfoutput <- capture.output(print(sm1 <- lm.sdf(composite ~ dsex + b017451,sdf, jrrIMax=Inf)))
+  gdoutput <- capture.output(print(sm2 <- lm.sdf(composite ~ dsex + b017451,lsdf, jrrIMax=Inf)))
+  expect_equal(gdoutput, sdfoutput)
+  # do not expect the calls to be the same
+  sm1$data <- NULL 
+  sm2$lm0 <- NULL
+  sm1$call <- NULL
+  sm2$call <- NULL
   expect_equal(sm1, sm2)
 })
 
@@ -271,43 +271,43 @@ context("LESDF edsurveyTable")
 test_that("LESDF edsurveyTable",{
   skip_on_cran()
   es10 <- edsurveyTable( ~ dsex + b017451, lsdf, jrrIMax=1)
-  est10c <- capture.output(es10)
-	expect_equal(est10c,es10REF)
-	# two levels, results checked vs Primer
-	es11 <- edsurveyTable(composite ~ dsex + b017451, lsdf, jrrIMax=1)
-	es11c <- capture.output(es11)
-	expect_equal(es11c,es11REF2)
-	
-	# check for just males (dsex is only occupied at one level)
-	lsdfm <- subset(lsdf, dsex=="Male")
-	es2l <- edsurveyTable(composite ~ dsex + b017451, lsdfm, jrrIMax=Inf)
-	es2lc <- capture.output(es2l)
-	expect_equal(es2lc, es2lREF)
-	# test omittedLevels, here it should be ignored and es2 is the correct reference
-	es2lb <- edsurveyTable(composite ~ dsex + b017451, lsdfm, jrrIMax=Inf, omittedLevels=FALSE)
-	es2lbc <- capture.output(es2lb)
-	expect_equal(es2lbc, es2lbREF)
+  est10c <- withr::with_options(list(digits=7), capture.output(es10))
+  expect_equal(est10c, es10REF)
+  # two levels, results checked vs Primer
+  es11 <- edsurveyTable(composite ~ dsex + b017451, lsdf, jrrIMax=1)
+  es11c <- withr::with_options(list(digits=7), capture.output(es11))
+  expect_equal(es11c, es11REF2)
+  
+  # check for just males (dsex is only occupied at one level)
+  lsdfm <- subset(lsdf, dsex=="Male")
+  es2l <- edsurveyTable(composite ~ dsex + b017451, lsdfm, jrrIMax=Inf)
+  es2lc <- withr::with_options(list(digits=7), capture.output(es2l))
+  expect_equal(es2lc, es2lREF)
+  # test omittedLevels, here it should be ignored and es2 is the correct reference
+  es2lb <- edsurveyTable(composite ~ dsex + b017451, lsdfm, jrrIMax=Inf, omittedLevels=FALSE)
+  es2lbc <- withr::with_options(list(digits=7), capture.output(es2lb))
+  expect_equal(es2lbc, es2lbREF)
 })
 
 context("LESDF lm.sdf correctly returns errors")
 test_that("LESDF lm.sdf correctly returns errors",{
-	sm1 <- getData(sdf, c(all.vars(composite ~ dsex + b017451), "origwt"), addAttributes=TRUE)
-	sm1 <- subset(sm1, dsex == "Male")
-	sm1 <- subset(sm1, dsex == "Female")
-	expect_error(suppressWarnings(lm.sdf(composite ~ dsex + b017451,sm1, jrrIMax=Inf)))
+  sm1 <- getData(sdf, c(all.vars(composite ~ dsex + b017451), "origwt"), addAttributes=TRUE)
+  sm1 <- subset(sm1, dsex == "Male")
+  sm1 <- subset(sm1, dsex == "Female")
+  expect_error(suppressWarnings(lm.sdf(composite ~ dsex + b017451,sm1, jrrIMax=Inf)))
   #LESDF lm.sdf function returns error with contradicting subset and relevel
   skip_on_cran()
-	sm1 <- getData(sdf, c(all.vars(composite ~ dsex + b017451), "origwt"), addAttributes=TRUE)
-	# no error with relevel calls 
-	expect_is(lm.sdf(composite ~ dsex + b017451, relevels = list(dsex="Male"),sm1, jrrIMax=Inf), "edsurveyLm")
-	expect_is(lm.sdf(composite ~ dsex + b017451, relevels = list(b017451="Once every few weeks"),sm1, jrrIMax=Inf), "edsurveyLm")
-	sm2 <- subset(sm1, dsex == "Male")
-	sm2 <- subset(sm2, b017451 != "Once every few weeks")
-	expect_error(lm.sdf(composite ~ dsex + b017451, relevels = list(dsex="Male"), sm2, jrrIMax=Inf))
-	expect_error(lm.sdf(composite ~ dsex + b017451, relevels = list(b017451="Once every few weeks"), sm2, jrrIMax=Inf))
+  sm1 <- getData(sdf, c(all.vars(composite ~ dsex + b017451), "origwt"), addAttributes=TRUE)
+  # no error with relevel calls 
+  expect_is(lm.sdf(composite ~ dsex + b017451, relevels = list(dsex="Male"),sm1, jrrIMax=Inf), "edsurveyLm")
+  expect_is(lm.sdf(composite ~ dsex + b017451, relevels = list(b017451="Once every few weeks"),sm1, jrrIMax=Inf), "edsurveyLm")
+  sm2 <- subset(sm1, dsex == "Male")
+  sm2 <- subset(sm2, b017451 != "Once every few weeks")
+  expect_error(lm.sdf(composite ~ dsex + b017451, relevels = list(dsex="Male"), sm2, jrrIMax=Inf))
+  expect_error(lm.sdf(composite ~ dsex + b017451, relevels = list(b017451="Once every few weeks"), sm2, jrrIMax=Inf))
   #return error when variable not in getData call
-	sm1 <- getData(sdf, c(all.vars(composite ~ dsex + b017451), "origwt"), addAttributes=TRUE)
-	expect_error(lm.sdf(composite ~ dsex + b017451 + iep,sm1, jrrIMax=Inf))
+  sm1 <- getData(sdf, c(all.vars(composite ~ dsex + b017451), "origwt"), addAttributes=TRUE)
+  expect_error(lm.sdf(composite ~ dsex + b017451 + iep,sm1, jrrIMax=Inf))
 })
 
 

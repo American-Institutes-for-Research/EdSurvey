@@ -203,9 +203,9 @@ assignTest1 <- c("    asmrea01        asmrea02        asmrea03        asmrea04  
 mmlIntREF <- c("  (Intercept) Population SD ", 
                "       539.82         81.72 ")   
 mmlSumREF <- c("Call:", "mml.sdf(formula = mmat ~ 1, data = mmlSDF, weightVar = \"totwgt\", ",
-               "    verbose = TRUE, fast = TRUE)", 
+               "    verbose = TRUE)", 
                "Summary Call:", 
-               "summary.edSurveyMML(x = mmlTIMSS)", 
+               "summary.edSurveyMML(object = mmlTIMSS)", 
                "", 
                "Summary:",
                "            Estimate   StdErr t.value", 
