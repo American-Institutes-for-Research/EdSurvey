@@ -1,37 +1,24 @@
+Click preview tab ^^^ above!
+
+Thanks for using EdSurvey! Before you open an issue to ask a question or to report a bug, please make sure you've done the following.
+
+1. You are using the latest version of EdSurvey by running `update.packages("EdSurvey")`, but the issue still exists.
+2. You have [searched all issues](https://github.com/American-Institutes-for-Research/EdSurvey/issues?q=is%3Aissue) to see if a similar issue has already been created and resolved. If you identified a similar issue but it does not resolve yours, please remember to include links to the issue as a reference when reporting.
+3. If your issue involves installing EdSurvey, you have checked out [this instruction](https://www.littlemissdata.com/blog/r-package-install) but it hasn't resolved your issue.
+
+#### Thanks for reading the above! Please remove the text above and include the three items below when reporting the issue.
 ---
-name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: ''
-assignees: ''
 
----
+1. Brief description of the problem and what output you expect
 
-**Describe the bug**
-A clear and concise description of what the bug is.
 
-**Check Before Posting**
-We ask that you check a few things before posting an issue
-1. If the issue involves installing EdSurvey, please first try the instructions at https://www.littlemissdata.com/blog/r-package-install
-2. Search the (EdSurvey Issues)[https://github.com/American-Institutes-for-Research/EdSurvey/issues?q=is%3Aissue]
-3. If you are having trouble finding your data, first check in the operating system if the files are where you think they are. 
-4. Please be sure you are using the latest EdSurvey version by running `update.packages("EdSurvey")` or checking at https://american-institutes-for-research.github.io/EdSurvey/
+2. Provide a [minimal reproducible example](https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example) (AKA a reprex). The goal of a reprex is to make it as easy as possible for our team to recreate your problem so that we can fix it. If you've never heard of a reprex before, start by reading <https://www.tidyverse.org/help/#reprex>.
+```r
+# insert a reprex here
+```
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. To help us understand your bug, please (share a minimal working example)[https://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example]
-2. Show your code from read in to the error so we can reproduce it. If it works with the NAEP Primer, use that. If it is RUD you can use a folder that will not work on our machines, we can fix that.
-
-**Expected behavior**
-A clear and concise description of what you expected to happen.
-
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
-
-**Environment:**
- - OS: [e.g. OS X]
- - R version: [e.g. 4.1.0]
- - EdSurvey Version [e.g. 2.6.9]
-
-**Additional context**
-Add any other context about the problem here.
+3. Type `sessionInfo()` in the Rstudio console, and copy and paste the output. This information will help us understand the R environment you are in when encountering the issue.
+```r
+# insert the `sessionInfo()` output
+sessionInfo()
+```
