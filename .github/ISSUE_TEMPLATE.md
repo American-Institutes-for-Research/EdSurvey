@@ -22,4 +22,3 @@ Thanks for using EdSurvey! Before you open an issue to ask a question or to repo
 # insert the `sessionInfo()` output
 sessionInfo()
 ```
-{"mode":"full","isActive":false}
