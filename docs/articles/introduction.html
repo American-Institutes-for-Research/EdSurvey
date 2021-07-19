@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.6.9.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.0</span>
       </span>
     </div>
 
@@ -73,9 +73,11 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to Analyzing NCES Data Using EdSurvey</h1>
-                        <h4 class="author">Developed by Paul Bailey, Nancy Collins, Ahmad Emad, Thomas Fink, Huade Huo, Julian Gerez, Michael Lee, Yuqi Liao, Trang Nguyen, Qingshu Xie, Jiao Yu, and Ting Zhang</h4>
+                        <h4 class="author">Developed by Paul Bailey, Nancy Collins, Ahmad Emad, Thomas Fink,<br>
+ Huade Huo, Julian Gerez, Michael Lee, Yuqi Liao, Trang Nguyen,<br>
+ Qingshu Xie, Jiao Yu, and Ting Zhang</h4>
             
-            <h4 class="date">March 22 2021</h4>
+            <h4 class="date">July 19, 2021</h4>
       
       
       <div class="hidden name"><code>introduction.Rmd</code></div>
@@ -114,6 +116,7 @@
 <a href="#task-specific-walkthroughs" class="anchor"></a>Task Specific Walkthroughs</h2>
 <p>Documents providing an overview of functions developed in the EdSurvey package include the following:</p>
 <ul>
+<li><p><a href="https://www.air.org/sites/default/files/2021-07/EdSurvey-linkingerror.pdf"><em>NAEP DBA-PBA Linking Error With EdSurvey</em></a> describes using EdSurvey to calculate the linking error in NAEP assessments that have combined PBA and DBA formats, and the NCES method that EdSurvey uses to calculate the linking error.</p></li>
 <li><p><a href="https://www.air.org/sites/default/files/EdSurvey-RUDInstall.pdf"><em>Installing the EdSurvey Package on a Restricted-Use Data Computer</em></a> provides guidance for how to install EdSurvey on a restricted-use data (RUD) computer without an Internet connection.</p></li>
 <li><p><a href="https://www.air.org/sites/default/files/EdSurvey-SPSSConversion.pdf"><em>Converting Text Data File(s) With Companion SPSS Script to SPSS Data File Format</em></a> details the process of converting a data file and SPSS script to an SPSS Data File for use with EdSurvey.</p></li>
 <li><p><a href="https://www.air.org/sites/default/files/EdSurvey-getData.pdf"><em>Using the <code>getData</code> Function in EdSurvey</em></a> describes the use of the <code>EdSurvey</code> package when extensive data manipulation is required before analysis.</p></li>
@@ -135,14 +138,14 @@
 <li><p><a href="https://www.air.org/sites/default/files/EdSurvey-Mixed_Models.pdf"><em>Estimating Mixed-Effects Models</em></a> describes the methods used to estimate mixed-effects models with plausible values and survey weights, and how to fit different types of mixed-effects models using the EdSurvey package.</p></li>
 <li><p><a href="https://www.air.org/sites/default/files/EdSurvey-Multivariate_Regression.pdf"><em>Multivariate Regression</em></a> details the estimation of multivariate regression models using <code>mvrlm.sdf</code>.</p></li>
 <li><p><a href="https://www.air.org/sites/default/files/EdSurvey-WaldTest.pdf"><em>Running Wald Tests</em></a> describes the use of the Wald test to jointly test regression coefficients estimated using <code>lm.sdf</code> and <code>glm.sdf</code>.</p></li>
-<li><p><a href="https://www.air.org/resource/weighted-and-unweighted-correlation-methods-large-scale-educational-assessment-wcorr"><em>Weighted and Unweighted Correlation Methods for Large-Scale Educational Assessment: wCorr Formulas</em></a> introduces the methodology used by the wCorr R package for computing the Pearson, Spearman, polyserial, polyserial, polychoric and tetrachoric correlations, with and without weights applied. Simulation evidence is presented to show correctness of the methods, including an examination of the bias and consistency.</p></li>
+<li><p><a href="https://www.air.org/resource/report/weighted-and-unweighted-correlation-methods-large-scale-educational-assessment"><em>Weighted and Unweighted Correlation Methods for Large-Scale Educational Assessment: wCorr Formulas</em></a> introduces the methodology used by the wCorr R package for computing the Pearson, Spearman, polyserial, polyserial, polychoric and tetrachoric correlations, with and without weights applied. Simulation evidence is presented to show correctness of the methods, including an examination of the bias and consistency.</p></li>
 </ul>
 <hr>
 </div>
 <div id="software-requirements" class="section level2">
 <h2 class="hasAnchor">
 <a href="#software-requirements" class="anchor"></a>Software Requirements</h2>
-<p>Unless you already have R version 3.2.0 or later, install the latest R version—which is available online at <a href="https://cran.r-project.org/">https://cran.r-project.org/</a>. Users also may want to install RStudio desktop, which has an interface that many find easier to follow. RStudio is available online at <a href="https://rstudio.com/products/rstudio/download/">https://rstudio.com/products/rstudio/download/</a>.</p>
+<p>Unless you already have R version 3.2.0 or later, install the latest R version—which is available online at <a href="https://cran.r-project.org/">https://cran.r-project.org/</a>. Users also may want to install RStudio desktop, which has an interface that many find easier to follow. RStudio is available online at <a href="https://www.rstudio.com/products/rstudio/download/">https://www.rstudio.com/products/rstudio/download/</a>.</p>
 </div>
 </div>
 <div id="setting-up-the-environment-for-analyzing-nces-data" class="section level1">

@@ -33,14 +33,14 @@ Uses an Internet connection to download PIRLS data.
 \examples{
 \dontrun{
 # root argument will vary by operating system conventions
-downloadPIRLS(year=c(2006, 2011), root = "C:/")
+downloadPIRLS(year=c(2006, 2011), root = "~/")
 
 # cache=TRUE will download then process the datafiles
-downloadPIRLS(year=2011, root = "C:/", cache = TRUE)
+downloadPIRLS(year=2011, root = "~/", cache = TRUE)
 
 # set verbose=FALSE for silent output
 # if year not specified, download all years
-downloadPIRLS(root="C:/", verbose = FALSE)
+downloadPIRLS(root="~/", verbose = FALSE)
 }
 }
 \seealso{

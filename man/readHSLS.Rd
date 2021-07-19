@@ -71,10 +71,10 @@ hsls <- readHSLS(path="~/HSLS/2009",
 
 #for restricted-use student data, replicate weights stored in separate file
 hslsRUD <- readHSLS(path="~/HSLS/2009", 
-                 filename = "hsls_16_student_v1_0.sav", 
-                 wgtFilename = "hsls_16_student_BRR_v1_0.sav",
-                 forceReread = FALSE, 
-                 verbose = TRUE)
+                    filename = "hsls_16_student_v1_0.sav", 
+                    wgtFilename = "hsls_16_student_BRR_v1_0.sav",
+                    forceReread = FALSE, 
+                    verbose = TRUE)
 }
 }
 \seealso{

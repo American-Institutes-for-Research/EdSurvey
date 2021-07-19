@@ -19,8 +19,8 @@
 #' @author Tom Fink
 #' @example man/examples/readPISA_YAFS.R
 #' @export
-readPISA_YAFS <- function(datPath = file.path(getwd(), "PISA_YAFS2016.dat"),
-                         spsPath = file.path(getwd(), "PISA_YAFS2016.sps"),
+readPISA_YAFS <- function(datPath = file.path(getwd(), "PISA_YAFS2016_Data.dat"),
+                         spsPath = file.path(getwd(), "PISA_YAFS2016_SPSS.sps"),
                          esdf_PISA2012_USA = NULL) {
   
   #temporarily adjust any necessary option settings; revert back when done
@@ -80,7 +80,7 @@ readPISA_YAFS <- function(datPath = file.path(getwd(), "PISA_YAFS2016.dat"),
   pvs <- buildPVVARS_PISA_YAFS(fileFormat)
   attr(pvs, "default") <- "lit"
   
-  omittedLevels <- c("NA", "N/A", "Not Applicable", "Invalid", "No Response", NA, "(Missing)")
+  omittedLevels <- c("NA", "N/A", "Not Applicable", "Invalid", "No Response", NA, "(Missing)", "ESO non-respondents", "Valid Skip", "Not Answered")
   
   #achievement level definition
   achList <- list()

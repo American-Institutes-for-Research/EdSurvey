@@ -343,6 +343,28 @@ mixed.sdf <- function(formula,
     res$hessian <- NULL
     res$call <- call0
     res$formula <- call0$formula
+
+
+    varsmat0 <- model_sum$varsmat
+    groupSum <- varsmat0[!duplicated(varsmat0$Level), c("Level", "Group")]
+    groupSum$Group[groupSum$Level == 1] <- "Obs"
+    groupSum$"n size" <- rev(res$ngroups)
+    for (i in 1:length(res$wgtStats)) {
+      groupSum$"mean wgt"[groupSum$Level == i] <- res$wgtStats[[i]]$mean
+      groupSum$"sum wgt"[groupSum$Level == i] <- res$wgtStats[[i]]$sum
+    }
+    res$groupSum <- groupSum
+
+    varsmat0 <- res$varDF
+    # put the corred vcov in it
+    m <- length(yvars)
+
+    varsmat <- varsmat0[is.na(varsmat0$var2), c("level", "grp", "var1", "vcov", "SEvcov")]
+    varsmat$st <- sqrt(varsmat$vcov)
+    # add variance estimates
+    colnames(varsmat) <- c("Level", "Group", "Name", "Variance", "Std. Error", "Std.Dev.")
+    res$varsmatSum <- varsmat
+    res$VC <- model_sum$cov_mat
   } else { #run the plausible values version 
     #iterate through the plausible values 
     results <- list()
@@ -388,8 +410,8 @@ mixed.sdf <- function(formula,
     groupSum$Group[groupSum$Level == 1] <- "Obs"
     groupSum$"n size" <- rev(res$ngroups)
     for (i in 1:length(res$wgtStats)) {
-        groupSum$"mean wgt"[groupSum$Level == i] <- res$wgtStats[[i]]$mean
-        groupSum$"sum wgt"[groupSum$Level == i] <- res$wgtStats[[i]]$sum
+      groupSum$"mean wgt"[groupSum$Level == i] <- res$wgtStats[[i]]$mean
+      groupSum$"sum wgt"[groupSum$Level == i] <- res$wgtStats[[i]]$sum
     }
     res$groupSum <- groupSum
 

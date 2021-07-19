@@ -1,11 +1,8 @@
 ---
 title: "Introduction to Analyzing NCES Data Using EdSurvey"
-author: Developed by Paul Bailey, Nancy Collins, Ahmad Emad, Thomas Fink, Huade Huo,
-  Julian Gerez, Michael Lee, Yuqi Liao, Trang Nguyen, Qingshu Xie, Jiao Yu, and Ting
-  Zhang
-date: 'March 22 2021'
+author: "Developed by Paul Bailey, Nancy Collins, Ahmad Emad, Thomas Fink,  \n &nbsp;Huade Huo, Julian Gerez, Michael Lee, Yuqi Liao, Trang Nguyen,  \n &nbsp;Qingshu Xie, Jiao Yu, and Ting Zhang"
+date: "`r gsub(' 202',', 202', format(Sys.Date(), format='%B %d %Y'))`"
 output:
-  pdf_document: default
   html_document: default
 vignette: |
   %\VignetteEngine{knitr::rmarkdown}
@@ -42,6 +39,8 @@ Documents that describe the analysis of specific survey data in the EdSurvey pac
 
 Documents providing an overview of functions developed in the EdSurvey package include the following:
 
+* [*NAEP DBA-PBA Linking Error With EdSurvey*](https://www.air.org/sites/default/files/2021-07/EdSurvey-linkingerror.pdf) describes using EdSurvey to calculate the linking error in NAEP assessments that have combined PBA and DBA formats, and the NCES method that EdSurvey uses to calculate the linking error.
+
 * [*Installing the EdSurvey Package on a Restricted-Use Data Computer*](https://www.air.org/sites/default/files/EdSurvey-RUDInstall.pdf) provides guidance for how to install EdSurvey on a restricted-use data (RUD) computer without an Internet connection.
 
 * [*Converting Text Data File(s) With Companion SPSS Script to SPSS Data File Format*](https://www.air.org/sites/default/files/EdSurvey-SPSSConversion.pdf) details the process of converting a data file and SPSS script to an SPSS Data File for use with EdSurvey.
@@ -75,13 +74,13 @@ Documents that describe the statistical methodology used in the `EdSurvey` packa
 
 * [*Running Wald Tests*](https://www.air.org/sites/default/files/EdSurvey-WaldTest.pdf) describes the use of the Wald test to jointly test regression coefficients estimated using `lm.sdf` and `glm.sdf`.
 
-* [*Weighted and Unweighted Correlation Methods for Large-Scale Educational Assessment: wCorr Formulas*](https://www.air.org/resource/weighted-and-unweighted-correlation-methods-large-scale-educational-assessment-wcorr) introduces the methodology used by the wCorr R package for computing the Pearson, Spearman, polyserial, polyserial, polychoric and tetrachoric correlations, with and without weights applied. Simulation evidence is presented to show correctness of the methods, including an examination of the bias and consistency.
+* [*Weighted and Unweighted Correlation Methods for Large-Scale Educational Assessment: wCorr Formulas*](https://www.air.org/resource/report/weighted-and-unweighted-correlation-methods-large-scale-educational-assessment) introduces the methodology used by the wCorr R package for computing the Pearson, Spearman, polyserial, polyserial, polychoric and tetrachoric correlations, with and without weights applied. Simulation evidence is presented to show correctness of the methods, including an examination of the bias and consistency.
 
 ***
 
 ## Software Requirements
 
-Unless you already have R version 3.2.0 or later,  install the latest R version---which is available online at [https://cran.r-project.org/](https://cran.r-project.org/). Users also may want to install RStudio desktop, which has an interface that many find easier to follow. RStudio is available online at  [https://rstudio.com/products/rstudio/download/](https://rstudio.com/products/rstudio/download/).
+Unless you already have R version 3.2.0 or later,  install the latest R version---which is available online at [https://cran.r-project.org/](https://cran.r-project.org/). Users also may want to install RStudio desktop, which has an interface that many find easier to follow. RStudio is available online at [https://www.rstudio.com/products/rstudio/download/](https://www.rstudio.com/products/rstudio/download/).
 
 # Setting Up the Environment for Analyzing NCES Data
 

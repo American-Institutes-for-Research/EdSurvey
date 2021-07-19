@@ -18,14 +18,12 @@ downloadPISA_YAFS <- function(years=c(2016)) {
     stop(paste0("The argument ", sQuote("years"), " must have a value of ", sQuote("2013"), "."))
   }
   
-  linkURL <- "https://nces.ed.gov/surveys/pisa/pisayafs.asp"
+  linkURL <- "https://nces.ed.gov/pubsearch/pubsinfo.asp?pubid=2021022"
   
   txt <- c()
-  txt <- c(txt, paste0("PISA YAFS data is scheduled for release in early July 2021.  
-                       Please check the study website here when data becomes available: ", linkURL,
-                       ". We will incorporate a full featured download function in a future EdSurvey version.\n"))
+  txt <- c(txt, paste0("The 2016 PISA YAFS data is available for download at this location: ", linkURL, "\n"))
 
-  txt <- c(txt, paste0("Download and Extract the PISA YAFS ASCII Text File (*.dat) and the associated SPSS Script (.sps) for use with ", sQuote("readPISA_YAFS"), ".\n"))
+  txt <- c(txt, paste0("Download and Extract the PISA YAFS ASCII raw data file (*.dat) and the associated SPSS control file (.sps) for use with ", sQuote("readPISA_YAFS"), " from the website.\n"))
   
   txt <- c(txt, paste0("See ", sQuote("?readPISA_YAFS"), " for additional details.\n"))
   

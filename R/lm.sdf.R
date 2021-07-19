@@ -440,6 +440,9 @@ calc.lm.sdf <- function(formula,
   linkingError <- "NAEP" %in% getAttributes(data, "survey") & any(grepl("_linking", yvars, fixed=TRUE))
   if(any(pvy)) {
     if(linkingError) {
+      if(standardizeWithSamplingVar) {
+        stop(paste0(sQuote("standardizeWithSamplingVar"), " not supported with linking error."))
+      }
       pvs <- getPlausibleValue(yvars[max(pvy)], data)
       yvars <- paste0("outcome",
                       1:length(pvs),

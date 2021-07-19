@@ -74,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.6.9.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.0</span>
       </span>
     </div>
 
@@ -210,10 +210,10 @@ four distinct separate datasets that cannot be combined:</p><ul>
 
 <span class='co'># read-in with parameters specified (student level with weights)</span>
 <span class='va'>els_wgt_df</span> <span class='op'>&lt;-</span> <span class='fu'>readELS</span><span class='op'>(</span>path <span class='op'>=</span> <span class='st'>"~/ELS/2002"</span>, 
-                            filename <span class='op'>=</span> <span class='st'>"els_02_12_byf3pststu_v1_0.sav"</span>, 
-                            wgtFilename <span class='op'>=</span> <span class='st'>"els_02_12_byf3stubrr_v1_0.sav"</span>,
-                            verbose <span class='op'>=</span> <span class='cn'>TRUE</span>, 
-                            forceReread <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+                      filename <span class='op'>=</span> <span class='st'>"els_02_12_byf3pststu_v1_0.sav"</span>, 
+                      wgtFilename <span class='op'>=</span> <span class='st'>"els_02_12_byf3stubrr_v1_0.sav"</span>,
+                      verbose <span class='op'>=</span> <span class='cn'>TRUE</span>, 
+                      forceReread <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='co'># read-in with parameters specified (school level, no separate weight replicate file)</span>
 <span class='va'>els_sch_df</span> <span class='op'>&lt;-</span> <span class='fu'>readELS</span><span class='op'>(</span>path <span class='op'>=</span> <span class='st'>"~/ELS/2002"</span>, 

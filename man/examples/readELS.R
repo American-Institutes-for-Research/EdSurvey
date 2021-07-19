@@ -8,10 +8,10 @@ summary(d)
 
 # read-in with parameters specified (student level with weights)
 els_wgt_df <- readELS(path = "~/ELS/2002", 
-                            filename = "els_02_12_byf3pststu_v1_0.sav", 
-                            wgtFilename = "els_02_12_byf3stubrr_v1_0.sav",
-                            verbose = TRUE, 
-                            forceReread = FALSE)
+                      filename = "els_02_12_byf3pststu_v1_0.sav", 
+                      wgtFilename = "els_02_12_byf3stubrr_v1_0.sav",
+                      verbose = TRUE, 
+                      forceReread = FALSE)
 
 # read-in with parameters specified (school level, no separate weight replicate file)
 els_sch_df <- readELS(path = "~/ELS/2002", 
