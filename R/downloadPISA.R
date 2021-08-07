@@ -63,11 +63,11 @@ downloadPISA <- function(root, years=c(2000, 2003, 2006, 2009, 2012, 2015, 2018)
     # Create a year root directory
     baseroot <- file.path(root,"PISA/")
     if(!dir.exists(baseroot)) {
-      dir.create(baseroot)
+      dir.create(baseroot, showWarnings = FALSE, recursive = TRUE)
     }
     yroot <- file.path(baseroot,y)
     if(!dir.exists(yroot)) {
-      dir.create(yroot)
+      dir.create(yroot, showWarnings = FALSE, recursive = TRUE)
     }
     
     # Download all files
