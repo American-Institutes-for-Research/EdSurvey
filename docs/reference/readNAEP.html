@@ -74,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.0.9000</span>
       </span>
     </div>
 
@@ -103,7 +103,12 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/American-Institutes-for-Research/EdSurvey/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -118,7 +123,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Connect to NAEP Data</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/American-Institutes-for-Research/EdSurvey/blob/master/R/readNAEP.r'><code>R/readNAEP.r</code></a></small>
     <div class="hidden name"><code>readNAEP.Rd</code></div>
     </div>
 
@@ -212,33 +217,34 @@ When present, simply use the <code>_linking</code> version of a variable to get 
 #&gt; Dimensions: 17606 rows and 302 columns.
 #&gt; 
 #&gt; There is 1 full sample weight in this edsurvey.data.frame:
-#&gt;   ‘origwt’ with 62 JK replicate weights (the default).
+#&gt;   'origwt' with 62 JK replicate weights (the default).
 #&gt; 
 #&gt; 
 #&gt; There are 6 subject scale(s) or subscale(s) in this
 #&gt;   edsurvey.data.frame:
-#&gt; ‘num_oper’ subject scale or subscale with 5 plausible values.
+#&gt; 'num_oper' subject scale or subscale with 5 plausible values.
 #&gt; 
-#&gt; ‘measurement’ subject scale or subscale with 5 plausible values.
+#&gt; 'measurement' subject scale or subscale with 5 plausible values.
 #&gt; 
-#&gt; ‘geometry’ subject scale or subscale with 5 plausible values.
+#&gt; 'geometry' subject scale or subscale with 5 plausible values.
 #&gt; 
-#&gt; ‘data_anal_prob’ subject scale or subscale with 5 plausible values.
+#&gt; 'data_anal_prob' subject scale or subscale with 5 plausible values.
 #&gt; 
-#&gt; ‘algebra’ subject scale or subscale with 5 plausible values.
+#&gt; 'algebra' subject scale or subscale with 5 plausible values.
 #&gt; 
-#&gt; ‘composite’ subject scale or subscale with 5 plausible values (the
+#&gt; 'composite' subject scale or subscale with 5 plausible values (the
 #&gt;   default).
 #&gt; 
 #&gt; 
-#&gt; Omitted Levels: ‘Multiple’, ‘NA’, and ‘Omitted’
+#&gt; Omitted Levels: 'Multiple', 'NA', and 'Omitted'
 #&gt; 
 #&gt; Default Conditions:
 #&gt; tolower(rptsamp) == "reporting sample"
 #&gt; Achievement Levels:
-#&gt; Basic: 262
-#&gt; Proficient: 299
-#&gt; Advanced: 333</div><div class='input'>
+#&gt; Mathematics:
+#&gt; Basic: 262.00
+#&gt; Proficient: 299.00
+#&gt; Advanced: 333.00</div><div class='input'>
 <span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='co'># To read in an NCES file first set the directory to the ~/Data subfolder,</span>
 <span class='co'># then read in the appropriate .dat file:</span>

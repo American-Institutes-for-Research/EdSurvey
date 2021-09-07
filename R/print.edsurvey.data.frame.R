@@ -80,7 +80,7 @@ print.edsurvey.data.frame <- function(x, printColnames = FALSE, ...) {
         noms <- names(al[[ali]])
         for(i in 1:length(al[[ali]])) {  
           post <- paste(rep(" ",1+max(nchar(noms)) - nchar(noms[i])), collapse="")
-          eout(paste0("  ",noms[i],":",post, sprintf("%.2f",al[[ali]][i]), "\n"))
+          eout(paste0("  ", noms[i], ":", post, sprintf("%.2f", al[[ali]][i]), "\n"))
         }  
       }
     }

@@ -124,13 +124,16 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
                 "Please ensure only one file exists in the directory with this name and retry (regardless of filename case)." ))
   }
   
-  hasSchoolFile <- TRUE #flag to know if a school level file is available
-  if(length(schoolFile) < 1){
+  #if it's a long term trend file (4th character in base filename is "L") then don't check for a school file
+  checkSchoolFile <- !grepl("^...L", basename(studentFile), ignore.case = TRUE)
+  hasSchoolFile <- checkSchoolFile #default to TRUE if not a long-term trend file
+  
+  if(length(schoolFile) < 1 && checkSchoolFile){
     warning(paste0("Could not find school level data file matching filename: ", schoolFileRegex, "\n",
                 "No school level data will be available for analysis." ))
     hasSchoolFile <- FALSE
   }
-  if(length(schoolFile) > 1){
+  if(length(schoolFile) > 1 && checkSchoolFile){
     stop(paste0("Multiple school level data files matching filename: ", schoolFileRegex, "\n",
                 "In specified directory: ", filedir, "\n",
                 "Please ensure only one file exists in the directory with this name and retry (regardless of filename case)." ))
@@ -164,62 +167,90 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
       schoolFR2 <- schoolFR2[1] #limit to just one if multiple found, assuming it will be correct file
     }
   }
-
-  #parse the fr2 control files and create the LaF objects for the edsurvey.data.frame
-  labelsFile <- readMRC(studentFR2)
-  dataSchLaf <- NULL
+  
+  #Getting description of data
+  f <- list()
+  if(filename != "sdfexample") {
+    f <- descriptionOfFile(filename)
+  }
+  else {
+    f[['filename']] <- filename
+  }
+  
+  #check if this is a long-term trend file
+  isLTT <- grepl("^long.*term.*trend$", f$Assessment_Code, ignore.case = TRUE)
+  dataSchLaf <- NULL #default
   schLabelsFile <- NULL
-  if(hasSchoolFile) {
-    schLabelsFile <- readMRC(schoolFR2)
-    schLabelsFile <- schLabelsFile[order(schLabelsFile$Start),]
-    widths <- schLabelsFile$Width
-    dataTypes <- as.character(schLabelsFile$dataType)
-    varNames = as.character(tolower(schLabelsFile$variableName))
-    dataSchLaf <- laf_open_fwf(filename=schoolFile, column_types=dataTypes,
-                               column_names=varNames, column_widths=widths)
-  }
-  labelsFile <- labelsFile[order(labelsFile$Start),]
-  widths <- labelsFile$Width
-  dataTypes <- as.character(labelsFile$dataType)
-  varNames = as.character(tolower(labelsFile$variableName))
   
-  dataLaf <- laf_open_fwf(filename=studentFile, column_types=dataTypes,
-                          column_names=varNames, column_widths=widths)
- 
-  #Defining PVs and JKs
+  if(isLTT){
+    #no school level file, only a student level file
+    labelsFile <- readMRC_LTT(studentFR2, f[["Subject"]])
 
-  
-  ##############################################################
-  ## Accomodation not permitted weights and PVs
-  pvs = list()
-  pv_subset <- subset(labelsFile, select = c('Type','variableName'), labelsFile$Labels %in% c("PV", "PV2", "PVT"))
-  uniquePvTypes = unique(pv_subset$Type)
-  for (i in uniquePvTypes) {
-    vars <- tolower(pv_subset$variableName[pv_subset$Type == i])
-    temp_list <- list(varnames = vars)
-    pvs[[i]] <- temp_list
-  }
-  
-  weight_temp <-  tolower(varNames[labelsFile$Labels == "JK"])
-  jksuffix <- gsub("[^0-9]","", weight_temp)
-  base <- gsub(jksuffix[1],"", weight_temp[1])
+    #build the weights and pvvars list
+    weights <- buildNAEP_LTT_WeightList(labelsFile)
+    pvs <- buildNAEP_LTT_PVList(labelsFile)
+    
+    dataLaf <- laf_open_fwf(filename=studentFile, column_types=labelsFile$dataType,
+                            column_names=labelsFile$variableName, column_widths=as.numeric(labelsFile$Width))
+    
+    #in some rare cases the LaF cleaned names differ from the fileFormat, ensure they are consistent
+    labelsFile$variableName <- names(dataLaf)
 
-  # setup weights
-  if(sum("JK2" %in% labelsFile$Labels) == 0) {
-    # one set of weights
-    weights <- list(origwt=list(jkbase=base, jksuffixes=jksuffix))
-    names(weights) <- (varNames[labelsFile$weights])[1] # first weight
-  } else{ 
-    # there is two sets of weights
-    weight_tempAP <-  tolower(varNames[labelsFile$Labels == "JK2"])
-    jksuffixAP <- gsub("[^0-9]","", weight_tempAP)
-    baseAP <- gsub(jksuffixAP[1],"", weight_tempAP[1])
-    weights <- list(origwt=list(jkbase=base, jksuffixes=jksuffix), aorigwt=list(jkbase=baseAP, jksuffixes=jksuffixAP))
-    names(weights) <- (varNames[labelsFile$weights])[1:2] # first two weights
-  }
+  }else{ #parse as normal NAEP data file
+    #parse the fr2 control files and create the LaF objects for the edsurvey.data.frame
+    labelsFile <- readMRC(studentFR2)
+    if(hasSchoolFile) {
+      schLabelsFile <- readMRC(schoolFR2)
+      schLabelsFile <- schLabelsFile[order(schLabelsFile$Start),]
+      widths <- schLabelsFile$Width
+      dataTypes <- as.character(schLabelsFile$dataType)
+      varNames = as.character(tolower(schLabelsFile$variableName))
+      dataSchLaf <- laf_open_fwf(filename=schoolFile, column_types=dataTypes,
+                                 column_names=varNames, column_widths=widths)
+    }
+    labelsFile <- labelsFile[order(labelsFile$Start),]
+    widths <- labelsFile$Width
+    dataTypes <- as.character(labelsFile$dataType)
+    varNames = as.character(tolower(labelsFile$variableName))
+    
+    dataLaf <- laf_open_fwf(filename=studentFile, column_types=dataTypes,
+                            column_names=varNames, column_widths=widths)
+    
+    #Defining PVs and JKs
+    
+    ##############################################################
+    ## Accomodation not permitted weights and PVs
+    pvs = list()
+    pv_subset <- subset(labelsFile, select = c('Type','variableName'), labelsFile$Labels %in% c("PV", "PV2", "PVT"))
+    uniquePvTypes = unique(pv_subset$Type)
+    for (i in uniquePvTypes) {
+      vars <- tolower(pv_subset$variableName[pv_subset$Type == i])
+      temp_list <- list(varnames = vars)
+      pvs[[i]] <- temp_list
+    }
+    
+    weight_temp <-  tolower(varNames[labelsFile$Labels == "JK"])
+    jksuffix <- gsub("[^0-9]","", weight_temp)
+    base <- gsub(jksuffix[1],"", weight_temp[1])
+    
+    # setup weights
+    if(sum("JK2" %in% labelsFile$Labels) == 0) {
+      # one set of weights
+      weights <- list(origwt=list(jkbase=base, jksuffixes=jksuffix))
+      names(weights) <- (varNames[labelsFile$weights])[1]
+    } else{ 
+      # there is two sets of weights
+      weight_tempAP <-  tolower(varNames[labelsFile$Labels == "JK2"])
+      jksuffixAP <- gsub("[^0-9]","", weight_tempAP)
+      baseAP <- gsub(jksuffixAP[1],"", weight_tempAP[1])
+      weights <- list(origwt=list(jkbase=base, jksuffixes=jksuffix), aorigwt=list(jkbase=baseAP, jksuffixes=jksuffixAP))
+      names(weights) <- (varNames[labelsFile$weights])[1:2] # first two weights
+    }
+  }#end if(isLTT)
+  
   # set default weight
-  if(missing(defaultWeight)) {
-    attributes(weights)$default <- (varNames[labelsFile$weights])[1]
+  if(missing(defaultWeight) || !any(defaultWeight %in% names(weights))) {
+    attributes(weights)$default <- names(weights)[1]
   } else {
     attributes(weights)$default <- defaultWeight
   }
@@ -247,24 +278,61 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
     attributes(pvs)$default <- defaultPvs[1]
   }
   
-  #Getting description of data
-  f <- list()
-  if(filename != "sdfexample") {
-    f <- descriptionOfFile(filename)
+  #achievementLevelsHelp located in descriptionOfFile.R
+  #each file will only have one achievement level scale associated with the file
+  levels <- achievementLevelsHelp(f$Grade_Level, f$Year, f$Subject, f$Assessment_Code)
+  
+  #apply the achievement levels only to the non-theta pvs
+  #levels will only have one row here for NAEP data files
+  for(i in seq_along(pvs)){
+    if(!grepl("_theta$", names(pvs)[i], ignore.case = TRUE)){
+      pvs[[i]]$achievementLevel <- levels #there will be only one value in levels
+    }
   }
-  else {
-    f[['filename']] <- filename
-  }
-  levels <- achievementLevelsHelp(f["Grade_Level"], f["Year"], f["Subject"])
-  names(levels) <- c("Basic", "Proficient", "Advanced")
+  
+  #convert achievementLevels to list, this bypasses the automatic apply to all pvs
+  levelName <- f$Subject
+  levels <- list(levels)
+  names(levels) <- levelName
+  
   # add reporting sample default condition if the column exists
-  if("rptsamp" %in% names(dataLaf)) {
+  if("rptsamp" %in% tolower(names(dataLaf))) {
     defaultConditions <- quote(tolower(rptsamp)=="reporting sample")
   }
   else {
     defaultConditions <- NULL
   }
   
+  #get psu and stratum variables for Taylor series variance
+  checkVars <- tolower(labelsFile$variableName)
+  psCheck <- TRUE
+  if(psCheck && all(c("jkpair", "jkrepl") %in% checkVars)){
+    ps <- c(stratum="jkpair", psu="jkrepl")
+    psCheck <- FALSE
+  }
+  if(psCheck && all(c("repgrp", "dropwt") %in% checkVars)){
+    ps <- c(stratum="repgrp", psu="dropwt")
+    psCheck <- FALSE
+  }
+  if(psCheck && all(c("jkpair", "jkunit") %in% checkVars)){
+    ps <- c(stratum="jkpair", psu="jkunit")
+    psCheck <- FALSE
+  }
+  #note: this is the default psu/stratum vars for all normal NAEP files and newer LTT files
+  if(psCheck && all(c("repgrp1", "jkunit") %in% checkVars)){
+    ps <- c(stratum="repgrp1", psu="jkunit")
+    psCheck <- FALSE
+  }
+  if(psCheck){ #no match was found!
+    ps <- NULL
+  }
+  if(is.null(ps) || is.na(ps)){
+    psuVar <- NULL
+    stratumVar<- NULL
+  }else{
+    psuVar <- ps["psu"]
+    stratumVar <- ps["stratum"]
+  }
   
   # build the result list and return
   res <- edsurvey.data.frame(userConditions = list(),
@@ -284,10 +352,12 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
                       omittedLevels = omittedLevels,
                       survey = "NAEP",
                       country = "USA",
-                      psuVar = "jkunit",
-                      stratumVar = "repgrp1",
+                      psuVar = psuVar,
+                      stratumVar = stratumVar,
                       jkSumMultiplier = 1,
                       fr2Path=studentFR2)
+  
+  #apply the linking-error parameters
   if("dbapba" %in% colnames(res)) {
     foundScale <- FALSE
     if(res$subject == "Science") { 
@@ -568,15 +638,16 @@ getRAM <- function() {
 }
 
 # @author Paul Bailey & Ahmad Emad
+#this function 
 readMRC <- function(filename) {
   # read NAEP machine readable file.
   # this has layout information on it
   t <- try(mrcFile <- readLines(filename), silent=TRUE)
-
+  
   # Split mrcFile by "\n"
   mrcFile <- strsplit(mrcFile , "\n", fixed=TRUE)
   mrcFile <- unlist(mrcFile)
-
+  
   # read in the variables from the file,t his is based on the information ETS
   # shared with us
   if( any(nchar(mrcFile) < 90) ) {
@@ -594,7 +665,7 @@ readMRC <- function(filename) {
     warning(paste0("Unnamed variables in .fr2 file on row(s) ", pasteItems( (1:length(variableName))[zeroLenVars]), ". File located at ", filename, ". These variables renamed sequentially, starting with V1."))
     variableName[zeroLenVars] <- paste0("v", 1:sum(zeroLenVars))
   }
-
+  
   zeroLenVars <- nchar(variableName) == 0
   if(any(zeroLenVars)) {
     warning(paste0("Unnamed variables in .fr2 file on row(s) ", pasteItems( (1:length(variableName))[zeroLenVars]), ". File located at ", filename, ". These variables renamed sequentially, starting with V1."))
@@ -615,7 +686,7 @@ readMRC <- function(filename) {
       labelValues[j] <- paste(values, labels, collapse ="^", sep="=")
     }
   }
-
+  
   # keep the original labels
   oLabels <- Labels
   # Finding the plausible weights and jacknife replicates.
@@ -628,7 +699,7 @@ readMRC <- function(filename) {
   Labels[grepl("plausible", tolower(Labels)) & grepl("theta", tolower(Labels))                                       ] <- "PVT"
   # accommodations perimted PVs:
   Labels[grepl("plausible", tolower(Labels)) & grepl("value", tolower(Labels)) & "A" == substring(variableName, 1, 1)] <- "PV2"
-
+  
   # normally there is just one set of weights. When there are multiple sets
   # then one starts with an "A" and is the accommodations permitted values
   Labels[grepl("weight", tolower(Labels)) & grepl("replicate", tolower(Labels)) & "A" != substring(variableName, 1, 1)] <- "JK"
@@ -636,19 +707,19 @@ readMRC <- function(filename) {
   
   pvWt <- character(length(mrcFile)) # the number of the PV (e.g. for a subject or subscale with five PVs this would show values from 1 to 5 for five variables)
   Type <- character(length(mrcFile)) # this is the subject or subscale
-
+  
   # Check if there is at least one Plausible Value, and then finding their names
   tempValue <- applyPV("PV", Labels, pvWt, oLabels, Type)
   Labels <- tempValue[["Labels"]]
   pvWt <- tempValue[["pvWt"]]
   Type <- tempValue[["Type"]]
-
+  
   # note theta PVs
   tempValue <- applyPV("PVT", Labels, pvWt, oLabels, Type)
   Labels <- tempValue[["Labels"]]
   pvWt <- tempValue[["pvWt"]]
   Type <- tempValue[["Type"]]
-
+  
   # note AP PVs
   tempValue <- applyPV("PV2", Labels, pvWt, oLabels, Type)
   Labels <- tempValue[["Labels"]]
@@ -675,6 +746,164 @@ readMRC <- function(filename) {
   mrcFileCSV <- mrcFileCSV[order(mrcFileCSV$Start),]
   #mrcFileCSV$labelValues <- as.character(mrcFileCSV$labelValues)
   return(mrcFileCSV)
+}
+
+# @author Tom Fink 
+# parses the MRC file and returns a file format data.frame specifically for the long-term trend data files/layout
+# this is to ensure the original readMRC function doesn't break compatibility for previously QCed data files
+readMRC_LTT <- function(filename, subject) {
+  # read NAEP machine readable file.
+  # this has layout information on it
+  t <- try(mrcFile <- readLines(filename), silent=TRUE)
+  
+  # Split mrcFile by "\n"
+  mrcFile <- strsplit(mrcFile , "\n", fixed=TRUE)
+  mrcFile <- unlist(mrcFile)
+  
+  # read in the variables from the file,t his is based on the information ETS
+  # shared with us
+  if( any(nchar(mrcFile) < 90) ) {
+    stop(paste0("Malformed fr2 file: some lines have fewer than the required 90 characters. Lines ", pasteItems(which(nchar(mrcFile)<90)), "."))
+  }
+  variableName <- trimws(substring(mrcFile, 1, 8)) # name of the variable
+  Start <- as.numeric(trimws(substring(mrcFile, 9, 12))) # start column in file
+  Width <- as.numeric(trimws(substring(mrcFile, 13, 14))) # number of characters in variable
+  End <- Start + Width -1 # end column in file
+  Decimal <- as.numeric(trimws(substring(mrcFile, 15, 15))) # digits (from the right) to be considered decimals
+  Labels <- trimws(substring(mrcFile, 21, 70)) # variable label
+  NumValue <- as.numeric(trimws(substring(mrcFile, 89, 90))) # number of numeric codes (e.g. one could would be 1="Yes")
+  zeroLenVars <- nchar(variableName) == 0
+  if(any(zeroLenVars)) {
+    warning(paste0("Unnamed variables in .fr2 file on row(s) ", pasteItems( (1:length(variableName))[zeroLenVars]), ". File located at ", filename, ". These variables renamed sequentially, starting with V1."))
+    variableName[zeroLenVars] <- paste0("v", 1:sum(zeroLenVars))
+  }
+  
+  zeroLenVars <- nchar(variableName) == 0
+  if(any(zeroLenVars)) {
+    warning(paste0("Unnamed variables in .fr2 file on row(s) ", pasteItems( (1:length(variableName))[zeroLenVars]), ". File located at ", filename, ". These variables renamed sequentially, starting with V1."))
+    variableName[zeroLenVars] <- paste0("v", 1:sum(zeroLenVars))
+  }
+  # parse the numeric codes
+  labelValues <- character(length(mrcFile))
+  for (j in 1:length(mrcFile)) {
+    # for each line:
+    Ncodes <- NumValue[j]-1
+    if (Ncodes > 0) {
+      # if it has numeric codes
+      # read in up to 26 character per code, plus 2 characters for the number
+      codeValSeq <- seq(91, (91+Ncodes*28), by = 28)
+      codeLabelSeq <- seq(93, (93+Ncodes*28), by = 28)
+      values <- as.numeric(trimws(substring(mrcFile[j], codeValSeq, codeValSeq+1)))
+      labels <- trimws(substring(mrcFile[j], codeLabelSeq, codeLabelSeq+19))
+      labelValues[j] <- paste(values, labels, collapse ="^", sep="=")
+    }
+  }
+  
+  labels <- tolower(Labels)
+  weights <- rep(FALSE, times = length(variableName)) #default to all false, to be calculated later
+  pvWt <- rep("", times = length(variableName))
+  Type <- rep("", times = length(variableName))
+  
+  # For now, assume all variables are characters.
+  dataType <- rep("character", length(mrcFile))
+  # Create appropriate data type for variables.
+  # integer isn't really the right type here, but no way to determine accurate type
+  # the default of 'character' should be sufficient
+  dataType[Decimal >0 & Width < 8] <- "integer"
+  dataType[Decimal >0 & Width >= 8] <- "numeric"
+  
+  labelValues <- as.character(labelValues)
+  mrcFileCSV <- data.frame(variableName, Start, End, Width, Decimal, Labels, labelValues, pvWt, Type, dataType, weights, stringsAsFactors=FALSE)
+  mrcFileCSV <- mrcFileCSV[order(mrcFileCSV$Start),]
+  
+  #apply the Weights and PVVars (to identify and mark them)
+  mrcFileCSV <- identifyNAEP_LTT_Weights(mrcFileCSV)
+  mrcFileCSV <- identifyNAEP_LTT_PV(mrcFileCSV, subject = subject)
+  return(mrcFileCSV)
+}
+
+# identifies the NAEP Long-Term Trend Weights and set's the logical value to TRUE in the fileFormat
+# the modified file format object is then returned
+identifyNAEP_LTT_Weights <- function(fileFormatDF){
+  #check first if origwt is present, 'weight' is sometimes on newer LTT files but not the overall JK weight we want with the replicates
+  isWgt <- grepl("^origwt$", fileFormatDF$variableName, ignore.case = TRUE)
+  if(!any(isWgt)){
+    isWgt <- grepl("^weight$", fileFormatDF$variableName, ignore.case = TRUE)
+  }
+  fileFormatDF$weights <- isWgt
+  return(fileFormatDF)
+}
+
+# returns a list of weights based on the identified weights from the file format for use with package
+buildNAEP_LTT_WeightList <- function(fileFormatDF){
+  
+  wgtVars <- fileFormatDF$variableName[fileFormatDF$weights==TRUE]
+  res <- list()
+  #should only be one weight defined, but just in case
+  for(i in seq_along(wgtVars)){
+    #this is true for all LTT weights. the replicates use the same base variable name regardless of the weight name
+    #the number of replicates differs from year to year
+    repVars <- grep("^srwt\\d{1,2}$", fileFormatDF$variableName, ignore.case = TRUE, value = TRUE)
+    repVars <- gsub("srwt", "", repVars, ignore.case = TRUE) #leave the numeric value only
+    
+    res[[i]] <- list(jkbase = "srwt", jksuffixes = repVars)
+  }
+  
+  names(res) <- tolower(wgtVars)
+  #mark the replicate
+  return(res)
+}
+
+# identifies the NAEP Long-Term Trend plausible values and sets the appropriate pvWT and Type values in the file format
+# the modified file format object is then returned
+identifyNAEP_LTT_PV <- function(fileFormatDF, subject){
+  
+  subject <- tolower(subject)
+  subject <- ifelse(subject=="mathematics", "math", subject)
+  #RLTTR
+  pvvars <- c()
+  if(subject == "reading"){
+    vars1 <- grep("^(rrp|rth)sct\\d{1,2}$", fileFormatDF$variableName, ignore.case = TRUE, value = TRUE)
+    vars2 <- grep("^(theta|lmrval|redtht|redval|rltt(th|rp|r|t))\\d{1,2}$", fileFormatDF$variableName, ignore.case = TRUE, value = TRUE)
+    pvvars <- c(vars1, vars2)
+  }
+  if(subject == "math"){
+    vars1 <- grep("^(mrp|mth)sct\\d{1,2}$", fileFormatDF$variableName, ignore.case = TRUE, value = TRUE)
+    vars2 <- grep("^(theta|lmmval|mtht|medval|mltt(th|rp|r|t))\\d{1,2}$", fileFormatDF$variableName, ignore.case = TRUE, value = TRUE)
+    pvvars <- c(vars1, vars2)
+  }
+  
+  if(length(pvvars)==0){
+    warning(paste0("No plausible values found in this NAEP file."))
+  }
+
+  baseVars <- unique(gsub("\\d+$", "", pvvars))
+  
+  for(i in seq_along(baseVars)){
+    repVars <- pvvars[grepl(paste0("^", baseVars[i]), pvvars, ignore.case = TRUE)]
+    repVarsNum <- as.numeric(gsub(baseVars[i],"", repVars, ignore.case = TRUE))
+    fileFormatDF$pvWt[fileFormatDF$variableName %in% repVars] <- repVarsNum 
+
+    isTheta <- all(grepl("theta", fileFormatDF$Labels[fileFormatDF$variableName %in% repVars], ignore.case = TRUE))
+    
+    fileFormatDF$Type[fileFormatDF$variableName %in% repVars] <- ifelse(isTheta,paste0(subject, "_theta"), subject)
+  }
+  
+  return(fileFormatDF)
+}
+
+# build the NAEP Long-Term Trend plausible value list
+buildNAEP_LTT_PVList <- function(fileFormatDF){
+  
+  res <- list()
+  pvBase <- unique(fileFormatDF$Type[nchar(fileFormatDF$Type)>0])
+  
+  for(i in seq_along(pvBase)){
+    repVars <- fileFormatDF$variableName[fileFormatDF$Type==pvBase[i]]
+    res[[i]] <- list(varnames = tolower(repVars))
+  }
+  names(res) <- pvBase
+  return(res)
 }
 
 # @author Paul Bailey & Ahmad Emad

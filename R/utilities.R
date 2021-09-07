@@ -23,7 +23,7 @@ getPSUVar <- function(data, weightVar = attributes(getAttributes(data, "weights"
   # retrieve all the attributes we need to determine warnings
   defaultWeight <- attributes(getAttributes(data, "weights"))[["default"]]
   allWeights <- getAttributes(data, "weights")
-  psuVar <- getAttributes(data,"psuVar")
+  psuVar <- getAttributes(data, "psuVar")
 
 
   if(is.null(allWeights)) {

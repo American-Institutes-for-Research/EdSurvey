@@ -244,18 +244,15 @@ edsurvey.data.frame <- function(userConditions,
   
   
   if(is.null(defaultConditions) || is.na(defaultConditions)){
-    
     cache <- data.frame(ROWID=1:(dataList[[1]]$nrow),
                         DEFAULT=TRUE)
-  }else{ #default conditions are supplied, calculate them here
-    
+  } else { #default conditions are supplied, calculate them here
     # use getData on this, as of yet incomplete edsurvey.data.frame
     # to get row IDs
     # supressWarnings because it is just about nrow
     suppressWarnings(gd0 <- getData(res, varnames=colnames(res)[1], dropUnusedLevels=FALSE, omittedLevels=FALSE, defaultConditions=FALSE))
     suppressWarnings(gd <- getData(res, varnames=colnames(res)[1], dropUnusedLevels=FALSE, omittedLevels=FALSE))
     class(res) <- "list"
-   
     cache <- data.frame(ROWID=1:nrow(gd0),
                         DEFAULT=1:nrow(gd0) %in% rownames(gd))
   }
@@ -276,9 +273,21 @@ edsurvey.data.frame <- function(userConditions,
   for(item in dataList){
     LaF::close(item$lafObject)
   }
-  if(any(!c(psuVar, stratumVar) %in% c("JK1", colnames(res)))) {
-    warning("Cannot find both PSU and Stratum variables on data. Taylor series variance estimation will not be possible.")
+  #check PSU/Stratum variables to see if 1) they are specified; if so, 2) they are defined in the data variables
+  checkPS <- TRUE
+  if(is.null(psuVar) || is.null(stratumVar)){
+    if(!all(c("psuVar", "stratumVar") %in% unlist(lapply(weights, names)))) {
+      warning("PSU or Stratum variable(s) are undefined for this data. Taylor series variance estimation will not be possible.")
+    }
+    checkPS <- FALSE
   }
+  if(checkPS){
+    #unclear why JK1 variable specified here, leaving for possible NAEP file implications (tom 9/3/21)
+    if(any(!c(psuVar, stratumVar) %in% c("JK1", colnames(res)))) {
+      warning("Cannot find both PSU and Stratum variables on data. Taylor series variance estimation will not be possible.")
+    }
+  }
+
   return(res)
 }
 

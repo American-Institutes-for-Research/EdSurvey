@@ -465,7 +465,7 @@ calAL <- function(achievementVars = NULL,
       discreteEst <- getEstAL(pvEst = estAL,
                               stat = stat_al,
                               wgt = wgt)
-  } else {
+    } else {
       discreteEst <- getEstAL(pvEst = estAL,
                               stat = stat_al,
                               wgt = wgt)
@@ -491,7 +491,7 @@ calAL <- function(achievementVars = NULL,
       cumEst <- getEstAL(pvEst = estAL,
                          stat = stat_alC,
                          wgt = wgt)
-      cvarm <- matrix(NA, nrow=jrrIMax, ncol=nrow(discreteEst$est))
+      cvarm <- matrix(NA, nrow=jrrIMax, ncol=nrow(cumEst$est))
     }
     # setup containers for variance estimates
     cumVarEstInputs <- list()
