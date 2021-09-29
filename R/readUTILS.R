@@ -51,6 +51,15 @@ getSPSSFileFormat <- function(spssDF) {
   
   ff$weights <- FALSE #set all weights to false initially
   
+  #fix any column names that are named 'repeat', or add other reserved names if those are present too
+  #do this after it's gathered all the required info from the SPSS metadata
+  if(any(grepl("^repeat$", ff$variableName, ignore.case = TRUE))){
+    idx <- grepl("^repeat$", ff$variableName, ignore.case = TRUE)
+    prefix <- ff$variableName[idx]
+    suffix <- seq_along(prefix)
+    
+    ff$variableName[idx] <- paste(prefix, suffix, sep = ".")
+  }
   return(ff)
 }
 
@@ -491,33 +500,26 @@ parseTEXTFileFormat_NCES <- function (inTxtFile){
   controlFile <- trimws(controlFile,which = "both") #remove leading or ending whitespace
   controlFile <- controlFile[controlFile != ""] #remove blank rows
   
-  # GET VARIABLE LIST, FWF POSITIONS, and DATA TYPE
-  i <- 1
   
-  while (controlFile[i]!="/* ASCII Dataset File Name */") { #find file handle function in SPSS file
-    i <- i+1
+  #Dataset Name
+  iPos <- which(controlFile=="/* ASCII Dataset File Name */")[1]
+  if(length(iPos)==0){
+    stop(paste0("Unable to locate ASCII Dataset File Name in file: ", dQuote(inTxtFile),))
   }
-  i <- i+1
-  datasetName <- trimws(controlFile[i], which = "both")
+  datasetName <- trimws(controlFile[iPos+1], which = "both")
   
-  while (controlFile[i]!="/* Total Record Length */") { #find file handle function in SPSS file
-    i <- i+1
+  #Record Length
+  iPos <- which(controlFile=="/* Total Record Length */")[1]
+  if(length(iPos)==0){
+    stop(paste0("Unable to locate ASCII Total Record Length in file: ", dQuote(inTxtFile),))
   }
-  i <- i+1
-  maxRecordLen <- as.numeric(trimws(controlFile[i], which = "both"))
+  maxRecordLen <- as.numeric(trimws(controlFile[iPos+1], which = "both"))
   
-  while (controlFile[i]!="/* Variable Names, Locations, and Descriptions */") { #find file handle function in SPSS file
-    i <- i+1
-  }
-  i <- i+1 #first row starts below the header
-  
-  #find where we want to end the variable list chunk
-  j <- i+1
-  while (controlFile[j]!="/* Variable Value Labels */") {#find start line of variables by '1-# (1 is first column in .dat file)
-    j <- j+1
-  }
-  
-  lineChunk <- controlFile[i:(j-1)]
+  #Variable Names and FWF Positions, and Variable Descriptions
+  iPos <- which(controlFile=="/* Variable Names, Locations, and Descriptions */")[1]
+  endPos <- which(controlFile=="/* Variable Value Labels */")[1]
+
+  lineChunk <- controlFile[(iPos+1):(endPos-1)]
   
   varMatch <- regexpr("^\\w+\\s{0,}\\d+-\\d+", lineChunk) #get first word in line and include the position chars as sometimes they are right next to each other with no space
   varName <- tolower(regmatches(lineChunk, varMatch)) #use lower case for the names
@@ -589,14 +591,14 @@ parseTEXTFileFormat_NCES <- function (inTxtFile){
   dict$labelValues <- rep("", length(varName))
   dict$Type <- rep("", times = length(dict$variableName))
   dict$pvWt <- rep("", times = length(dict$variableName))
-  dict$dataType <- rep("", times = length(dict$variableName))
+  dict$dataType <- rep("character", times = length(dict$variableName)) #default all to character for now
   dict$weights <- rep(FALSE, times = length(dict$variableName))
   #########################
   
   #Get the Variable Label section here in chunk
-  i <- j+1 #move one row down past the '/* Variable Value Labels */' line to the end of the file
+  iPos <- which(controlFile=="/* Variable Value Labels */")[1]
   
-  lineChunk <- controlFile[i:length(controlFile)] #get all the variable labels as on chunk
+  lineChunk <- controlFile[(iPos+1):length(controlFile)] #get all the variable labels as on chunk
   
   #some variable names were trimmed in the layout specs
   #identify which variables have no labels and compare
@@ -782,6 +784,8 @@ writeDF_FWF <- function(df, fileFormat, savePath, verbose){
       if(fileFormat$dataType[coli]=="numeric" && fileFormat$Width[coli] < 9){
         fileFormat$dataType[coli] <- "integer"
         fileFormat$Decimal[coli] <- 0 #it's not a decimal regardless of what
+      }else if(fileFormat$dataType[coli]=="numeric" && fileFormat$Width[coli]>=9){ #contains no decimals
+        fileFormat$Decimal[coli] <- 0
       }
       
     }#end if(is.numeric(df[[coli]]) && any(grepl(".", df[[coli]], fixed = TRUE), na.rm = TRUE))
@@ -1131,4 +1135,30 @@ UnclassCols <- function(tbl){
   }
   
   return(tbl)
+}
+
+#internal function to get a unique data.frame of all variable value labels of a fileFormat object (value & label)
+valueLabel_getUniqueDF <- function(fileFormat){
+  
+  fullDF <- data.frame(key = character(0), lbl = character(0))
+  
+  for(i in 1:nrow(fileFormat)){
+    
+    loopLV <- fileFormat$labelValues[[i]]
+    
+    if(is.null(loopLV) || nchar(loopLV)==0){
+      next
+    }
+    
+    x <- unlist(strsplit(loopLV,"^", fixed = TRUE))
+    y <- sapply(x, function(z){strsplit(z, "=", fixed=TRUE)})
+    key <- sapply(y, function(z){z[1]})
+    lbl <- sapply(y, function(z){paste(z[-1], sep="", collapse = "=")})
+    
+    tmpDF <- data.frame(key, lbl)
+    
+    fullDF <- unique(rbind(fullDF, tmpDF))
+  }
+  
+  return(fullDF)
 }

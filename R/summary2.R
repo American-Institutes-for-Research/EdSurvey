@@ -45,8 +45,8 @@
 #' @seealso \code{\link{percentile}} 
 #' @author Paul Bailey and Trang Nguyen
 summary2 <- function(data, variable,
-                     weightVar=attr(getAttributes(data,"weights"),"default"),
-                     omittedLevels=FALSE) {
+                     weightVar = attr(getAttributes(data, "weights"), "default"),
+                     omittedLevels = FALSE) {
   if (inherits(data, c("edsurvey.data.frame.list"))) {
     return(itterateESDFL(match.call(),data))
   }
@@ -190,7 +190,7 @@ fast.sd.var <- function(variables, weightVar, replicateWeights,
     w0 <- weightVar[!is.na(y[,i]) & !is.na(weightVar) & weightVar !=0]
     mu[i] <- sum(w0 * y0)/sum(w0)
     N <- length(w0[w0>0])
-    variance[i] <- sum(w0 * (y0 - mu[i])^2)/( sum(w0))
+    variance[i] <- sum(w0 * (y0 - mu[i])^2)/((N-1)/N * sum(w0))
     if(i <= jrrIMax) {
       for(j in 1:ncol(replicateWeights)) {
         wj <- replicateWeights[,j]
@@ -284,18 +284,13 @@ fast.sd.var <- function(variables, weightVar, replicateWeights,
 #'                           of covariances between estimates.
 #'                           
 #' @return 
-#'   \code{SD} returns:
-#'   \describe{
-#'     \item{mean}{the mean assessment score for \code{variable}, calculated according to the vignette titled 
-#'                \href{https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf}{Statistical Methods Used in EdSurvey}}
-#'     \item{std}{the standard deviation of the \code{mean}}
-#'     \item{stdSE}{the standard error of the \code{std}}
-#'     \item{sd}{the degrees of freedom of the \code{std}}
-#'   }
-#'                          
-#' When \code{returnVarEstInputs} is \code{TRUE}, an attribute
-#' \code{varEstInputs} also is returned that includes the variance estimate
-#' inputs used for calculating covariances with \code{\link{varEstToCov}}.
+#'  a list object with elements:
+#'  \item{mean}{the mean assessment score for \code{variable}, calculated according to the vignette titled 
+#'             \href{https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf}{Statistical Methods Used in EdSurvey}}
+#'  \item{std}{the standard deviation of the \code{mean}}
+#'  \item{stdSE}{the standard error of the \code{std}}
+#'  \item{df}{the degrees of freedom of the \code{std}}
+#'  \item{varEstInputs}{the variance estimate inputs used for calculating covariances with \code{\link{varEstToCov}}. Only returned with \code{returnVarEstInputs} is \code{TRUE}}
 #'
 #' @author Paul Bailey and Huade Huo
 #' @example man/examples/SD.R
@@ -309,7 +304,7 @@ SD <- function(data,
                defaultConditions=TRUE,
                recode=NULL,
                targetLevel=NULL,
-               jkSumMultiplier=1, 
+               jkSumMultiplier=getAttributes(data, "jkSumMultiplier"), 
                returnVarEstInputs=FALSE) {
   # check incoming variables
   checkDataClass(data, c("edsurvey.data.frame", "light.edsurvey.data.frame", "edsurvey.data.frame.list"))
@@ -317,8 +312,8 @@ SD <- function(data,
   if (inherits(data, c("edsurvey.data.frame.list"))) {
     return(itterateESDFL(match.call(),data))
   }
-  
-  if(is.null(weightVar)) {
+  # !missing allows the user to intentionally set the weight to NULL to get unweighted
+  if(missing(weightVar)) {
     weightVar <- attributes(getAttributes(data, "weights"))$default
   }
   gg <- getData(varnames=c(variable, weightVar), data=data, omittedLevels=omittedLevels,

@@ -83,60 +83,29 @@ descriptionOfFile <- function(filename) {
   return(attributes)  
 }
 
-# @author Ahmad Emad
-achievementLevelsHelp <- function(grade, year, subject) {
-  # return achievement levels
-  temp <- "Mathematics\t1990-present\tGrade 4\t214\t249\t282
-Mathematics\t1990-present\tGrade 8\t262\t299\t333
-Mathematics\t1990-2003\tGrade 12\t288\t336\t367
-Mathematics\t2005-present\tGrade 12\t141\t176\t216
-Reading\t1992-2007\tGrade 4\t208\t238\t268
-Reading\t2009-present\tGrade 4\t208\t238\t268
-Reading\t1992-2007\tGrade 8\t243\t281\t323
-Reading\t2009-present\tGrade 8\t243\t281\t323
-Reading\t1992-2007\tGrade 12\t265\t302\t346
-Reading\t2009-present\tGrade 12\t265\t302\t346
-Science\t1990-2005\tGrade 4\t138\t170\t205
-Science\t2009-present\tGrade 4\t131\t167\t224
-Science\t1990-2005\tGrade 8\t143\t170\t208
-Science\t2009-present\tGrade 8\t141\t170\t215
-Science\t1990-2005\tGrade 12\t146\t178\t210
-Science\t2009-present\tGrade 12\t142\t179\t222
-Writing\t1998-2007\tGrade 4\t115\t176\t225
-Writing\t2011\tGrade 4\t115\t176\t225
-Writing\t1998-2007\tGrade 8\t114\t173\t224
-Writing\t2011\tGrade 8\t120\t173\t211
-Writing\t1998-2007\tGrade 12\t122\t178\t230
-Writing\t2011\tGrade 12\t122\t173\t210
-Civics\tall\tGrade 4\t136\t177\t215
-Civics\tall\tGrade 8\t134\t178\t213
-Civics\tall\tGrade 12\t139\t174\t204
-Geography\tall\tGrade 4\t187\t240\t276
-Geography\tall\tGrade 8\t242\t282\t315
-Geography\tall\tGrade 12\t270\t305\t339
-History\tall\tGrade 4\t195\t243\t276
-History\tall\tGrade 8\t252\t294\t327
-History\tall\tGrade 12\t294\t325\t355
-Economics\tall\tGrade 12\t123\t160\t208
-"
-  temp2 <- unlist(strsplit(temp,"\n"))
-  temp2 <- temp2[1:32]
-  temp2 <- sapply(temp2, function(x) unlist(strsplit(x,"\t")),
-                  USE.NAMES = FALSE)
-  temp2 <- data.frame(matrix(unlist(temp2), nrow = 32, byrow = TRUE))
-  names(temp2) <- c("Subject",  "Year",  "Grade",  "Basic",  "Proficient",  "Advanced")
-  temp2[,"Subject"] <- gsub(" ","",temp2$Subject)
+# @author Tom Fink and Ahmad Emad
+achievementLevelsHelp <- function(grade, year, subject, assessmentCode) {
+
+  alDF <- readRDS(system.file("extdata", "NAEP_AL.rds", package="EdSurvey"))
+  alDF[,"Subject"] <- gsub(" ","",alDF$Subject)
   
-  # filter to just this grade and subject
-  levels <- temp2[temp2$Subject == subject & temp2$Grade == grade,]
-  if(nrow(levels) > 1) {
-    for(i in seq(1,nrow(levels))) {
-      y <- as.character(levels$Year[i])
+  #filter down the data.frame to our specific rows of interest
+  t1 <- grepl(subject, alDF$Subject, ignore.case = TRUE)
+  t2 <- grepl(grade, alDF$Grade, ignore.case = TRUE)
+  t3 <- grepl(assessmentCode, alDF$AssessmentCode, ignore.case = TRUE)
+  
+  alDF <- subset(alDF, t1 & t2 & t3)
+  
+  if(nrow(alDF) > 1) {
+    for(i in seq(1,nrow(alDF))) {
+      y <- as.character(alDF$Year[i])
       # if there is only one year (not a range)
       if(length(strsplit(y, "-")[[1]]) == 1) {
         if(y == year) {
-          return(c(as.character(levels$Basic)[i], 
-                   as.character(levels$Proficient)[i], as.character(levels$Advanced)[i]))
+          retVals <- as.numeric(c(alDF$Level1[i], alDF$Level2[i], alDF$Level3[i]))
+          retNames <- unlist(strsplit(alDF$LevelNames[i],"||", fixed = TRUE))
+          names(retVals) <- retNames
+          return (retVals)
         }
         next
       }
@@ -150,14 +119,20 @@ Economics\tall\tGrade 12\t123\t160\t208
       }
       upper <- as.integer(upper)
       if(year >= lower & year <= upper) {
-        return(c(as.character(levels$Basic)[i], 
-                 as.character(levels$Proficient)[i], as.character(levels$Advanced)[i]))
+        retVals <- as.numeric(c(alDF$Level1[i], alDF$Level2[i], alDF$Level3[i]))
+        retNames <- unlist(strsplit(alDF$LevelNames[i],"||", fixed = TRUE))
+        names(retVals) <- retNames
+        return (retVals)
       }
-    } # end for(i in seq(1, nrow(levels)))
-  } # end if(nrow(levels) > 1) {
-  if(nrow(levels) == 1) {
-    return (c(as.character(levels$Basic), 
-              as.character(levels$Proficient), as.character(levels$Advanced)))
+    } # end for(i in seq(1, nrow(alDF)))
+  } # end if(nrow(alDF) > 1) {
+  if(nrow(alDF) == 1) {
+    retVals <- as.numeric(c(alDF$Level1, alDF$Level2, alDF$Level3))
+    retNames <- unlist(strsplit(alDF$LevelNames,"||", fixed = TRUE))
+    names(retVals) <- retNames
+    return (retVals)
   }
-  return (rep("Not found", 3))
+  
+  warning(paste0("Unable to determine appropriate achievement levels for this file.\n"))
+  return(NULL)
 }

@@ -1287,6 +1287,10 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
     callStDev <- c(list(variable=variable), 
                    callv,
                    returnVarEstInputs=TRUE)
+    if("weightVar" %in% names(callStDev) && is.null(callStDev[["weightVar"]])) {
+      # default is used only if weightVar is missing.
+      callStDev[["weightVar"]] <- NULL
+    }
     callStDevA <- c(callStDev, list(data=dataA))
     meanA <- do.call(SD, callStDevA)
     resA <- meanA$std

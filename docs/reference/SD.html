@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.0.9000</span>
       </span>
     </div>
 
@@ -101,7 +101,12 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/American-Institutes-for-Research/EdSurvey/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -116,7 +121,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>EdSurvey Standard Deviation</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/American-Institutes-for-Research/EdSurvey/blob/master/R/summary2.R'><code>R/summary2.R</code></a></small>
     <div class="hidden name"><code>SD.Rd</code></div>
     </div>
 
@@ -221,18 +226,14 @@ of covariances between estimates.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>SD</code> returns:</p><dl>
-    <dt>mean</dt><dd><p>the mean assessment score for <code>variable</code>, calculated according to the vignette titled 
-               <a href='https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf'>Statistical Methods Used in EdSurvey</a></p></dd>
-    <dt>std</dt><dd><p>the standard deviation of the <code>mean</code></p></dd>
-    <dt>stdSE</dt><dd><p>the standard error of the <code>std</code></p></dd>
-    <dt>sd</dt><dd><p>the degrees of freedom of the <code>std</code></p></dd>
-  
-</dl>
-                         
-<p>When <code>returnVarEstInputs</code> is <code>TRUE</code>, an attribute
-<code>varEstInputs</code> also is returned that includes the variance estimate
-inputs used for calculating covariances with <code><a href='varEstToCov.html'>varEstToCov</a></code>.</p>
+    <p>a list object with elements:</p>
+<dt>mean</dt><dd><p>the mean assessment score for <code>variable</code>, calculated according to the vignette titled 
+            <a href='https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf'>Statistical Methods Used in EdSurvey</a></p></dd>
+ <dt>std</dt><dd><p>the standard deviation of the <code>mean</code></p></dd>
+ <dt>stdSE</dt><dd><p>the standard error of the <code>std</code></p></dd>
+ <dt>df</dt><dd><p>the degrees of freedom of the <code>std</code></p></dd>
+ <dt>varEstInputs</dt><dd><p>the variance estimate inputs used for calculating covariances with <code><a href='varEstToCov.html'>varEstToCov</a></code>. Only returned with <code>returnVarEstInputs</code> is <code>TRUE</code></p></dd>
+
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Paul Bailey and Huade Huo</p>

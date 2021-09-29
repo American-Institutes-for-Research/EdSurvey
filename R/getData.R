@@ -185,7 +185,7 @@ getData <- function(data,
   iw <- isWeight(varnames, sdf) # Boolean vector that is TRUE when the variable is a weight
   vars <- c(vars, varnames[!(iw | hpv)])
   vars_exclude_omitted <- c()
-  if(sum(hpv)>0) {
+  if(sum(hpv) > 0) {
     pvs <- getPlausibleValue(varnames[hpv], sdf)
     vars_exclude_omitted <- c(vars_exclude_omitted, pvs[-1])
     vars <- c(vars, pvs)
@@ -210,17 +210,14 @@ getData <- function(data,
   vars <- c()
   v <- c()
   if(inherits(sdf, "edsurvey.data.frame")) {
-    for(i in (1:length(varnamesAllConditions))) {
-      if(length(varnamesAllConditions) == 0){
-        break
-      }
+    for(i in seq_along(varnamesAllConditions)) {
       if(hasPlausibleValue(varnamesAllConditions[i], sdf)) {
         v <- getPlausibleValue(varnamesAllConditions[i], sdf)
         vars <- c(vars, v)
       } else {
         if(isWeight(varnamesAllConditions[i], sdf)) {
           v <- getWeightJkReplicates(varnamesAllConditions[i], sdf)
-          vars <- c(vars, varnamesAllConditions[i],v)
+          vars <- c(vars, varnamesAllConditions[i], v)
         } else{
           vars <- c(vars, varnamesAllConditions[i])
         }
@@ -407,7 +404,6 @@ getData <- function(data,
             }else{
               data[data[,vari] %in% labels[[i]]$keys,vari] <- NA
             }
-  
           } else if (!is.null(labelsFile$labelled) && !labelsFile$labelled[labelsFile$variableName == vari]) {
             # fileFormat has missing values and labelled columns
             data[data[,vari] %in% labels[[i]]$keys,vari] <- NA
@@ -433,10 +429,10 @@ getData <- function(data,
             
             
             if(includeNaLabel) {
-               if(sum(is.na(data[,vari])) > 0) {
-                 lvls <- c(NA, lvls) #add NA first to the list
-                 lbls <- c("(Missing)", lbls)
-               }
+              if(sum(is.na(data[,vari])) > 0) {
+                lvls <- c(NA, lvls) #add NA first to the list
+                lbls <- c("(Missing)", lbls)
+              }
             }
             # some id variables has missing values or special case labels (i.e. bookid)
             if(getAttributes(sdf,"survey") == "PISA" && grepl("id",vari,ignore.case = TRUE)) {
@@ -456,21 +452,21 @@ getData <- function(data,
             }
   
   
-            data[data[,vari]=="" | is.na(data[,vari]),vari] <- NA
+            data[data[ , vari]=="" | is.na(data[ , vari]), vari] <- NA
             suppressWarnings(lvlsp <- as.numeric(lvls))
             suppressWarnings(dvi <- as.numeric(data[,vari]))
             suppressWarnings(lblsp <- as.numeric(lbls))
             if(vari %in% getAllTaylorVars(sdf) ||sum(is.na(lvlsp)) - sum(is.na(lvls)) > 0 || sum(is.na(unique(dvi))) - sum(is.na(unique(data[,vari]))) >0 || sum(!is.na(lblsp)) >0) {
-              if(anyNA(data[,vari]) && includeNaLabel){
-                data[,vari] <- factor(data[,vari], levels=lvls, labels=lbls, exclude = NULL)
-              }else{
-                data[,vari] <- factor(data[,vari], levels=lvls, labels=lbls) #NA values excluded by default
+              if(anyNA(data[,vari]) && includeNaLabel) {
+                data[ , vari] <- factor(data[ , vari], levels=lvls, labels=lbls, exclude = NULL)
+              } else {
+                data[ , vari] <- factor(data[ , vari], levels=lvls, labels=lbls) #NA values excluded by default
               }
             } else {
               if(anyNA(data[,vari]) && includeNaLabel){
-                data[,vari] <- lfactor(dvi, levels=lvlsp, labels=lbls, exclude = NULL)
+                data[ , vari] <- lfactor(dvi, levels=lvlsp, labels=lbls, exclude = NULL)
               }else{
-                data[,vari] <- lfactor(dvi, levels=lvlsp, labels=lbls) #NA values excluded by default
+                data[ , vari] <- lfactor(dvi, levels=lvlsp, labels=lbls) #NA values excluded by default
               }
             }
           } # end else for if(length(labels[[i]]$values) == 1 && labels[[i]]$values == "OMITTED OR INVALID" && nchar(gsub("9","",labels[[i]]$keys)) == 0)
@@ -485,7 +481,7 @@ getData <- function(data,
     # this fixes that
     for(var in names(data)) {
       # convToNum converts the variable to a number--if it will not cause data loss
-      data[,var] <- convToNum(data[,var])
+      data[ , var] <- convToNum(data[ , var])
     }
 
     #Apply default conditions
@@ -502,7 +498,7 @@ getData <- function(data,
     if(defaultConditions) {
       if(length(dConditions) > 0) {
         r <- eval(dConditions, data)
-        data <- data[r,,drop=FALSE]
+        data <- data[r, , drop=FALSE]
       }
     }
 
@@ -617,8 +613,8 @@ getData <- function(data,
         } else { # other userConditions are specified in subset
           condition <- userConditions[[i]]
           r <- eval(condition, data)
-          r <- ifelse(is.na(r),FALSE,r) #remove NA
-          data <- data[which(r),,drop=FALSE]
+          r <- ifelse(is.na(r), FALSE, r) #remove NA
+          data <- data[which(r), , drop=FALSE]
         }
       }#end for (i in c(1:length(userConditions)))
     } # end if(length(userConditions) > 0)
@@ -662,8 +658,7 @@ getData <- function(data,
       }
     }
 
-  } # end if(inherits(sdf, "edsurvey.data.frame"))
-  else {
+  } else { # end if(inherits(sdf, "edsurvey.data.frame"))
     missingVars <- varnames[!varnames %in% vars_exclude_omitted & !varnames %in% c(colnames(sdf))]
     if(length(missingVars) > 0 ) {
       sdf <- closeLaFConnections(sdf)

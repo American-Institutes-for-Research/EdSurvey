@@ -74,18 +74,13 @@ the computation
 of covariances between estimates.}
 }
 \value{
-\code{SD} returns:
-  \describe{
-    \item{mean}{the mean assessment score for \code{variable}, calculated according to the vignette titled 
-               \href{https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf}{Statistical Methods Used in EdSurvey}}
-    \item{std}{the standard deviation of the \code{mean}}
-    \item{stdSE}{the standard error of the \code{std}}
-    \item{sd}{the degrees of freedom of the \code{std}}
-  }
-                         
-When \code{returnVarEstInputs} is \code{TRUE}, an attribute
-\code{varEstInputs} also is returned that includes the variance estimate
-inputs used for calculating covariances with \code{\link{varEstToCov}}.
+a list object with elements:
+ \item{mean}{the mean assessment score for \code{variable}, calculated according to the vignette titled 
+            \href{https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf}{Statistical Methods Used in EdSurvey}}
+ \item{std}{the standard deviation of the \code{mean}}
+ \item{stdSE}{the standard error of the \code{std}}
+ \item{df}{the degrees of freedom of the \code{std}}
+ \item{varEstInputs}{the variance estimate inputs used for calculating covariances with \code{\link{varEstToCov}}. Only returned with \code{returnVarEstInputs} is \code{TRUE}}
 }
 \description{
 Calculate the standard deviation of a numeric variable in an \code{edsurvey.data.frame}.
