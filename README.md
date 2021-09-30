@@ -5,10 +5,13 @@
 
 <!-- badges: start -->
 
-<https://www.r-pkg.org/badges/version-ago/EdSurvey>
-<https://cranlogs.r-pkg.org/badges/EdSurvey>
-<https://cranlogs.r-pkg.org/badges/grand-total/EdSurvey>
-
+[![R-CMD-check](https://github.com/American-Institutes-for-Research/EdSurvey/workflows/R-CMD-check/badge.svg)](https://github.com/American-Institutes-for-Research/EdSurvey/actions)
+[![CRAN
+status](https://www.r-pkg.org/badges/version-ago/EdSurvey)](https://www.r-pkg.org/badges/version-ago/EdSurvey)
+[![CRAN
+status](https://cranlogs.r-pkg.org/badges/EdSurvey)](https://cranlogs.r-pkg.org/badges/EdSurvey)
+[![CRAN
+status](https://cranlogs.r-pkg.org/badges/grand-total/EdSurvey)](https://cranlogs.r-pkg.org/badges/grand-total/EdSurvey)
 <!-- badges: end -->
 
 ## Overview
