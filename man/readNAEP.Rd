@@ -69,12 +69,12 @@ When a NAEP administration includes a linking error variable those variables are
 When present, simply use the \code{_linking} version of a variable to get a standard error estimate that includes linking error.
 }
 \examples{
+\dontrun{
 # read in the example data (generated, not real student data)
 sdf <- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
 sdf
 
-\dontrun{
-# To read in an NCES file first set the directory to the ~/Data subfolder,
+# To read in an NCES file first set the directory to the /Data subfolder,
 # then read in the appropriate .dat file:
 setwd("location/of/Data")
 sdf <- readNAEP(path="M36NT2PM.dat")
