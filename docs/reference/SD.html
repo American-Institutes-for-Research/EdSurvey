@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.7.0.9001</span>
       </span>
     </div>
 
@@ -139,7 +139,7 @@
   defaultConditions <span class='op'>=</span> <span class='cn'>TRUE</span>,
   recode <span class='op'>=</span> <span class='cn'>NULL</span>,
   targetLevel <span class='op'>=</span> <span class='cn'>NULL</span>,
-  jkSumMultiplier <span class='op'>=</span> <span class='fl'>1</span>,
+  jkSumMultiplier <span class='op'>=</span> <span class='fu'><a href='edsurvey.data.frame.html'>getAttributes</a></span><span class='op'>(</span><span class='va'>data</span>, <span class='st'>"jkSumMultiplier"</span><span class='op'>)</span>,
   returnVarEstInputs <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
 
@@ -263,7 +263,10 @@ of covariances between estimates.</p></td>
 <span class='co'># this shows how these datasets will be described:</span>
 <span class='va'>sdfl</span><span class='op'>$</span><span class='va'>covs</span>
 
+<span class='co'># SD results for each survey</span>
 <span class='fu'>SD</span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>sdfl</span>, variable <span class='op'>=</span> <span class='st'>"composite"</span><span class='op'>)</span>
+<span class='co'># SD results more compactly and with comparisons</span>
+<span class='fu'><a href='gap.html'>gap</a></span><span class='op'>(</span>variable<span class='op'>=</span><span class='st'>"composite"</span>, data<span class='op'>=</span><span class='va'>sdfl</span>, stDev<span class='op'>=</span><span class='cn'>TRUE</span>, returnSimpleDoF<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
   </div>

@@ -51,7 +51,7 @@
 #' @param attribute a character, name of an attribute to get or set
 #' @param table an \code{edsurvey.data.frame} or \code{edsurvey.data.frame.list} where \code{x} is searched for
 #' @param value outside of the assignment context, new value of the given \code{attribute}
-#' @param weightVar a character indicating the full sample weights
+#' @param weightVar a character indicating the full sample weights. Required in \code{getPSUVar} and \code{getStratumVar} when there is no default weight.
 #' @param name a character vector of the column to edit
 #' @param dim0 numeric vector of length two. To speed construction, the dimensions of the data can be provided
 #'

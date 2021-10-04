@@ -23,7 +23,39 @@
 #' @export
 searchSDF <- function(string, data, fileFormat = NULL, levels = FALSE) {
   if (inherits(data, c("edsurvey.data.frame.list"))) {
-    return(itterateESDFL(match.call(),data))
+    call0 <- match.call()
+    resl <- lapply(data$data, function(li) {
+      call0$data <- li
+      tryCatch(eval(call0),
+               error =  function(cond) {
+                 message(paste("An error occurred while working on a dataset. Excluding results from this dataset."))
+                 message(cond)
+                 # returning zero allows unlist and other operations that remove e.g. NULLs
+                 return(0)
+               },
+               warning = function(w) {
+                 return(1)
+               })
+    })
+    res <- data.frame()
+    for(i in seq_along(resl)) {
+      ires <- resl[[i]]
+      covs <- data$covs
+      covn <- colnames(covs)
+      if(inherits(ires, "data.frame")) {
+        if(nrow(ires) > 0) {
+          newCol <- paste(covs[i,covn], collapse=";")
+          ires[,newCol] <- "*"
+          if(nrow(res) == 0) {
+            res <- ires
+          } else {
+            res <- merge(res, ires, all=TRUE)
+          }
+        }
+      }
+    }
+    res[is.na(res)] <- ""
+    return(res)
   }
   checkDataClass(data, c("edsurvey.data.frame", "light.edsurvey.data.frame", "edsurvey.data.frame.list"))
   sdf <- data

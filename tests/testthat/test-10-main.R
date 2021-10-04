@@ -1,6 +1,5 @@
 require(testthat)
 require(EdSurvey)
-require(Dire)
 options(width = 500)
 options(useFancyQuotes=FALSE)
 options(digits=7)
@@ -44,10 +43,8 @@ test_that("$ assign", {
   expect_warning(sdf$a[1:5] <- "invalid", "factor level")
   # repeated to be sure this does not throw an error, which it used to
   expect_warning(sdf$a[1:5] <- "invalid", "factor level")
-
+  # reset sdf
   sdf <- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
-
-
 })
 
 context("showPlausibleValues and showWeights verbose output agrees")
@@ -66,7 +63,7 @@ test_that("showPlausibleValues and showWeights verbose output agrees",{
            "", "'composite' subject scale or subscale with 5 plausible values (the default).", 
            "  The plausible value variables are: 'mrpcm1', 'mrpcm2', 'mrpcm3', 'mrpcm4', and 'mrpcm5'", 
            "")
-  co <- capture.output(showPlausibleValues(sdf,verbose=TRUE))
+  co <- capture.output(showPlausibleValues(sdf, verbose=TRUE))
   expect_equal(co, spv)
   skip_on_cran()
   sw <- c("There is 1 full sample weight in this edsurvey.data.frame:", 
@@ -74,7 +71,9 @@ test_that("showPlausibleValues and showWeights verbose output agrees",{
           "    'srwt01', 'srwt02', 'srwt03', 'srwt04', 'srwt05', 'srwt06', 'srwt07', 'srwt08', 'srwt09', 'srwt10', 'srwt11', 'srwt12', 'srwt13', 'srwt14', 'srwt15', 'srwt16', 'srwt17', 'srwt18', 'srwt19', 'srwt20', 'srwt21', 'srwt22', 'srwt23', 'srwt24', 'srwt25', 'srwt26', 'srwt27', 'srwt28', 'srwt29', 'srwt30', 'srwt31', 'srwt32', 'srwt33', 'srwt34', 'srwt35', 'srwt36', 'srwt37', 'srwt38', 'srwt39', 'srwt40', 'srwt41', 'srwt42', 'srwt43', 'srwt44',", 
           "    'srwt45', 'srwt46', 'srwt47', 'srwt48', 'srwt49', 'srwt50', 'srwt51', 'srwt52', 'srwt53', 'srwt54', 'srwt55', 'srwt56', 'srwt57', 'srwt58', 'srwt59', 'srwt60', 'srwt61', and 'srwt62'", 
           "")
-  co <- capture.output(showWeights(sdf,verbose=TRUE))
+  withr::with_options(list(digits=4, width=500),
+                      co <- capture.output(showWeights(sdf, verbose=TRUE))
+                     )
   expect_equal(co, sw)
 })
 
@@ -476,13 +475,11 @@ test_that("variable label stored as attributes", {
   expect_equal(attr(est1$data$b017451, "label"), "Talk about studies at home")
 })
 
-context("showPlausibleValues and showWeights verbose output agrees")
-test_that("showPlausibleValues and showWeights verbose output agrees",{
+context("showCutPoints agrees")
+test_that("showCutPoints agrees",{
   skip_on_cran()
   sw <- c("Achievement Levels:",
-          "  Basic:  262",
-          "  Proficient:  299" ,
-          "  Advanced:  333")
+          "  Mathematics:  262, 299, 333")
   co <- capture.output(showCutPoints(sdf))
   expect_equal(sw, co)
 })
@@ -635,13 +632,21 @@ test_that("achievementLevel with result of zero", {
 # tests based on sdf
 context("Test correlations on SDF")
 test_that("sdf correlation", {
-  expect_is(expect_c1_pear <- cor.sdf("b017451", "b003501", sdf, method="Pearson", weightVar="origwt"), "edsurveyCor")
+
+  suppressMessages(expect_is(expect_c1_pear <- cor.sdf("b017451", "b003501", sdf, method="Pearson", weightVar="origwt"), "edsurveyCor"))
   skip_on_cran()
   expect_is(c1_spear <- cor.sdf("b017451", "b003501", sdf, method="Spearman", weightVar="origwt"), "edsurveyCor")
-  expect_is(c1_polyc <- cor.sdf("b017451", "b003501", sdf, method="Polychoric", weightVar="origwt"), "edsurveyCor") # takes awhile
+  # use dynamic variables
+  assign(x="b17", value=c("b017451"), envir=globalenv())
+  assign(x="b35", value=c("b003501"), envir=globalenv())
+  expect_is(c1_polyc <- cor.sdf(b17, b35, sdf, method="Polychoric", weightVar="origwt"), "edsurveyCor") # takes awhile
+  rm("b17", envir=globalenv())
+  rm("b35", envir=globalenv())
+  expect_is(c1_polycB <- cor.sdf(b017451, b003501, sdf, method="Polychoric", weightVar="origwt"), "edsurveyCor") # takes awhile
+  expect_equal(c1_polyc, c1_polycB)
 
   sdf_dnf <- EdSurvey:::subset(sdf, b003601 == 1,verbose=FALSE)
-  expect_is(c2_pear <- cor.sdf("composite", "b017451", sdf_dnf, method="Pearson", weightVar="origwt"), "edsurveyCor")
+  suppressMessages(expect_is(c2_pear <- cor.sdf("composite", "b017451", sdf_dnf, method="Pearson", weightVar="origwt"), "edsurveyCor"))
   expect_is(c2_spear <- cor.sdf("composite", "b017451", sdf_dnf, method="Spearman", weightVar="origwt"), "edsurveyCor")
   expect_is(c2_polys <- cor.sdf("composite", "b017451", sdf_dnf, method="Polyserial", weightVar="origwt"), "edsurveyCor")
 })
@@ -992,4 +997,41 @@ test_that("mml.sdf", {
                                    capture.output(summary(mmlNAEP))
   )
   expect_equal(coDsexSum, mmlDsexSumREF)
+})
+
+context("no PSU var error and warnings")
+test_that("no PSU var error and warnings", {
+  # these warnings relatete to missing PSU so the count of PSUs will not be returned or
+  # errors about how Taylor series is not possible without a PSU var
+  expect_warning(
+  sdfNoPSU <- edsurvey.data.frame(userConditions = sdf$userConditions,
+                                  defaultConditions = sdf$defaultConditions,
+                                  dataList = sdf$dataList,
+                                  weights = sdf$weights,
+                                  pvvars = sdf$pvvars,
+                                  subject = sdf$subject,
+                                  year = sdf$year,
+                                  assessmentCode = sdf$assessmentCode,
+                                  dataType = sdf$dataType,
+                                  gradeLevel = sdf$gradeLevel,
+                                  achievementLevels = sdf$achievementLevels,
+                                  omittedLevels = sdf$omittedLevels,
+                                  survey = sdf$survey,
+                                  country = sdf$country,
+                                  psuVar = NULL, #remove the PSU var for testing
+                                  stratumVar = NULL, #remove the stratum var for testing
+                                  jkSumMultiplier = sdf$jkSumMultiplier,
+                                  recodes = sdf$recodes,
+                                  validateFactorLabels = sdf$validateFactorLabels,
+                                  forceLower = TRUE,
+                                  reqDecimalConversion = sdf$reqDecimalConversion,
+                                  fr2Path = sdf$fr2Path,
+                                  dim0 = sdf$dim0), "Taylor series")
+  expect_warning(rq1 <- rq.sdf(composite ~ dsex + b017451, data=sdfNoPSU, tau = 0.8, returnNumberOfPSU=T), "returnNumberOfPSU")
+  expect_error(res <- edsurveyTable(composite ~ dsex, data=sdfNoPSU, varMethod = "Taylor"), "jackknife")
+  expect_error(res <- glm.sdf(composite ~ dsex, data=sdfNoPSU, varMethod = "Taylor", family=binomial()), "primary sampling unit")
+  expect_warning(res <- glm.sdf(composite ~ dsex, data=sdfNoPSU, family=binomial(), returnNumberOfPSU=T), "FALSE")
+  expect_warning(res <- lm.sdf(composite ~ dsex, data=sdfNoPSU, returnNumberOfPSU=T), "FALSE")
+  expect_error(res <- lm.sdf(composite ~ dsex, data=sdfNoPSU, varMethod="Taylor"), "jackknife")
+  expect_error(res <- lm.sdf(composite ~ dsex, data=sdfNoPSU, varMethod="T", returnNumberOfPSU=T), "jackknife")
 })

@@ -22,5 +22,8 @@ sdfl <- edsurvey.data.frame.list(list(sdfA, sdfB, sdfC, sdfD),
 # this shows how these datasets will be described:
 sdfl$covs
 
+# SD results for each survey
 SD(data = sdfl, variable = "composite")
+# SD results more compactly and with comparisons
+gap(variable="composite", data=sdfl, stDev=TRUE, returnSimpleDoF=TRUE)
 }

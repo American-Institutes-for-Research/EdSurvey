@@ -67,6 +67,7 @@
 #' @references
 #' Organisation for Economic Co-operation and Development. (2017). \emph{PISA 2015 technical report}. Paris, France: OECD Publishing. Retrieved from \emph{\url{https://www.oecd.org/pisa/data/2015-technical-report/}}
 #'
+#' @importFrom utils write.table
 #' @export
 readPISA <- function(path,
                      database = c("INT", "CBA", "FIN"),

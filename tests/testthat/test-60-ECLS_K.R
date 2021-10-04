@@ -82,8 +82,8 @@ test_that("ECLS_K summary2", {
 
 context("ECLS_K suggestWeights")
 test_that("ECLS_K suggestWeights", {
-  expect_equal(expect_warning(suggestWeights("x8mscalk5", eclsk11), "experimental"), "w8c8p_20")
-  expect_equal(expect_warning(suggestWeights(c("x7mscalk5","x8mscalk5", "x_chsex_r", "x_raceth_r"), eclsk11, TRUE), "experimental"), 
-                              c("w8c28p_8a0", "w8c28p_2t80", "w8c28p_2t8z0", "w8c28p_8b0", "w8c28p_2t280", "w8cf8p_80", "w8c28p_8t280", "w8c28p_8t28z0", "w8c18p_8t180", "w8cf8p_2t180"))
-  expect_equal(expect_warning(suggestWeights(c("x8mscalk5", "x_chsex_r", "x12sesl"), eclsk11), "experimental"), "w8c8p_20")
+  expect_equal(suppressMessages(suggestWeights("x8mscalk5", eclsk11)), "w8c8p_20")
+  expect_equal(suppressMessages(suggestWeights(c("x7mscalk5","x8mscalk5", "x_chsex_r", "x_raceth_r"), eclsk11, TRUE)), 
+               c("w8c28p_8a0", "w8c28p_2t80", "w8c28p_2t8z0", "w8c28p_8b0", "w8c28p_2t280", "w8cf8p_80", "w8c28p_8t280", "w8c28p_8t28z0", "w8c18p_8t180", "w8cf8p_2t180"))
+  expect_equal(suppressMessages(suggestWeights(c("x8mscalk5", "x_chsex_r", "x12sesl"), eclsk11)), "w8c8p_20")
 })

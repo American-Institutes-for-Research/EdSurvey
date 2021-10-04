@@ -1,12 +1,29 @@
 \name{NEWS}
 \title{NEWS for EdSurvey}
-\section{Changes in version 2.7.0.9000}{
+\section{Changes in version 2.7.1}{
+  \subsection{DATA UPDATES}{
+    \itemize{
+      \item Added support for the National Household Education Survey (NHES) set of data.  See \code{downloadNHES} for instructions to locate and obtain the NHES data files, and see \code{readNHES} for reading the NHES data for analysis.
+      \item Added support for the School Survey on Crime and Safety (SSOCS) set of data.  See \code{downloadSSOCS} for instructions to locate and obtain the SSOCS data files, and see \code{readSSOCS} for reading the SSOCS data for analysis.
+    }
+  }
+  \subsection{UPDATES}{
+    \itemize{
+      \item \code{append.edsurvey.data.frame.list} now uses \code{labA} and \code{labB} in preference to existing labels. It also now accepts label names other than \code{label}. When the resulting labels are not unique, it generates new ones.  Also, if a single \code{edsurvey.data.frame} is added to an \code{edsurvey.data.frame.list}, and the labels for the \code{edsurvey.data.frame.list} appear to be automatically generated, then the labels are automatically generated for the output of the call to \code{append.edsurvey.data.frame.list} as well. These changes should make the output of \code{append.edsurvey.data.frame.list} seem more logical.
+      \item \code{showCutPoints} now returns one line per set of cut points and does not show the cut point labels.
+      \item updated warnings and errors when an \code{edsurvey.data.frame} is passed to a vareity of functions that requires use of PSU or stratum variables but they are not on the data.
+      \item \code{cor.sdf} now allows dynamic variables for the variables being correlated (\code{x} and \code{y})
+      \item \code{searchSDF} now generates a tabled output when passed an \code{edsurvey.data.frame.list}.
+    }
+  }
   \subsection{STATISTICS}{
     \itemize{
       \item \code{SD} used to use the population variance estimator and now uses the sample variance estimator. This also affects standard deviations calculated with the \code{gap} function.
-   \subsection{BUG FIXES}{
+    }
+  }
+  \subsection{BUG FIXES}{
     \itemize{
-      \item \code{SD} used to set \code{jkSumMultiplier} to 1 by default and now uses the value from the \code{edusrvey.data.frame}. While this was the documented behavior, it was counterintuitive since all other \code{EdSurvey} functions use the value directly from the \code{edusrvey.data.frame}. 
+      \item \code{SD} used to set \code{jkSumMultiplier} to 1 by default and now uses the value from the \code{edusrvey.data.frame}. While this was the documented behavior, it was counterintuitive since all other \code{EdSurvey} functions use the value directly from the \code{edusrvey.data.frame}.
       \item when calling \code{achievementLevels} with both \code{returnDiscrete = FALSE} and \code{returnCumulative = TRUE} it would return an error. It now properly returns.
     }
   }

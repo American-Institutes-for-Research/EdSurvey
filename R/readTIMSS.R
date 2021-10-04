@@ -1255,12 +1255,6 @@ writeTibbleToFWFReturnFileFormat <- function(spssDF, outF, jkType=c("JK2", "JK1"
   return(fileFormat)
 }
 
-#returns an LaF to the fwf file using the fileformat specs
-getFWFLaFConnection <- function(fwfFilePath, fwfFileFormat){
-  laf <- LaF::laf_open_fwf(fwfFilePath, column_types = fwfFileFormat$dataType, column_widths = fwfFileFormat$Width, column_names = tolower(fwfFileFormat$variableName))
-}
-
-
 exportTIMSSToCSV <- function(folderPath, exportPath, cntryCodes, gradeLvl, ...){
 
   sdfList <- readTIMSS(folderPath, cntryCodes, gradeLvl, ...)

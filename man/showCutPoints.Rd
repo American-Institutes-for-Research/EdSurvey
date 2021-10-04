@@ -10,6 +10,10 @@ showCutPoints(data)
 \item{data}{an \code{edsurvey.data.frame}, a \code{light.edsurvey.data.frame}, or
 an \code{edsurvey.data.frame.list}}
 }
+\value{
+If there are achievement levels defined, prints one line per subject scale.
+Each line names the subject and then shows the cut point for each achievement level.
+}
 \description{
 Retrieves a summary of the achievement level cutpoints for a
              selected study represented in an

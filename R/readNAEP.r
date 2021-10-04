@@ -183,6 +183,9 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
   schLabelsFile <- NULL
   
   if(isLTT){
+    #TEMPORARY HOLD on THE LTT FILES UNTIL QC IS COMPLETE.  Remove this stop when ready.
+    stop("The NAEP Long-Term Trend (LTT) data files are currently unsupported for analysis.")
+    
     #no school level file, only a student level file
     labelsFile <- readMRC_LTT(studentFR2, f[["Subject"]])
 
@@ -255,7 +258,7 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
     attributes(weights)$default <- defaultWeight
   }
   
-  if(is.null(defaultPvs) || all(is.na(defaultPvs))){
+  if(all(is.null(defaultPvs)) || all(is.na(defaultPvs))){
     warning(paste0("Argument ", dQuote("defaultPvs"), " not specified. There will not be a default PV value."))
   } else {
     if(!defaultPvs[1] %in% names(pvs)){
@@ -274,7 +277,7 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
     }#end if(!defaultPvs %in% names(pvs))
   }
 
-  if(length(pvs)>0){
+  if(length(pvs) > 0) {
     attributes(pvs)$default <- defaultPvs[1]
   }
   
@@ -326,10 +329,10 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
   if(psCheck){ #no match was found!
     ps <- NULL
   }
-  if(is.null(ps) || is.na(ps)){
+  if(all(is.null(ps)) || all(is.na(ps))) {
     psuVar <- NULL
-    stratumVar<- NULL
-  }else{
+    stratumVar <- NULL
+  } else {
     psuVar <- ps["psu"]
     stratumVar <- ps["stratum"]
   }
@@ -453,7 +456,7 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
     } else {
       res <- linkVarAugment(res, subscaleWeights=subscaleWeights, subscales=subscales, composite=composite)
     }
-  }
+  } # end if("dbapba" %in% colnames(res))
   return(res)
 }
 

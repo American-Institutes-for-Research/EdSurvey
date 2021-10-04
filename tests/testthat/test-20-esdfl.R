@@ -259,23 +259,23 @@ test_that("ESDFL same survey",{
 
 context("ESDFL append")
 test_that("ESDFL append", {
-    
+  
   sdfl1a <- edsurvey.data.frame.list(list(sdfA, sdfB),
                                      labels=c("A locations",
                                               "B locations"))
-
+  
   sdfl1b <- edsurvey.data.frame.list(list(sdfC, sdfD),
                                      labels=c("C locations",
                                               "D locations"))
-
+  
   sdfl1a_rev<- edsurvey.data.frame.list(list(sdfB, sdfA),
                                         labels=c("B locations",
                                                  "A locations"))
-
+  
   sdfl1b_rev <- edsurvey.data.frame.list(list(sdfD, sdfC),
                                          labels=c("D locations",
                                                   "C locations"))
-
+  
   sdfl2 <- edsurvey.data.frame.list(list(sdfA, sdfB, sdfC, sdfD),
                                     labels=c("A locations",
                                              "B locations",

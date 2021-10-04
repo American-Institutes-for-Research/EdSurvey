@@ -29,12 +29,10 @@ guessed. See Examples.}
 \item{sdfB}{an \code{edsurvey.data.frame} or an \code{edsurvey.data.frame.list} to be combined}
 
 \item{labelsA}{a character vector that specifies \code{labels} for \code{sdfA} when creating 
-the new \code{edsurvey.data.frame.list}. \code{labelsA} would be ignored
-if \code{sdfA} is an \code{edsurvey.data.frame.list} with labels supplied.}
+the new \code{edsurvey.data.frame.list}.}
 
 \item{labelsB}{a character vector that specifies \code{labels} for \code{sdfB} when creating 
-the new \code{edsurvey.data.frame.list}. \code{labelsB} would be ignored
-if \code{sdfB} is an \code{edsurvey.data.frame.list} with labels supplied.}
+the new \code{edsurvey.data.frame.list}.}
 }
 \value{
 \code{edsurvey.data.frame.list} returns an \code{edsurvey.data.frame.list} with
@@ -144,6 +142,18 @@ sdfl4 <- append.edsurvey.data.frame.list(
   sdfD,
   labelsB = "D locations")
 identical(sdfl, sdfl4) #TRUE
+
+# show label deconflicting
+downloadTIMSS(root="~/", years=c(2011, 2015))
+t11 <- readTIMSS("~/TIMSS/2011", countries = c("fin", "usa"), gradeLvl = 4)
+t15 <- readTIMSS("~/TIMSS/2015", countries = c("fin", "usa"), gradeLvl = 4)
+# these would not be unique
+t11$covs
+t15$covs
+# resulting values includes year now
+t11_15 <- append.edsurvey.data.frame.list(t11, t15)
+t11_15$covs
+
 }
 }
 \author{

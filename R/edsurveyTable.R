@@ -323,7 +323,14 @@ calcEdsurveyTable <- function(formula,
   if(!varMethod %in% c("j", "t")) {
     stop(paste0("The argument ", sQuote("varMethod"), " must be one of ", dQuote("Taylor"), " or ", dQuote("jackknife"), "."))
   }
-  
+
+  psuVar <- getPSUVar(data, weightVar = wgt)
+  stratumVar <- getStratumVar(data, weightVar = wgt)
+  tv <- checkTaylorVars(psuVar, stratumVar, wgt, varMethod)
+  psuVar <- tv$psuVar
+  stratumVar <- tv$stratumVar
+  varMethod <- tv$varMethod
+
   # fill in default subject scale / sub scale
   zeroLengthLHS <- attr(terms(formula), "response") == 0
   
@@ -347,8 +354,6 @@ calcEdsurveyTable <- function(formula,
     warning(paste0("Variables on the right-hand side of the formula must be discrete. Nondiscrete variables will be removed from the formula. Non-discrete variables: ", pasteItems(rhs_vars[nd])))
     rhs_vars <- rhs_vars[typeOfVariable(yvar,data) %in% "discrete"]
   }
-  
-  
   
   # define default aggregation level
   if(is.null(pctAggregationLevel)) {
@@ -400,7 +405,7 @@ calcEdsurveyTable <- function(formula,
   includeNaLabel <- !omittedLevels
   # add Taylor variables, when needed
   if(varMethod=="t") {
-    reqvar <- c(reqvar, getPSUVar(data, weightVar = wgt), getStratumVar(data, weightVar = wgt))
+    reqvar <- c(reqvar, psuVar, stratumVar)
   }
   # only call with defaultConditions if it was in the call to edsurveyTable
   if(defaultConditionsMissing) {
@@ -601,6 +606,10 @@ calcEdsurveyTable <- function(formula,
         wtdndf[,rhs_vars] <- wtdn[,rhs_vars]
         res <- merge(res, wtdndf, by=rhs_vars, sort=FALSE, all.x = TRUE)
       } else { # Taylor series based method
+        if(is.null(getPSUVar(data, weightVar = wgt)) & is.null(getStratumVar(data, weightVar = wgt))) {
+          stop("For Taylor series the PSU and stratum variables must be defined.")
+        }
+
         res_no0[,"SE(PCT)"] <- NA
         #for every group (row of the table)
         sapply(unique(res_no0$group), function(z) {

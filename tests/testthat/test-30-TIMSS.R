@@ -9,7 +9,6 @@ source("REF-3-TIMSS.R") # has REF output in it
 if(!exists("edsurveyHome")) {
   if (Sys.info()[['sysname']] == "Windows") {
     edsurveyHome <- "C:/EdSurveyData/"
-
   } else {
     edsurveyHome <- "~/EdSurveyData/"
   }
@@ -54,6 +53,22 @@ test_that("TIMSS data reads in correctly", {
               "2 2011 United States", 
               "3 2011       Finland")
   expect_equal(co, co.ref)
+})
+
+context("TIMSS esdfl")
+test_that("TIMSS esdfl",{
+  usa <- edsurvey.data.frame.list(list(usa4.07, usa8.11))
+  expect_equal(usa$covs, structure(list(year = c("2007", "2011"),
+                                        gradeLevel = c("Grade 4", "Grade 8")),
+                                   class = "data.frame",
+                                   row.names = c(NA, -2L)))
+  usafin11 <- edsurvey.data.frame.list(list(usa8.11, fin4.11))
+  usafinB <- append.edsurvey.data.frame.list(usafin11, usa4.07)
+  expect_equal(usafinB$covs, structure(list(year = c("2011", "2011", "2007"),
+                                            gradeLevel = c("Grade 8", "Grade 4", "Grade 4"),
+                                            country = c("United States", "Finland", "United States")),
+                                       class = "data.frame",
+                                       row.names = c(NA, -3L)))
 })
 
 context("TIMSS $ assign")
@@ -295,11 +310,13 @@ test_that("TIMSS gap", {
   expect_equal(co, g1eqREF)
 })
 
+
 context("TIMSS gap dynamic subsets")
 test_that("TIMSS gap dynamic subsets", {
   skip_on_cran()
-  levelLabels <- c("GIRL", "BOY")
 
+  # put this in .Global so gap finds has it in the search path
+  assign(x="levelLabels", value=c("GIRL", "BOY"), envir=globalenv())
   gapResult <- gap(variable = 'mmat', data = multiESDFL,
                    groupA=itsex %in% "GIRL")
   gapResult2 <- gap(variable = 'mmat', data = multiESDFL,
@@ -318,6 +335,7 @@ test_that("TIMSS gap dynamic subsets", {
   gapResult2$call <- gapResult$call
   expect_equal(gapResult, gapResult2)
 
+  # does not work in testthat
   gd2 <- getData(usa4.07, c("totwgt", "itsex", "mmat"), defaultConditions=FALSE, addAttributes=TRUE)
   gapResult <- gap(variable = 'mmat', data = gd2,
                    groupA=itsex %in% "GIRL")
@@ -328,6 +346,8 @@ test_that("TIMSS gap dynamic subsets", {
   gapResult2$labels <- gapResult$labels
   gapResult2$call <- gapResult$call
   expect_equal(gapResult, gapResult2)
+  # now remove levelLabels
+  rm("levelLabels", envir=globalenv())
 })
 
 context("mml.sdf")

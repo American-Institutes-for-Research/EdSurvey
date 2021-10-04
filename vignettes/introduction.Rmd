@@ -1,6 +1,6 @@
 ---
 title: "Introduction to Analyzing NCES Data Using EdSurvey"
-author: "Developed by Paul Bailey, Nancy Collins, Ahmad Emad, Thomas Fink,  \n &nbsp;Huade Huo, Julian Gerez, Michael Lee, Yuqi Liao, Trang Nguyen,  \n &nbsp;Qingshu Xie, Jiao Yu, and Ting Zhang"
+author: "Developed by Paul Bailey, Charles Blankenship, Eric Buehler, Ren C'deBaca, Nancy Collins, Ahmad Emad, Thomas Fink,  Huade Huo, Frank Fonseca, Julian Gerez, Sun-joo Lee, Michael Lee, Jiayi Li, Yuqi Liao, Alex Lishinski, Thanh Mai, Trang Nguyen, Emmanuel Sikali, Qingshu Xie, Sinan Yavuz, Jiao Yu, and Ting Zhang"
 date: "`r gsub(' 202',', 202', format(Sys.Date(), format='%B %d %Y'))`"
 output:
   html_document: default
