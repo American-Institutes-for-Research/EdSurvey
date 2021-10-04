@@ -125,7 +125,7 @@ Examples include \code{Student}, \code{teacher}, \code{school},
 
 \item{attribute}{a character, name of an attribute to get or set}
 
-\item{weightVar}{a character indicating the full sample weights}
+\item{weightVar}{a character indicating the full sample weights. Required in \code{getPSUVar} and \code{getStratumVar} when there is no default weight.}
 }
 \value{
 An object of class \code{edsurvey.data.frame} with the following elements:

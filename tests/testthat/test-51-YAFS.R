@@ -22,8 +22,8 @@ test_that("PISA YAFS data reads in correctly", {
   #read in PISA USA 2012
   expect_silent(pisa <<- readPISA(path = file.path(edsurveyHome, "PISA", "2012"), database = "INT", countries = "usa", verbose = FALSE))
   #read PISA YAFS natively
-  expect_silent(pisa_yafs <<- readPISA_YAFS(datPath = file.path(edsurveyHome, "PISA YAFS", "PISA_YAFS2016_Data.dat"), 
-                                      spsPath = file.path(edsurveyHome, "PISA YAFS", "PISA_YAFS2016_SPSS.sps"),
+  expect_silent(pisa_yafs <<- readPISA_YAFS(datPath = file.path(edsurveyHome, "PISA YAFS", "2016", "PISA_YAFS2016_Data.dat"), 
+                                      spsPath = file.path(edsurveyHome, "PISA YAFS", "2016", "PISA_YAFS2016_SPSS.sps"),
                                       esdf_PISA2012_USA = pisa))
   expect_is(pisa_yafs, "edsurvey.data.frame")
   expect_equal(dim(pisa_yafs), c(4978, 1964))

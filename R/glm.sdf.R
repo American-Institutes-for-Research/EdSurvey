@@ -338,10 +338,13 @@ calc.glm.sdf <- function(formula,
   taylorVars <- c()
   psuVar <- getPSUVar(data, weightVar = wgt)
   stratumVar <- getStratumVar(data, weightVar = wgt)
-  if ("JK1" %in% stratumVar & varMethod == "t") {
-    varMethod <- "j"
-    warning("Cannot use Taylor series estimation on a one-stage simple random sample.")
-  }
+  # give an error if these do not exist.
+  tv <- checkTaylorVars(psuVar, stratumVar, wgt, varMethod, returnNumberOfPSU)
+  psuVar <- tv$psuVar
+  stratumVar <- tv$stratumVar
+  varMethod <- tv$varMethod
+  returnNumberOfPSU <- tv$returnNumberOfPSU
+
   if(varMethod=="t") {
     taylorVars <- c(psuVar, stratumVar)
     jrrIMax <- NA
@@ -831,7 +834,16 @@ calc.glm.sdf <- function(formula,
   
   if(madeB) {
     # equation 2.29 in van Buuren, pp 42
-    rbar <- (1+1/M)*(1/nrow(Ubar))*sum(diag(B %*% solve(Ubar)))
+    tryCatch(
+      rbar <- (1+1/M)*(1/nrow(Ubar))*sum(diag(B %*% solve(Ubar))),
+      error = function(e){
+        rbar <<- (1+1/M)*(1/nrow(Ubar))*sum(diag(B %*% MASS::ginv(Ubar)))
+        frm <- Formula(frm)
+        if(terms(frm, lhs = 0, rhs = NULL) == ~1){
+          warning("A variance estimate was replaced with NA because there was no variance across strata.", call. = FALSE)
+        }
+      }
+    )
     Ttilde <- (1+rbar)*Ubar
     res <- c(res, list(B=B, U=Ubar, rbar=rbar, Ttilde=Ttilde))
   } else {

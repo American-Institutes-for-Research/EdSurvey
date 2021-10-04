@@ -48,6 +48,7 @@ test_that('mixed.sdf Wald test', {
                   data=cntl)
   wt <- waldTest(m1, coef=2:4)
   expect_is(wt, "edsurveyWaldTest")
-  expect_equal(unname(wt$result$chi2["chi2"]), 30.2098, tol=200*sqrt(.Machine$double.eps))
+  # the estimates vary from computer to computer
+  expect_equal(unname(wt$result$chi2["chi2"]), 30.2097969661517, tol=0.001)
 })
 

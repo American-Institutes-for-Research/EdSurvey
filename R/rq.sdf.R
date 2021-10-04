@@ -188,6 +188,13 @@ calc.rq.sdf <- function(formula,
     stop(paste0("There is no default weight variable for ",getAttributes(sdf,"survey")," data, so the argument ",sQuote("weightVar"), " must be specified."))
   }
 
+  psuVar <- getPSUVar(data, weightVar = wgt)
+  stratumVar <- getStratumVar(data, weightVar = wgt)
+  tv <- checkTaylorVars(psuVar, stratumVar, wgt, varMethod, returnNumberOfPSU)
+  psuVar <- tv$psuVar
+  stratumVar <- tv$stratumVar
+  varMethod <- tv$varMethod
+
   # check if there is an outcome variable and set it to the default if it is missing
   zeroLengthLHS <- attr(terms(formula), "response") == 0 
   if(zeroLengthLHS) {

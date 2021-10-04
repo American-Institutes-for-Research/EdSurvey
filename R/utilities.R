@@ -211,3 +211,31 @@ cartFactor <- function(fa, fb) {
   df <- expand.grid(levels(fb), levels(fa))
   return(paste0(df$Var2, ":", df$Var1))
 }
+
+checkTaylorVars <- function(psuVar, stratumVar, wgt, varMethod="t", returnNumberOfPSU=FALSE) {
+  if (is.null(psuVar)) {
+    if(returnNumberOfPSU & varMethod =="t") {
+      stop(paste0("Cannot find primary sampling unit variable for weight ", sQuote(wgt), ". Try setting the ", dQuote("varMethod"), " argument to ", dQuote("jackknife"), " and ", dQuote("returnNumberOfPSU"), " to ", dQuote("FALSE"), "."))
+    }
+    if(!returnNumberOfPSU & varMethod =="t") {
+      stop(paste0("Cannot find primary sampling unit variable for weight ", sQuote(wgt), ". Try setting the ", dQuote("varMethod"), " argument to ", dQuote("jackknife"), "."))
+    }
+    if(returnNumberOfPSU & varMethod !="t") {
+      warning(paste0("Cannot find primary sampling unit variable for weight ", sQuote(wgt), ". Setting ", dQuote("returnNumberOfPSU"), " to ", dQuote("FALSE"), "."))
+      returnNumberOfPSU <- FALSE
+    }
+    psuVar <- ""
+  }
+  if (is.null(stratumVar)) {
+    if(varMethod=="t") {
+      stop(paste0("Cannot find stratum variable for weight ", sQuote(wgt), ". Try setting the ", dQuote("varMethod"), " argument to ", dQuote("jackknife"), "." ))
+    }
+    # set to a dummy variable, not on the data
+    stratumVar <- ""
+  }
+  if ("JK1" %in% stratumVar & varMethod == "t") {
+    varMethod <- "j"
+    warning("Cannot use Taylor series estimation on a one-stage simple random sample.")
+  }
+  return(list(psuVar=psuVar, stratumVar=stratumVar, varMethod=varMethod, returnNumberOfPSU=returnNumberOfPSU))
+}

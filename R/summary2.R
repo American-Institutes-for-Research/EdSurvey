@@ -119,7 +119,7 @@ summary2 <- function(data, variable,
     ret0 <- lapply(1:length(variable), function(vi) {
       v <- variable[vi]
       if (hasPlausibleValue(v,data)) {
-        v <- getPlausibleValue(v,data)
+        v <- getPlausibleValue(v, data)
       }
       lm0 <- fast.sd(data[ , v], data[ , weightVar])
       meanVar <- lm0$mean
@@ -132,7 +132,7 @@ summary2 <- function(data, variable,
     })
     ret <- do.call(rbind, ret0)
     colnames(ret) <- c("N","Weighted N","Min.", "1st Qu.", "Median", "Mean", "3rd Qu.", 
-                    "Max.", "SD", "NA's", "Zero-weights")
+                       "Max.", "SD", "NA's", "Zero-weights")
     ret <- cbind("Variable" = variableR, as.data.frame(ret))
   } # end else for if(typeOfVariable(variable,data) == "discrete")
   ret <- list(summary=ret)

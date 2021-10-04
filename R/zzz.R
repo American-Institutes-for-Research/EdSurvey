@@ -6,4 +6,5 @@
 globalVariables(c("variable", "w", "c2", "dofNum", "dofDenom", "lengthY",
                   "sumY", "Percent", "wtdN", "N", "pcti", "value", "Vjrr",
                   "Vimp", "Level", "JKreplicate", "PV", "V1", "cnt_index",
-                  "w_lmi", "StandardError", "flag1", "wtdN2", "Denom", "DenomGroup", ".GRP", "answer"))
+                  "w_lmi", "StandardError", "flag1", "wtdN2", "Denom",
+                  "DenomGroup", ".GRP", "answer", "Year"))

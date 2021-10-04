@@ -75,7 +75,6 @@ calc.waldTest <- function(model, coefficients, H0 = NULL) {
   b <- coef(model)
   V <- vcov(model)
   n <- names(coef(model))
-  
   # resolve coefficient names to position if names provided
   if(is.character(coefficients)){
     if(length(coefficients) == 1){
@@ -132,13 +131,26 @@ calc.waldTest <- function(model, coefficients, H0 = NULL) {
       df1 <- nrow(L)
       df2 <- model$residual.df[1]
       fstat <- stat / df1
+      res <- c(res, list(Ftest = c(Fstat = fstat, df1 = df1, df2 = df2, P = 1 - pf(fstat, df1, df2))))
     } else {
       # survey Wald test
       df1 <- nrow(L)
       df2 <- model$waldDenomBaseDof - df1
       fstat <- df2 *  stat / (df1 * (model$waldDenomBaseDof-1)) # denom doesn't get + 1
+      if(df2 > 0) {
+        res <- c(res, list(Ftest = c(Fstat = fstat, df1 = df1, df2 = df2, P = 1 - pf(fstat, df1, df2))))
+      } else {
+        if("varMethod" %in% names(model) & "Taylor" %in% model$varMethod) {
+          res <- c(res, list(FtMessage="Too many coefficients  to calculate an F-statistic. Using jackknife variance estimation may resolve this."))
+        } else {
+          if(model$waldDenomBaseDof == 1) {
+            res <- c(res, list(FtMessage="Insufficient number of PSUs to calculate an F-statistic."))
+          } else {
+            res <- c(res, list(FtMessage="Too many coefficients to calculate an F-statistic."))
+          }
+        }
+      }
     }
-    res <- c(res, list(Ftest = c(Fstat = fstat, df1 = df1, df2 = df2, P = 1 - pf(fstat, df1, df2))))
   }
   
   # set output object with chi-square and F test results
@@ -172,9 +184,9 @@ waldDof <- function(data, stratumVar, psuVar) {
   # return the number of unique PSU/strata, with no more than minN per stratum.
   uniqueMin <- function(df, minN=2) {
     tab <- table(df)
-    sum(apply(tab, 1, function(x) { min(minN,length(x[x>0]))}))
+    sum(apply(tab, 1, function(x) { min(minN, length(x[x>0]))}))
   }
-  return(uniqueMin(data[,c(stratumVar, psuVar)]) - uniqueMin(data[,stratumVar,drop=FALSE]) + 1)
+  return(uniqueMin(data[ , c(stratumVar, psuVar)]) - uniqueMin(data[ , stratumVar, drop=FALSE]) + 1)
 }
 
 
@@ -188,21 +200,29 @@ print.edsurveyWaldTest <- function(x, digits = 2, ...) {
   df <- x$df
   coef_names <- names(x$b)[x$coefficients]
   
-  cat("Wald test:\n", "----------\n", sep = "")
-  cat("H0:", "\n")
+  eout("Wald test:\n")
+  eout("----------\n")
+  eout("H0:")
   for(i in 1:length(coef_names)){
-    cat(coef_names[i], "=", H0[i], "\n")
+    eout(paste0(coef_names[i], " = ", H0[i], "\n"))
   }
-  cat("\nChi-square test:\n")
-  cat("X2 = ", format(v["chi2"], digits = digits, nsmall = 1), ", df = ", v["df"],
-      ", P(> X2) = ", format(v["P"], digits = digits, nsmall = 1), "\n", sep = "")
+  eout("\n")
+  eout("Chi-square test:\n")
+  eout(paste0("X2 = ", format(v["chi2"], digits = digits, nsmall = 1), ", df = ", v["df"],
+      ", P(> X2) = ", format(v["P"], digits = digits, nsmall = 1), "\n"))
   
   if(!is.null(x$result$Ftest)) {
     v <- x$result$Ftest
-    cat("\nF test:\n")
-    cat("W = ", format(v["Fstat"], digits = digits, nsmall = 1), 
-        ", df1 = ", v["df1"],
-        ", df2 = ", v["df2"],
-        ", P(> W) = ", format(v["P"], digits = digits), "\n", sep = "")
+    eout("\n")
+    eout("F test:\n")
+    eout(paste0("W = ", format(v["Fstat"], digits = digits, nsmall = 1), 
+                ", df1 = ", v["df1"],
+                ", df2 = ", v["df2"],
+                ", P(> W) = ", format(v["P"], digits = digits), "\n"))
+  } else {
+    if(!is.null(x$result$FtMessage)) {
+      eout("\n")
+      eout(paste0("NOTE: ", x$result$FtMessage))
+    }
   }
 }

@@ -53,4 +53,16 @@ sdfl4 <- append.edsurvey.data.frame.list(
   sdfD,
   labelsB = "D locations")
 identical(sdfl, sdfl4) #TRUE
+
+# show label deconflicting
+downloadTIMSS(root="~/", years=c(2011, 2015))
+t11 <- readTIMSS("~/TIMSS/2011", countries = c("fin", "usa"), gradeLvl = 4)
+t15 <- readTIMSS("~/TIMSS/2015", countries = c("fin", "usa"), gradeLvl = 4)
+# these would not be unique
+t11$covs
+t15$covs
+# resulting values includes year now
+t11_15 <- append.edsurvey.data.frame.list(t11, t15)
+t11_15$covs
+
 }

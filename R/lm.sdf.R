@@ -294,22 +294,12 @@ calc.lm.sdf <- function(formula,
   taylorVars <- c()
   psuVar <- getPSUVar(data, weightVar = wgt)
   stratumVar <- getStratumVar(data, weightVar = wgt)
-  if (is.null(psuVar)) {
-    if(returnNumberOfPSU | varMethod=="t") {
-      stop(paste0("Cannot find primary sampling unit variable for weight ", sQuote(wgt), ". Try setting the ", dQuote("varMethod"), " argument to ", dQuote("jackknife"), " and ", dQuote("returnNumberOfPSU"), " to ", dQuote("FALSE"), "."))
-    } else {
-      # set to a dummy variable, not on the data
-      psuVar <- ""
-    }
-  }
-  if (is.null(stratumVar)) {
-    if(returnNumberOfPSU | varMethod=="t") {
-      stop(paste0("Cannot find stratum variable for weight ", sQuote(wgt), ". Try setting the ", dQuote("varMethod"), " argument to ", dQuote("jackknife"), " and ", dQuote("returnNumberOfPSU"), " to ", dQuote("FALSE"), "." ))
-    } else {
-      # set to a dummy variable, not on the data
-      stratumVar <- ""
-    }
-  }
+  # give an error if these do not exist.
+  tv <- checkTaylorVars(psuVar, stratumVar, wgt, varMethod, returnNumberOfPSU)
+  psuVar <- tv$psuVar
+  stratumVar <- tv$stratumVar
+  varMethod <- tv$varMethod
+  returnNumberOfPSU <- tv$returnNumberOfPSU
   # in PIAAC there is sometimes an SRS, that is not appropriate for Taylor
   if ("JK1" %in% stratumVar & varMethod == "t") {
     varMethod <- "j"
@@ -863,8 +853,6 @@ calc.lm.sdf <- function(formula,
         frm <- Formula(frm)
         if(terms(frm, lhs = 0, rhs = NULL) == ~1){
           warning("A variance estimate was replaced with NA because there was no variance across strata.", call. = FALSE)
-        } else {
-          warning("Variance estimation problematic; consider using jackknife.", call. = FALSE)
         }
       }
     )

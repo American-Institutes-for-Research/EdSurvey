@@ -105,12 +105,21 @@ cor.sdf <- function(x,
     return(itterateESDFL(match.call(), data))
   }
   # allow unquoted variables
-  x <- as.character(substitute(x))
-  y <- as.character(substitute(y))
+  x <- tryCatch(get(as.character(call[["x"]]), mode="character"), error= function(e) { as.character(call[["x"]]) })
+  y <- tryCatch(get(as.character(call[["y"]]), mode="character"), error= function(e) { as.character(call[["y"]]) })
   vars <- c(x, y)
   # test input
   checkDataClass(data, c("edsurvey.data.frame", "light.edsurvey.data.frame", "edsurvey.data.frame.list"))
-  
+
+  pvvars <- names(getAttributes(data, "pvvars"))
+  cn <- colnames(data)
+  if(!x %in% c(pvvars, cn)) {
+    stop(paste0("Could not find x column ", dQuote(x), " in data."))
+  }
+  if(!y %in% c(pvvars, cn)) {
+    stop(paste0("Could not find y column ", dQuote(y), " in data."))
+  }
+
   if(inherits(data[[x]], "character")) {
     stop(paste0("The argument ", sQuote("x"), " must be of a class numeric, factor, or lfactor."))
   }
