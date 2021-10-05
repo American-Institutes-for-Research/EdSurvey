@@ -80,25 +80,27 @@ test_that("showPlausibleValues and showWeights verbose output agrees",{
 context("searchSDF")
 test_that("searchSDF",{
   search1 <- searchSDF(string=c("home","book"), data=sdf)
-  search2 <- searchSDF(string=c("home|book"), data=sdf)
-  search3 <- searchSDF(string="value", data=sdf, levels=TRUE)
-
   searchSDFVector <- readRDS(file="searchSDFVector.rds")
-  searchSDFOR <- readRDS(file="searchSDFOr.rds")
-  searchSDFLevels <- readRDS(file="searchSDFLevels.rds")
-
   expect_equal(search1, searchSDFVector)
+  skip_on_cran()
+
+  search2 <- searchSDF(string=c("home|book"), data=sdf)
+  searchSDFOR <- readRDS(file="searchSDFOr.rds")
   expect_equal(search2, searchSDFOR)
+
+  search3 <- searchSDF(string="value", data=sdf, levels=TRUE)
+  searchSDFLevels <- readRDS(file="searchSDFLevels.rds")
   expect_equal(search3, searchSDFLevels)
 })
 
 context("showCodebook")
 test_that("showCodebook",{
+  skip_on_cran()
   cb <- showCodebook(sdf, "school")
+  expect_known_value(cb, file="showCodebook.rds", update=FALSE)
   sdfRecode <- recode.sdf(sdf, recode = list(dsex = list(from = c("Male"), to = c("MALE"))))
   cb2 <- showCodebook(sdfRecode, c("student","school"), labelLevels = FALSE, includeRecodes = TRUE)
 
-  expect_known_value(cb, file="showCodebook.rds", update=FALSE)
   expect_known_value(cb2, file="showCodebookRecodes.rds", update=FALSE)
 })
 
@@ -470,6 +472,7 @@ test_that("edsurveyTable Taylor",{
 })
 
 test_that("variable label stored as attributes", {
+  skip_on_cran()
   est1 <- edsurveyTable(composite ~ dsex + b017451, sdf, jrrIMax=1)
   expect_equal(attr(est1$data$dsex, "label"), "Gender")
   expect_equal(attr(est1$data$b017451, "label"), "Talk about studies at home")
@@ -546,12 +549,12 @@ context("gap")
 test_that("gap", {
   # gap SD
   expect_known_value(g0 <- gap("composite", sdf, dsex=="Male", dsex=="Female", returnSimpleDoF=TRUE, stDev=TRUE), "gap_main_SD.rds", update=FALSE)
+  skip_on_cran()
   # gap means
   expect_known_value(g1 <- gap("composite", sdf, dsex=="Male", dsex=="Female", returnSimpleDoF=TRUE), "gap_main_mean.rds", update=FALSE)
   g1q <- gap("composite", sdf, "dsex==\"Male\"", "dsex==\"Female\"", returnSimpleDoF=TRUE)
   g1q$call <- g1$call # the call is different, so fix that
   expect_known_value(g1q, "gap_main_mean.rds", update=FALSE)
-  skip_on_cran()
   # gap percentile
   expect_known_value(g2p <- gap("composite", sdf, dsex=="Male", dsex=="Female", percentile=c(0,50, 98), returnSimpleDoF=TRUE), "gap_main_percentile.rds", update=FALSE)
   g2pq <- gap("composite", sdf, "dsex==\"Male\"", "dsex==\"Female\"", percentile=c(0,50, 98), returnSimpleDoF=TRUE)
@@ -602,6 +605,7 @@ test_that("achievementLevel basic", {
 
 context("achievementLevel, aggregated")
 test_that("achievementLevel, aggregated", {
+  skip_on_cran()
   expect_known_value(test2 <- achievementLevels(aggregateBy = "dsex", returnCumulative = TRUE, data=sdf), file="aLevels_test2.rds", update=FALSE)
   expect_known_value(test3 <- achievementLevels(aggregateBy = "sdracem", returnCumulative = TRUE, data=sdf), file="aLevels_test3.rds", update=FALSE)
   expect_known_value(test4 <- achievementLevels("sdracem", aggregateBy = c("composite"), data=sdf, returnCumulative = TRUE), file="aLevels_test4.rds", update=FALSE)
@@ -868,6 +872,7 @@ test_that("edsurvey with $ method",{
 
 context('levelsSDF n')
 test_that("levelsSDF n",{
+  skip_on_cran()
   levelRes <-  levelsSDF(varnames="pared", data=sdf)
   sum2Res <- summary2(sdf, "pared")
   mergeRes <- merge(sum2Res$summary, levelRes$pared, by.x="pared", by.y="labels")
@@ -882,6 +887,7 @@ test_that("levelsSDF n",{
 
 context('levelsSDF with multiple recodes')
 test_that("levelsSDF with multiple recodes",{
+  skip_on_cran()
   # $ method work for existing attributes
   df <- recode.sdf(sdf, recode = list(t088301=list(from=c("Yes, available","Yes, I have access"),
                                                    to=c("Yes")),
@@ -963,6 +969,7 @@ test_that("rq.sdf", {
 
 context("mml.sdf")
 test_that("mml.sdf", {
+  skip_on_cran()
   # run subtest 
   invisible(withr::with_options(list(digits=4),
                                 capture.output(
@@ -1001,6 +1008,7 @@ test_that("mml.sdf", {
 
 context("no PSU var error and warnings")
 test_that("no PSU var error and warnings", {
+  skip_on_cran()
   # these warnings relatete to missing PSU so the count of PSUs will not be returned or
   # errors about how Taylor series is not possible without a PSU var
   expect_warning(
