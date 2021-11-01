@@ -1,3 +1,12 @@
+---
+name: Bug report
+about: Create a report to help us improve
+title: ''
+labels: ''
+assignees: ''
+
+---
+
 Click preview tab ^^^ above!
 
 Thanks for using EdSurvey! Before you open an issue to ask a question or to report a bug, please make sure you've done the following.
