@@ -1,3 +1,12 @@
+---
+name: Feature request
+about: Suggest an idea for this project
+title: ''
+labels: ''
+assignees: ''
+
+---
+
 Thanks for using EdSurvey! Please follow the instructions below when requesting a new feature in EdSurvey.
 ---
 
