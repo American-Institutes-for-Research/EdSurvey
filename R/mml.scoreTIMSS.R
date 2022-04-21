@@ -37,7 +37,7 @@ scoreTIMSS <- function(edf, polyParamTab, dichotParamTab, scoreDict) {
   multIncorrect <- scoreDict[scoreDict$resCat=='Incorrect', 'pointMult']
   multNotR <- scoreDict[scoreDict$resCat=='Not reached', 'pointMult']
   multOmit <- scoreDict[scoreDict$resCat=='Omitted', 'pointMult']
-  
+
   for (item in polyParamTab$ItemID) {
     # Get rid of factor levels
     edf[[item]] <- as.character(edf[[item]])

@@ -191,6 +191,9 @@ mml.sdf <- function(formula,
       stop("IRT parameter values do not exist. Use the function setTIMSSScoreDict to continue.")
     }
     
+    # set max scorepoints for poly items
+    polyParamTab$scorePoints <- scoreDict[scoreDict$resCat == 'Correct', 'pointConst']
+    
     # check for paramTab items not in data
     items <- c(polyParamTab$ItemID, dichotParamTab$ItemID)
     itemsUse <- items[items %in% colnames(data)]
@@ -229,7 +232,7 @@ mml.sdf <- function(formula,
 
     # scoring 
     edf <- scoreTIMSS(edf, polyParamTab, dichotParamTab, scoreDict)
-    
+
     # creat stuItems
     stuItems <- as.data.frame(melt(as.data.table(edf[ , c(polyParamTab$ItemID,dichotParamTab$ItemID, idVar)]),
                                    id.vars=idVar,
