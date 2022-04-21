@@ -50,7 +50,7 @@ showPlausibleValues <- function(data, verbose = FALSE) {
                        exdent=2))
     if (verbose) {
       # if verbose = TRUE, return all plausible value details for each subject scale/subscale
-      txt <- "The plausible value variables are:\n"
+      txt <- "The plausible value variables are: "
       pvi <- getPlausibleValue(pvNames[i], data)
       txt <- paste0(txt, pasteItems(paste0("'", pvi, "'")))
       eout(txt, indent=2)

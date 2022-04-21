@@ -3,8 +3,8 @@
 getAttributes <- function(data, attribute = NULL) {
   # return attributes in a uniform way for either an edesurvey.data.frame or
   # a light.edsurvey.data.frame
-  checkDataClass(data, c("edsurvey.data.frame", "light.edsurvey.data.frame"))
   
+  checkDataClass(data, c("edsurvey.data.frame", "light.edsurvey.data.frame"))
   # get attributes from data
   # how we gt attributes depends on the class of data. 
   if (inherits(data, c("edsurvey.data.frame"))) {

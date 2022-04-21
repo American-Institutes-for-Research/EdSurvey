@@ -33,6 +33,7 @@ getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, sco
   
   # indices/lines of question item variables
   indices <-  match(itemColsClean, variableName)
+  indices <- indices[!is.na(indices)]
   itemLines <- mrcFile[indices]
   itemLines <- itemLines[!is.na(itemLines)]
   
@@ -87,7 +88,7 @@ getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, sco
       start <- start+28
       end <- end+28
     }
-    
+
     # set points for other types of answers (like omitted, illegible, etc.)
     if (itemId %in% dichotItems) {
       # this is a multiple choice question
@@ -141,9 +142,75 @@ getLabel <- function(line, first, last) {
   return (trimws(gsub(" \\d+$", "", part))) #grab label (everything before digits) and trim white space
 }
 
+#' @export
 defaultNAEPScoreCard <- function() {
   scoreDict <- data.frame(resCat=c("Multiple", "Not Reached", "Missing", "Omitted", "Illegible", "Non-Rateable", "Off Task"),
                            pointMult=c(8, NA, NA, 8, 0, 0, 0),
                            pointConst=c(0, NA, NA, 0, 0, 0, 0))
   return(scoreDict)
 }
+
+
+#' @title setNAEPScoreCard
+#' @description sets necessary attributes to run \code{mml.sdf} on NAEP data
+#' @param data a NAEP edsurvey.data.frame
+#' @param dctPath a connection that points to the location of a NAEP dct file. A dct file can be used to input custom item response theory (IRT)
+#'                parameters and subscale/subtest weights for NAEP assessments compared with those provided in the \code{NAEPirtparams} package. 
+#' @param scoreDict a data frame that includes guidelines for scoring the provided NAEP data. 
+#'                  Here, \emph{scoring} refers to turning item responses into scores on each item.
+#'                  To see the default scoring guidelines, call the function \code{defaultNAEPScoreCard()}, or see the Examples section.
+#' @return a NAEP edsurvey.data.frame with updated attributes
+setNAEPScoreCard <- function(data, dctPath=NULL, scoreDict=NULL){
+  # check if we can continue
+  if (is.null(dctPath) & is.null(scoreDict)) {
+    stop("You must provide dctPath and/or scoreDict.")
+  }
+  # check if we can continue
+  if (nrow(getAttributes(data, "polyParamTab")) == 0 & nrow(getAttributes(data, "dichotParamTab")) == 0 & is.null(dctPath)) {
+    stop("You must provide a dctPath to continue.")
+  }
+
+  # for scoreDict
+  if (is.null(scoreDict)) {
+    # use attribute
+    scoreDict <- getAttributes(data, "scoreDict")
+  } else {
+    # update attribute
+    data <- setAttributes(data, "scoreDict", scoreDict)
+  }
+  
+  # for dctPath
+  if (is.null(dctPath)) {
+    # get IRT parms from attributes
+    polyParamTab <- getAttributes(data, "polyParamTab")
+    dichotParamTab <- getAttributes(data, "dichotParamTab")
+    testDat <- getAttributes(data, "testData")
+    adjustments <- getAttributes(data, "adjustedData")
+  } else {
+    # get IRT params from dct
+    allTables <- parseNAEPdct(dctPath) 
+    polyParamTab <- allTables$polyParamTab
+    dichotParamTab <- allTables$dichotParamTab
+    testDat <- allTables$testDat
+    adjustments <- data.frame()
+
+    # update attributes
+    data <- setAttributes(data, "dichotParamTab", dichotParamTab)
+    data <- setAttributes(data, "polyParamTab", polyParamTab)
+    data <- setAttributes(data, "testData", testDat)
+    data <- setAttributes(data, "adjustedData", adjustments)
+  }
+
+  # create sCard
+  sCard <- getNAEPScoreCard(getAttributes(data, "fr2Path"), 
+                            polyParamTab$ItemID, 
+                            dichotParamTab$ItemID, 
+                            adjustments, 
+                            scoreDict
+  )
+  
+  # set attribute
+  data <- setAttributes(data, "scoreCard", sCard)
+  return(data)
+}
+

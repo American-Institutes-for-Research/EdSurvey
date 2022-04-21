@@ -24,11 +24,11 @@ test_that("ECLS_K data reads in correctly",{
   expect_silent(eclsk11 <<- readECLS_K2011(file.path(edsurveyHome, "ECLS_K", "2011"), filename = "childK5p.dat", layoutFilename = "ECLSK2011_K5PUF.sps", verbose = FALSE))
 
   expect_is(eclsk11, "edsurvey.data.frame")
-  expect_equal(dim(eclsk11), c(18174, 26060)) #18174 obs::26060 cols
+  expect_equal(dim(eclsk11), c(18174, 26061)) #18174 obs::26060 cols
 
   expect_silent(eclsk98 <<- readECLS_K1998(file.path(edsurveyHome, "ECLS_K", "1998"), filename="eclsk_98_99_k8_child_v1_0.dat", layoutFilename = "Layout_k8_child.txt", verbose = FALSE))
   expect_is(eclsk98, "edsurvey.data.frame")
-  expect_equal(dim(eclsk98), c(21409, 18928)) #21409 obs::18928 cols
+  expect_equal(dim(eclsk98), c(21409, 18929)) #21409 obs::18928 cols
 })
 
 context("ECLS_K getData")

@@ -53,6 +53,12 @@ An \code{edsurvey.data.frame} containing the following elements:
    \item{fileFormatSchool}{a \code{data.frame} containing the parsed information from the school .fr2 file associated with the data}
    \item{fileFormatTeacher}{not applicable for NAEP data; returns \code{NULL}}
    \item{survey}{the type of survey data contained in the \code{edsurvey.data.frame}}
+   \item{dichotParamTab}{IRT item paramters for dichotomous items in a data frame; returns \code{NULL} if unavailable in \code{NAEPirtparams}}
+   \item{polyParamTab}{IRT item parameters for polytomous items in a data frame; returns \code{NULL} if unavailable in \code{NAEPirtparams}}
+   \item{adjustedData}{IRT item parameter adjustment information in a data frame; returns \code{NULL} if unavailable in \code{NAEPirtparams}}
+   \item{testData}{IRT transformation constants in a data frame; returns \code{NULL} if unavailable in \code{NAEPirtparams}}
+   \item{scoreCard}{item scoring information in a data frame; returns \code{NULL} if unavailable}
+   \item{scoreDict}{generic scoring information in a data frame; returns \code{NULL} if unavailable}
 }
 \description{
 Opens a connection to an NAEP data file residing

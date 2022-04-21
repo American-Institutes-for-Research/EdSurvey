@@ -388,7 +388,7 @@ calc.glm.sdf <- function(formula,
   incomplete <- !complete.cases(edf[,relVars])
   if(any(incomplete)) {
     warning("Removing ", sum(incomplete), " rows with NAs from analysis.")
-    edf <- edf[!incomplete,]
+    edf <- edf[!incomplete, ]
   }
   # if doing Taylor series, check Taylor vars too
   if(varMethod=="t") {
@@ -397,14 +397,14 @@ calc.glm.sdf <- function(formula,
       if(any(incomplete[!edf[,wgt] %in% c(NA, 0)])) {
         warning("Removing ", sum(incomplete), " rows with NA PSU or stratum variables from analysis.")
       }
-      edf <- edf[!incomplete,]
+      edf <- edf[!incomplete, ]
     }
   }
   # remove non-positive (full sample) weights
   if(any(edf[,wgt] <= 0)) {
     posWeights <- edf[,wgt] > 0
     warning("Removing ", sum(!posWeights), " rows with nonpositive weight from analysis.")
-    edf <- edf[posWeights,]
+    edf <- edf[posWeights, ]
   }
 
   if(varMethod == "t" && sum(is.na(edf[,c(stratumVar, psuVar)])) != 0) {
@@ -512,13 +512,13 @@ calc.glm.sdf <- function(formula,
       edf$yvar0 <- edf[ , yvar0]
     } else {
       # for non-PV, I() has been evaluated
-      oneDef <- max(edf[,yvars], na.rm=TRUE)
+      oneDef <- max(edf[ , yvars], na.rm=TRUE)
       edf$yvar0 <- ifelse(edf$yvar %in% oneDef, 1, 0)
     }
   }
   #set up formula for initial regression with yvar0 predicted by all other vars
   frm <- update(formula, yvar0 ~ .)
-  edf$w <- edf[,wgt]
+  edf$w <- edf[ , wgt]
   
   # get an approximate fit without weights. Starting with weights can lead to
   # convergence problems.

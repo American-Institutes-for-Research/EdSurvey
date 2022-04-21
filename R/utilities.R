@@ -25,7 +25,6 @@ getPSUVar <- function(data, weightVar = attributes(getAttributes(data, "weights"
   allWeights <- getAttributes(data, "weights")
   psuVar <- getAttributes(data, "psuVar")
 
-
   if(is.null(allWeights)) {
     return(NULL)
   }
@@ -239,3 +238,92 @@ checkTaylorVars <- function(psuVar, stratumVar, wgt, varMethod="t", returnNumber
   }
   return(list(psuVar=psuVar, stratumVar=stratumVar, varMethod=varMethod, returnNumberOfPSU=returnNumberOfPSU))
 }
+
+# parse a condition
+# @argument iparseCall a substituted call
+# @argument iparseDepth start at 1, used by iparse to know the current depth
+# @argument x the data set, must return colnames with the names of valid columns
+# 
+# functions can be called with column names in quotes, unquoted, or as dynamic variables
+# iparse resolves dynamic variables from a call and returns the variables in a unified format
+#
+# example calls that iparse helps all resolve to the same solution
+# cor.sdf("b017451", "b003501", sdf)
+# cor.sdf(b017451, b003501, sdf)
+# b17 <- "b017451"
+# b35 <- "b003501"
+# cor.sdf(b17, b35, sdf)
+#
+# it is also helpful in resolving variables passed to function calls in the subset functions
+#
+iparse <- function(iparseCall, iparseDepth=1, x) {
+  # if this is just a character (before substitute was called) return it
+  if(iparseDepth == 1) {
+    skip <- tryCatch(inherits(eval(iparseCall), "character"),
+                    error=function(e) { FALSE },
+                    warning=function(w) { FALSE })
+    if(skip) {
+      return(eval(iparseCall))
+    }
+  }
+  # if it is still a character, return it
+  if(iparseDepth == 1 && length(iparseCall) == 1 && inherits(iparseCall, "character")) {
+    return(iparseCall)
+  }
+  # for each element
+  for(iparseind in 1:length(iparseCall)) {
+    # if it is a name
+    unlistOnExit <- FALSE
+    if(inherits(iparseCall, "name")) {
+      unlistOnExit <- TRUE
+      iparseCall <- list(iparseCall)
+    }
+    if(inherits(iparseCall[[iparseind]], "name")) {
+      iparseCall_c <- as.character(iparseCall[[iparseind]])
+      # if it is not in the data and is in the parent.frame, then substitue it now.
+      # unlist on colnames makes it general to 
+      if(! iparseCall_c %in% unlist(colnames(x))) {
+        if(length(find(iparseCall_c)) > 0) {
+          if (iparseCall[[iparseind]] == "%in%" || is.function(iparseCall[[iparseind]]) || is.function(get(iparseCall_c, find(iparseCall_c)))) {
+            iparseEval <- eval(substitute(iparseCall[[iparseind]]), parent.frame())
+          } else {
+            # get the variable
+            iparseEval <- eval(iparseCall[[iparseind]], parent.frame())
+          }
+          iparseCall[[iparseind]] <- iparseEval
+        } #end if length(find(ccall_c)) > 0)
+        # but, if dynGet returns, use that instead
+        iparsedg <- dynGet(iparseCall_c, ifnotfound="", minframe=1L)
+        # if dynGet found something
+        if(any(iparsedg != "")) {
+          iparseCall[[iparseind]] <- iparsedg
+        }
+      } # end if(!call_c)
+    } # end if(inherits(iparseCall[[iparseind]], "name"))
+    if(inherits(iparseCall[[iparseind]], "call")) {
+      # if this is a call, recursively parse that
+      iparseCall[[iparseind]] <- iparse(iparseCall[[iparseind]], iparseDepth=iparseDepth+1, x=x)
+      # if no vars are in colnames(x), evaluate the call right now
+      if( any(!all.vars(iparseCall[[iparseind]]) %in% unlist(colnames(x))) ) {
+        # unclear if this tryCatch does anything, but it seems wise to keep it
+        tryCatch(iparseTryResult <- eval(iparseCall[[iparseind]]),
+                 error=function(e) {
+                   co <- capture.output(print(iparseCall[[iparseind]]))
+                   stop(paste0("The condition ", dQuote(co), " cannot be evaluated."))
+                 })
+        # the condition resolves to NULL if, for example, it references
+        # a list element that is not on the list. But the list itself is
+        # on the parent.frame.
+        if(is.null(iparseTryResult)) {
+          co <- capture.output(print(iparseCall[[iparseind]]))
+          stop(paste0("Condition ", dQuote(co), " cannot be evaluated."))
+        }
+        iparseCall[[iparseind]] <- iparseTryResult
+      }
+    } #end of if statment: if inherits(iparseCall[[i]], "call")
+  } # end of for loop: i in 1:length(iparseCall)
+  if(unlistOnExit) {
+    iparseCall <- as.character(iparseCall[[1]])
+  }
+  iparseCall
+} # End of fucntion: iparse

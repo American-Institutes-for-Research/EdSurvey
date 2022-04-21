@@ -4,6 +4,9 @@ options(width = 500)
 options(useFancyQuotes=FALSE)
 source("REF-2-esdfl.R") # has REF output in it
 
+# ideally this wouldn't trip up any of the scope fixes below
+dsex <- "should not be used"
+
 test_that("read ESDFL",{
   sdf <<- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
   sdfA <<- subset(sdf, scrpsu %in% c(5,45,56))

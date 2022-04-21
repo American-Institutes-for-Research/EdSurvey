@@ -44,9 +44,15 @@
 #'                      other functions that usually would take an
 #'                      \code{edsurvey.data.frame}. This \code{data.frame} also is called a \code{light.edsurvey.data.frame}.
 #'                      See Description section in \code{\link{edsurvey.data.frame}} for
-#'                      more information on \code{light.edsurvey.data.frame}.
+#'                      more information on \code{light.edsurvey.data.frame}. 
 #' @param returnJKreplicates a logical value indicating if JK replicate weights
 #'                           should be returned. Defaults to \code{TRUE}.
+#' @param returnItems a logical value indicating if the questions items associated with a 
+#'                    NAEP or TIMSS construct should be returned. Returning questions items 
+#'                    can be helpful if the user plans to use estimate their own plausable values using 
+#'                    \code{mml.sdf}. This option will only work for those TIMSS items available on the \href{https://timssandpirls.bc.edu/}{timsspirls website} 
+#'                      and those NAEP items in the \href{package https://cran.r-project.org/web/packages/NAEPirtparams/index.html}{NAEPirtparams} package. 
+#'                    
 #'
 #' @details By default, an \code{edsurvey.data.frame} does not have data read
 #' into memory until \code{getData} is called and returns a data frame.
@@ -94,11 +100,13 @@ getData <- function(data,
                     recode = NULL,
                     includeNaLabel=FALSE,
                     addAttributes=FALSE,
-                    returnJKreplicates=TRUE) {
+                    returnJKreplicates=TRUE,
+                    returnItems=FALSE) {
   # check inputs
   checkDataClass(data, c("edsurvey.data.frame", "light.edsurvey.data.frame", "edsurvey.data.frame.list"))
   sdf <- data
   data <- NULL
+  survey <- getAttributes(sdf, "survey")
   if(!inherits(varnames, c("NULL", "character"))) stop("The ", sQuote("varnames"), " argument must be either NULL or a character vector.")
   if(!inherits(formula, c("NULL", "formula"))) stop("The ", sQuote("formula"), " argument must be either NULL or a formula.")
   if(!is.logical(drop)) stop("The ", sQuote("drop"), " argument must be logical.")
@@ -107,7 +115,15 @@ getData <- function(data,
   if(!is.logical(defaultConditions)) stop("The ", sQuote("defaultConditions"), " argument must be logical.")
   if(!is.null(recode) & !is.list(recode)) stop(paste0("The ", sQuote("recode"), " argument must be a list."))
   if(is.null(varnames) & is.null(formula)) stop(paste0("At least one of ", sQuote("varnames"), " and ", sQuote("formula"), " must be not NULL."))
-
+  if(returnItems == TRUE & !survey %in% c("NAEP", "TIMSS")) {
+    stop(paste0(sQuote("getData()"), " can only return items for NAEP and TIMSS, not ", sQuote(survey),"."))
+  }
+  if(omittedLevels == TRUE & returnItems == TRUE){
+    warning(paste0("TIMSS and NAEP items are set to missing, must use ", sQuote("omittedLevels=FALSE"), 
+                    " with ", sQuote("returnItems=TRUE."), " Switching to ", sQuote("omittedLevels"), " to ", sQuote("FALSE"),"."))
+    omittedLevels <- FALSE
+  }
+  
   # for edsurvey.data.frame.list, just return a list of results
   if (inherits(sdf, c("edsurvey.data.frame.list"))) {
     res <- itterateESDFL(match.call(),sdf)
@@ -116,7 +132,7 @@ getData <- function(data,
     }
     return(res)
   }
-
+  
   if(!inherits(sdf, "edsurvey.data.frame")) {
     # if this is a light.edsurvey.data.frame
     if(!missing(defaultConditions)) {
@@ -163,14 +179,12 @@ getData <- function(data,
   #Retrieve user conditions
   userConditions <- getAttributes(sdf, "userConditions")
   varNamesConditions <- c()
-  if(length(userConditions)>0) {
-    for (i in c(1:length(userConditions))) {
-      if (!is.null(names(userConditions)[i]) && names(userConditions)[i] %in% "recode") {
-        # do nothing, these variables are not loaded in unless needed
-      } else {
-        condition <- userConditions[[i]]
-        varNamesConditions <- c(varNamesConditions, all.vars(condition))
-      }
+  for (i in seq_along(userConditions)) {
+    if (!is.null(names(userConditions)[i]) && names(userConditions)[i] %in% "recode") {
+      # do nothing, these variables are not loaded in unless needed
+    } else {
+      condition <- userConditions[[i]]
+      varNamesConditions <- c(varNamesConditions, all.vars(condition))
     }
   }
 
@@ -185,11 +199,23 @@ getData <- function(data,
   iw <- isWeight(varnames, sdf) # Boolean vector that is TRUE when the variable is a weight
   vars <- c(vars, varnames[!(iw | hpv)])
   vars_exclude_omitted <- c()
+
   if(sum(hpv) > 0) {
+    if(returnItems == TRUE){
+      items <- getAllItems(sdf, varnames[hpv], omittedLevels)
+      if(length(items) < 0){
+        warning(paste0("No items found for this ", survey, " and ", getAttributes(sdf, "year"), 
+                       ". None will be returned. Item parameters are likely not readily avaliable for this survey and year. See ",
+                       sQuote("?getData()", " for more detail.")))
+      } 
+    } else {
+      items <- c()
+    }
     pvs <- getPlausibleValue(varnames[hpv], sdf)
     vars_exclude_omitted <- c(vars_exclude_omitted, pvs[-1])
-    vars <- c(vars, pvs)
+    vars <- c(vars, pvs, items)
   }
+
   #getAllPSUVar and getallStratumVar are defined in getData.R to return a vector of all the PSU & Stratum variables associated with the edsurvey.data.frame/light.edsurvey.data.frame
   vars_exclude_omitted <- c(vars_exclude_omitted, getAllPSUVar(sdf), getAllStratumVar(sdf))
   if(sum(iw)>0 & returnJKreplicates == TRUE) {
@@ -204,7 +230,6 @@ getData <- function(data,
   }
   # remove any duplicates (e.g. because part of default conditions and requested)
   varnames <- unique(vars)
-
   # expand varnamesAllConditions when it has a variable with PVs or is a weight
   # also make varnamesTotal
   vars <- c()
@@ -263,6 +288,7 @@ getData <- function(data,
       }
     }#end for(dlevel in rev(sdf$dataList))
     #loop through each data item and see if any variables are requested and process accordingly to the dataList rules
+    
     for(dlevel in sdf$dataList){
       if(dlevel$forceMerge || mergeLevels[names(mergeLevels)==dlevel$levelLabel]==TRUE){
         laf <- dlevel$lafObject
@@ -503,121 +529,119 @@ getData <- function(data,
     }
 
     #Apply user conditions (i.e. subset, recode)
-    if(length(userConditions)>0) {
-      for (i in c(1:length(userConditions))) {
-        if (!is.null(names(userConditions)[i]) && names(userConditions)[i] %in% "recode") {
-          recode <- userConditions[[i]]
-          if(!is.null(recode)) {
-            # apply recodes
-            for (i in 1:length(recode)){
-              if(names(recode)[i] %in% colnames(data)) {
-                ni <- names(recode)[i]
-                from <- recode[[i]]$from
-                to <- recode[[i]]$to
-                if (length(to) > 1) {
-                  stop(paste0("More than one 'To' value found in the ", sQuote(ni) ," element of the 'recode' argument."))
+    for (i in seq_along(userConditions)) {
+      if (!is.null(names(userConditions)[i]) && names(userConditions)[i] %in% "recode") {
+        recode <- userConditions[[i]]
+        if(!is.null(recode)) {
+          # apply recodes
+          for (i in 1:length(recode)){
+            if(names(recode)[i] %in% colnames(data)) {
+              ni <- names(recode)[i]
+              from <- recode[[i]]$from
+              to <- recode[[i]]$to
+              if (length(to) > 1) {
+                stop(paste0("More than one 'To' value found in the ", sQuote(ni) ," element of the 'recode' argument."))
+              }
+
+              badFrom <- c() #levels with incorrect recodes
+              if(inherits(data[,ni], "factor")) {
+                newto <- to
+                if(to %in% from) { # remove degenerate recode
+                  from <- from[!from %in% to]
                 }
-
-                badFrom <- c() #levels with incorrect recodes
-                if(inherits(data[,ni], "factor")) {
-                  newto <- to
-                  if(to %in% from) { # remove degenerate recode
-                    from <- from[!from %in% to]
-                  }
-                  labs <- levels(data[,ni]) # used for both lfactors and factors
-                  if(newto %in% labs) { # this is not a new label
-                    newto <- NULL
-                  }
-                  tmp <- as.character(data[,ni])
-                  if(inherits(data[,ni],"lfactor")) { # it is an lfactor
-                    levs <- llevels(data[,ni])
-                    # in case of lfactor:
-                    # + from can be numeric or character
-                    # + to can be numeric or character
-                    # To simplify the code, if to is a numeric, we will coerce it to character
-                    if (is.numeric(to)) {
-                      if (!to %in% levs) {
-                        labs <- c(labs, as.character(to)) # since there are no labels provided, we will use character format of levels
-                        levs <- c(levs, to)
-                      }
-                      toNum <- to
-                      to <- labs[levs==to]
-                    } else {
-                      if (!to %in% labs) {
-                        labs <- c(labs,to)
-                        toNum <- max(levs,na.rm=TRUE) + 1
-                        levs <- c(levs, toNum)
-                      } else {
-                        toNum <- levs[which(to %in% labs)]
-                      }
+                labs <- levels(data[,ni]) # used for both lfactors and factors
+                if(newto %in% labs) { # this is not a new label
+                  newto <- NULL
+                }
+                tmp <- as.character(data[,ni])
+                if(inherits(data[,ni],"lfactor")) { # it is an lfactor
+                  levs <- llevels(data[,ni])
+                  # in case of lfactor:
+                  # + from can be numeric or character
+                  # + to can be numeric or character
+                  # To simplify the code, if to is a numeric, we will coerce it to character
+                  if (is.numeric(to)) {
+                    if (!to %in% levs) {
+                      labs <- c(labs, as.character(to)) # since there are no labels provided, we will use character format of levels
+                      levs <- c(levs, to)
                     }
-                    # after the code above, to is always a character label
-
-                    # from can be a vector of mixed numeric and character values
-                    # fromNum: numeric values in from
-                    # fromChar: character values in from
-                    suppressWarnings(fromNum <- as.numeric(from)) # numeric from variables
-                    fromChar <- from[is.na(fromNum)]# character from variables
-                    # numeric from variables
-                    fromNum <- fromNum[!is.na(fromNum)]
-
-                    # changing tmp according to numeric values of from
-                    if(length(fromNum)>0) {
-                      tmp_numeric <- lfactors:::switchllevels(data[,ni])
-                      tmp[tmp_numeric %in% fromNum] <- to
-                      if(any(!fromNum %in% levs)) {
-                        #add any missing levels to missing list
-                        badFrom <- fromNum[!fromNum %in% levs]
-                      }
-                      labs <- labs[!levs %in% setdiff(fromNum,toNum)]
-                      levs <- levs[!levs %in% setdiff(fromNum,toNum)]
-                    }
-                    # changing tmp according to character values of from
-                    if(length(fromChar)>0) {
-                      tmp[tmp %in% fromChar] <- to
-                      if(any(!fromChar %in% labs)) {
-                        badFrom <- c(badFrom, fromChar[!fromChar %in% labs])
-                      }
-                      levs <- levs[!labs %in% setdiff(fromChar, to)]
-                      labs <- labs[!labs %in% setdiff(fromChar, to)]
-                    }
-                    # Now we need to call lfactors again to make sure levels are mapped correctly to modified character vectors
-                    data[,ni] <- lfactor(tmp, levels=levs, labels=labs, exclude = NULL)
-                  } else { # end if(inherits(x[,ni],"lfactor"))
-                    # it is a base r factor so from and to have to be character
-                    tmp[tmp %in% from] <- to
-                    if(any(!from %in% labs)) {
-                      #add any missing levels to missing list
-                      badFrom <- c(badFrom,from[!from %in% labs])
-                    }
+                    toNum <- to
+                    to <- labs[levs==to]
+                  } else {
                     if (!to %in% labs) {
                       labs <- c(labs,to)
+                      toNum <- max(levs,na.rm=TRUE) + 1
+                      levs <- c(levs, toNum)
+                    } else {
+                      toNum <- levs[which(to %in% labs)]
                     }
-                    data[,ni] <- factor(tmp, levels=labs)
                   }
-                } else { # end if(inherits(x[,ni], "factor"))
-                  # recode for non factors
-                  if(any(!from %in% data[,ni])) {
-                    badFrom <- from[!from %in% data[,ni]]
+                  # after the code above, to is always a character label
+
+                  # from can be a vector of mixed numeric and character values
+                  # fromNum: numeric values in from
+                  # fromChar: character values in from
+                  suppressWarnings(fromNum <- as.numeric(from)) # numeric from variables
+                  fromChar <- from[is.na(fromNum)]# character from variables
+                  # numeric from variables
+                  fromNum <- fromNum[!is.na(fromNum)]
+
+                  # changing tmp according to numeric values of from
+                  if(length(fromNum)>0) {
+                    tmp_numeric <- lfactors:::switchllevels(data[,ni])
+                    tmp[tmp_numeric %in% fromNum] <- to
+                    if(any(!fromNum %in% levs)) {
+                      #add any missing levels to missing list
+                      badFrom <- fromNum[!fromNum %in% levs]
+                    }
+                    labs <- labs[!levs %in% setdiff(fromNum,toNum)]
+                    levs <- levs[!levs %in% setdiff(fromNum,toNum)]
                   }
-                  data[,ni][data[,ni] %in% from] <- to
-                } # end else for if(inherits(data[,ni], "factor"))
-                if(length(badFrom) > 0) {
-                  warning(paste0("When recoding, could not find the level(s) ",
-                                 pasteItems(dQuote(badFrom), final="or"),
-                                 " in the variable ", dQuote(ni), "."))
+                  # changing tmp according to character values of from
+                  if(length(fromChar)>0) {
+                    tmp[tmp %in% fromChar] <- to
+                    if(any(!fromChar %in% labs)) {
+                      badFrom <- c(badFrom, fromChar[!fromChar %in% labs])
+                    }
+                    levs <- levs[!labs %in% setdiff(fromChar, to)]
+                    labs <- labs[!labs %in% setdiff(fromChar, to)]
+                  }
+                  # Now we need to call lfactors again to make sure levels are mapped correctly to modified character vectors
+                  data[,ni] <- lfactor(tmp, levels=levs, labels=labs, exclude = NULL)
+                } else { # end if(inherits(x[,ni],"lfactor"))
+                  # it is a base r factor so from and to have to be character
+                  tmp[tmp %in% from] <- to
+                  if(any(!from %in% labs)) {
+                    #add any missing levels to missing list
+                    badFrom <- c(badFrom,from[!from %in% labs])
+                  }
+                  if (!to %in% labs) {
+                    labs <- c(labs,to)
+                  }
+                  data[,ni] <- factor(tmp, levels=labs)
                 }
-              }# end if(names(recode)[i] %in% colnames(data))
-            } # end for (i in 1:length(recode))
-          } # end if(!is.null(recode))
-        } else { # other userConditions are specified in subset
-          condition <- userConditions[[i]]
-          r <- eval(condition, data)
-          r <- ifelse(is.na(r), FALSE, r) #remove NA
-          data <- data[which(r), , drop=FALSE]
-        }
-      }#end for (i in c(1:length(userConditions)))
-    } # end if(length(userConditions) > 0)
+              } else { # end if(inherits(x[,ni], "factor"))
+                # recode for non factors
+                if(any(!from %in% data[,ni])) {
+                  badFrom <- from[!from %in% data[,ni]]
+                }
+                data[,ni][data[,ni] %in% from] <- to
+              } # end else for if(inherits(data[,ni], "factor"))
+              if(length(badFrom) > 0) {
+                warning(paste0("When recoding, could not find the level(s) ",
+                               pasteItems(dQuote(badFrom), final="or"),
+                               " in the variable ", dQuote(ni), "."))
+              }
+            }# end if(names(recode)[i] %in% colnames(data))
+          } # end for (i in 1:length(recode))
+        } # end if(!is.null(recode))
+      } else { # other userConditions are specified in subset
+        condition <- userConditions[[i]]
+        r <- eval(condition, data)
+        r <- ifelse(is.na(r), FALSE, r) #remove NA
+        data <- data[which(r), , drop=FALSE]
+      }
+    }#end for (i in seq_along(userConditions))
 
     # apply omittedLevels when TRUE or equal to some levels
     # this code should execute on all of the variables when omittedLevels is TRUE
@@ -734,7 +758,6 @@ getData <- function(data,
     # reset userConditions to remove recode (because its already applied)
     class(data) <- c("light.edsurvey.data.frame", class(data))
     data <- setAttributes(data,"userConditions", userConditions[which(!names(userConditions) %in% "recode")])
-
     return(data)
   } # end if(addAttributes)
   if(nrow(data) == 0) {

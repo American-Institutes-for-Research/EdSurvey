@@ -1,6 +1,14 @@
 \name{NEWS}
 \title{NEWS for EdSurvey}
 \section{Changes in version 2.7.1}{
+  \subsection{UPDATES}{
+    \itemize{
+      \item \code{summary2} output now shows zero weights without a colon.
+    }
+  }
+}
+
+\section{Changes in version 2.7.1}{
   \subsection{DATA UPDATES}{
     \itemize{
       \item Added support for the National Household Education Survey (NHES) set of data.  See \code{downloadNHES} for instructions to locate and obtain the NHES data files, and see \code{readNHES} for reading the NHES data for analysis.

@@ -41,11 +41,11 @@ test_that("PISA data reads in correctly", {
   expect_is(jpn2009, "edsurvey.data.frame")
   expect_is(aus2006, "edsurvey.data.frame")
   expect_is(usa2000, "edsurvey.data.frame")
-  expect_equal(dim(usaINT2015), c(5712, 3714))
-  expect_equal(dim(usaINT2012), c(4978, 1262))
-  expect_equal(dim(qcnCBA2012), c(5177, 1345))
-  expect_equal(dim(jpn2009), c(6088, 981))
-  expect_equal(dim(aus2006), c(14170, 1021))
+  expect_equal(dim(usaINT2015), c(5712, 3715))
+  expect_equal(dim(usaINT2012), c(4978, 1263))
+  expect_equal(dim(qcnCBA2012), c(5177, 1346))
+  expect_equal(dim(jpn2009), c(6088, 982))
+  expect_equal(dim(aus2006), c(14170, 1022))
 })
 
 # Check multiple-path read-in
@@ -77,7 +77,7 @@ test_that("PISA getData", {
 context("PISA subset data")
 test_that("PISA subset data", {
   usa12_female <- subset(usaINT2012, st04q01 == "Female", verbose = FALSE)
-  expect_equal(dim(usa12_female),c(2453,1262))
+  expect_equal(dim(usa12_female),c(2453,1263))
 })
 
 context("PISA showCutPoints")

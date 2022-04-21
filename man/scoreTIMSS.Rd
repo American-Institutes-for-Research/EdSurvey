@@ -4,7 +4,7 @@
 \alias{scoreTIMSS}
 \title{EdSurvey Direct Estimation - TIMSS scoring}
 \usage{
-scoreTIMSS(edf, polyParamTab, dichotParamTab)
+scoreTIMSS(edf, polyParamTab, dichotParamTab, scoreDict)
 }
 \arguments{
 \item{edf}{a TIMSS \code{light.edsurvey.data.frame} or \code{edsurvey.data.frame}}

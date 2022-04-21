@@ -24,11 +24,11 @@ test_that("ELS data reads in correctly",{
   expect_silent(els <<- readELS(file.path(edsurveyHome, "ELS", "2002"), filename = "els_02_12_byf3pststu_v1_0.sav", wgtFilename = "els_02_12_byf3stubrr_v1_0.sav", verbose = FALSE))
   
   expect_is(els, "edsurvey.data.frame")
-  expect_equal(dim(els), c(16197, 9012))
+  expect_equal(dim(els), c(16197, 9013))
   
   expect_silent(elsSchl <<- readELS(file.path(edsurveyHome, "ELS", "2002"), filename = "els_02_12_byf1sch_v1_0.sav", wgtFilename = NULL, verbose = FALSE))
   expect_is(elsSchl, "edsurvey.data.frame")
-  expect_equal(dim(elsSchl), c(1954, 925)) #21409 obs::18928 cols
+  expect_equal(dim(elsSchl), c(1954, 926)) #21409 obs::18928 cols
 })
 
 context("ELS getData")

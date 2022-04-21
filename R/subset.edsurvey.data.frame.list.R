@@ -3,6 +3,8 @@
 #' @method subset edsurvey.data.frame.list
 #' @export
 subset.edsurvey.data.frame.list <- function(x, subset, inside=FALSE, drop = FALSE, ...) {
+  checkDataClass(x, c("edsurvey.data.frame.list"))
+
   if(!inherits(x, c("edsurvey.data.frame.list"))) {
     stop(paste0("The argument ",sQuote("x"), " must be an ", dQuote("edsurvey.data.frame.list"), "."))
   }
@@ -23,40 +25,7 @@ subset.edsurvey.data.frame.list <- function(x, subset, inside=FALSE, drop = FALS
 
     # parse the subset
     # substitute in variables that are available in the current environment
-    subset_call <- substitute(subset)
-    iparse <- function(iparseCall, subsetEnv, iparseDepth=1) {
-      # for each element
-      for(iparseind in 1:length(iparseCall)) {
-        # if it is a name
-        if(class(iparseCall[[iparseind]]) %in% c("name")) {
-          iparseCall_c <- as.character(iparseCall[[iparseind]])
-          # if it is not in the data and is in the parent.frame, then substitue it now.
-          if(! iparseCall_c %in% colnames(x)) {
-            if(length(find(iparseCall_c)) > 0) {
-              if (iparseCall[[iparseind]] == "%in%" || is.function(iparseCall[[iparseind]]) || is.function(get(iparseCall_c, find(iparseCall_c)))) {
-                ev <- eval(substitute(iparseCall[[iparseind]]), parent.frame())
-              } else {
-                # get the variable
-                ev <- eval(iparseCall[[iparseind]], parent.frame())
-              }
-              iparseCall[[iparseind]] <- ev
-            } #end if length(find(iparseCall_c)) > 0)
-            # but, if dynGet returns, use that instead
-            iparsedg <- dynGet(iparseCall_c, ifnotfound="", minframe=1L)
-            # if dynGet found something
-            if(any(iparsedg != "")) {
-              iparseCall[[iparseind]] <- iparsedg
-            }
-          } # end if(!call_c)
-        } # end if(class(iparseCall[[iparseind]]) %in% c("name")) {
-        if(class(iparseCall[[iparseind]]) %in% "call") {
-          # if this is a call, recursively parse that
-          iparseCall[[iparseind]] <- iparse(iparseCall[[iparseind]], subsetEnv, iparseDepth = iparseDepth + 1)
-        } #end of if statment: if class(iparseCall[[i]]) %in% "call"
-      } # end of for loop: i in 1:length(iparseCall)
-      iparseCall
-    } # End of fucntion: iparse
-    subset_call <- iparse(subset_call, parent.frame())
+    subset_call <- iparse(substitute(subset), x=x)
   } # Enf of if esle statmet: if inside is true 
 
   res <- x

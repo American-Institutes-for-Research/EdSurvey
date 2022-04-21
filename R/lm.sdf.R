@@ -204,6 +204,7 @@ lm.sdf <- function(formula,
                    standardizeWithSamplingVar=FALSE) {
   call <- match.call()
   checkDataClass(data, c("edsurvey.data.frame", "light.edsurvey.data.frame", "edsurvey.data.frame.list"))
+  weightVar <- iparse(substitute(weightVar), x=data)
   # if data is an edsurvey.data.frame.list, simply return a list with results
   # for each edsurvey.data.frame
   if (inherits(data, c("edsurvey.data.frame.list"))) {

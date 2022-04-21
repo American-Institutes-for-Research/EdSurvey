@@ -105,8 +105,20 @@ cor.sdf <- function(x,
     return(itterateESDFL(match.call(), data))
   }
   # allow unquoted variables
-  x <- tryCatch(get(as.character(call[["x"]]), mode="character"), error= function(e) { as.character(call[["x"]]) })
-  y <- tryCatch(get(as.character(call[["y"]]), mode="character"), error= function(e) { as.character(call[["y"]]) })
+
+  skip <- tryCatch(inherits(x, "character"),
+                  error=function(e) { FALSE },
+                  warning=function(w) { FALSE })
+  if(!skip) {
+    x <- iparse(substitute(x), x=data)
+  }
+  skip <- tryCatch(inherits(y, "character"),
+                  error=function(e) { FALSE },
+                  warning=function(w) { FALSE })
+  if(!skip) {
+    y <- iparse(substitute(y), x=data)
+  }
+
   vars <- c(x, y)
   # test input
   checkDataClass(data, c("edsurvey.data.frame", "light.edsurvey.data.frame", "edsurvey.data.frame.list"))

@@ -202,21 +202,20 @@ assignTest1 <- c("    asmrea01        asmrea02        asmrea03        asmrea04  
 
 mmlIntREF <- c("  (Intercept) Population SD ", 
                "       539.82         81.72 ")   
-mmlSumREF <- c("Call:", "mml.sdf(formula = mmat ~ 1, data = mmlSDF, weightVar = \"totwgt\", ",
-               "    verbose = TRUE)", 
-               "Summary Call:", 
-               "summary.edSurveyMML(object = mmlTIMSS)", 
-               "", 
+
+
+mmlSumREF <- c("Call:",
+               "mml.sdf(formula = mmat ~ 1, data = mmlSDF, weightVar = \"totwgt\", ",
+               "    verbose = TRUE)", "Summary Call:",
+               "summary.mml.sdf(object = mmlTIMSS)", "",
                "Summary:",
-               "            Estimate   StdErr t.value", 
-               "(Intercept) 539.8184   0.0458   11774",
-               "", 
-               "Residual Variance Estimate:", 
-               "              Estimate StdErr", 
-               "Population SD    81.72 0.0391",
-               "",
-               "Convergence = Normal exit from bobyqa", 
-               "Iterations = 27", 
-               "LogLike = -52453394.92", 
-               "Observations = 10017", 
-               "Weighted observations = 3752699.01" )
+               "            Estimate StdErr t.value",
+               "(Intercept)   539.82   2.22     243", "",
+               "Residual Variance Estimate:",
+               "              Estimate StdErr",
+               "Population SD    81.72  1.422", "",
+               "Convergence = converged",
+               "Iterations = 12",
+               "LogLike = -52453394.92",
+               "Observations = 10017",
+               "Weighted observations = 3752699.01")

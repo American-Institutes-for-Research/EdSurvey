@@ -148,6 +148,13 @@ An object of class \code{edsurvey.data.frame} with the following elements:
    \item{\code{assessmentCode}}{the assessment code}
    \item{\code{dataType}}{the type of data (e.g., \code{student} or \code{school})}
    \item{\code{gradeLevel}}{the grade of the dataset contained in the \code{edsurvey.data.frame}}
+\emph{Elements used in \code{mml.sdf}}
+   \item{\code{dichotParamTab}}{IRT item paramters for dichotomous items in a data frame}
+   \item{\code{polyParamTab}}{IRT item parameters for polytomous items in a data frame}
+   \item{\code{adjustedData}}{IRT item parameter adjustment information in a data frame}
+   \item{\code{testData}}{IRT transformation constants in a data frame}
+   \item{\code{scoreCard}}{item scoring information in a data frame}
+   \item{\code{scoreDict}}{generic scoring information in a data frame}
 }
 \description{
 Two new classes in \code{EdSurvey} are described in this section: the \code{edsurvey.data.frame}

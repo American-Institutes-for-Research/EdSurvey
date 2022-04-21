@@ -24,11 +24,11 @@ test_that("HSLS data reads in correctly",{
   expect_silent(hsls <<- readHSLS(file.path(edsurveyHome, "HSLS", "2009"), filename = "hsls_16_student_v1_0.sav", verbose = FALSE))
   
   expect_is(hsls, "edsurvey.data.frame")
-  expect_equal(dim(hsls), c(23503, 8509))
+  expect_equal(dim(hsls), c(23503, 8510))
   
   expect_silent(hslsSchl <<- readHSLS(file.path(edsurveyHome, "HSLS", "2009"), filename = "hsls_09_school_v1_0.sav", wgtFilename = NULL, verbose = FALSE))
   expect_is(hslsSchl, "edsurvey.data.frame")
-  expect_equal(dim(hslsSchl), c(944, 687))
+  expect_equal(dim(hslsSchl), c(944, 688))
 })
 
 context("HSLS getData")

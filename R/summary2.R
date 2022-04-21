@@ -31,7 +31,7 @@
 #'   \item{Max.}{largest value of the variable}
 #'   \item{SD}{standard deviation or weighted standard deviation}
 #'   \item{NA's}{number of \code{NA} in variable and in weight variables}
-#'   \item{Zero-weights}{number of zero-weight cases if users choose to produce weighted statistics}
+#'   \item{Zero weights}{number of zero weight cases if users choose to produce weighted statistics}
 #' 
 #' If the weight option is chosen, the function produces weighted percentile and standard deviation. Refer to the vignette titled 
 #' \emph{\href{https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf}{Statistical Methods Used in EdSurvey}} and
@@ -132,7 +132,7 @@ summary2 <- function(data, variable,
     })
     ret <- do.call(rbind, ret0)
     colnames(ret) <- c("N","Weighted N","Min.", "1st Qu.", "Median", "Mean", "3rd Qu.", 
-                       "Max.", "SD", "NA's", "Zero-weights")
+                       "Max.", "SD", "NA's", "Zero weights")
     ret <- cbind("Variable" = variableR, as.data.frame(ret))
   } # end else for if(typeOfVariable(variable,data) == "discrete")
   ret <- list(summary=ret)

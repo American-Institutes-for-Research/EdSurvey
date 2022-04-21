@@ -1,9 +1,10 @@
 #this file is used for common utility function that can be re-used across different functions
 
 #takes a tibble object (spssDF) after it has been read in from a haven 'read_sav' call and returns a fileFormat object of the tibble describing it's properties
+#' @keywords internal
 getSPSSFileFormat <- function(spssDF) {
 
-  if(!inherits(spssDF, "tbl_df")) stop("spssDF must be a tibble")
+  if(!inherits(spssDF, "data.frame")) stop("spssDF must be a data.frame")
 
   colInfo <- data.frame(names=colnames(spssDF), stringsAsFactors=FALSE)
   colInfo$format <- sapply(colInfo$names, function(z) {
@@ -66,6 +67,7 @@ getSPSSFileFormat <- function(spssDF) {
 #reads an SPSS (.sps) snytax file and prepares the fileformat from the SPSS syntax file
 #expects a very specific format of SPSS file and will only be applicable for the format found with ECLS_K, BTLS, and HSTS data sets
 #going foward looking into possible packages to use for parsing SPSS/SAS scripts that would be more reliable/handle other formats
+#' @keywords internal
 parseSPSSFileFormat <- function (inSPSSyntax){
 
   dict <- list("variableName" = character(0),
@@ -300,6 +302,7 @@ parseSPSSFileFormat <- function (inSPSSyntax){
 
 #This function will evaluate file format valueLabels where valueLabels are defined
 #for continuous variables that are not omittedLevels, but shouldn't be there and removes them from the returned fileFormat
+#' @keywords internal
 valueLabelCleanupFF <- function(fileFormat, omittedLevels, valLblsToCheck){
 
   newFF <- fileFormat
@@ -384,6 +387,7 @@ valueLabel_MakeCategorical <- function(fileFormat, variableNames, data){
 #the .csv files for the RUD data are accompanied by two .txt files
 #the *_metadata.txt and the *_layout.txt
 #this takes in those two files and returns a formatted fileFormat object
+#' @keywords internal
 getMetaFormatDictionary <- function(metaDataFile, formatDataFile){
 
   if(!file.exists(metaDataFile)){
@@ -476,6 +480,7 @@ getMetaFormatDictionary <- function(metaDataFile, formatDataFile){
 }
 
 #parses the NCES 'Layout*.txt' file to a FWF .dat data file.
+#' @keywords internal
 parseTEXTFileFormat_NCES <- function (inTxtFile){
 
   dict <- list("variableName" = character(0),
@@ -663,6 +668,7 @@ parseTEXTFileFormat_NCES <- function (inTxtFile){
 }
 
 #checks for any missing numeric gaps between the start and end postions and inserts 'xGAP' fields for LaF to operate properly on FWF file
+#' @keywords internal
 validateFWF_FileFormat <- function(fileFormat){
 
   startPos <- min(fileFormat$Start)
@@ -721,6 +727,7 @@ validateFWF_FileFormat <- function(fileFormat){
 
 #writes a dataframe to the savePath using the fileFormat specifications
 #returns the fileFormat object as it might involve updates if the actual data is larger than specified in the fileFormat
+#' @keywords internal
 writeDF_FWF <- function(df, fileFormat, savePath, verbose){
 
   if(is.null(df)){
@@ -840,6 +847,7 @@ writeDF_FWF <- function(df, fileFormat, savePath, verbose){
 }
 
 #calculates the number of decimal places behind the decimal point for a numeric
+#' @keywords internal
 num.decimals <- function(x) {
   if(!inherits(x, "numeric")){
     eout("Invalid Datatype for num.decimals function.")
@@ -854,6 +862,7 @@ num.decimals <- function(x) {
 }
 
 #parses the .SAS syntax file into a fileFormat object for use with the HS&B Study and NLS-72 study ONLY as currently tested and validated.
+#' @keywords internal
 parseSAS_FileFormat_HSB <- function(sasFile){
 
   #prepare return dictionary
@@ -1124,9 +1133,34 @@ isValidSASValueLable_HSB <- function(value, label){
   return(TRUE)
 }
 
-#removes the haven defined column classes from a returned tibble
-#needed for issues revolving around `user_na=TRUE` argument of haven 'read_sav' method parameter
-#throwing a strange error: `x` and `labels` must be same type
+#' @keywords internal
+lightUnclassCols <- function(tbl){
+  # remove non-standard classes from data frame columns  
+  #
+  # needed for haven read in
+  for(i in seq_along(colnames(tbl))){
+    if(inherits(tbl[[i]], "haven_labelled")) {
+      tbl[[i]] <- as_factor(tbl[[i]])
+    } else {
+      if(inherits(tbl[[i]], "lfactor")) {
+        # do nothing, leave it as an lfactor
+      } else {
+        if(length(class(tbl[[i]])) == 1 & (inherits(tbl[[i]], "factor"))) {
+          # do nothing, leave it as a single class factor
+        } else {
+          tbl[[i]] <- unclass(tbl[[i]])
+        }
+      }
+    }
+  }
+  return(tbl)
+}
+
+#' remove non-standard classes from data frame columns
+#'
+#' removes the haven defined column classes from a returned tibble
+#' needed for issues revolving around `user_na=TRUE` argument of haven 'read_sav' method parameter
+#' @keywords internal
 UnclassCols <- function(tbl){
 
   if(ncol(tbl)>0){
@@ -1138,14 +1172,17 @@ UnclassCols <- function(tbl){
   return(tbl)
 }
 
+
 #returns an LaF to the fwf file using the fileformat specs
 #fwfFilePath = file path to the fixed-width data file
 #fwfFileFormat = data.frame of the fileFormat object that has fixed-width file definitions
+#' @keywords internal
 getFWFLaFConnection <- function(fwfFilePath, fwfFileFormat){
   laf <- LaF::laf_open_fwf(fwfFilePath, column_types = fwfFileFormat$dataType, column_widths = fwfFileFormat$Width, column_names = tolower(fwfFileFormat$variableName))
 }
 
 #internal function to get a unique data.frame of all variable value labels of a fileFormat object (value & label)
+#' @keywords internal
 valueLabel_getUniqueDF <- function(fileFormat){
 
   fullDF <- data.frame(key = character(0), lbl = character(0))

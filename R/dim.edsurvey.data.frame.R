@@ -64,7 +64,7 @@ dimnames.edsurvey.data.frame <- function(x) {
   # grab cache variable names
   nameVals <- colnames(x$cache)
   # these two are not intended to be shown
-  nameVals <- nameVals[!nameVals %in% c("ROWID", "DEFAULT", "zzz_Filler")]
+  nameVals <- nameVals[!nameVals %in% c("DEFAULT", "zzz_Filler")]
   for(di in x$dataList){
     if(!is.null(di$lafObject)){
       nameVals <- c(nameVals, names(di$lafObject))

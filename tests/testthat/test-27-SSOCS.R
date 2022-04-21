@@ -23,10 +23,10 @@ test_that("SSOCS data reads in correctly",{
   #expect_silent(downloadSSOCS(root = edsurveyHome, years = c(2000, 2004, 2006, 2008, 2010, 2016, 2018), cache = FALSE, verbose = FALSE))
   expect_silent(ssocs16 <<- readSSOCS(sasDataFiles = file.path(edsurveyHome, "SSOCS", "2016", "pu_ssocs16.sas7bdat"), 
                                       years = 2016, verbose = FALSE))
-  expect_equal(dim(ssocs16), c(2092, 476))
+  expect_equal(dim(ssocs16), c(2092, 477))
   expect_silent(ssocs18 <<- readSSOCS(sasDataFiles = file.path(edsurveyHome, "SSOCS", "2018", "pu_ssocs18.sas7bdat"), 
                                       years = 2016, verbose = FALSE))
-  expect_equal(dim(ssocs18), c(2762, 424))
+  expect_equal(dim(ssocs18), c(2762, 425))
 })
 
 context("SSOCS getData")

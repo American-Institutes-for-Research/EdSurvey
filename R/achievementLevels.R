@@ -127,6 +127,11 @@ achievementLevels <- function(achievementVars = NULL,
                               returnNumberOfPSU=FALSE,
                               returnVarEstInputs=FALSE) {
   
+  call <- match.call()
+  # parse this allowing c("a", "b"), or just a or "a".
+  achievementVars <- iparse(substitute(achievementVars), x=data)
+  aggregateBy <- iparse(substitute(aggregateBy), x=data)
+
   achievementVars <- if (is.null(achievementVars)) NULL else tolower(achievementVars)
   aggregateBy <- if (is.null(aggregateBy)) NULL else tolower(aggregateBy)
 
@@ -197,7 +202,7 @@ calAL <- function(achievementVars = NULL,
   assertArgument(data)
   als <- getAttributes(data, "achievementLevels")
   assertArgument(als)
-  
+
   # Determine if the user supplied variables for calculating achievementlevels, 
   # otherwise just use the default plausible value
   if(is.null(achievementVars)) {

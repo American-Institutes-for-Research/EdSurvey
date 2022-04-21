@@ -5,6 +5,8 @@ context("read LESDF")
 options(width = 500)
 source("REF-1-lesdf.R") # has REF output in it
 options(useFancyQuotes=FALSE)
+# ideally this wouldn't trip up any of the scope fixes below
+dsex <- "should not be used"
 
 test_that("read LESDF",{
   sdf <<- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
@@ -112,7 +114,6 @@ test_that("LESDF subset",{
                getData(sdf, c(all.vars(composite ~ dsex + b017451), "origwt"),recode = list(dsex = list(from = "Female", to = "Girl"))))
   norecode <- getData(sdf, c(all.vars(composite ~ dsex + b017451), "origwt"))
   expect_equal(nrow(s2), as.numeric(table(norecode$dsex)['Female']))
-  
 })
 
 context("LESDF recode.sdf")

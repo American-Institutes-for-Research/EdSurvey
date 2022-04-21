@@ -213,7 +213,7 @@ print.levelsSDF <- function(x, ...) {
             cat(xi$omitted[ii])
           }
           if("n" %in% colnames(xi)) {
-            cat(paste0(" (n=", xi$n[ii], ")"))
+            cat(paste0(" (n = ", xi$n[ii], ")"))
           }
           cat("\n")
         }

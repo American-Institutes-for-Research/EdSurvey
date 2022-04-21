@@ -26,7 +26,7 @@ test_that("PISA YAFS data reads in correctly", {
                                       spsPath = file.path(edsurveyHome, "PISA YAFS", "2016", "PISA_YAFS2016_SPSS.sps"),
                                       esdf_PISA2012_USA = pisa))
   expect_is(pisa_yafs, "edsurvey.data.frame")
-  expect_equal(dim(pisa_yafs), c(4978, 1964))
+  expect_equal(dim(pisa_yafs), c(4978, 1965))
   expect_equal(pisa_yafs$country, "USA")
   expect_equal(pisa_yafs$year, "2016")
   

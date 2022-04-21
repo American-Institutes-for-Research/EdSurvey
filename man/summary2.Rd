@@ -44,7 +44,7 @@ For continuous variables, the summary results are by variable and include the fo
   \item{Max.}{largest value of the variable}
   \item{SD}{standard deviation or weighted standard deviation}
   \item{NA's}{number of \code{NA} in variable and in weight variables}
-  \item{Zero-weights}{number of zero-weight cases if users choose to produce weighted statistics}
+  \item{Zero weights}{number of zero weight cases if users choose to produce weighted statistics}
 
 If the weight option is chosen, the function produces weighted percentile and standard deviation. Refer to the vignette titled 
 \emph{\href{https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf}{Statistical Methods Used in EdSurvey}} and

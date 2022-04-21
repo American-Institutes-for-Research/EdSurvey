@@ -29,8 +29,8 @@ test_that("ICCS data reads in correctly", {
 
   expect_is(dnk8, "edsurvey.data.frame")
   expect_is(mex8, "edsurvey.data.frame")
-  expect_equal(dim(dnk8), c(6254, 813))
-  expect_equal(dim(mex8), c(5526, 811))
+  expect_equal(dim(dnk8), c(6254, 814))
+  expect_equal(dim(mex8), c(5526, 812))
 })
 
 

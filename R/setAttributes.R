@@ -3,8 +3,8 @@
 setAttributes <- function(data, attribute, value) {
   # return attributes in a uniform way for either an edsurvey.data.frame or
   # a light.edsurvey.data.frame
-  checkDataClass(data, c("edsurvey.data.frame", "light.edsurvey.data.frame"))
   
+  checkDataClass(data, c("edsurvey.data.frame", "light.edsurvey.data.frame"))
   if (inherits(data, c("edsurvey.data.frame"))) {
     # data is an edsurvey.data.frame, so attributes returned in data
     attrs <- attributes(data)$names

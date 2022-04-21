@@ -14,19 +14,24 @@ if(!exists("edsurveyHome")) {
   }
 }
 
+#able to toggle 'forceReread' for the TIMSS data if necessary
+if(!exists("forceCacheUpdate")){
+  forceCacheUpdate <- FALSE
+}
+
 if (!dir.exists(edsurveyHome)) {
   dir.create(edsurveyHome)
 }
 
 test_that("TIMSS data reads in correctly", {
   expect_silent(downloadTIMSS(root=edsurveyHome, year=c(2003, 2007, 2011, 2015, 2019), verbose = FALSE))
-  expect_silent(sgp8.03 <<- readTIMSS(file.path(edsurveyHome, "TIMSS", "2003"), countries="sgp", gradeLvl = 8, verbose=FALSE))
-  expect_silent(usa4.07 <<- readTIMSS(file.path(edsurveyHome, "TIMSS", "2007"), countries="usa", gradeLvl = 4, verbose=FALSE))
-  expect_silent(usa8.11 <<- readTIMSS(file.path(edsurveyHome, "TIMSS", "2011"), countries="usa", gradeLvl = 8, verbose=FALSE))
-  expect_silent(fin4.11 <<- readTIMSS(file.path(edsurveyHome, "TIMSS", "2011"), countries="fin", gradeLvl = 4, verbose=FALSE))
-  expect_silent(kwt4.15 <<- readTIMSS(file.path(edsurveyHome, "TIMSS", "2015"), countries="kwt", gradeLvl = 4, verbose=FALSE)) #includes both numeracy and gr4
-  expect_silent(zaf8.15 <<- readTIMSS(file.path(edsurveyHome, "TIMSS", "2015"), countries="zaf", gradeLvl = 8, verbose=FALSE))
-  expect_silent(dnk4.19 <<- readTIMSS(file.path(edsurveyHome, "TIMSS", "2019"), countries="dnk", gradeLvl = 4, verbose=FALSE))
+  expect_silent(sgp8.03 <<- readTIMSS(file.path(edsurveyHome, "TIMSS", "2003"), countries="sgp", gradeLvl = 8, forceReread = forceCacheUpdate, verbose=FALSE))
+  expect_silent(usa4.07 <<- readTIMSS(file.path(edsurveyHome, "TIMSS", "2007"), countries="usa", gradeLvl = 4, forceReread = forceCacheUpdate, verbose=FALSE))
+  expect_silent(usa8.11 <<- readTIMSS(file.path(edsurveyHome, "TIMSS", "2011"), countries="usa", gradeLvl = 8, forceReread = forceCacheUpdate, verbose=FALSE))
+  expect_silent(fin4.11 <<- readTIMSS(file.path(edsurveyHome, "TIMSS", "2011"), countries="fin", gradeLvl = 4, forceReread = forceCacheUpdate, verbose=FALSE))
+  expect_silent(kwt4.15 <<- readTIMSS(file.path(edsurveyHome, "TIMSS", "2015"), countries="kwt", gradeLvl = 4, forceReread = forceCacheUpdate, verbose=FALSE)) #includes both numeracy and gr4
+  expect_silent(zaf8.15 <<- readTIMSS(file.path(edsurveyHome, "TIMSS", "2015"), countries="zaf", gradeLvl = 8, forceReread = forceCacheUpdate, verbose=FALSE))
+  expect_silent(dnk4.19 <<- readTIMSS(file.path(edsurveyHome, "TIMSS", "2019"), countries="dnk", gradeLvl = 4, forceReread = forceCacheUpdate, verbose=FALSE))
 
   expect_silent(multiESDFL <<- readTIMSS(path=c(file.path(edsurveyHome, "TIMSS", "2007"),
                                                file.path(edsurveyHome, "TIMSS", "2011")), 
@@ -39,12 +44,12 @@ test_that("TIMSS data reads in correctly", {
   expect_is(zaf8.15, "edsurvey.data.frame")
   expect_is(dnk4.19, "edsurvey.data.frame")
   expect_is(multiESDFL, "edsurvey.data.frame.list")
-  expect_equal(dim(sgp8.03), c(12144, 2589))
-  expect_equal(dim(usa4.07), c(12883, 1905))
-  expect_equal(dim(usa8.11), c(20859, 2393))
-  expect_equal(dim(kwt4.15), c(11318, 2261))
-  expect_equal(dim(zaf8.15), c(25029, 2431))
-  expect_equal(dim(dnk4.19), c(5131, 3668))
+  expect_equal(dim(sgp8.03), c(12144, 2590))
+  expect_equal(dim(usa4.07), c(12883, 1906))
+  expect_equal(dim(usa8.11), c(20859, 2394))
+  expect_equal(dim(kwt4.15), c(11318, 2262))
+  expect_equal(dim(zaf8.15), c(25029, 2432))
+  expect_equal(dim(dnk4.19), c(5131, 3669))
   expect_equal(length(multiESDFL$datalist), 3)
   
   co <- capture.output(multiESDFL$covs)
@@ -220,7 +225,7 @@ test_that("TIMSS getData", {
   expect_known_value(gd3, file="TIMSSgd3.rds", update=FALSE, check.attributes=FALSE)
   
   kwt4_males <- EdSurvey:::subset(kwt4.15, asbg01 %in% "BOY", verbose=FALSE)
-  expect_equal(dim(kwt4_males), c(5252, 2261))
+  expect_equal(dim(kwt4_males), c(5252, 2262))
 })
 
 
@@ -355,12 +360,8 @@ test_that("mml.sdf", {
   # load data 
   mmlSDF <- readTIMSS(file.path(edsurveyHome, "TIMSS", "2015"), countries="usa", grade = c("4"), verbose=FALSE)
   # run mml
-  invisible(withr::with_options(list(digits=4),
-    capture.output(
-      mmlTIMSS <- suppressWarnings(mml.sdf(mmat~1, mmlSDF, weightVar='totwgt', verbose=TRUE))
-      )
-    )
-  )
+  mmlSDF <- setTIMSSScoreDict(mmlSDF, 'mmat')
+  mmlTIMSS <- suppressWarnings(mml.sdf(mmat~1, mmlSDF, weightVar='totwgt', verbose=TRUE))
   # capture output 
   # intercept 
   coInt <- withr::with_options(list(digits=4),

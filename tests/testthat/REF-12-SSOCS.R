@@ -29,7 +29,7 @@ ssocs_refTbl1 <- c("", "Formula: vioinc16 ~ c0600 ",
                    "   Yes  996 34762.08 41.58557 1.557152 11.508763 0.6838331", 
                    "    No 1096 48829.60 58.41443 1.557152  9.518731 0.7048793")
 
-ssocs_refTbl2 <- c("", "Formula: schid ~ c0610 + c0134 ", 
+ssocs_refTbl2 <- c("", "Formula: ROWID ~ c0610 + c0134 ", 
                    "", 
                    "Weight variable: 'finalwgt'", 
                    "Variance method: jackknife", 

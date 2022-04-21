@@ -47,6 +47,12 @@
 #'    \item{fileFormatSchool}{a \code{data.frame} containing the parsed information from the school .fr2 file associated with the data}
 #'    \item{fileFormatTeacher}{not applicable for NAEP data; returns \code{NULL}}
 #'    \item{survey}{the type of survey data contained in the \code{edsurvey.data.frame}}
+#'    \item{dichotParamTab}{IRT item paramters for dichotomous items in a data frame; returns \code{NULL} if unavailable in \code{NAEPirtparams}}
+#'    \item{polyParamTab}{IRT item parameters for polytomous items in a data frame; returns \code{NULL} if unavailable in \code{NAEPirtparams}}
+#'    \item{adjustedData}{IRT item parameter adjustment information in a data frame; returns \code{NULL} if unavailable in \code{NAEPirtparams}}
+#'    \item{testData}{IRT transformation constants in a data frame; returns \code{NULL} if unavailable in \code{NAEPirtparams}}
+#'    \item{scoreCard}{item scoring information in a data frame; returns \code{NULL} if unavailable}
+#'    \item{scoreDict}{generic scoring information in a data frame; returns \code{NULL} if unavailable}
 #' @author Tom Fink and Ahmad Emad
 #' @example \man\examples\readNAEP.R
 #' @export
@@ -358,8 +364,10 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
                       psuVar = psuVar,
                       stratumVar = stratumVar,
                       jkSumMultiplier = 1,
-                      fr2Path=studentFR2)
-  
+                      fr2Path=studentFR2
+                      )
+
+    
   #apply the linking-error parameters
   if("dbapba" %in% colnames(res)) {
     foundScale <- FALSE
@@ -457,6 +465,112 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
       res <- linkVarAugment(res, subscaleWeights=subscaleWeights, subscales=subscales, composite=composite)
     }
   } # end if("dbapba" %in% colnames(res))
+  
+  ## for use in mml.sdf ##
+  # building paramTabs: filter IRT params to year, subject, grade level
+  theYear <- f[["Year"]]
+  theSubject <- f[["Subject"]] 
+  theLevel <- as.integer(gsub("[^[:digit:]]+", "", f[["Grade_Level"]])) 
+  theRegion <- f[["Assessment_Code"]]
+  fr2Path <- studentFR2
+  
+  # use NAEPirtparams package and filter to needed params
+  params <- NAEPirtparams::parameters
+  if (theYear %in% unique(params$year) & theSubject %in% unique(params$subject) & theLevel %in% unique(params$level)) {
+    paramsFilter <- params[params$level==theLevel & params$year==theYear & params$subject==theSubject, ]
+    paramsFilter$NAEPid <- tolower(paramsFilter$NAEPid)
+    
+    if ('accom' %in% paramsFilter$accommodations){
+      # Everything no-accom 
+      paramsFilter <- paramsFilter[!paramsFilter$accommodations=='accom', ]
+    } else {
+      paramsFilter <- paramsFilter[!paramsFilter$accommodations=='accom', ]
+    }
+    
+    if ('State' == theRegion){
+      paramsFilter <- paramsFilter[paramsFilter$assessmentCode=='State', ]
+    } else {
+      # This is National or not indicated
+      paramsFilter <- paramsFilter[!paramsFilter$assessmentCode=='State', ]
+    }
+    
+    # get deleted and/or adjusted items
+    adjust <- NAEPirtparams::adjustments
+    adjustData <- adjust[adjust$level==theLevel & adjust$subject==theSubject & adjust$year==theYear, ] 
+    if ('accom' %in% adjustData$accommodations){
+      # Everything no-accom for now
+      adjustData <- adjustData[!adjustData$accommodations=='accom', ]
+    } else {
+      adjustData <- adjustData[!adjustData$accommodations=='accom', ]
+    }
+    deletedItems <- tolower(adjustData[adjustData$adjustment=='Deleted', 'NAEPid']) 
+    deletedItems <- deletedItems[deletedItems %in% colnames(res)]
+    adjustedData <- adjustData[adjustData$adjustment=='Collapsed', c('NAEPid','from','to')]
+    adjustedData$NAEPid <- tolower(adjustedData$NAEPid)
+    if (length(deletedItems) > 0) {
+      paramsFilter <- paramsFilter[!paramsFilter$NAEPid %in% deletedItems, ]  
+    }
+    
+    # get paramTabs
+    paramTabs <- naepParamTabs(paramsFilter)
+    polyParamTab <- paramTabs$polyParamTab
+    dichotParamTab <- paramTabs$dichotParamTab
+    
+    # building testDat
+    # filter transformation constants
+    transf <- NAEPirtparams::transformations
+    transFilter <- transf[transf$level==theLevel & transf$year==theYear & transf$subject==theSubject, ]
+    
+    if ('accom' %in% transFilter$accommodations){
+      # Everything no-accom for now
+      transFilter <- transFilter[!transFilter$accommodations=='accom',]
+    } else {
+      transFilter <- transFilter[!transFilter$accommodations=='accom',]
+    }
+    
+    if ('State' == theRegion){
+      transFilter <- transFilter[transFilter$assessmentCode=='State',]
+    } else {
+      # This is National or not indicated
+      transFilter <- transFilter[!transFilter$assessmentCode=='State',]
+    }
+    
+    # filter to testDat
+    testDat <- transFilter[,c('subtest','location','scale', 'subtestWeight')]
+    testDat <- testDat[!is.na(testDat$subtestWeight),]
+    
+    # default scoreDict
+    scoreDict <- defaultNAEPScoreCard()
+    
+    # check that there are no duplicate items in your paramTabs
+    if (!nrow(polyParamTab) == length(unique(polyParamTab$ItemID)) | !nrow(dichotParamTab) == length(unique(dichotParamTab$ItemID)) | nrow(testDat) != length(unique(testDat$subtest))) {
+      warning("You have duplicate data in your NAEP IRT parameters table(s). Use a DCT file with the function setNAEPScoreCard to use mml.sdf.")
+      sCard <- data.frame()
+      dichotParamTab <- data.frame()
+      polyParamTab <- data.frame()
+      adjustedData <- data.frame()
+      testDat <- data.frame()
+    } else {
+      # NAEP score card
+      sCard <- getNAEPScoreCard(fr2Path, polyParamTab$ItemID, dichotParamTab$ItemID, adjustedData, scoreDict)
+    }
+
+  } else { # the year, subject, level is NOT in NAEPirtparams
+    sCard <- data.frame()
+    dichotParamTab <- data.frame()
+    polyParamTab <- data.frame()
+    adjustedData <- data.frame()
+    testDat <- data.frame()
+    scoreDict <- defaultNAEPScoreCard()
+  }
+  
+  # set mml.sdf related objects as attributes
+  res <- setAttributes(res, "scoreCard", sCard)
+  res <- setAttributes(res, "dichotParamTab", dichotParamTab)
+  res <- setAttributes(res, "polyParamTab", polyParamTab)
+  res <- setAttributes(res, "adjustedData", adjustedData)
+  res <- setAttributes(res, "testData", testDat)
+  res <- setAttributes(res, "scoreDict", scoreDict)
   return(res)
 }
 
