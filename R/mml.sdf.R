@@ -393,6 +393,8 @@ mml.sdf <- function(formula,
     message("Starting MML Procedure.")
   }
 
+  waldDenomBaseDof <- waldDof(edf, getStratumVar(data), getPSUVar(data))
+
   mmlObj <- mml(formula = formula,
                 stuItems = stuItems,
                 stuDat = stuDat,
@@ -413,7 +415,13 @@ mml.sdf <- function(formula,
   # get call
   call <- match.call()
   # main mml.sdf class 
-  obj <- structure(list("Call" = call, "mml" = mmlObj, "survey" = survey, "getDataArgs" = getDataArgs, "sCard"=sCard, "idVar" = idVar), 
+  obj <- structure(list("Call"        = call,
+                        "mml"         = mmlObj,
+                        "survey"      = survey,
+                        "getDataArgs" = getDataArgs,
+                        "sCard"       = sCard,
+                        "idVar"       = idVar,
+                        "waldDenomBaseDof" = waldDenomBaseDof), 
                    class=c("mml.sdf"))
   
   # append composite class 

@@ -63,7 +63,7 @@ waldTest <- function(model, coefficients, H0 = NULL) {
 }
     
 calc.waldTest <- function(model, coefficients, H0 = NULL) {
-  possibleClasses <- c("edsurveyGlm", "edsurveyLm", "edsurveyRq", "mixedSdfResults")
+  possibleClasses <- c("edsurveyGlm", "edsurveyLm", "edsurveyRq", "mixedSdfResults", "mml.sdf", "summary.mml.sdf")
   if (!(any(unlist(lapply(possibleClasses, function(x) { inherits(model, x)}))))) {
     stop(paste0(sQuote("model"), " must be of class ", pasteItems(dQuote(possibleClasses), "or"), "."))
   }

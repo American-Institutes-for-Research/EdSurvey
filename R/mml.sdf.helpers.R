@@ -29,10 +29,16 @@ summary.mml.sdf <- function(object, gradientHessian=FALSE,
                    class="summary.mml.sdf"))
 } 
 
+#' @method coef mml.sdf
+#' @export
+coef.mml.sdf <- function(object, ...) {
+  coef(object$mml)
+}
+
 #' @method print mml.sdf
 #' @export
 print.mml.sdf <- function(x, ...){
-  co <- coef(x$mml)
+  co <- coef(x)
   print(co, ...)
 }
 
@@ -68,4 +74,8 @@ print.summary.mml.sdf <- function(x, ...){
   }
 } 
 
-
+#' @method vcov mml.sdf
+#' @export
+vcov.mml.sdf <- function(object, ...) {
+  vcov(object$mml)
+}

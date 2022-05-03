@@ -11,7 +11,7 @@
 drawPVs.sdf <- function(data, mml, npv=5L,
                         stochasticBeta=FALSE, normalApprox=TRUE, newStuDat=NULL,
                         newStuItems=NULL, returnPosterior=FALSE,
-                        construct=NULL,...) {
+                        construct=NULL, ...) {
   checkDataClass(data, c("light.edsurvey.data.frame", "edsurvey.data.frame")) 
   ### check data class 
   checkDataClass(mml, c("summary.mml.sdf", "mml.sdf"))
@@ -22,17 +22,26 @@ drawPVs.sdf <- function(data, mml, npv=5L,
   }
 
   # get mml data, depending whether a summary or mml object was given
+  construct0 <- NULL
   if(inherits(mml, "summary.mml.sdf")) {
     getDataArgs <- mml$object$getDataArgs
     sCard <- mml$object$sCard
+    if("formula" %in% names(mml$object$Call)) {
+      construct0 <- mml$object$Call$formula[[2]]
+    }
   } else{
     getDataArgs <- mml$getDataArgs
     sCard <- mml$sCard
+    if("formula" %in% names(mml$Call)) {
+      construct0 <- mml$Call$formula[[2]]
+    }
   }
   # check that we have a construct
   if(missing(construct)) {
-    if(inherits(mml$mml, "mmlMeans")) {
-      construct <- mml$Call$formula[[2]]
+    if(!is.null(construct0)) {
+      construct <- construct0
+    } else {
+      stop(paste0("Construct not assigned and not available from mml object. To name them use the ", dQuote("construct"), " argument."))
     }
   }
   mml <- getMmlDat(mml, stochasticBeta)
@@ -51,7 +60,6 @@ drawPVs.sdf <- function(data, mml, npv=5L,
   newPVDat <- pvs$data
   # merge PVs to ed dataframe
   newPVDat$id <- as.character(newPVDat$id)
-  data$MergePVmergeID___ <- as.character(data[[idVar]])
   mergedPvs <- mergePVGeneral(data, newPVDat, idVar)
   pvvars0 <- getAttributes(mergedPvs, "pvvars")
   if( any(names(pvvars0) %in% names(pvs$newpvvars)) ) {
@@ -62,10 +70,21 @@ drawPVs.sdf <- function(data, mml, npv=5L,
   return(mergedPvs)
 }
 
+#' @export
+drawPVs.edsurvey.data.frame <- function(data, mml, ...) {
+  drawPVs.sdf(data=data, mml=mml, ...)
+}
+
+#' @export
+drawPVs.light.edsurvey.data.frame <- function(data, mml, ...) {
+  drawPVs.sdf(data=data, mml=mml, ...)
+}
+
 mergePVGeneral <- function(x, pvs, idVar){
+  x$MergePVmergeID___ <- as.character(x[[idVar]])
   if(inherits(x,'light.edsurvey.data.frame')){
     xInput <- x
-    x <- merge(as.data.frame(x), pvs, by.x = idVar, by.y = "id")
+    x <- merge(as.data.frame(x), pvs, by.x = idVar, by.y = "id", all.x=TRUE, all.y=FALSE)
     x <- rebindAttributes(x, xInput)
   } else {
     if(inherits(x,'edsurvey.data.frame')){
@@ -76,6 +95,7 @@ mergePVGeneral <- function(x, pvs, idVar){
       x$cache <- mg[order(mg$ROWID), ]
     }
   }
+  x$MergePVmergeID___ <- NULL
   return(x)
 }
 
@@ -151,21 +171,6 @@ getStuDatColnames <- function(x) {
   return(colnames(x$stuDat))
 }
 
-#' @export
-drawPVs.edsurvey.data.frame <- function(data, mml, construct=NULL, ...) {
-  if(missing(construct)) {
-    construct <- mml$Call$formula[[2]]
-  }
-  drawPVs.sdf(data=data, mml=mml, construct=construct, ...)
-}
-
-#' @export
-drawPVs.light.edsurvey.data.frame <- function(data, mml, construct=NULL, ...) {
-  if(missing(construct)) {
-    construct <- mml$Call$formula[[2]]
-  }
-  drawPVs.sdf(data=data, mml=mml, ...)
-}
 
 checkId <- function(x, idVar) {
   if(inherits(x,'light.edsurvey.data.frame')){
