@@ -53,6 +53,18 @@ test_that("HSLS getData",{
   #ensure that values having nearly all omitted levels and '0=Zero' have the '0=Zero' label dropped and return numeric accurately
   dat4 <- hsls$x3tcredeng
   expect_equal(class(dat4), "numeric")
+  
+  #levelsSDF test for labels having '=' in them
+  tLvl <- levelsSDF("x1famincome", hsls)
+  refLbl <- c("MISSING", "UNIT NON-RESPONSE", "ITEM LEGITIMATE SKIP/NA", 
+              "FAMILY INCOME LESS THAN OR EQUAL TO $15,000", "FAMILY INCOME > $15,000 AND <= $35,000", 
+              "FAMILY INCOME > $35,000 AND <= $55,000", "FAMILY INCOME > $55,000 AND <= $75,000", 
+              "FAMILY INCOME > $75,000 AND <= $95,000", "FAMILY INCOME > $95,000 AND <= $115,000", 
+              "FAMILY INCOME > $115,000 AND <= $135,000", "FAMILY INCOME > $135,000 AND <= $155,000", 
+              "FAMILY INCOME > $155,000 AND <=$175,000", "FAMILY INCOME > $175,000 AND <= $195,000", 
+              "FAMILY INCOME > $195,000 AND <= $215,000", "FAMILY INCOME > $215,000 AND <= $235,000", 
+              "FAMILY INCOME > $235,000")
+  expect_equal(tLvl$x1famincome$labels, refLbl)
 })
 
 context("HSLS rename.sdf")

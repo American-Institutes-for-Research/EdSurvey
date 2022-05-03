@@ -33,6 +33,8 @@
     \itemize{
       \item \code{SD} used to set \code{jkSumMultiplier} to 1 by default and now uses the value from the \code{edusrvey.data.frame}. While this was the documented behavior, it was counterintuitive since all other \code{EdSurvey} functions use the value directly from the \code{edusrvey.data.frame}.
       \item when calling \code{achievementLevels} with both \code{returnDiscrete = FALSE} and \code{returnCumulative = TRUE} it would return an error. It now properly returns.
+      
+      \item \code{levelsSDF} updated for handling value labels containing a \code{=} character in the label. The full label is now properly returned. This corrects erroneous warning messages related to recodes where \code{=} character is present. Thank you to Nicole Guarino for identifying this bug.
     }
   }
 }
