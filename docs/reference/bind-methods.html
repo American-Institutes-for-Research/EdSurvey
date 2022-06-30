@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -64,21 +64,26 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">cbind</span><span class="op">(</span><span class="va">...</span>, deparse.level <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-
-<span class="fu">rbind</span><span class="op">(</span><span class="va">...</span>, deparse.level <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cbind</span><span class="op">(</span><span class="va">...</span>, deparse.level <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">rbind</span><span class="op">(</span><span class="va">...</span>, deparse.level <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>...</dt>
 <dd><p>one or more objects of class <code>vector</code>, <code>data.frame</code>, <code>matrix</code>, or <code>light.edsurvey.data.frame</code></p></dd>
+
+
 <dt>deparse.level</dt>
 <dd><p>integer determining under which circumstances column and row names are built from the actual arguments. See <code><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a matrix-like object like <code>matrix</code> or <code>data.frame</code>. Returns a <code>light.edsurvey.data.frame</code> if there is 
+    
+
+<p>a matrix-like object like <code>matrix</code> or <code>data.frame</code>. Returns a <code>light.edsurvey.data.frame</code> if there is 
          at least one <code>light.edsurvey.data.frame</code> in the list of arguments.</p>
     </div>
     <div id="details">
@@ -110,7 +115,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

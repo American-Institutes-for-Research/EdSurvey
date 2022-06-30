@@ -97,7 +97,7 @@ getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, sco
         newScore <- scoreDict$pointMult[match(labels[l], scoreDict$resCat)]
         if (! is.na(newScore)) {
           points[l] <- newScore
-        }
+        } 
       }
     } else {
       # this is a constructed answer question
@@ -193,12 +193,6 @@ setNAEPScoreCard <- function(data, dctPath=NULL, scoreDict=NULL){
     dichotParamTab <- allTables$dichotParamTab
     testDat <- allTables$testDat
     adjustments <- data.frame()
-
-    # update attributes
-    data <- setAttributes(data, "dichotParamTab", dichotParamTab)
-    data <- setAttributes(data, "polyParamTab", polyParamTab)
-    data <- setAttributes(data, "testData", testDat)
-    data <- setAttributes(data, "adjustedData", adjustments)
   }
 
   # create sCard
@@ -206,10 +200,23 @@ setNAEPScoreCard <- function(data, dctPath=NULL, scoreDict=NULL){
                             polyParamTab$ItemID, 
                             dichotParamTab$ItemID, 
                             adjustments, 
-                            scoreDict
-  )
+                            scoreDict)
+  
+  # update dichotparamtab: 1/k for missing value
+  dichotScores <- sCard[sCard$key %in% dichotParamTab$ItemID & !sCard$answer %in% defaultNAEPScoreCard()$resCat, ]
+  if (nrow(dichotScores) > 0) {
+    Ks <- aggregate(answer~key, dichotScores, length)
+    Ks$answer <- 1 / Ks$answer
+    dichotParamTab <- merge(dichotParamTab, Ks, by.x = 'ItemID', by.y = 'key', all.x = T)
+    dichotParamTab$missingValue <- ifelse(is.na(dichotParamTab$answer), dichotParamTab$missingValue, dichotParamTab$answer)
+    dichotParamTab$answer <- NULL
+  }
   
   # set attribute
+  data <- setAttributes(data, "dichotParamTab", dichotParamTab)
+  data <- setAttributes(data, "polyParamTab", polyParamTab)
+  data <- setAttributes(data, "testData", testDat)
+  data <- setAttributes(data, "adjustedData", adjustments)
   data <- setAttributes(data, "scoreCard", sCard)
   return(data)
 }

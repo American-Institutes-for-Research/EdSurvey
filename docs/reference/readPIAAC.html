@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -64,13 +64,13 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">readPIAAC</span><span class="op">(</span>
-  <span class="va">path</span>,
-  <span class="va">countries</span>,
-  forceReread <span class="op">=</span> <span class="cn">FALSE</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>,
-  usaOption <span class="op">=</span> <span class="st">"12_14"</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">readPIAAC</span><span class="op">(</span></span>
+<span>  <span class="va">path</span>,</span>
+<span>  <span class="va">countries</span>,</span>
+<span>  forceReread <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  usaOption <span class="op">=</span> <span class="st">"12_14"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -78,6 +78,8 @@
     <dl><dt>path</dt>
 <dd><p>a character value to the full directory path to the PIAAC .csv
 files and Microsoft Excel codebook</p></dd>
+
+
 <dt>countries</dt>
 <dd><p>a character vector of the country/countries to include 
 using the three-digit ISO country code. A list of country
@@ -88,24 +90,33 @@ a country dictionary text file can be
 found in the filepath. You can use <code>*</code> to indicate
 all countries available. For the <code>usa</code>, the year must 
 be specified using: <code>usa12_14</code> or  <code>usa17</code>.</p></dd>
+
+
 <dt>forceReread</dt>
 <dd><p>a logical value to force rereading of all processed data.
 Defaults to <code>FALSE</code>.
 Setting <code>forceReread</code> to be <code>TRUE</code> will cause
 PIAAC data to be reread and increase the processing time.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>a logical value that will determine if you want verbose
 output while the function is running to indicate the progress.
 Defaults to <code>TRUE</code>.</p></dd>
+
+
 <dt>usaOption</dt>
 <dd><p>a character value of <code>12_14</code> or <code>17</code> that specifies 
 what year of the USA survey should be used when loading all countries by 
 using <code>*</code> in the <code>countries</code> argument. This will only make a difference 
 when loading all countries. Defaults to <code>12_14</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>an <code>edsurvey.data.frame</code> for a single specified country or 
+    
+
+<p>an <code>edsurvey.data.frame</code> for a single specified country or 
 an <code>edsurvey.data.frame.list</code> if multiple countries specified</p>
     </div>
     <div id="details">
@@ -129,32 +140,32 @@ the OECD repository (<a href="https://www.oecd.org/skills/piaac/" class="externa
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># the following call returns an edsurvey.data.frame to PIAAC for Canada</span></span>
-<span class="r-in"><span class="va">can</span> <span class="op">&lt;-</span> <span class="fu">readPIAAC</span><span class="op">(</span><span class="st">"~/PIAAC/Cycle 1/"</span>, countries <span class="op">=</span> <span class="st">"can"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># extract a data.frame with a few variables</span></span>
-<span class="r-in"><span class="va">gg</span> <span class="op">&lt;-</span> <span class="fu"><a href="getData.html">getData</a></span><span class="op">(</span><span class="va">can</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"c_d05"</span>,<span class="st">"ageg10lfs"</span><span class="op">)</span><span class="op">)</span>  </span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">gg</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># conduct an analysis on the edsurvey.data.frame</span></span>
-<span class="r-in"><span class="fu"><a href="edsurveyTable.html">edsurveyTable</a></span><span class="op">(</span><span class="op">~</span> <span class="va">c_d05</span> <span class="op">+</span> <span class="va">ageg10lfs</span>, data <span class="op">=</span> <span class="va">can</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># the following call returns an edsurvey.data.frame to PIAAC for Canada</span></span>
-<span class="r-in"><span class="va">can</span> <span class="op">&lt;-</span> <span class="fu">readPIAAC</span><span class="op">(</span><span class="st">"~/PIAAC/Cycle 1/"</span>, countries <span class="op">=</span> <span class="st">"can"</span>, <span class="va">us</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># There are two years of usa data for round 1: 2012-2014 and 2017. </span></span>
-<span class="r-in"><span class="co"># The user must specify which usa year they want with the optional "usaOption" argument. </span></span>
-<span class="r-in"><span class="co"># Otherwise, the read function will return usa 2012-2014. See "?readPIACC()" for more info. </span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># read in usa 2012-2014 </span></span>
-<span class="r-in"><span class="va">usa12</span> <span class="op">&lt;-</span> <span class="fu">readPIAAC</span><span class="op">(</span><span class="st">"/Users/ebuehler/EdSurveyData/PIAAC/Cycle 1"</span>, countries <span class="op">=</span> <span class="st">"usa"</span>, usaOption<span class="op">=</span><span class="st">"12_14"</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># read in usa 2017 </span></span>
-<span class="r-in"><span class="va">usa17</span> <span class="op">&lt;-</span> <span class="fu">readPIAAC</span><span class="op">(</span><span class="st">"/Users/ebuehler/EdSurveyData/PIAAC/Cycle 1"</span>, countries <span class="op">=</span> <span class="st">"usa"</span>, usaOption<span class="op">=</span><span class="st">"17"</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># if reading in all piaac data, the user can still specify usa option. </span></span>
-<span class="r-in"><span class="co"># Otherwise, by default 2012-1014 will be used when reading in all piaac data. </span></span>
-<span class="r-in"><span class="va">all_piaac</span> <span class="op">&lt;-</span> <span class="fu">readPIAAC</span><span class="op">(</span><span class="st">"/Users/ebuehler/EdSurveyData/PIAAC/Cycle 1"</span>, countries <span class="op">=</span> <span class="st">"*"</span>, usaOption<span class="op">=</span><span class="st">"17"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># the following call returns an edsurvey.data.frame to PIAAC for Canada</span></span></span>
+<span class="r-in"><span><span class="va">can</span> <span class="op">&lt;-</span> <span class="fu">readPIAAC</span><span class="op">(</span><span class="st">"~/PIAAC/Cycle 1/"</span>, countries <span class="op">=</span> <span class="st">"can"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># extract a data.frame with a few variables</span></span></span>
+<span class="r-in"><span><span class="va">gg</span> <span class="op">&lt;-</span> <span class="fu"><a href="getData.html">getData</a></span><span class="op">(</span><span class="va">can</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"c_d05"</span>,<span class="st">"ageg10lfs"</span><span class="op">)</span><span class="op">)</span>  </span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">gg</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># conduct an analysis on the edsurvey.data.frame</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="edsurveyTable.html">edsurveyTable</a></span><span class="op">(</span><span class="op">~</span> <span class="va">c_d05</span> <span class="op">+</span> <span class="va">ageg10lfs</span>, data <span class="op">=</span> <span class="va">can</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># the following call returns an edsurvey.data.frame to PIAAC for Canada</span></span></span>
+<span class="r-in"><span><span class="va">can</span> <span class="op">&lt;-</span> <span class="fu">readPIAAC</span><span class="op">(</span><span class="st">"~/PIAAC/Cycle 1/"</span>, countries <span class="op">=</span> <span class="st">"can"</span>, <span class="va">us</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># There are two years of usa data for round 1: 2012-2014 and 2017. </span></span></span>
+<span class="r-in"><span><span class="co"># The user must specify which usa year they want with the optional "usaOption" argument. </span></span></span>
+<span class="r-in"><span><span class="co"># Otherwise, the read function will return usa 2012-2014. See "?readPIACC()" for more info. </span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># read in usa 2012-2014 </span></span></span>
+<span class="r-in"><span><span class="va">usa12</span> <span class="op">&lt;-</span> <span class="fu">readPIAAC</span><span class="op">(</span><span class="st">"/Users/ebuehler/EdSurveyData/PIAAC/Cycle 1"</span>, countries <span class="op">=</span> <span class="st">"usa"</span>, usaOption<span class="op">=</span><span class="st">"12_14"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># read in usa 2017 </span></span></span>
+<span class="r-in"><span><span class="va">usa17</span> <span class="op">&lt;-</span> <span class="fu">readPIAAC</span><span class="op">(</span><span class="st">"/Users/ebuehler/EdSurveyData/PIAAC/Cycle 1"</span>, countries <span class="op">=</span> <span class="st">"usa"</span>, usaOption<span class="op">=</span><span class="st">"17"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># if reading in all piaac data, the user can still specify usa option. </span></span></span>
+<span class="r-in"><span><span class="co"># Otherwise, by default 2012-1014 will be used when reading in all piaac data. </span></span></span>
+<span class="r-in"><span><span class="va">all_piaac</span> <span class="op">&lt;-</span> <span class="fu">readPIAAC</span><span class="op">(</span><span class="st">"/Users/ebuehler/EdSurveyData/PIAAC/Cycle 1"</span>, countries <span class="op">=</span> <span class="st">"*"</span>, usaOption<span class="op">=</span><span class="st">"17"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -169,7 +180,7 @@ the OECD repository (<a href="https://www.oecd.org/skills/piaac/" class="externa
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

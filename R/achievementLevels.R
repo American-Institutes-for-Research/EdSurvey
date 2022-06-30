@@ -159,7 +159,7 @@ achievementLevels <- function(achievementVars = NULL,
                          return(NULL)
                        }
       )
-      if(class(temp) == "achievementLevels") {
+      if(inherits(temp, "achievementLevels")) {
         alResultDfList[[labels[i]]] <- alResult
       }
     }

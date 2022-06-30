@@ -21,7 +21,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -68,14 +68,14 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">varEstToCov</span><span class="op">(</span>
-  <span class="va">varEstA</span>,
-  varEstB <span class="op">=</span> <span class="va">varEstA</span>,
-  <span class="va">varA</span>,
-  varB <span class="op">=</span> <span class="va">varA</span>,
-  <span class="va">jkSumMultiplier</span>,
-  returnComponents <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">varEstToCov</span><span class="op">(</span></span>
+<span>  <span class="va">varEstA</span>,</span>
+<span>  varEstB <span class="op">=</span> <span class="va">varEstA</span>,</span>
+<span>  <span class="va">varA</span>,</span>
+<span>  varB <span class="op">=</span> <span class="va">varA</span>,</span>
+<span>  <span class="va">jkSumMultiplier</span>,</span>
+<span>  returnComponents <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -85,18 +85,26 @@
 the <code>returnVarEstInputs</code> argument was turned on.
 The statistic named in the <code>varA</code> argument must be
 present in each <code>data.frame</code>.</p></dd>
+
+
 <dt>varEstB</dt>
 <dd><p>a list of two <code>data.frame</code>s returned by a function after 
 the <code>returnVarEstInputs</code> argument was turned on.
 The statistic named in the <code>varA</code> argument must be
 present in each <code>data.frame</code>. When the same as 
 <code>varEstA</code>, the covariance is within one result.</p></dd>
+
+
 <dt>varA</dt>
 <dd><p>a character that names the statistic in the <code>varEstA</code>
 argument for which a covariance is required</p></dd>
+
+
 <dt>varB</dt>
 <dd><p>a character that names the statistic in the <code>varEstB</code>
 argument for which a covariance is required</p></dd>
+
+
 <dt>jkSumMultiplier</dt>
 <dd><p>when the jackknife variance estimation method---or
 balanced repeated replication (BRR) 
@@ -106,12 +114,17 @@ For an <code>edsurvey.data.frame</code> or
 a <code>light.edsurvey.data.frame</code>,
 the recommended value can be recovered with
 <code>EdSurvey::getAttributes(</code><code>myData,</code> <code>"jkSumMultiplier")</code>.</p></dd>
+
+
 <dt>returnComponents</dt>
 <dd><p>set to <code>TRUE</code> to return the imputation variance seperate from the sampling variance</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a numeric value; the jackknife covariance estimate. If <code>returnComponents</code> is <code>TRUE</code>, returns a vector of
+    
+
+<p>a numeric value; the jackknife covariance estimate. If <code>returnComponents</code> is <code>TRUE</code>, returns a vector of
 length three, <code>V</code> is the variance estimate, <code>Vsamp</code> is the sampling component of the variance, and <code>Vimp</code> is the imputation component of the variance</p>
     </div>
     <div id="details">
@@ -132,28 +145,28 @@ in the section “Estimation of Degrees of Freedom.”</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># read in the example data (generated, not real student data)</span></span>
-<span class="r-in"><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># estimate a regression</span></span>
-<span class="r-in"><span class="va">lm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="lm.sdf.html">lm.sdf</a></span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span>, <span class="va">sdf</span>, returnVarEstInputs<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">lm1</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># estimate the covariance between two regression coefficients</span></span>
-<span class="r-in"><span class="co"># note that the variable names are parallel to what they are called in lm1 output</span></span>
-<span class="r-in"><span class="va">covFEveryDay</span> <span class="op">&lt;-</span> <span class="fu">varEstToCov</span><span class="op">(</span><span class="va">lm1</span><span class="op">$</span><span class="va">varEstInputs</span>,</span>
-<span class="r-in">                            varA<span class="op">=</span><span class="st">"dsexFemale"</span>,</span>
-<span class="r-in">                            varB<span class="op">=</span><span class="st">"b017451Every day"</span>,</span>
-<span class="r-in">                            jkSumMultiplier<span class="op">=</span><span class="fu">EdSurvey</span><span class="fu">:::</span><span class="fu"><a href="edsurvey-class.html">getAttributes</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="st">"jkSumMultiplier"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># the estimated difference between the two coefficients</span></span>
-<span class="r-in"><span class="co"># note: unname prevents output from being named after the first coefficient</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">lm1</span><span class="op">)</span><span class="op">[</span><span class="st">"dsexFemale"</span><span class="op">]</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">lm1</span><span class="op">)</span><span class="op">[</span><span class="st">"b017451Every day"</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># the standard error of the difference</span></span>
-<span class="r-in"><span class="co"># uses the formula SE(A-B) = sqrt(var(A) + var(B) - 2*cov(A,B))</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">lm1</span><span class="op">$</span><span class="va">coefmat</span><span class="op">[</span><span class="st">"dsexFemale"</span>, <span class="st">"se"</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span></span>
-<span class="r-in">     <span class="op">+</span> <span class="va">lm1</span><span class="op">$</span><span class="va">coefmat</span><span class="op">[</span><span class="st">"b017451Every day"</span>, <span class="st">"se"</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span></span>
-<span class="r-in">     <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">covFEveryDay</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># read in the example data (generated, not real student data)</span></span></span>
+<span class="r-in"><span><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># estimate a regression</span></span></span>
+<span class="r-in"><span><span class="va">lm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="lm.sdf.html">lm.sdf</a></span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span>, <span class="va">sdf</span>, returnVarEstInputs<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">lm1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># estimate the covariance between two regression coefficients</span></span></span>
+<span class="r-in"><span><span class="co"># note that the variable names are parallel to what they are called in lm1 output</span></span></span>
+<span class="r-in"><span><span class="va">covFEveryDay</span> <span class="op">&lt;-</span> <span class="fu">varEstToCov</span><span class="op">(</span><span class="va">lm1</span><span class="op">$</span><span class="va">varEstInputs</span>,</span></span>
+<span class="r-in"><span>                            varA<span class="op">=</span><span class="st">"dsexFemale"</span>,</span></span>
+<span class="r-in"><span>                            varB<span class="op">=</span><span class="st">"b017451Every day"</span>,</span></span>
+<span class="r-in"><span>                            jkSumMultiplier<span class="op">=</span><span class="fu">EdSurvey</span><span class="fu">:::</span><span class="fu"><a href="edsurvey-class.html">getAttributes</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="st">"jkSumMultiplier"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># the estimated difference between the two coefficients</span></span></span>
+<span class="r-in"><span><span class="co"># note: unname prevents output from being named after the first coefficient</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">lm1</span><span class="op">)</span><span class="op">[</span><span class="st">"dsexFemale"</span><span class="op">]</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">lm1</span><span class="op">)</span><span class="op">[</span><span class="st">"b017451Every day"</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># the standard error of the difference</span></span></span>
+<span class="r-in"><span><span class="co"># uses the formula SE(A-B) = sqrt(var(A) + var(B) - 2*cov(A,B))</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">lm1</span><span class="op">$</span><span class="va">coefmat</span><span class="op">[</span><span class="st">"dsexFemale"</span>, <span class="st">"se"</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span></span></span>
+<span class="r-in"><span>     <span class="op">+</span> <span class="va">lm1</span><span class="op">$</span><span class="va">coefmat</span><span class="op">[</span><span class="st">"b017451Every day"</span>, <span class="st">"se"</span><span class="op">]</span><span class="op">^</span><span class="fl">2</span></span></span>
+<span class="r-in"><span>     <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">covFEveryDay</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -168,7 +181,7 @@ in the section “Estimation of Degrees of Freedom.”</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

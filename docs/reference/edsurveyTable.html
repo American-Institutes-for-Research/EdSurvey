@@ -20,7 +20,7 @@ predictor (or right-hand side) variable(s)."><!-- mathjax --><script src="https:
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -66,21 +66,21 @@ predictor (or right-hand side) variable(s).</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">edsurveyTable</span><span class="op">(</span>
-  <span class="va">formula</span>,
-  <span class="va">data</span>,
-  weightVar <span class="op">=</span> <span class="cn">NULL</span>,
-  jrrIMax <span class="op">=</span> <span class="fl">1</span>,
-  pctAggregationLevel <span class="op">=</span> <span class="cn">NULL</span>,
-  returnMeans <span class="op">=</span> <span class="cn">TRUE</span>,
-  returnSepct <span class="op">=</span> <span class="cn">TRUE</span>,
-  varMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"jackknife"</span>, <span class="st">"Taylor"</span><span class="op">)</span>,
-  drop <span class="op">=</span> <span class="cn">FALSE</span>,
-  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,
-  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,
-  recode <span class="op">=</span> <span class="cn">NULL</span>,
-  returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">edsurveyTable</span><span class="op">(</span></span>
+<span>  <span class="va">formula</span>,</span>
+<span>  <span class="va">data</span>,</span>
+<span>  weightVar <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  jrrIMax <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  pctAggregationLevel <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  returnMeans <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  returnSepct <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  varMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"jackknife"</span>, <span class="st">"Taylor"</span><span class="op">)</span>,</span>
+<span>  drop <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  recode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -98,9 +98,13 @@ then the default subject scale or subscale is used.
 You can find the default composite scale and all subscales
 using the function <code><a href="showPlausibleValues.html">showPlausibleValues</a></code>.
 Note that the order of the right-hand side variables affects the output.</p></dd>
+
+
 <dt>data</dt>
 <dd><p>object of class <code>edsurvey.data.frame</code>. See <code><a href="readNAEP.html">readNAEP</a></code>
 for how to generate an <code>edsurvey.data.frame</code>.</p></dd>
+
+
 <dt>weightVar</dt>
 <dd><p>character string indicating the weight variable to use.
 Note that only the name of the
@@ -108,6 +112,8 @@ weight variable needs to be included here, and any
 replicate weights will be automatically included.
 When this argument is <code>NULL</code>, the function uses the default.
 Use <code><a href="showWeights.html">showWeights</a></code> to find the default.</p></dd>
+
+
 <dt>jrrIMax</dt>
 <dd><p>a numeric value; when using the jackknife variance estimation method, the default estimation option, <code>jrrIMax=1</code>, uses the 
   sampling variance from the first plausible value as the component for sampling variance estimation. The \(V_{jrr}\) 
@@ -115,6 +121,8 @@ Use <code><a href="showWeights.html">showWeights</a></code> to find the default.
 <code><a href="lm.sdf.html">lm.sdf</a></code> to see the definition of \(V_{jrr}\)) can be estimated with any number of plausible values, and values larger than the number of 
   plausible values on the survey (including <code>Inf</code>) will result in all of the plausible values being used. 
   Higher values of <code>jrrIMax</code> lead to longer computing times and more accurate variance estimates.</p></dd>
+
+
 <dt>pctAggregationLevel</dt>
 <dd><p>the percentage variable sums up to 100 for the first
 <code>pctAggregationLevel</code> columns.
@@ -129,51 +137,74 @@ first and second variable, and so on.
 Default is <code>NULL</code>, which will result in the
 lowest feasible aggregation level. 
 See Examples section.</p></dd>
+
+
 <dt>returnMeans</dt>
 <dd><p>a logical value; set to <code>TRUE</code> (the default) to get the <code>MEAN</code> and
 <code>SE(MEAN)</code> columns in the returned table described in the Value section.</p></dd>
+
+
 <dt>returnSepct</dt>
 <dd><p>set to <code>TRUE</code> (the default) to get the <code>SEPCT</code> column in the returned table described in the Value section.</p></dd>
+
+
 <dt>varMethod</dt>
 <dd><p>a character set to <code>jackknife</code> or <code>Taylor</code> that indicates the variance estimation method
 to be used.</p></dd>
+
+
 <dt>drop</dt>
 <dd><p>a logical value. When set to the default value of <code>FALSE</code>, when a single column is returned, it is still represented as a <code>data.frame</code> and is
 not converted to a vector.</p></dd>
+
+
 <dt>omittedLevels</dt>
 <dd><p>a logical value. When set to the default value of <code>TRUE</code>, drops those levels of all factor variables that are specified
 in an <code>edsurvey.data.frame</code>. Use <code>print</code> on an <code>edsurvey.data.frame</code> to see the omitted levels.</p></dd>
+
+
 <dt>defaultConditions</dt>
 <dd><p>a logical value. When set to the default value of <code>TRUE</code>, uses the default conditions stored in an <code>edsurvey.data.frame</code>
 to subset the data. Use <code>print</code> on an <code>edsurvey.data.frame</code> to see the default conditions.</p></dd>
+
+
 <dt>recode</dt>
 <dd><p>a list of lists to recode variables. Defaults to <code>NULL</code>. Can be set as
 <code>recode</code> <code>=</code> <code>list(var1</code> <code>=</code> <code>list(from</code> <code>=</code> <code>c("a", "b", "c"),</code> <code>to</code> <code>=</code> <code>"c"))</code>.</p></dd>
+
+
 <dt>returnVarEstInputs</dt>
 <dd><p>a logical value set to <code>TRUE</code> to return the
 inputs to the jackknife and imputation variance
 estimates, which allows for
 the computation
 of covariances between estimates.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A table with the following columns:</p>
+    
+
+<p>A table with the following columns:</p>
 <dl><dt>RHS levels</dt>
 <dd><p>one column for each right-hand side variable. Each row
                      regards students who are at the levels shown in that row.</p></dd>
-<dt>N</dt>
+
+   <dt>N</dt>
 <dd><p>count of the number of students in the survey in the <code>RHS levels</code></p></dd>
-<dt>WTD_N</dt>
+
+   <dt>WTD_N</dt>
 <dd><p>the weighted <em>N</em> count of students in the survey in <code>RHS levels</code></p></dd>
-<dt>PCT</dt>
+
+   <dt>PCT</dt>
 <dd><p>the percentage of students at the aggregation level specified by <code>pctAggregationLevel</code> (see Arguments).
                      See the vignette titled
         <a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link"><em>Statistical Methods Used in EdSurvey</em></a>
             in the section
 “Estimation of Weighted Percentages” and its first subsection
 “Estimation of Weighted Percentages When Plausible Values Are Not Present.”</p></dd>
-<dt>SE(PCT)</dt>
+
+   <dt>SE(PCT)</dt>
 <dd><p>the standard  error of the percentage, accounting
                          for the survey sampling methodology. When <code>varMethod</code>
                          is the <code>jackknife</code>, the calculation of this column is
@@ -183,12 +214,14 @@ of covariances between estimates.</p></dd>
 “Estimation of the Standard Error of Weighted Percentages When Plausible Values Are Not Present, Using the Jackknife Method.”
                       When <code>varMethod</code> is set to <code>Taylor</code>, the calculation of this column is described in
 “Estimation of the Standard Error of Weighted Percentages When Plausible Values Are Not Present, Using the Taylor Series Method.”</p></dd>
-<dt>MEAN</dt>
+
+   <dt>MEAN</dt>
 <dd><p>the mean assessment score for units in the <code>RHS levels</code>, calculated according to the  vignette titled
 <a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link"><em>Statistical Methods Used in EdSurvey</em></a>
 in the section
 “Estimation of Weighted Means When Plausible Values Are Present.”</p></dd>
-<dt>SE(MEAN)</dt>
+
+   <dt>SE(MEAN)</dt>
 <dd><p>the standard error of the <code>MEAN</code> column (the mean assessment score for units in the <code>RHS levels</code>), calculated according to the vignette titled
 <a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link"><em>Statistical Methods Used in EdSurvey</em></a>                      
 in the sections
@@ -196,11 +229,14 @@ in the sections
 or 
 “Estimation of Standard Errors of Weighted Means When Plausible Values Are Present, Using the Taylor Series Method,”
 depending on the value of <code>varMethod</code>.</p></dd>
+
+
 </dl><p>When <code>returnVarEstInputs</code> is <code>TRUE</code>, two additional elements are
  returned. These are <code>meanVarEstInputs</code> and <code>pctVarEstInputs</code> and
  regard the <code>MEAN</code> and <code>PCT</code> columns, respectively. These two 
- objects can be used for calculating covariances with
-<code><a href="varEstToCov.html">varEstToCov</a></code>.</p>
+ objects can be used for calculating covariances with</p>
+<p></p>
+<p><code><a href="varEstToCov.html">varEstToCov</a></code>.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -224,36 +260,36 @@ each level of the cross-tabulation table.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># read in the example data (generated, not real student data)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># create a table that shows only the breakdown of dsex</span></span>
-<span class="r-in"><span class="fu">edsurveyTable</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span>, data<span class="op">=</span><span class="va">sdf</span>, returnMeans<span class="op">=</span><span class="cn">FALSE</span>, returnSepct<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># create a table with composite scores by dsex</span></span>
-<span class="r-in"><span class="fu">edsurveyTable</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span>, data<span class="op">=</span><span class="va">sdf</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># add a second variable</span></span>
-<span class="r-in"><span class="fu">edsurveyTable</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span>, data<span class="op">=</span><span class="va">sdf</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># add a second variable, do not omit any levels</span></span>
-<span class="r-in"><span class="fu">edsurveyTable</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span> <span class="op">+</span> <span class="va">b003501</span>, data<span class="op">=</span><span class="va">sdf</span>, omittedLevels<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># add a second variable, do not omit any levels, change aggregation level</span></span>
-<span class="r-in"><span class="fu">edsurveyTable</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span> <span class="op">+</span> <span class="va">b003501</span>, data<span class="op">=</span><span class="va">sdf</span>, omittedLevels<span class="op">=</span><span class="cn">FALSE</span>,</span>
-<span class="r-in">              pctAggregationLevel<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">edsurveyTable</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span> <span class="op">+</span> <span class="va">b003501</span>, data<span class="op">=</span><span class="va">sdf</span>, omittedLevels<span class="op">=</span><span class="cn">FALSE</span>,</span>
-<span class="r-in">              pctAggregationLevel<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">edsurveyTable</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span> <span class="op">+</span> <span class="va">b003501</span>, data<span class="op">=</span><span class="va">sdf</span>, omittedLevels<span class="op">=</span><span class="cn">FALSE</span>,</span>
-<span class="r-in">              pctAggregationLevel<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># variance estimation using the Taylor series </span></span>
-<span class="r-in"><span class="fu">edsurveyTable</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span> <span class="op">+</span> <span class="va">b003501</span>, data<span class="op">=</span><span class="va">sdf</span>, varMethod<span class="op">=</span><span class="st">"Taylor"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># read in the example data (generated, not real student data)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># create a table that shows only the breakdown of dsex</span></span></span>
+<span class="r-in"><span><span class="fu">edsurveyTable</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span>, data<span class="op">=</span><span class="va">sdf</span>, returnMeans<span class="op">=</span><span class="cn">FALSE</span>, returnSepct<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># create a table with composite scores by dsex</span></span></span>
+<span class="r-in"><span><span class="fu">edsurveyTable</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span>, data<span class="op">=</span><span class="va">sdf</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># add a second variable</span></span></span>
+<span class="r-in"><span><span class="fu">edsurveyTable</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span>, data<span class="op">=</span><span class="va">sdf</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># add a second variable, do not omit any levels</span></span></span>
+<span class="r-in"><span><span class="fu">edsurveyTable</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span> <span class="op">+</span> <span class="va">b003501</span>, data<span class="op">=</span><span class="va">sdf</span>, omittedLevels<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># add a second variable, do not omit any levels, change aggregation level</span></span></span>
+<span class="r-in"><span><span class="fu">edsurveyTable</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span> <span class="op">+</span> <span class="va">b003501</span>, data<span class="op">=</span><span class="va">sdf</span>, omittedLevels<span class="op">=</span><span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>              pctAggregationLevel<span class="op">=</span><span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">edsurveyTable</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span> <span class="op">+</span> <span class="va">b003501</span>, data<span class="op">=</span><span class="va">sdf</span>, omittedLevels<span class="op">=</span><span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>              pctAggregationLevel<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">edsurveyTable</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span> <span class="op">+</span> <span class="va">b003501</span>, data<span class="op">=</span><span class="va">sdf</span>, omittedLevels<span class="op">=</span><span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>              pctAggregationLevel<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># variance estimation using the Taylor series </span></span></span>
+<span class="r-in"><span><span class="fu">edsurveyTable</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span> <span class="op">+</span> <span class="va">b003501</span>, data<span class="op">=</span><span class="va">sdf</span>, varMethod<span class="op">=</span><span class="st">"Taylor"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -268,7 +304,7 @@ each level of the cross-tabulation table.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

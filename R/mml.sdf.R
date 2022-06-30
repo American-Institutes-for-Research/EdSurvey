@@ -70,7 +70,8 @@ mml.sdf <- function(formula,
                     minNode = -4, 
                     maxNode = 4, 
                     Q = 34,
-                    idVar = NULL) {
+                    idVar = NULL,
+                    returnMmlCall = FALSE) {
   stopifnot(inherits(verbose, c("numeric", "integer", "logical")))
   verbose <- as.numeric(verbose)
   # if the weight var is not set, use the default
@@ -84,11 +85,13 @@ mml.sdf <- function(formula,
     stop("mml.sdf does not support linking error.")
   }
   # if 1) there is no idVar, 2) ROWID is on the data, 3) ROWID is unique, make it the idVar
-  if(missing(idVar) && "ROWID" %in% colnames(data) && length(unique(data[["ROWID"]])) == length(data[["ROWID"]])) {
-    idVar <- "ROWID"
-  } else {
-    if(verbose > 0) {
-      message("no idVar set. This is necessary to draw plausible values.")
+  if(is.null(idVar)) {
+    if(missing(idVar) && "ROWID" %in% colnames(data) && length(unique(data[["ROWID"]])) == length(data[["ROWID"]])) {
+      idVar <- "ROWID"
+    } else {
+      if(verbose > 0) {
+        message("no idVar set. This is necessary to draw plausible values.")
+      }
     }
   }
   if(multiCore == TRUE){
@@ -395,7 +398,7 @@ mml.sdf <- function(formula,
 
   waldDenomBaseDof <- waldDof(edf, getStratumVar(data), getPSUVar(data))
 
-  mmlObj <- mml(formula = formula,
+  clObj <- list(formula = formula,
                 stuItems = stuItems,
                 stuDat = stuDat,
                 idVar = idVar,
@@ -411,11 +414,22 @@ mml.sdf <- function(formula,
                 weightVar = weightVar,
                 fast = TRUE,
                 multiCore = multiCore)
+  if(returnMmlCall) {
+    obj <- structure(list("Call"        = clObj,
+                          "survey"      = survey,
+                          "getDataArgs" = getDataArgs,
+                          "sCard"       = sCard,
+                          "idVar"       = idVar,
+                          "waldDenomBaseDof" = waldDenomBaseDof),
+                     class="mml.sdf.precall")
+    return(obj)
+  }
+  mmlObj <- do.call(mml, clObj)
 
   # get call
   call <- match.call()
   # main mml.sdf class 
-  obj <- structure(list("Call"        = call,
+  obj <- structure(list("Call"        = clObj,
                         "mml"         = mmlObj,
                         "survey"      = survey,
                         "getDataArgs" = getDataArgs,

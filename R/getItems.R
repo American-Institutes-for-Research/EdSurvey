@@ -9,25 +9,24 @@
 #' @return a \code{data.frame} in a format suitable for use with \code{mml} as
 #' a \code{paramTab}.
 #' 
-#' @author Sun-Joo Lee 
-#' @import cellranger
+#' @author Sun-Joo Lee, Eric Buehler, and Paul Bailey
 #' @export
-#' 
-
 getAllItems <- function(x, npv, construct, omittedLevels=FALSE,...) {
+  cl <- match.call()
   survey <- getAttributes(x, "survey")
-  if(!survey %in% c("NAEP", "TIMSS")){
-    stop(paste0(sQuote("getAllItems")," is only available for NAEP and TIMSS."))
+  if(survey %in% "NAEP") {
+    cl[[1]] <- quote(getAllItems_NAEP)
+    return(eval(cl))
   }
-  class(x) <- c(survey, class(x))
-
-  UseMethod("getAllItems", x)
+  if(survey %in% "TIMSS") {
+    cl[[1]] <- quote(getAllItems_TIMSS)
+    return(eval(cl))
+  }
+  stop(paste0(dQuote("getAllItems")," does not support ", survey))
 }
 
 # a function for returning all items associated with a NAEP or TIMSS construct.
-#' @method getAllItems TIMSS
-#' @export
-getAllItems.TIMSS <- function(sdf, construct, omittedLevels){
+getAllItems_TIMSS <- function(sdf, construct, omittedLevels){
   survey <- getAttributes(sdf, "survey")
   ### TIMSS data ###
   ### building paramTabs
@@ -109,15 +108,11 @@ getTimssItems <- function(timssDir, theYear, theLevel, subjectFilter) {
   }
   
   # read items names 
-  items <- suppressMessages(read_excel(dfFile, sheet = subjectFilter, range = cellranger::cell_cols('A'))$`Item ID`)
-  
+  items <- suppressMessages(read_excel(dfFile, sheet = subjectFilter))
   return(tolower(items))
 }
 
-
-#' @method getAllItems NAEP
-#' @export
-getAllItems.NAEP <- function(sdf, construct, omittedLevels){
+getAllItems_NAEP <- function(sdf, construct, omittedLevels){
 
   ### building paramTabs
   # filter IRT params to year, subject, grade level

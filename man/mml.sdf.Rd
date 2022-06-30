@@ -17,7 +17,8 @@ mml.sdf(
   minNode = -4,
   maxNode = 4,
   Q = 34,
-  idVar = NULL
+  idVar = NULL,
+  returnMmlCall = FALSE
 )
 }
 \arguments{

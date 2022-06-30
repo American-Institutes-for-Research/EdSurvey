@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -60,36 +60,47 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for sdf</span>
-<span class="fu">drawPVs</span><span class="op">(</span>
-  <span class="va">data</span>,
-  <span class="va">mml</span>,
-  npv <span class="op">=</span> <span class="fl">5L</span>,
-  stochasticBeta <span class="op">=</span> <span class="cn">FALSE</span>,
-  normalApprox <span class="op">=</span> <span class="cn">TRUE</span>,
-  newStuDat <span class="op">=</span> <span class="cn">NULL</span>,
-  newStuItems <span class="op">=</span> <span class="cn">NULL</span>,
-  returnPosterior <span class="op">=</span> <span class="cn">FALSE</span>,
-  construct <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for sdf</span></span>
+<span><span class="fu">drawPVs</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">mml</span>,</span>
+<span>  npv <span class="op">=</span> <span class="fl">5L</span>,</span>
+<span>  stochasticBeta <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  normalApprox <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  newStuDat <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  newStuItems <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  returnPosterior <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  construct <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>an <code>edsurvey.data.frame</code> or <code>light.edsurvey.data.frame</code> to which the plausible values will be added.</p></dd>
+
+
 <dt>mml</dt>
 <dd><p>a fit from a call to <code><a href="mml.sdf.html">mml.sdf</a></code>, or a <code>summary.mml.sdf</code>, which is a  <code>summary</code> of 
 <code>mml.sdf</code> call.</p></dd>
+
+
 <dt>npv</dt>
 <dd><p>integer indicating the number of plausible values to draw</p></dd>
+
+
 <dt>stochasticBeta</dt>
 <dd><p>logical when <code>TRUE</code> the regressopm coefficients will be drawn from their posterior distribution. Can also be a data frame of values (see Details).</p></dd>
+
+
 <dt>returnPosterior</dt>
 <dd><p>logical set to <code>TRUE</code> to change output to include two additional data frames (see Value).</p></dd>
+
+
 <dt>...</dt>
 <dd><p>additional parameters</p></dd>
+
 </dl></div>
 
   </div>
@@ -104,7 +115,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -64,7 +64,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">readPIRLS</span><span class="op">(</span><span class="va">path</span>, <span class="va">countries</span>, forceReread <span class="op">=</span> <span class="cn">FALSE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">readPIRLS</span><span class="op">(</span><span class="va">path</span>, <span class="va">countries</span>, forceReread <span class="op">=</span> <span class="cn">FALSE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -72,6 +72,8 @@
     <dl><dt>path</dt>
 <dd><p>a character value to the full directory path to the PIRLS extracted
 SPSS (.sav) set of data</p></dd>
+
+
 <dt>countries</dt>
 <dd><p>a character vector of the country/countries to include using
 the three-digit ISO country code.
@@ -81,17 +83,24 @@ or other online sources. Consult the <em>PIRLS User Guide</em>
 to help determine what countries
 are included within a specific testing year of PIRLS.
 To select all countries, use a wildcard value of <strong><code>*</code></strong>.</p></dd>
+
+
 <dt>forceReread</dt>
 <dd><p>a logical value to force rereading of all processed data.
 The default value of <code>FALSE</code> will speed up the <code>readPIRLS</code> function by
 using existing read-in data already processed.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>a logical value to either print or suppress status message output.
 The default value is <code>TRUE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>an <code>edsurvey.data.frame</code> for a single specified country or an
+    
+
+<p>an <code>edsurvey.data.frame</code> for a single specified country or an
 <code>edsurvey.data.frame.list</code> if multiple countries specified</p>
     </div>
     <div id="details">
@@ -130,12 +139,12 @@ column variables across all three data levels.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">nor</span> <span class="op">&lt;-</span> <span class="fu">readPIRLS</span><span class="op">(</span><span class="st">"~/PIRLS/2011"</span>, countries <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"nor"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gg</span> <span class="op">&lt;-</span> <span class="fu"><a href="getData.html">getData</a></span><span class="op">(</span><span class="va">nor</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"itsex"</span>, <span class="st">"totwgt"</span>, <span class="st">"rrea"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">gg</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="edsurveyTable.html">edsurveyTable</a></span><span class="op">(</span><span class="va">rrea</span> <span class="op">~</span> <span class="va">itsex</span>, <span class="va">nor</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">nor</span> <span class="op">&lt;-</span> <span class="fu">readPIRLS</span><span class="op">(</span><span class="st">"~/PIRLS/2011"</span>, countries <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"nor"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gg</span> <span class="op">&lt;-</span> <span class="fu"><a href="getData.html">getData</a></span><span class="op">(</span><span class="va">nor</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"itsex"</span>, <span class="st">"totwgt"</span>, <span class="st">"rrea"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">gg</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="edsurveyTable.html">edsurveyTable</a></span><span class="op">(</span><span class="va">rrea</span> <span class="op">~</span> <span class="va">itsex</span>, <span class="va">nor</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -150,7 +159,7 @@ column variables across all three data levels.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

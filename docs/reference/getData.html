@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -64,20 +64,20 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">getData</span><span class="op">(</span>
-  <span class="va">data</span>,
-  varnames <span class="op">=</span> <span class="cn">NULL</span>,
-  drop <span class="op">=</span> <span class="cn">FALSE</span>,
-  dropUnusedLevels <span class="op">=</span> <span class="cn">TRUE</span>,
-  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,
-  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,
-  formula <span class="op">=</span> <span class="cn">NULL</span>,
-  recode <span class="op">=</span> <span class="cn">NULL</span>,
-  includeNaLabel <span class="op">=</span> <span class="cn">FALSE</span>,
-  addAttributes <span class="op">=</span> <span class="cn">FALSE</span>,
-  returnJKreplicates <span class="op">=</span> <span class="cn">TRUE</span>,
-  returnItems <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">getData</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  varnames <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  drop <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  dropUnusedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  formula <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  recode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  includeNaLabel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  addAttributes <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  returnJKreplicates <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  returnItems <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -85,19 +85,27 @@
     <dl><dt>data</dt>
 <dd><p>an <code>edsurvey.data.frame</code> or
 a <code>light.edsurvey.data.frame</code></p></dd>
+
+
 <dt>varnames</dt>
 <dd><p>a character vector of variable names that will be returned.
 When both <code>varnames</code> and
 a <code>formula</code> are specified, variables associated with both are
 returned. Set to <code>NULL</code> by default.</p></dd>
+
+
 <dt>drop</dt>
 <dd><p>a logical value. When set to the default value of <code>FALSE</code>,
 when a single column is returned, it is still represented as a
 <code>data.frame</code> and is not converted to a vector.</p></dd>
+
+
 <dt>dropUnusedLevels</dt>
 <dd><p>a logical value. When set to the default value of
 <code>TRUE</code>, drops unused levels of all factor
 variables.</p></dd>
+
+
 <dt>omittedLevels</dt>
 <dd><p>a logical value. When set to the default value of
 <code>TRUE</code>, drops those levels of all factor variables
@@ -105,27 +113,37 @@ that are specified in an <code>edsurvey.data.frame</code>. Use
 <code>print</code> on an <code>edsurvey.data.frame</code> to see
 the omitted levels. The omitted levels also can be
 adjusted with <code>setAttributes</code>; see Examples.</p></dd>
+
+
 <dt>defaultConditions</dt>
 <dd><p>a logical value. When set to the default value of
 <code>TRUE</code>, uses the default conditions stored in
  an <code>edsurvey.data.frame</code> to subset the data. Use
 <code>print</code> on an <code>edsurvey.data.frame</code> to
 see the default conditions.</p></dd>
+
+
 <dt>formula</dt>
 <dd><p>a <code><a href="https://rdrr.io/r/stats/formula.html" class="external-link">formula</a></code>.
 When included, <code>getData</code> returns data associated with
 all variables of the <code>formula</code>. When both <code>varnames</code> and a
 formula are specified, the variables associated with both are
 returned. Set to <code>NULL</code> by default.</p></dd>
+
+
 <dt>recode</dt>
 <dd><p>a list of lists to recode variables. Defaults to <code>NULL</code>.
 Can be set as <code>recode</code> <code>=</code> <code>list(var1</code>
 <code>=</code> <code>list(from</code> <code>=</code> <code>c("a","b","c"), to</code>
 <code>=</code> <code>"d"))</code>. See Examples.</p></dd>
+
+
 <dt>includeNaLabel</dt>
 <dd><p>a logical value to indicate if <code>NA</code> (missing) values are
 returned as literal <code>NA</code> values or as factor levels
 coded as <code>NA</code></p></dd>
+
+
 <dt>addAttributes</dt>
 <dd><p>a logical value set to <code>TRUE</code> to get a
 <code>data.frame</code> that can be used in calls to
@@ -133,19 +151,26 @@ other functions that usually would take an
 <code>edsurvey.data.frame</code>. This <code>data.frame</code> also is called a <code>light.edsurvey.data.frame</code>.
 See Description section in <code><a href="edsurvey-class.html">edsurvey.data.frame</a></code> for
 more information on <code>light.edsurvey.data.frame</code>.</p></dd>
+
+
 <dt>returnJKreplicates</dt>
 <dd><p>a logical value indicating if JK replicate weights
 should be returned. Defaults to <code>TRUE</code>.</p></dd>
+
+
 <dt>returnItems</dt>
 <dd><p>a logical value indicating if the questions items associated with a 
 NAEP or TIMSS construct should be returned. Returning questions items 
 can be helpful if the user plans to use estimate their own plausable values using 
 <code>mml.sdf</code>. This option will only work for those TIMSS items available on the <a href="https://timssandpirls.bc.edu/" class="external-link">timsspirls website</a> 
-  and those NAEP items in the <a href="package%20https://cran.r-project.org/web/packages/NAEPirtparams/index.html" class="external-link">NAEPirtparams</a> package.</p></dd>
+  and those NAEP items in the <a href="https://cran.r-project.org/package=NAEPirtparams" class="external-link">NAEPirtparams</a> package.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>When <code>addAttributes</code> is <code>FALSE</code>, <code>getData</code> returns a
+    
+
+<p>When <code>addAttributes</code> is <code>FALSE</code>, <code>getData</code> returns a
 <code>data.frame</code> containing data associated with the requested
 variables. When <code>addAttributes</code> is <code>TRUE</code>, <code>getData</code> returns a
 <code>light.edsurvey.data.frame</code>.</p>
@@ -183,65 +208,65 @@ for long-form documentation on this function.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># read in the example data (generated, not real student data)</span></span>
-<span class="r-in"><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># get two variables, without weights</span></span>
-<span class="r-in"><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">getData</span><span class="op">(</span>data<span class="op">=</span><span class="va">sdf</span>, varnames<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dsex"</span>, <span class="st">"b017451"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># example of using recode</span></span>
-<span class="r-in"><span class="va">df2</span> <span class="op">&lt;-</span> <span class="fu">getData</span><span class="op">(</span>data<span class="op">=</span><span class="va">sdf</span>, varnames<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dsex"</span>, <span class="st">"t088301"</span><span class="op">)</span>,</span>
-<span class="r-in">               recode<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>t088301<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Yes, available"</span>,<span class="st">"Yes, I have access"</span><span class="op">)</span>,</span>
-<span class="r-in">                                        to<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Yes"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">                           t088301<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"No, have no access"</span><span class="op">)</span>,</span>
-<span class="r-in">                                        to<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"No"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">df2</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># when readNAEP is called on a data file, it appends a default </span></span>
-<span class="r-in"><span class="co"># condition to the edsurvey.data.frame. You can see these conditions</span></span>
-<span class="r-in"><span class="co"># by printing the sdf</span></span>
-<span class="r-in"><span class="va">sdf</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># As per the default condition specified, getData restricts the data to only</span></span>
-<span class="r-in"><span class="co"># Reporting Sample. This behavior can be changed as follows:</span></span>
-<span class="r-in"><span class="va">df2</span> <span class="op">&lt;-</span> <span class="fu">getData</span><span class="op">(</span>data<span class="op">=</span><span class="va">sdf</span>, varnames<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dsex"</span>, <span class="st">"b017451"</span><span class="op">)</span>, defaultConditions <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">df2</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># similarly, the default behavior of omitting certain levels specified</span></span>
-<span class="r-in"><span class="co"># in the edsurvey.data.frame can be changed as follows:</span></span>
-<span class="r-in"><span class="va">df2</span> <span class="op">&lt;-</span> <span class="fu">getData</span><span class="op">(</span>data<span class="op">=</span><span class="va">sdf</span>, varnames<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dsex"</span>, <span class="st">"b017451"</span><span class="op">)</span>, omittedLevels <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">df2</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># omittedLevels can also be edited with setAttributes()</span></span>
-<span class="r-in"><span class="co"># here, the omitted level "Multiple" is removed from the list</span></span>
-<span class="r-in"><span class="va">sdfIncludeMultiple</span> <span class="op">&lt;-</span> <span class="fu"><a href="edsurvey-class.html">setAttributes</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="st">"omittedLevels"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="st">"Omitted"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># check that it was set</span></span>
-<span class="r-in"><span class="fu"><a href="edsurvey-class.html">getAttributes</a></span><span class="op">(</span><span class="va">sdfIncludeMultiple</span>, <span class="st">"omittedLevels"</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># notice that omittedLevels is TRUE, removing NA and "Omitted" still</span></span>
-<span class="r-in"><span class="va">dfIncludeMultiple</span> <span class="op">&lt;-</span> <span class="fu">getData</span><span class="op">(</span>data<span class="op">=</span><span class="va">sdfIncludeMultiple</span>, varnames<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dsex"</span>, <span class="st">"b017451"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">dfIncludeMultiple</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># the variable "c052601" is from the school-level data file; merging is handled automatically.</span></span>
-<span class="r-in"><span class="co"># returns a light.edsurvey.data.frame using addAttributes=TRUE argument</span></span>
-<span class="r-in"><span class="va">gddat</span> <span class="op">&lt;-</span> <span class="fu">getData</span><span class="op">(</span>data<span class="op">=</span><span class="va">sdf</span>, </span>
-<span class="r-in">                 varnames<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"composite"</span>, <span class="st">"dsex"</span>, <span class="st">"b017451"</span>,<span class="st">"c052601"</span><span class="op">)</span>,</span>
-<span class="r-in">                 addAttributes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">gddat</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># look at the first few lines</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">gddat</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># get a selection of variables, recode using ifelse, and reappend attributes</span></span>
-<span class="r-in"><span class="co"># with rebindAttributes so that it can be used with EdSurvey analysis functions</span></span>
-<span class="r-in"><span class="va">df0</span> <span class="op">&lt;-</span> <span class="fu">getData</span><span class="op">(</span><span class="va">sdf</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"composite"</span>, <span class="st">"dsex"</span>, <span class="st">"b017451"</span>, <span class="st">"origwt"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">df0</span><span class="op">$</span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">df0</span><span class="op">$</span><span class="va">dsex</span><span class="op">==</span><span class="st">"Male"</span>, <span class="st">"boy"</span>, <span class="st">"girl"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">df0</span> <span class="op">&lt;-</span> <span class="fu"><a href="rebindAttributes.html">rebindAttributes</a></span><span class="op">(</span><span class="va">df0</span>, <span class="va">sdf</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># getting all the data can use up all the memory and is generally a bad idea</span></span>
-<span class="r-in"><span class="va">df0</span> <span class="op">&lt;-</span> <span class="fu">getData</span><span class="op">(</span><span class="va">sdf</span>, varnames<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">sdf</span><span class="op">)</span>,</span>
-<span class="r-in">               omittedLevels<span class="op">=</span><span class="cn">FALSE</span>, defaultConditions<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># read in the example data (generated, not real student data)</span></span></span>
+<span class="r-in"><span><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># get two variables, without weights</span></span></span>
+<span class="r-in"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">getData</span><span class="op">(</span>data<span class="op">=</span><span class="va">sdf</span>, varnames<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dsex"</span>, <span class="st">"b017451"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># example of using recode</span></span></span>
+<span class="r-in"><span><span class="va">df2</span> <span class="op">&lt;-</span> <span class="fu">getData</span><span class="op">(</span>data<span class="op">=</span><span class="va">sdf</span>, varnames<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dsex"</span>, <span class="st">"t088301"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>               recode<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>t088301<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Yes, available"</span>,<span class="st">"Yes, I have access"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                        to<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Yes"</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                           t088301<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"No, have no access"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                        to<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"No"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">df2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># when readNAEP is called on a data file, it appends a default </span></span></span>
+<span class="r-in"><span><span class="co"># condition to the edsurvey.data.frame. You can see these conditions</span></span></span>
+<span class="r-in"><span><span class="co"># by printing the sdf</span></span></span>
+<span class="r-in"><span><span class="va">sdf</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># As per the default condition specified, getData restricts the data to only</span></span></span>
+<span class="r-in"><span><span class="co"># Reporting Sample. This behavior can be changed as follows:</span></span></span>
+<span class="r-in"><span><span class="va">df2</span> <span class="op">&lt;-</span> <span class="fu">getData</span><span class="op">(</span>data<span class="op">=</span><span class="va">sdf</span>, varnames<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dsex"</span>, <span class="st">"b017451"</span><span class="op">)</span>, defaultConditions <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">df2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># similarly, the default behavior of omitting certain levels specified</span></span></span>
+<span class="r-in"><span><span class="co"># in the edsurvey.data.frame can be changed as follows:</span></span></span>
+<span class="r-in"><span><span class="va">df2</span> <span class="op">&lt;-</span> <span class="fu">getData</span><span class="op">(</span>data<span class="op">=</span><span class="va">sdf</span>, varnames<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dsex"</span>, <span class="st">"b017451"</span><span class="op">)</span>, omittedLevels <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">df2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># omittedLevels can also be edited with setAttributes()</span></span></span>
+<span class="r-in"><span><span class="co"># here, the omitted level "Multiple" is removed from the list</span></span></span>
+<span class="r-in"><span><span class="va">sdfIncludeMultiple</span> <span class="op">&lt;-</span> <span class="fu"><a href="edsurvey-class.html">setAttributes</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="st">"omittedLevels"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="st">"Omitted"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># check that it was set</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="edsurvey-class.html">getAttributes</a></span><span class="op">(</span><span class="va">sdfIncludeMultiple</span>, <span class="st">"omittedLevels"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># notice that omittedLevels is TRUE, removing NA and "Omitted" still</span></span></span>
+<span class="r-in"><span><span class="va">dfIncludeMultiple</span> <span class="op">&lt;-</span> <span class="fu">getData</span><span class="op">(</span>data<span class="op">=</span><span class="va">sdfIncludeMultiple</span>, varnames<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dsex"</span>, <span class="st">"b017451"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">dfIncludeMultiple</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># the variable "c052601" is from the school-level data file; merging is handled automatically.</span></span></span>
+<span class="r-in"><span><span class="co"># returns a light.edsurvey.data.frame using addAttributes=TRUE argument</span></span></span>
+<span class="r-in"><span><span class="va">gddat</span> <span class="op">&lt;-</span> <span class="fu">getData</span><span class="op">(</span>data<span class="op">=</span><span class="va">sdf</span>, </span></span>
+<span class="r-in"><span>                 varnames<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"composite"</span>, <span class="st">"dsex"</span>, <span class="st">"b017451"</span>,<span class="st">"c052601"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                 addAttributes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">gddat</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># look at the first few lines</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">gddat</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># get a selection of variables, recode using ifelse, and reappend attributes</span></span></span>
+<span class="r-in"><span><span class="co"># with rebindAttributes so that it can be used with EdSurvey analysis functions</span></span></span>
+<span class="r-in"><span><span class="va">df0</span> <span class="op">&lt;-</span> <span class="fu">getData</span><span class="op">(</span><span class="va">sdf</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"composite"</span>, <span class="st">"dsex"</span>, <span class="st">"b017451"</span>, <span class="st">"origwt"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">df0</span><span class="op">$</span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">df0</span><span class="op">$</span><span class="va">dsex</span><span class="op">==</span><span class="st">"Male"</span>, <span class="st">"boy"</span>, <span class="st">"girl"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">df0</span> <span class="op">&lt;-</span> <span class="fu"><a href="rebindAttributes.html">rebindAttributes</a></span><span class="op">(</span><span class="va">df0</span>, <span class="va">sdf</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># getting all the data can use up all the memory and is generally a bad idea</span></span></span>
+<span class="r-in"><span><span class="va">df0</span> <span class="op">&lt;-</span> <span class="fu">getData</span><span class="op">(</span><span class="va">sdf</span>, varnames<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">sdf</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>               omittedLevels<span class="op">=</span><span class="cn">FALSE</span>, defaultConditions<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -256,7 +281,7 @@ for long-form documentation on this function.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

@@ -22,6 +22,7 @@ rebindAttributes <- function(data, attributeData) {
     attrN <- names(attrList)
     attrN <- attrN[!attrN %in% c("names", "row.names", "class")]
     data <- as.data.frame(data)
+    data <- lightUnclassCols(data)
     class(data) <- c("light.edsurvey.data.frame", "data.frame")
     for (a in attrN) {
       attr(data, a) <- attrList[[a]]
@@ -34,6 +35,7 @@ rebindAttributes <- function(data, attributeData) {
     attrN <- attrN[attrN!="data"]
     # add every other attribute to "data"
     data <- as.data.frame(data)
+    data <- lightUnclassCols(data)
     class(data) <- c("light.edsurvey.data.frame", "data.frame")
     for(a in attrN) {
       attr(data, a) <- attributeData[[a]]

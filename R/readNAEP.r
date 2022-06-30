@@ -553,6 +553,15 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
     } else {
       # NAEP score card
       sCard <- getNAEPScoreCard(fr2Path, polyParamTab$ItemID, dichotParamTab$ItemID, adjustedData, scoreDict)
+      # update dichotparamtab: 1/k for missing value
+      dichotScores <- sCard[sCard$key %in% dichotParamTab$ItemID & !sCard$answer %in% defaultNAEPScoreCard()$resCat, ]
+      if (nrow(dichotScores) > 0) {
+        Ks <- aggregate(answer~key, dichotScores, length)
+        Ks$answer <- 1 / Ks$answer
+        dichotParamTab <- merge(dichotParamTab, Ks, by.x = 'ItemID', by.y = 'key', all.x = T)
+        dichotParamTab$missingValue <- ifelse(is.na(dichotParamTab$answer), dichotParamTab$missingValue, dichotParamTab$answer)
+        dichotParamTab$answer <- NULL
+      }
     }
 
   } else { # the year, subject, level is NOT in NAEPirtparams

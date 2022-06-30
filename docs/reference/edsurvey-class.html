@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -143,119 +143,205 @@ getStratumVar(
     <h2>Arguments</h2>
     <dl><dt>userConditions</dt>
 <dd><p>a list of user conditions that includes subsetting or recoding conditions</p></dd>
+
+
 <dt>defaultConditions</dt>
 <dd><p>a list of default conditions that often are set for each survey</p></dd>
+
+
 <dt>dataList</dt>
 <dd><p>a list of <code>dataListItem</code> objects to model the data structure of the survey</p></dd>
+
+
 <dt>weights</dt>
 <dd><p>a list that stores information regarding weight variables. See Details.</p></dd>
+
+
 <dt>pvvars</dt>
 <dd><p>a list that stores information regarding plausible values. See Details.</p></dd>
+
+
 <dt>subject</dt>
 <dd><p>a character that indicates the subject domain of the given data</p></dd>
+
+
 <dt>year</dt>
 <dd><p>a character or numeric that indicates the year of the given data</p></dd>
+
+
 <dt>assessmentCode</dt>
 <dd><p>a character that indicates the code of the assessment.
 Can be <code>National</code> or <code>International</code>.</p></dd>
+
+
 <dt>dataType</dt>
 <dd><p>a character that indicates the unit level of the main data.
 Examples include <code>Student</code>, <code>teacher</code>, <code>school</code>,
 <code>Adult Data</code>.</p></dd>
+
+
 <dt>gradeLevel</dt>
 <dd><p>a character that indicates the grade level of the given data</p></dd>
+
+
 <dt>achievementLevels</dt>
 <dd><p>a list of achievement-level categories and cutpoints</p></dd>
+
+
 <dt>omittedLevels</dt>
 <dd><p>a list of default omitted levels for the given data</p></dd>
+
+
 <dt>survey</dt>
 <dd><p>a character that indicates the name of the survey</p></dd>
+
+
 <dt>country</dt>
 <dd><p>a character that indicates the country of the given data</p></dd>
+
+
 <dt>psuVar</dt>
 <dd><p>a character that indicates the PSU sampling unit variable. Ignored when weights have <code>psuVar</code> defined.</p></dd>
+
+
 <dt>stratumVar</dt>
 <dd><p>a character that indicates the stratum variable. Ignored when weights have <code>stratumVar</code> defined.</p></dd>
+
+
 <dt>jkSumMultiplier</dt>
 <dd><p>a numeric value of the jackknife coefficient (used in calculating the jackknife replication estimation)</p></dd>
+
+
 <dt>recodes</dt>
 <dd><p>a list of variable recodes of the given data</p></dd>
+
+
 <dt>validateFactorLabels</dt>
 <dd><p>a Boolean that indicates whether the <code>getData</code> function needs to validate factor variables</p></dd>
+
+
 <dt>forceLower</dt>
 <dd><p>a Boolean; when set to <code>TRUE</code>, will automatically lowercase variable names</p></dd>
+
+
 <dt>reqDecimalConversion</dt>
 <dd><p>a Boolean; when set to <code>TRUE</code>, a <code>getData</code> call will multiply the raw file value by a decimal multiplier</p></dd>
+
+
 <dt>fr2Path</dt>
 <dd><p>a character file location for NAEP assessments to identify the locaiton of the codebook file in <code>fr2</code> format</p></dd>
+
+
 <dt>dim0</dt>
 <dd><p>numeric vector of length two. To speed construction, the dimensions of the data can be provided</p></dd>
+
+
 <dt>x</dt>
 <dd><p>an <code>edsurvey.data.frame</code></p></dd>
+
+
 <dt>i</dt>
 <dd><p>a character, the column name to extract</p></dd>
+
+
 <dt>name</dt>
 <dd><p>a character vector of the column to edit</p></dd>
+
+
 <dt>value</dt>
 <dd><p>outside of the assignment context, new value of the given <code>attribute</code></p></dd>
+
+
 <dt>table</dt>
 <dd><p>an <code>edsurvey.data.frame</code> or <code>edsurvey.data.frame.list</code> where <code>x</code> is searched for</p></dd>
+
+
 <dt>data</dt>
 <dd><p>an <code>edsurvey.data.frame</code></p></dd>
+
+
 <dt>attribute</dt>
 <dd><p>a character, name of an attribute to get or set</p></dd>
+
+
 <dt>weightVar</dt>
 <dd><p>a character indicating the full sample weights. Required in <code>getPSUVar</code> and <code>getStratumVar</code> when there is no default weight.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An object of class <code>edsurvey.data.frame</code> with the following elements:
-<em>Elements that store data connections and data codebooks</em></p>
+    
+
+<p>An object of class <code>edsurvey.data.frame</code> with the following elements:</p>
+
+
+<p><em>Elements that store data connections and data codebooks</em></p>
 <dl><dt><code>dataList</code></dt>
 <dd><p>a <code>list</code> object containing the surveys <code>dataListItem</code> objects</p></dd>
+
 </dl><p><em>Elements that store sample design and default subsetting information of the given survey data</em></p>
 <dl><dt><code>userConditions</code></dt>
 <dd><p>a list containing all user conditions, set using the <code>subset.edsurvey.data.frame</code> method</p></dd>
-<dt><code>defaultConditions</code></dt>
+
+   <dt><code>defaultConditions</code></dt>
 <dd><p>the default subsample conditions</p></dd>
-<dt><code>weights</code></dt>
+
+   <dt><code>weights</code></dt>
 <dd><p>a list containing the weights. See Details.</p></dd>
-<dt><code>stratumVar</code></dt>
+
+   <dt><code>stratumVar</code></dt>
 <dd><p>a character that indicates the default strata identification variable name in the data. Often used in Taylor series estimation.</p></dd>
-<dt><code>psuVar</code></dt>
+
+   <dt><code>psuVar</code></dt>
 <dd><p>a character that indicates the default PSU (sampling unit) identification variable name in the data. Often used in Taylor series estimation.</p></dd>
-<dt><code>pvvars</code></dt>
+
+   <dt><code>pvvars</code></dt>
 <dd><p>a list containing the plausible values. See Details.</p></dd>
-<dt><code>achievementLevels</code></dt>
+
+   <dt><code>achievementLevels</code></dt>
 <dd><p>default achievement cutoff scores and names. See Details.</p></dd>
-<dt><code>omittedLevels</code></dt>
+
+   <dt><code>omittedLevels</code></dt>
 <dd><p>the levels of the factor variables that will be omitted from the <code>edsurvey.data.frame</code></p></dd>
+
 </dl><p><em>Elements that store descriptive information of the survey</em></p>
 <dl><dt><code>survey</code></dt>
 <dd><p>the type of survey data</p></dd>
-<dt><code>subject</code></dt>
+
+   <dt><code>subject</code></dt>
 <dd><p>the subject of the data</p></dd>
-<dt><code>year</code></dt>
+
+   <dt><code>year</code></dt>
 <dd><p>the year of assessment</p></dd>
-<dt><code>assessmentCode</code></dt>
+
+   <dt><code>assessmentCode</code></dt>
 <dd><p>the assessment code</p></dd>
-<dt><code>dataType</code></dt>
+
+   <dt><code>dataType</code></dt>
 <dd><p>the type of data (e.g., <code>student</code> or <code>school</code>)</p></dd>
-<dt><code>gradeLevel</code></dt>
+
+   <dt><code>gradeLevel</code></dt>
 <dd><p>the grade of the dataset contained in the <code>edsurvey.data.frame</code></p></dd>
+
 </dl><p><em>Elements used in <code>mml.sdf</code></em></p>
 <dl><dt><code>dichotParamTab</code></dt>
 <dd><p>IRT item paramters for dichotomous items in a data frame</p></dd>
-<dt><code>polyParamTab</code></dt>
+
+   <dt><code>polyParamTab</code></dt>
 <dd><p>IRT item parameters for polytomous items in a data frame</p></dd>
-<dt><code>adjustedData</code></dt>
+
+   <dt><code>adjustedData</code></dt>
 <dd><p>IRT item parameter adjustment information in a data frame</p></dd>
-<dt><code>testData</code></dt>
+
+   <dt><code>testData</code></dt>
 <dd><p>IRT transformation constants in a data frame</p></dd>
-<dt><code>scoreCard</code></dt>
+
+   <dt><code>scoreCard</code></dt>
 <dd><p>item scoring information in a data frame</p></dd>
-<dt><code>scoreDict</code></dt>
+
+   <dt><code>scoreDict</code></dt>
 <dd><p>generic scoring information in a data frame</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -332,24 +418,24 @@ use the <code>setAttributes</code> method.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># read in the example data (generated, not real student data)</span></span>
-<span class="r-in"><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package<span class="op">=</span><span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># run a base R function on a column of edsurvey.data.frame</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">sdf</span><span class="op">$</span><span class="va">dsex</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># assignment</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">sdf</span><span class="op">$</span><span class="va">b013801</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sdf</span><span class="op">$</span><span class="va">books</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">sdf</span><span class="op">$</span><span class="va">b013801</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0-10"</span>, <span class="st">"11-25"</span><span class="op">)</span>, <span class="st">"0-25 books"</span>, <span class="st">"26+ books"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">sdf</span><span class="op">$</span><span class="va">books</span>, <span class="va">sdf</span><span class="op">$</span><span class="va">b013801</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># extract default omitted levels of NAEP primer data</span></span>
-<span class="r-in"><span class="fu">getAttributes</span><span class="op">(</span><span class="va">sdf</span>, <span class="st">"omittedLevels"</span><span class="op">)</span> <span class="co">#[1] "Multiple" NA         "Omitted"</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># update default omitted levels of NAEP primer data</span></span>
-<span class="r-in"><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu">setAttributes</span><span class="op">(</span><span class="va">sdf</span>, <span class="st">"omittedLevels"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Multiple"</span>, <span class="st">"Omitted"</span>, <span class="cn">NA</span>, <span class="st">"(Missing)"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">getAttributes</span><span class="op">(</span><span class="va">sdf</span>, <span class="st">"omittedLevels"</span><span class="op">)</span> <span class="co">#[1] "Multiple"  "Omitted"   NA          "(Missing)"</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># read in the example data (generated, not real student data)</span></span></span>
+<span class="r-in"><span><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package<span class="op">=</span><span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># run a base R function on a column of edsurvey.data.frame</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">sdf</span><span class="op">$</span><span class="va">dsex</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># assignment</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">sdf</span><span class="op">$</span><span class="va">b013801</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sdf</span><span class="op">$</span><span class="va">books</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">sdf</span><span class="op">$</span><span class="va">b013801</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0-10"</span>, <span class="st">"11-25"</span><span class="op">)</span>, <span class="st">"0-25 books"</span>, <span class="st">"26+ books"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">sdf</span><span class="op">$</span><span class="va">books</span>, <span class="va">sdf</span><span class="op">$</span><span class="va">b013801</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># extract default omitted levels of NAEP primer data</span></span></span>
+<span class="r-in"><span><span class="fu">getAttributes</span><span class="op">(</span><span class="va">sdf</span>, <span class="st">"omittedLevels"</span><span class="op">)</span> <span class="co">#[1] "Multiple" NA         "Omitted"</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># update default omitted levels of NAEP primer data</span></span></span>
+<span class="r-in"><span><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu">setAttributes</span><span class="op">(</span><span class="va">sdf</span>, <span class="st">"omittedLevels"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Multiple"</span>, <span class="st">"Omitted"</span>, <span class="cn">NA</span>, <span class="st">"(Missing)"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">getAttributes</span><span class="op">(</span><span class="va">sdf</span>, <span class="st">"omittedLevels"</span><span class="op">)</span> <span class="co">#[1] "Multiple"  "Omitted"   NA          "(Missing)"</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -364,7 +450,7 @@ use the <code>setAttributes</code> method.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

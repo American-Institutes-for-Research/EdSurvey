@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -64,23 +64,23 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">percentile</span><span class="op">(</span>
-  <span class="va">variable</span>,
-  <span class="va">percentiles</span>,
-  <span class="va">data</span>,
-  weightVar <span class="op">=</span> <span class="cn">NULL</span>,
-  jrrIMax <span class="op">=</span> <span class="fl">1</span>,
-  varMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"jackknife"</span>, <span class="st">"Taylor"</span><span class="op">)</span>,
-  alpha <span class="op">=</span> <span class="fl">0.05</span>,
-  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,
-  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,
-  recode <span class="op">=</span> <span class="cn">NULL</span>,
-  returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span>,
-  returnNumberOfPSU <span class="op">=</span> <span class="cn">FALSE</span>,
-  pctMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"symmetric"</span>, <span class="st">"unbiased"</span>, <span class="st">"simple"</span><span class="op">)</span>,
-  confInt <span class="op">=</span> <span class="cn">TRUE</span>,
-  dofMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"JR"</span>, <span class="st">"WS"</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">percentile</span><span class="op">(</span></span>
+<span>  <span class="va">variable</span>,</span>
+<span>  <span class="va">percentiles</span>,</span>
+<span>  <span class="va">data</span>,</span>
+<span>  weightVar <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  jrrIMax <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  varMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"jackknife"</span>, <span class="st">"Taylor"</span><span class="op">)</span>,</span>
+<span>  alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  recode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  returnNumberOfPSU <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  pctMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"symmetric"</span>, <span class="st">"unbiased"</span>, <span class="st">"simple"</span><span class="op">)</span>,</span>
+<span>  confInt <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  dofMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"JR"</span>, <span class="st">"WS"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -88,14 +88,22 @@
     <dl><dt>variable</dt>
 <dd><p>the character name of the variable to percentiles computed,
 typically a subject scale or subscale</p></dd>
+
+
 <dt>percentiles</dt>
 <dd><p>a numeric vector of percentiles in the range of 0 to 100
 (inclusive)</p></dd>
+
+
 <dt>data</dt>
 <dd><p>an <code>edsurvey.data.frame</code> or an
 <code>edsurvey.data.frame.list</code></p></dd>
+
+
 <dt>weightVar</dt>
 <dd><p>a character indicating the weight variable to use.</p></dd>
+
+
 <dt>jrrIMax</dt>
 <dd><p>a numeric value; when using the jackknife variance estimation method, the default estimation option, <code>jrrIMax=1</code>, uses the 
                   sampling variance from the first plausible value as the component for sampling variance estimation. The \(V_{jrr}\) 
@@ -104,16 +112,22 @@ typically a subject scale or subscale</p></dd>
                   can be estimated with any number of plausible values, and values larger than the number of 
                   plausible values on the survey (including <code>Inf</code>) will result in all plausible values being used. 
                   Higher values of <code>jrrIMax</code> lead to longer computing times and more accurate variance estimates.</p></dd>
+
+
 <dt>varMethod</dt>
 <dd><p>a character set to <code>jackknife</code> or <code>Taylor</code>
 that indicates the variance estimation method used when 
 constructing the confidence intervals. The jackknife
 variance estimation method is always
 used to calculate the standard error.</p></dd>
+
+
 <dt>alpha</dt>
 <dd><p>a numeric value between 0 and 1 indicating the confidence level.
 An <code>alpha</code> value of 0.05 would indicate a 95% 
 confidence interval and is the default.</p></dd>
+
+
 <dt>omittedLevels</dt>
 <dd><p>a logical value. When set to the default value of
 <code>TRUE</code>, drops those levels of 
@@ -121,6 +135,8 @@ all factor variables that are specified in
 <code>achievementVars</code> and <code>aggregatBy</code>. 
 Use <code>print</code> on an <code>edsurvey.data.frame</code>
 to see the omitted levels.</p></dd>
+
+
 <dt>defaultConditions</dt>
 <dd><p>a logical value. When set to the default value
 of <code>TRUE</code>, uses the default 
@@ -128,20 +144,28 @@ conditions stored in an <code>edsurvey.data.frame</code>
 to subset the data. 
 Use <code>print</code> on an <code>edsurvey.data.frame</code>
 to see the default conditions.</p></dd>
+
+
 <dt>recode</dt>
 <dd><p>a list of lists to recode variables. Defaults to
 <code>NULL</code>. Can be set as
 <code>recode=</code><code>list(var1=</code> <code>list(from=</code> <code>c("a",</code>
 <code>"b",</code> <code>"c"),</code>
 <code>to=</code> <code>"d"))</code>.</p></dd>
+
+
 <dt>returnVarEstInputs</dt>
 <dd><p>a logical value set to <code>TRUE</code> to return the
 inputs to the jackknife and imputation variance
 estimates which allows for the computation
 of covariances between estimates.</p></dd>
+
+
 <dt>returnNumberOfPSU</dt>
 <dd><p>a logical value set to <code>TRUE</code> to return the number of 
 primary sampling units (PSUs)</p></dd>
+
+
 <dt>pctMethod</dt>
 <dd><p>one of “unbiased”, “symmetric”, “simple”;
 unbiased produces a weighted median unbiased percentile estimate,
@@ -149,49 +173,81 @@ whereas simple uses a basic formula that matches previously
 published results. Symmetric uses a more basic formula
 but requires that the percentile is symetric to multiplying
 the quantity by negative one.</p></dd>
+
+
 <dt>confInt</dt>
 <dd><p>a Boolean indicating if the confidence interval should be returned</p></dd>
+
+
 <dt>dofMethod</dt>
 <dd><p>passed to <code><a href="DoFCorrection.html">DoFCorrection</a></code> as the <code>method</code> argument</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>The return type depends on whether the class of the <code>data</code> argument is an
-<code>edsurvey.data.frame</code> or an <code>edsurvey.data.frame.list</code>.
-<strong>The data argument is an edsurvey.data.frame</strong>  When the <code>data</code> argument is an <code>edsurvey.data.frame</code>,
-<code>percentile</code> returns an S3 object of class <code>percentile</code>.
-  This is a <code>data.frame</code> with typical attributes (<code>names</code>,
-<code>row.names</code>, and <code>class</code>) and additional attributes as follows:</p>
+    
+
+<p>The return type depends on whether the class of the <code>data</code> argument is an
+<code>edsurvey.data.frame</code> or an <code>edsurvey.data.frame.list</code>.</p>
+
+
+<p><strong>The data argument is an edsurvey.data.frame</strong></p>
+
+
+<p>When the <code>data</code> argument is an <code>edsurvey.data.frame</code>,</p>
+<p></p>
+<p><code>percentile</code> returns an S3 object of class <code>percentile</code>.
+  This is a <code>data.frame</code> with typical attributes (<code>names</code>,</p>
+<p></p>
+<p><code>row.names</code>, and <code>class</code>) and additional attributes as follows:</p>
 <dl><dt>n0</dt>
 <dd><p>number of rows on <code>edsurvey.data.frame</code> before any conditions were applied</p></dd>
-<dt>nUsed</dt>
+
+    <dt>nUsed</dt>
 <dd><p>number of observations with valid data and weights larger than zero</p></dd>
-<dt>nPSU</dt>
+
+    <dt>nPSU</dt>
 <dd><p>number of PSUs used in the calculation</p></dd>
-<dt>call</dt>
+
+    <dt>call</dt>
 <dd><p>the call used to generate these results</p></dd>
+
+
 </dl><p>The columns of the <code>data.frame</code> are as follows:</p>
 <dl><dt>percentile</dt>
 <dd><p>the percentile of this row</p></dd>
-<dt>estimate</dt>
+
+    <dt>estimate</dt>
 <dd><p>the estimated value of the percentile</p></dd>
-<dt>se</dt>
+
+    <dt>se</dt>
 <dd><p>the jackknife standard error of the estimated percentile</p></dd>
-<dt>df</dt>
+
+    <dt>df</dt>
 <dd><p>degrees of freedom</p></dd>
-<dt>confInt.ci_lower</dt>
+
+    <dt>confInt.ci_lower</dt>
 <dd><p>the lower bound
                      of the confidence interval</p></dd>
-<dt>confInt.ci_upper</dt>
+
+    <dt>confInt.ci_upper</dt>
 <dd><p>the upper bound
                      of the confidence interval</p></dd>
-<dt>nsmall</dt>
+
+    <dt>nsmall</dt>
 <dd><p>the number of units with more extreme results, averaged
                   across plausible values</p></dd>
+
 </dl><p>When the <code>confInt</code> argument is set to <code>FALSE</code>, the confidence
-  intervals are not returned.
-<strong>The data argument is an edsurvey.data.frame.list</strong>  When the <code>data</code> argument is an <code>edsurvey.data.frame.list</code>,
-<code>percentile</code> returns an S3 object of class <code>percentileList</code>.
+  intervals are not returned.</p>
+
+
+<p><strong>The data argument is an edsurvey.data.frame.list</strong></p>
+
+
+<p>When the <code>data</code> argument is an <code>edsurvey.data.frame.list</code>,</p>
+<p></p>
+<p><code>percentile</code> returns an S3 object of class <code>percentileList</code>.
   This is a data.frame with a <code>call</code> attribute.
   The columns in the <code>data.frame</code> are identical to those in the previous
   section, but there also are columns from the <code>edsurvey.data.frame.list</code>.</p>
@@ -199,6 +255,8 @@ the quantity by negative one.</p></dd>
 <dd><p>a column for each column in the <code>covs</code> value of the
                 <code>edsurvey.data.frame.list</code>.
                 See Examples.</p></dd>
+
+
 </dl><p>When <code>returnVarEstInputs</code> is <code>TRUE</code>, an attribute
 <code>varEstInputs</code> also is returned that includes the variance estimate
 inputs used for calculating covariances with <code><a href="varEstToCov.html">varEstToCov</a></code>.</p>
@@ -224,32 +282,32 @@ because percentiles are not continuously differentiable.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># read in the example data (generated, not real student data)</span></span>
-<span class="r-in"><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package<span class="op">=</span><span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># get the median of the composite</span></span>
-<span class="r-in"><span class="fu">percentile</span><span class="op">(</span><span class="st">"composite"</span>, <span class="fl">50</span>, <span class="va">sdf</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># get several percentiles</span></span>
-<span class="r-in"><span class="fu">percentile</span><span class="op">(</span><span class="st">"composite"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">25</span>,<span class="fl">50</span>,<span class="fl">75</span>,<span class="fl">99</span>,<span class="fl">100</span><span class="op">)</span>, <span class="va">sdf</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># build an edsurvey.data.frame.list</span></span>
-<span class="r-in"><span class="va">sdfA</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">45</span>,<span class="fl">56</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sdfB</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">75</span>,<span class="fl">76</span>,<span class="fl">78</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sdfC</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">100</span><span class="op">:</span><span class="fl">200</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sdfD</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">201</span><span class="op">:</span><span class="fl">300</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">sdfl</span> <span class="op">&lt;-</span> <span class="fu"><a href="edsurvey.data.frame.list.html">edsurvey.data.frame.list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">sdfA</span>, <span class="va">sdfB</span>, <span class="va">sdfC</span>, <span class="va">sdfD</span><span class="op">)</span>,</span>
-<span class="r-in">                                 labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A locations"</span>,</span>
-<span class="r-in">                                           <span class="st">"B locations"</span>,</span>
-<span class="r-in">                                           <span class="st">"C locations"</span>,</span>
-<span class="r-in">                                           <span class="st">"D locations"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># this shows how these datasets will be described:</span></span>
-<span class="r-in"><span class="va">sdfl</span><span class="op">$</span><span class="va">covs</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">percentile</span><span class="op">(</span><span class="st">"composite"</span>, <span class="fl">50</span>, <span class="va">sdfl</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">percentile</span><span class="op">(</span><span class="st">"composite"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">50</span>, <span class="fl">75</span><span class="op">)</span>, <span class="va">sdfl</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># read in the example data (generated, not real student data)</span></span></span>
+<span class="r-in"><span><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package<span class="op">=</span><span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># get the median of the composite</span></span></span>
+<span class="r-in"><span><span class="fu">percentile</span><span class="op">(</span><span class="st">"composite"</span>, <span class="fl">50</span>, <span class="va">sdf</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># get several percentiles</span></span></span>
+<span class="r-in"><span><span class="fu">percentile</span><span class="op">(</span><span class="st">"composite"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">25</span>,<span class="fl">50</span>,<span class="fl">75</span>,<span class="fl">99</span>,<span class="fl">100</span><span class="op">)</span>, <span class="va">sdf</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># build an edsurvey.data.frame.list</span></span></span>
+<span class="r-in"><span><span class="va">sdfA</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">45</span>,<span class="fl">56</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sdfB</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">75</span>,<span class="fl">76</span>,<span class="fl">78</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sdfC</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">100</span><span class="op">:</span><span class="fl">200</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sdfD</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">201</span><span class="op">:</span><span class="fl">300</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">sdfl</span> <span class="op">&lt;-</span> <span class="fu"><a href="edsurvey.data.frame.list.html">edsurvey.data.frame.list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">sdfA</span>, <span class="va">sdfB</span>, <span class="va">sdfC</span>, <span class="va">sdfD</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                 labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A locations"</span>,</span></span>
+<span class="r-in"><span>                                           <span class="st">"B locations"</span>,</span></span>
+<span class="r-in"><span>                                           <span class="st">"C locations"</span>,</span></span>
+<span class="r-in"><span>                                           <span class="st">"D locations"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># this shows how these datasets will be described:</span></span></span>
+<span class="r-in"><span><span class="va">sdfl</span><span class="op">$</span><span class="va">covs</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">percentile</span><span class="op">(</span><span class="st">"composite"</span>, <span class="fl">50</span>, <span class="va">sdfl</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">percentile</span><span class="op">(</span><span class="st">"composite"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">25</span>, <span class="fl">50</span>, <span class="fl">75</span><span class="op">)</span>, <span class="va">sdfl</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -264,7 +322,7 @@ because percentiles are not continuously differentiable.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

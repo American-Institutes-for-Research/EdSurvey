@@ -321,7 +321,7 @@ calc.mvrlm.sdf <- function(formula,
   # Coefficient estimation function accounting for weights
   coefEstWtd <- function(X,Y,W){
     bHat <- try(solve((t(X) %*% W) %*% X) %*% (t(X) %*% W %*% Y), silent = TRUE)
-    if(class(bHat) == "try-error"){# deals with the case where there's a singularity by using lm.wfit instead
+    if(inherits(bHat, "try-error")) {# deals with the case where there's a singularity by using lm.wfit instead
       #print("singularity case hit")
       bHat <- lm.wfit(x = X, y = Y, w = diag(W))$coefficients
     }

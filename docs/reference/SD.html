@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -60,32 +60,38 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">SD</span><span class="op">(</span>
-  <span class="va">data</span>,
-  <span class="va">variable</span>,
-  weightVar <span class="op">=</span> <span class="cn">NULL</span>,
-  jrrIMax <span class="op">=</span> <span class="fl">1</span>,
-  varMethod <span class="op">=</span> <span class="st">"jackknife"</span>,
-  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,
-  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,
-  recode <span class="op">=</span> <span class="cn">NULL</span>,
-  targetLevel <span class="op">=</span> <span class="cn">NULL</span>,
-  jkSumMultiplier <span class="op">=</span> <span class="fu"><a href="edsurvey-class.html">getAttributes</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"jkSumMultiplier"</span><span class="op">)</span>,
-  returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">SD</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">variable</span>,</span>
+<span>  weightVar <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  jrrIMax <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  varMethod <span class="op">=</span> <span class="st">"jackknife"</span>,</span>
+<span>  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  recode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  targetLevel <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  jkSumMultiplier <span class="op">=</span> <span class="fu"><a href="edsurvey-class.html">getAttributes</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"jkSumMultiplier"</span><span class="op">)</span>,</span>
+<span>  returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>an <code>edsurvey.data.frame</code>, an <code>edsurvey.data.frame.list</code>, or a <code>light.edsurvey.data.frame</code></p></dd>
+
+
 <dt>variable</dt>
 <dd><p>character vector of variable names</p></dd>
+
+
 <dt>weightVar</dt>
 <dd><p>character weight variable name. Default is the default weight of <code>data</code> if it exists.
 If the given survey data do not have a default weight,
 the function will produce unweighted statistics instead. 
 Can be set to <code>NULL</code> to return unweighted statistics.</p></dd>
+
+
 <dt>jrrIMax</dt>
 <dd><p>a numeric value; when using the jackknife variance estimation method, the default estimation option, <code>jrrIMax=1</code>, uses the 
                   sampling variance from the first plausible value as the component for sampling variance estimation. The <code>Vjrr</code> 
@@ -94,28 +100,40 @@ Can be set to <code>NULL</code> to return unweighted statistics.</p></dd>
                   can be estimated with any number of plausible values, and values larger than the number of 
                   plausible values on the survey (including <code>Inf</code>) will result in all plausible values being used. 
                   Higher values of <code>jrrIMax</code> lead to longer computing times and more accurate variance estimates.</p></dd>
+
+
 <dt>varMethod</dt>
 <dd><p>deprecated parameter; <code>gap</code> always uses the jackknife variance estimation</p></dd>
+
+
 <dt>omittedLevels</dt>
 <dd><p>a logical value. When set to <code>TRUE</code>, drops those levels of the specified <code>variable</code>.
 Use print on an <code>edsurvey.data.frame</code> to see the omitted levels. Defaults to <code>FALSE</code>.</p></dd>
+
+
 <dt>defaultConditions</dt>
 <dd><p>a logical value. When set to the default value of
 <code>TRUE</code>, uses the default conditions stored in
  an <code>edsurvey.data.frame</code> to subset the data. Use
 <code>print</code> on an <code>edsurvey.data.frame</code> to
 see the default conditions.</p></dd>
+
+
 <dt>recode</dt>
 <dd><p>a list of lists to recode variables. Defaults to <code>NULL</code>.
 Can be set as <code>recode</code> <code>=</code> <code>list(var1</code>
 <code>=</code> <code>list(from</code> <code>=</code> <code>c("a","b","c"), to</code>
 <code>=</code> <code>"d"))</code>.</p></dd>
+
+
 <dt>targetLevel</dt>
 <dd><p>a character string. When specified, calculates the gap in
 the percentage of students at
 <code>targetLevel</code> in the <code>variable</code> argument, which is useful for
 comparing the gap in the percentage of students at a
 survey response level.</p></dd>
+
+
 <dt>jkSumMultiplier</dt>
 <dd><p>when the jackknife variance estimation method---or
 balanced repeated replication (BRR) 
@@ -125,27 +143,37 @@ For an <code>edsurvey.data.frame</code>, or
 a <code>light.edsurvey.data.frame</code>,
 the recommended value can be recovered with
 <code>EdSurvey::getAttributes(</code><code>myData,</code> <code>"jkSumMultiplier")</code>.</p></dd>
+
+
 <dt>returnVarEstInputs</dt>
 <dd><p>a logical value set to <code>TRUE</code> to return the
 inputs to the jackknife and imputation variance
 estimates, which allows for
 the computation
 of covariances between estimates.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a list object with elements:</p>
+    
+
+<p>a list object with elements:</p>
 <dl><dt>mean</dt>
 <dd><p>the mean assessment score for <code>variable</code>, calculated according to the vignette titled 
             <a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link">Statistical Methods Used in EdSurvey</a></p></dd>
-<dt>std</dt>
+
+ <dt>std</dt>
 <dd><p>the standard deviation of the <code>mean</code></p></dd>
-<dt>stdSE</dt>
+
+ <dt>stdSE</dt>
 <dd><p>the standard error of the <code>std</code></p></dd>
-<dt>df</dt>
+
+ <dt>df</dt>
 <dd><p>the degrees of freedom of the <code>std</code></p></dd>
-<dt>varEstInputs</dt>
+
+ <dt>varEstInputs</dt>
 <dd><p>the variance estimate inputs used for calculating covariances with <code><a href="varEstToCov.html">varEstToCov</a></code>. Only returned with <code>returnVarEstInputs</code> is <code>TRUE</code></p></dd>
+
 </dl></div>
     <div id="author">
     <h2>Author</h2>
@@ -154,35 +182,35 @@ of covariances between estimates.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># read in the example data (generated, not real student data)</span></span>
-<span class="r-in"><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package<span class="op">=</span><span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># get standard deviation for Male's composite score</span></span>
-<span class="r-in"><span class="fu">SD</span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">dsex</span> <span class="op">==</span> <span class="st">"Male"</span><span class="op">)</span>, variable <span class="op">=</span> <span class="st">"composite"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># get several standard deviations</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># build an edsurvey.data.frame.list</span></span>
-<span class="r-in"><span class="va">sdfA</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">45</span>,<span class="fl">56</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sdfB</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">75</span>,<span class="fl">76</span>,<span class="fl">78</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sdfC</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">100</span><span class="op">:</span><span class="fl">200</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sdfD</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">201</span><span class="op">:</span><span class="fl">300</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">sdfl</span> <span class="op">&lt;-</span> <span class="fu"><a href="edsurvey.data.frame.list.html">edsurvey.data.frame.list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">sdfA</span>, <span class="va">sdfB</span>, <span class="va">sdfC</span>, <span class="va">sdfD</span><span class="op">)</span>,</span>
-<span class="r-in">                                 labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A locations"</span>,</span>
-<span class="r-in">                                          <span class="st">"B locations"</span>,</span>
-<span class="r-in">                                          <span class="st">"C locations"</span>,</span>
-<span class="r-in">                                          <span class="st">"D locations"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># this shows how these datasets will be described:</span></span>
-<span class="r-in"><span class="va">sdfl</span><span class="op">$</span><span class="va">covs</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># SD results for each survey</span></span>
-<span class="r-in"><span class="fu">SD</span><span class="op">(</span>data <span class="op">=</span> <span class="va">sdfl</span>, variable <span class="op">=</span> <span class="st">"composite"</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># SD results more compactly and with comparisons</span></span>
-<span class="r-in"><span class="fu"><a href="gap.html">gap</a></span><span class="op">(</span>variable<span class="op">=</span><span class="st">"composite"</span>, data<span class="op">=</span><span class="va">sdfl</span>, stDev<span class="op">=</span><span class="cn">TRUE</span>, returnSimpleDoF<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># read in the example data (generated, not real student data)</span></span></span>
+<span class="r-in"><span><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package<span class="op">=</span><span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># get standard deviation for Male's composite score</span></span></span>
+<span class="r-in"><span><span class="fu">SD</span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">dsex</span> <span class="op">==</span> <span class="st">"Male"</span><span class="op">)</span>, variable <span class="op">=</span> <span class="st">"composite"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># get several standard deviations</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># build an edsurvey.data.frame.list</span></span></span>
+<span class="r-in"><span><span class="va">sdfA</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">45</span>,<span class="fl">56</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sdfB</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">75</span>,<span class="fl">76</span>,<span class="fl">78</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sdfC</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">100</span><span class="op">:</span><span class="fl">200</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sdfD</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">201</span><span class="op">:</span><span class="fl">300</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">sdfl</span> <span class="op">&lt;-</span> <span class="fu"><a href="edsurvey.data.frame.list.html">edsurvey.data.frame.list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">sdfA</span>, <span class="va">sdfB</span>, <span class="va">sdfC</span>, <span class="va">sdfD</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                 labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A locations"</span>,</span></span>
+<span class="r-in"><span>                                          <span class="st">"B locations"</span>,</span></span>
+<span class="r-in"><span>                                          <span class="st">"C locations"</span>,</span></span>
+<span class="r-in"><span>                                          <span class="st">"D locations"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># this shows how these datasets will be described:</span></span></span>
+<span class="r-in"><span><span class="va">sdfl</span><span class="op">$</span><span class="va">covs</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># SD results for each survey</span></span></span>
+<span class="r-in"><span><span class="fu">SD</span><span class="op">(</span>data <span class="op">=</span> <span class="va">sdfl</span>, variable <span class="op">=</span> <span class="st">"composite"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># SD results more compactly and with comparisons</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="gap.html">gap</a></span><span class="op">(</span>variable<span class="op">=</span><span class="st">"composite"</span>, data<span class="op">=</span><span class="va">sdfl</span>, stDev<span class="op">=</span><span class="cn">TRUE</span>, returnSimpleDoF<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -197,7 +225,7 @@ of covariances between estimates.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

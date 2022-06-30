@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -64,48 +64,70 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">cor.sdf</span><span class="op">(</span>
-  <span class="va">x</span>,
-  <span class="va">y</span>,
-  <span class="va">data</span>,
-  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Pearson"</span>, <span class="st">"Spearman"</span>, <span class="st">"Polychoric"</span>, <span class="st">"Polyserial"</span><span class="op">)</span>,
-  weightVar <span class="op">=</span> <span class="st">"default"</span>,
-  reorder <span class="op">=</span> <span class="cn">NULL</span>,
-  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,
-  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,
-  recode <span class="op">=</span> <span class="cn">NULL</span>,
-  condenseLevels <span class="op">=</span> <span class="cn">TRUE</span>,
-  fisherZ <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">match.arg</a></span><span class="op">(</span><span class="va">method</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="st">"Pearson"</span><span class="op">)</span> <span class="op">{</span>     <span class="cn">TRUE</span> <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>     <span class="cn">FALSE</span> <span class="op">}</span>,
-  jrrIMax <span class="op">=</span> <span class="cn">Inf</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cor.sdf</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">y</span>,</span>
+<span>  <span class="va">data</span>,</span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Pearson"</span>, <span class="st">"Spearman"</span>, <span class="st">"Polychoric"</span>, <span class="st">"Polyserial"</span><span class="op">)</span>,</span>
+<span>  weightVar <span class="op">=</span> <span class="st">"default"</span>,</span>
+<span>  reorder <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  recode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  condenseLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  fisherZ <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">match.arg</a></span><span class="op">(</span><span class="va">method</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="st">"Pearson"</span><span class="op">)</span> <span class="op">{</span></span>
+<span>     <span class="cn">TRUE</span></span>
+<span> <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>     <span class="cn">FALSE</span></span>
+<span> <span class="op">}</span>,</span>
+<span>  jrrIMax <span class="op">=</span> <span class="cn">Inf</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>a character variable name from the <code>data</code> to be correlated with <code>y</code></p></dd>
+
+
 <dt>y</dt>
 <dd><p>a character variable name from the <code>data</code> to be correlated with <code>x</code></p></dd>
+
+
 <dt>data</dt>
 <dd><p>an <code>edsurvey.data.frame</code>, a <code>light.edsurvey.data.frame</code>, or an <code>edsurvey.data.frame.list</code></p></dd>
+
+
 <dt>method</dt>
 <dd><p>a character string indicating which correlation coefficient (or covariance) is to be computed.
 One of <code>Pearson</code> (default), <code>Spearman</code>, <code>Polychoric</code>, or <code>Polyserial</code>. For Polyserial, the continuous argument must be <code>x</code>.</p></dd>
+
+
 <dt>weightVar</dt>
 <dd><p>character indicating the weight variable to use. See Details section in <code><a href="lm.sdf.html">lm.sdf</a></code>.</p></dd>
+
+
 <dt>reorder</dt>
 <dd><p>a list of variables to reorder. Defaults to <code>NULL</code> (no variables are reordered). Can be set as 
 <code>reorder</code> <code>=</code> <code>list(var1</code> <code>=</code> <code>c("a","b","c"),</code> <code>var2</code> <code>=</code> <code>c("4", "3", "2", "1"))</code>. See Examples.</p></dd>
+
+
 <dt>omittedLevels</dt>
 <dd><p>a logical value. When set to the default value of <code>TRUE</code>, drops those levels of all factor variables that are specified
 in an <code>edsurvey.data.frame</code>. Use <code>print</code> on an <code>edsurvey.data.frame</code> to see the omitted levels.</p></dd>
+
+
 <dt>defaultConditions</dt>
 <dd><p>a logical value. When set to the default value of <code>TRUE</code>, uses the default conditions stored in an <code>edsurvey.data.frame</code>
 to subset the data. Use <code>print</code> on an <code>edsurvey.data.frame</code> to see the default conditions.</p></dd>
+
+
 <dt>recode</dt>
 <dd><p>a list of lists to recode variables. Defaults to <code>NULL</code>. Can be set as
 <code>recode</code> <code>=</code> <code>list(var1</code> <code>=</code> <code>list(from</code> <code>=</code> <code>c("a","b","c"), to</code> <code>=</code> <code>"d"))</code>. See Examples.</p></dd>
+
+
 <dt>condenseLevels</dt>
 <dd><p>a logical value. When set to the default value of
 <code>TRUE</code> and either <code>x</code> or <code>y</code> is a
@@ -114,12 +136,16 @@ levels and rank the levels of the variable before
 calculating the correlation. When set to <code>FALSE</code>,
 the numeric levels of the variable remain the same as
 in the codebook. See Examples.</p></dd>
+
+
 <dt>fisherZ</dt>
 <dd><p>for standard error and mean calculations, set to <code>TRUE</code> to use
 the Fisher Z-transformation (see details), or <code>FALSE</code>
 to use no transformation of the data. The <code>fisherZ</code> argument defaults
 to Fisher Z-transformation for Pearson and no transformation  
 for other correlation types.</p></dd>
+
+
 <dt>jrrIMax</dt>
 <dd><p>a numeric value; when using the jackknife variance estimation method, the default estimation option, <code>jrrIMax=Inf</code>, uses the 
                   sampling variance from all plausible values as the component for sampling variance estimation. The <code>Vjrr</code> 
@@ -128,47 +154,71 @@ for other correlation types.</p></dd>
                   can be estimated with any number of plausible values, and values larger than the number of 
                   plausible values on the survey (including <code>Inf</code>) will result in all plausible values being used. 
                   Higher values of <code>jrrIMax</code> lead to longer computing times and more accurate variance estimates.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>a logical value. Set to <code>FALSE</code> to avoid messages about variable conversion.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An <code>edsurvey.cor</code> that has print and summary methods.
-The class includes the following elements:</p>
+    
+
+<p>An <code>edsurvey.cor</code> that has print and summary methods.</p>
+
+
+<p>The class includes the following elements:</p>
 <dl><dt>correlation</dt>
 <dd><p>numeric estimated correlation coefficient</p></dd>
+
 <dt>Zse</dt>
 <dd><p>standard error of the correlation (<code>Vimp</code> + <code>Vjrr</code>). In the case of Pearson, this is calculated in the linear atanh space and is not a standard error in the usual sense.</p></dd>
+
 <dt>correlates</dt>
 <dd><p>a vector of length two showing the columns for which the correlation coefficient was calculated</p></dd>
+
 <dt>variables</dt>
 <dd><p><code>correlates</code> that are discrete</p></dd>
+
 <dt>order</dt>
 <dd><p>a list that shows the order of each variable</p></dd>
+
 <dt>method</dt>
 <dd><p>the type of correlation estimated</p></dd>
+
 <dt>Vjrr</dt>
 <dd><p>the jackknife component of the variance estimate. For Pearson, in the atanh space.</p></dd>
+
 <dt>Vimp</dt>
 <dd><p>the imputation component of the variance estimate. For Pearson, in the atanh space.</p></dd>
+
 <dt>weight</dt>
 <dd><p>the weight variable used</p></dd>
+
 <dt>npv</dt>
 <dd><p>the number of plausible values used</p></dd>
+
 <dt>njk</dt>
 <dd><p>the number of the jackknife replicates used</p></dd>
+
 <dt>n0</dt>
 <dd><p>the original number of observations</p></dd>
+
 <dt>nUsed</dt>
 <dd><p>the number of observations used in the analysis---after any conditions and any listwise deletion of missings is applied</p></dd>
+
 <dt>se</dt>
 <dd><p>the standard error of the correlation, in the correlation ([-1,1]) space</p></dd>
+
 <dt>ZconfidenceInterval</dt>
 <dd><p>the confidence interval of the correlation in the transformation space</p></dd>
+
 <dt>confidenceInterval</dt>
 <dd><p>the confidence interval of the correlation in the correlation ([-1,1]) space</p></dd>
+
 <dt>transformation</dt>
 <dd><p>the name of the transformation used when calculating standard errors</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -197,72 +247,72 @@ The Taylor series approximation (or delta method) is applied for the standard er
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># read in the example data (generated, not real student data)</span></span>
-<span class="r-in"><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># for two categorical variables any of the following work</span></span>
-<span class="r-in"><span class="va">c1_pears</span> <span class="op">&lt;-</span> <span class="fu">cor.sdf</span><span class="op">(</span>x<span class="op">=</span><span class="st">"b017451"</span>, y<span class="op">=</span><span class="st">"b003501"</span>, data<span class="op">=</span><span class="va">sdf</span>, method<span class="op">=</span><span class="st">"Pearson"</span>,</span>
-<span class="r-in">                    weightVar<span class="op">=</span><span class="st">"origwt"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">c1_spear</span> <span class="op">&lt;-</span> <span class="fu">cor.sdf</span><span class="op">(</span>x<span class="op">=</span><span class="st">"b017451"</span>, y<span class="op">=</span><span class="st">"b003501"</span>, data<span class="op">=</span><span class="va">sdf</span>, method<span class="op">=</span><span class="st">"Spearman"</span>,</span>
-<span class="r-in">                    weightVar<span class="op">=</span><span class="st">"origwt"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">c1_polyc</span> <span class="op">&lt;-</span> <span class="fu">cor.sdf</span><span class="op">(</span>x<span class="op">=</span><span class="st">"b017451"</span>, y<span class="op">=</span><span class="st">"b003501"</span>, data<span class="op">=</span><span class="va">sdf</span>, method<span class="op">=</span><span class="st">"Polychoric"</span>,</span>
-<span class="r-in">                    weightVar<span class="op">=</span><span class="st">"origwt"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">c1_pears</span></span>
-<span class="r-in"><span class="va">c1_spear</span></span>
-<span class="r-in"><span class="va">c1_polyc</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># for categorical variables, users can either keep the original numeric levels of the variables</span></span>
-<span class="r-in"><span class="co"># or condense the levels (default)</span></span>
-<span class="r-in"><span class="co"># the following call condenses the levels of the variable 'c046501'</span></span>
-<span class="r-in"><span class="fu">cor.sdf</span><span class="op">(</span>x<span class="op">=</span><span class="st">"c046501"</span>, y<span class="op">=</span><span class="st">"c044006"</span>, data<span class="op">=</span><span class="va">sdf</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># the following call keeps the original levels of the variable 'c046501'</span></span>
-<span class="r-in"><span class="fu">cor.sdf</span><span class="op">(</span>x<span class="op">=</span><span class="st">"c046501"</span>, y<span class="op">=</span><span class="st">"c044006"</span>, data<span class="op">=</span><span class="va">sdf</span>, condenseLevels <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># these take awhile to calculate for large datasets, so limit to a subset</span></span>
-<span class="r-in"><span class="va">sdf_dnf</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">b003601</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># for a categorical variable and a scale score any of the following work</span></span>
-<span class="r-in"><span class="va">c2_pears</span> <span class="op">&lt;-</span> <span class="fu">cor.sdf</span><span class="op">(</span>x<span class="op">=</span><span class="st">"composite"</span>, y<span class="op">=</span><span class="st">"b017451"</span>, data<span class="op">=</span><span class="va">sdf_dnf</span>, method<span class="op">=</span><span class="st">"Pearson"</span>,</span>
-<span class="r-in">                    weightVar<span class="op">=</span><span class="st">"origwt"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">c2_spear</span> <span class="op">&lt;-</span> <span class="fu">cor.sdf</span><span class="op">(</span>x<span class="op">=</span><span class="st">"composite"</span>, y<span class="op">=</span><span class="st">"b017451"</span>, data<span class="op">=</span><span class="va">sdf_dnf</span>, method<span class="op">=</span><span class="st">"Spearman"</span>,</span>
-<span class="r-in">                    weightVar<span class="op">=</span><span class="st">"origwt"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">c2_polys</span> <span class="op">&lt;-</span> <span class="fu">cor.sdf</span><span class="op">(</span>x<span class="op">=</span><span class="st">"composite"</span>, y<span class="op">=</span><span class="st">"b017451"</span>, data<span class="op">=</span><span class="va">sdf_dnf</span>, method<span class="op">=</span><span class="st">"Polyserial"</span>,</span>
-<span class="r-in">                    weightVar<span class="op">=</span><span class="st">"origwt"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">c2_pears</span></span>
-<span class="r-in"><span class="va">c2_spear</span></span>
-<span class="r-in"><span class="va">c2_polys</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># recode two variables</span></span>
-<span class="r-in"><span class="fu">cor.sdf</span><span class="op">(</span>x<span class="op">=</span><span class="st">"c046501"</span>, y<span class="op">=</span><span class="st">"c044006"</span>, data<span class="op">=</span><span class="va">sdf</span>, method<span class="op">=</span><span class="st">"Spearman"</span>, weightVar<span class="op">=</span><span class="st">"origwt"</span>,</span>
-<span class="r-in">        recode<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>c046501<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="st">"0%"</span>,to<span class="op">=</span><span class="st">"None"</span><span class="op">)</span>,</span>
-<span class="r-in">                    c046501<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1-5%"</span>, <span class="st">"6-10%"</span>, <span class="st">"11-25%"</span>, <span class="st">"26-50%"</span>,</span>
-<span class="r-in">                                        <span class="st">"51-75%"</span>, <span class="st">"76-90%"</span>, <span class="st">"Over 90%"</span><span class="op">)</span>,</span>
-<span class="r-in">                                 to<span class="op">=</span><span class="st">"Between 0% and 100%"</span><span class="op">)</span>,</span>
-<span class="r-in">                    c044006<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1-5%"</span>, <span class="st">"6-10%"</span>, <span class="st">"11-25%"</span>, <span class="st">"26-50%"</span>,</span>
-<span class="r-in">                                        <span class="st">"51-75%"</span>, <span class="st">"76-90%"</span>, <span class="st">"Over 90%"</span><span class="op">)</span>,</span>
-<span class="r-in">                                 to<span class="op">=</span><span class="st">"Between 0% and 100%"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># reorder two variables</span></span>
-<span class="r-in"><span class="fu">cor.sdf</span><span class="op">(</span>x<span class="op">=</span><span class="st">"b017451"</span>, y<span class="op">=</span><span class="st">"sdracem"</span>, data<span class="op">=</span><span class="va">sdf</span>, method<span class="op">=</span><span class="st">"Spearman"</span>, weightVar<span class="op">=</span><span class="st">"origwt"</span>, </span>
-<span class="r-in">        reorder<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sdracem<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"White"</span>, <span class="st">"Hispanic"</span>, <span class="st">"Black"</span>, <span class="st">"Asian/Pacific Island"</span>,</span>
-<span class="r-in">                               <span class="st">"Amer Ind/Alaska Natv"</span>, <span class="st">"Other"</span><span class="op">)</span>,</span>
-<span class="r-in">                     b017451<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Every day"</span>, <span class="st">"2 or 3 times a week"</span>, <span class="st">"About once a week"</span>,</span>
-<span class="r-in">                               <span class="st">"Once every few weeks"</span>, <span class="st">"Never or hardly ever"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># recode two variables and reorder</span></span>
-<span class="r-in"><span class="fu">cor.sdf</span><span class="op">(</span>x<span class="op">=</span><span class="st">"pared"</span>, y<span class="op">=</span><span class="st">"b013801"</span>, data<span class="op">=</span><span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="op">!</span><span class="va">pared</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="st">"I Don\'t Know"</span><span class="op">)</span>,</span>
-<span class="r-in">        method<span class="op">=</span><span class="st">"Spearman"</span>, weightVar <span class="op">=</span> <span class="st">"origwt"</span>,</span>
-<span class="r-in">        recode<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>pared<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="st">"Some ed after H.S."</span>, to<span class="op">=</span><span class="st">"Graduated H.S."</span><span class="op">)</span>, </span>
-<span class="r-in">                    pared<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="st">"Graduated college"</span>, to<span class="op">=</span><span class="st">"Graduated H.S."</span><span class="op">)</span>,</span>
-<span class="r-in">                    b013801<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="st">"0-10"</span>, to<span class="op">=</span><span class="st">"Less than 100"</span><span class="op">)</span>, </span>
-<span class="r-in">                    b013801<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="st">"11-25"</span>, to<span class="op">=</span><span class="st">"Less than 100"</span><span class="op">)</span>,</span>
-<span class="r-in">                    b013801<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="st">"26-100"</span>, to<span class="op">=</span><span class="st">"Less than 100"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">        reorder<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>b013801<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Less than 100"</span>, <span class="st">"&gt;100"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># read in the example data (generated, not real student data)</span></span></span>
+<span class="r-in"><span><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># for two categorical variables any of the following work</span></span></span>
+<span class="r-in"><span><span class="va">c1_pears</span> <span class="op">&lt;-</span> <span class="fu">cor.sdf</span><span class="op">(</span>x<span class="op">=</span><span class="st">"b017451"</span>, y<span class="op">=</span><span class="st">"b003501"</span>, data<span class="op">=</span><span class="va">sdf</span>, method<span class="op">=</span><span class="st">"Pearson"</span>,</span></span>
+<span class="r-in"><span>                    weightVar<span class="op">=</span><span class="st">"origwt"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">c1_spear</span> <span class="op">&lt;-</span> <span class="fu">cor.sdf</span><span class="op">(</span>x<span class="op">=</span><span class="st">"b017451"</span>, y<span class="op">=</span><span class="st">"b003501"</span>, data<span class="op">=</span><span class="va">sdf</span>, method<span class="op">=</span><span class="st">"Spearman"</span>,</span></span>
+<span class="r-in"><span>                    weightVar<span class="op">=</span><span class="st">"origwt"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">c1_polyc</span> <span class="op">&lt;-</span> <span class="fu">cor.sdf</span><span class="op">(</span>x<span class="op">=</span><span class="st">"b017451"</span>, y<span class="op">=</span><span class="st">"b003501"</span>, data<span class="op">=</span><span class="va">sdf</span>, method<span class="op">=</span><span class="st">"Polychoric"</span>,</span></span>
+<span class="r-in"><span>                    weightVar<span class="op">=</span><span class="st">"origwt"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">c1_pears</span></span></span>
+<span class="r-in"><span><span class="va">c1_spear</span></span></span>
+<span class="r-in"><span><span class="va">c1_polyc</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># for categorical variables, users can either keep the original numeric levels of the variables</span></span></span>
+<span class="r-in"><span><span class="co"># or condense the levels (default)</span></span></span>
+<span class="r-in"><span><span class="co"># the following call condenses the levels of the variable 'c046501'</span></span></span>
+<span class="r-in"><span><span class="fu">cor.sdf</span><span class="op">(</span>x<span class="op">=</span><span class="st">"c046501"</span>, y<span class="op">=</span><span class="st">"c044006"</span>, data<span class="op">=</span><span class="va">sdf</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># the following call keeps the original levels of the variable 'c046501'</span></span></span>
+<span class="r-in"><span><span class="fu">cor.sdf</span><span class="op">(</span>x<span class="op">=</span><span class="st">"c046501"</span>, y<span class="op">=</span><span class="st">"c044006"</span>, data<span class="op">=</span><span class="va">sdf</span>, condenseLevels <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># these take awhile to calculate for large datasets, so limit to a subset</span></span></span>
+<span class="r-in"><span><span class="va">sdf_dnf</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">b003601</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># for a categorical variable and a scale score any of the following work</span></span></span>
+<span class="r-in"><span><span class="va">c2_pears</span> <span class="op">&lt;-</span> <span class="fu">cor.sdf</span><span class="op">(</span>x<span class="op">=</span><span class="st">"composite"</span>, y<span class="op">=</span><span class="st">"b017451"</span>, data<span class="op">=</span><span class="va">sdf_dnf</span>, method<span class="op">=</span><span class="st">"Pearson"</span>,</span></span>
+<span class="r-in"><span>                    weightVar<span class="op">=</span><span class="st">"origwt"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">c2_spear</span> <span class="op">&lt;-</span> <span class="fu">cor.sdf</span><span class="op">(</span>x<span class="op">=</span><span class="st">"composite"</span>, y<span class="op">=</span><span class="st">"b017451"</span>, data<span class="op">=</span><span class="va">sdf_dnf</span>, method<span class="op">=</span><span class="st">"Spearman"</span>,</span></span>
+<span class="r-in"><span>                    weightVar<span class="op">=</span><span class="st">"origwt"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">c2_polys</span> <span class="op">&lt;-</span> <span class="fu">cor.sdf</span><span class="op">(</span>x<span class="op">=</span><span class="st">"composite"</span>, y<span class="op">=</span><span class="st">"b017451"</span>, data<span class="op">=</span><span class="va">sdf_dnf</span>, method<span class="op">=</span><span class="st">"Polyserial"</span>,</span></span>
+<span class="r-in"><span>                    weightVar<span class="op">=</span><span class="st">"origwt"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">c2_pears</span></span></span>
+<span class="r-in"><span><span class="va">c2_spear</span></span></span>
+<span class="r-in"><span><span class="va">c2_polys</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># recode two variables</span></span></span>
+<span class="r-in"><span><span class="fu">cor.sdf</span><span class="op">(</span>x<span class="op">=</span><span class="st">"c046501"</span>, y<span class="op">=</span><span class="st">"c044006"</span>, data<span class="op">=</span><span class="va">sdf</span>, method<span class="op">=</span><span class="st">"Spearman"</span>, weightVar<span class="op">=</span><span class="st">"origwt"</span>,</span></span>
+<span class="r-in"><span>        recode<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>c046501<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="st">"0%"</span>,to<span class="op">=</span><span class="st">"None"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                    c046501<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1-5%"</span>, <span class="st">"6-10%"</span>, <span class="st">"11-25%"</span>, <span class="st">"26-50%"</span>,</span></span>
+<span class="r-in"><span>                                        <span class="st">"51-75%"</span>, <span class="st">"76-90%"</span>, <span class="st">"Over 90%"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                 to<span class="op">=</span><span class="st">"Between 0% and 100%"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                    c044006<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1-5%"</span>, <span class="st">"6-10%"</span>, <span class="st">"11-25%"</span>, <span class="st">"26-50%"</span>,</span></span>
+<span class="r-in"><span>                                        <span class="st">"51-75%"</span>, <span class="st">"76-90%"</span>, <span class="st">"Over 90%"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                 to<span class="op">=</span><span class="st">"Between 0% and 100%"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># reorder two variables</span></span></span>
+<span class="r-in"><span><span class="fu">cor.sdf</span><span class="op">(</span>x<span class="op">=</span><span class="st">"b017451"</span>, y<span class="op">=</span><span class="st">"sdracem"</span>, data<span class="op">=</span><span class="va">sdf</span>, method<span class="op">=</span><span class="st">"Spearman"</span>, weightVar<span class="op">=</span><span class="st">"origwt"</span>, </span></span>
+<span class="r-in"><span>        reorder<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sdracem<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"White"</span>, <span class="st">"Hispanic"</span>, <span class="st">"Black"</span>, <span class="st">"Asian/Pacific Island"</span>,</span></span>
+<span class="r-in"><span>                               <span class="st">"Amer Ind/Alaska Natv"</span>, <span class="st">"Other"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                     b017451<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Every day"</span>, <span class="st">"2 or 3 times a week"</span>, <span class="st">"About once a week"</span>,</span></span>
+<span class="r-in"><span>                               <span class="st">"Once every few weeks"</span>, <span class="st">"Never or hardly ever"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># recode two variables and reorder</span></span></span>
+<span class="r-in"><span><span class="fu">cor.sdf</span><span class="op">(</span>x<span class="op">=</span><span class="st">"pared"</span>, y<span class="op">=</span><span class="st">"b013801"</span>, data<span class="op">=</span><span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="op">!</span><span class="va">pared</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="st">"I Don\'t Know"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        method<span class="op">=</span><span class="st">"Spearman"</span>, weightVar <span class="op">=</span> <span class="st">"origwt"</span>,</span></span>
+<span class="r-in"><span>        recode<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>pared<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="st">"Some ed after H.S."</span>, to<span class="op">=</span><span class="st">"Graduated H.S."</span><span class="op">)</span>, </span></span>
+<span class="r-in"><span>                    pared<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="st">"Graduated college"</span>, to<span class="op">=</span><span class="st">"Graduated H.S."</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                    b013801<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="st">"0-10"</span>, to<span class="op">=</span><span class="st">"Less than 100"</span><span class="op">)</span>, </span></span>
+<span class="r-in"><span>                    b013801<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="st">"11-25"</span>, to<span class="op">=</span><span class="st">"Less than 100"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                    b013801<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="st">"26-100"</span>, to<span class="op">=</span><span class="st">"Less than 100"</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        reorder<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>b013801<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Less than 100"</span>, <span class="st">"&gt;100"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -277,7 +327,7 @@ The Taylor series approximation (or delta method) is applied for the standard er
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

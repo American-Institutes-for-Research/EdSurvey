@@ -1140,7 +1140,9 @@ lightUnclassCols <- function(tbl){
   # needed for haven read in
   for(i in seq_along(colnames(tbl))){
     if(inherits(tbl[[i]], "haven_labelled")) {
-      tbl[[i]] <- as_factor(tbl[[i]])
+      if(requireNamespace("haven")){
+        tbl[[i]] <- haven::as_factor(tbl[[i]])
+      }
     } else {
       if(inherits(tbl[[i]], "lfactor")) {
         # do nothing, leave it as an lfactor

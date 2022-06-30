@@ -77,7 +77,11 @@ downloadTIMSS <- function(root, years=c(2003, 2007, 2011, 2015, 2019), cache=FAL
              "https://timssandpirls.bc.edu/timss2015/international-database/downloads/T15_G8_ItemInformation.zip")
   
   d2019 <- c("https://timss2019.org/international-database/downloads/T19_G4_SPSS%20Data.zip",
-             "https://timss2019.org/international-database/downloads/T19_G8_SPSS%20Data.zip")
+             "https://timss2019.org/international-database/downloads/T19_G8_SPSS%20Data.zip",
+             "https://timss2019.org/international-database/downloads/T19_G4_Item%20Information.zip",
+             "https://timss2019.org/international-database/downloads/T19_G8_Item%20Information.zip",
+             "https://timss2019.org/international-database/downloads/T19_G4_IRT%20Item%20Parameters.zip",
+             "https://timss2019.org/international-database/downloads/T19_G8_IRT%20Item%20Parameters.zip")
 
   if(!year %in% validYears) {
     stop(paste0("Only known years are ", pasteItems(validYears), "."))

@@ -15,7 +15,11 @@ cor.sdf(
   defaultConditions = TRUE,
   recode = NULL,
   condenseLevels = TRUE,
-  fisherZ = if (match.arg(method) \%in\% "Pearson") {     TRUE } else {     FALSE },
+  fisherZ = if (match.arg(method) \%in\% "Pearson") {
+     TRUE
+ } else {
+     FALSE
+ },
   jrrIMax = Inf,
   verbose = TRUE
 )

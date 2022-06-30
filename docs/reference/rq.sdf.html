@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -60,19 +60,19 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">rq.sdf</span><span class="op">(</span>
-  <span class="va">formula</span>,
-  <span class="va">data</span>,
-  tau <span class="op">=</span> <span class="fl">0.5</span>,
-  weightVar <span class="op">=</span> <span class="cn">NULL</span>,
-  relevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,
-  jrrIMax <span class="op">=</span> <span class="fl">1</span>,
-  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,
-  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,
-  recode <span class="op">=</span> <span class="cn">NULL</span>,
-  returnNumberOfPSU <span class="op">=</span> <span class="cn">FALSE</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rq.sdf</span><span class="op">(</span></span>
+<span>  <span class="va">formula</span>,</span>
+<span>  <span class="va">data</span>,</span>
+<span>  tau <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  weightVar <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  relevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  jrrIMax <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  recode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  returnNumberOfPSU <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -86,81 +86,119 @@ will be used. (You can find the default using
 If <em>y</em> is a variable for a subject scale or subscale (one of the
 names shown by <code><a href="showPlausibleValues.html">showPlausibleValues</a></code>),
 then that subject scale or subscale is used.</p></dd>
+
+
 <dt>data</dt>
 <dd><p>an <code>edsurvey.data.frame</code>, a <code>light.edsurvey.data.frame</code>,
 or an <code>edsurvey.data.frame.list</code></p></dd>
+
+
 <dt>tau</dt>
 <dd><p>the quantile to be estimated. The value could be set between 0 and 1 with a default of 0.5.</p></dd>
+
+
 <dt>weightVar</dt>
 <dd><p>a character indicating the weight variable to use.
 The <code>weightVar</code> must be one of the weights for the
 <code>edsurvey.data.frame</code>. If <code>NULL</code>, it  uses the default
 for the <code>edsurvey.data.frame</code>.</p></dd>
+
+
 <dt>relevels</dt>
 <dd><p>a list. Used to change the contrasts from the
 default treatment contrasts to the treatment contrasts with a chosen omitted
 group (the reference group). The name of each element should be the variable name, and the value 
 should be the group to be omitted (the reference group).</p></dd>
+
+
 <dt>jrrIMax</dt>
 <dd><p>when using the jackknife variance estimation method, the default estimation option, <code>jrrIMax=1</code>, uses the 
 sampling variance from the first plausible value as the component for sampling variance estimation. The \(V_{jrr}\) 
 term can be estimated with any number of plausible values, and values larger than the number of 
 plausible values on the survey (including <code>Inf</code>) will result in all plausible values being used. 
 Higher values of <code>jrrIMax</code> lead to longer computing times and more accurate variance estimates.</p></dd>
+
+
 <dt>omittedLevels</dt>
 <dd><p>a logical value. When set to the default value of <code>TRUE</code>, drops
 those levels of all factor variables that are specified
 in an <code>edsurvey.data.frame</code>. Use <code>print</code> on an
 <code>edsurvey.data.frame</code> to see the omitted levels.</p></dd>
+
+
 <dt>defaultConditions</dt>
 <dd><p>a logical value. When set to the default value of <code>TRUE</code>, uses
 the default conditions stored in an <code>edsurvey.data.frame</code>
 to subset the data. Use <code>print</code> on an
 <code>edsurvey.data.frame</code> to see the default conditions.</p></dd>
+
+
 <dt>recode</dt>
 <dd><p>a list of lists to recode variables. Defaults to <code>NULL</code>. Can be set as
 <code>recode=</code><code>list(</code><code>var1</code> <code>=</code> <code>list(</code><code>from=</code> 
 <code>c("a",</code> <code>"b",</code> <code>"c"),</code> <code>to=</code> <code>"d"))</code>.</p></dd>
+
+
 <dt>returnNumberOfPSU</dt>
 <dd><p>a logical value set to <code>TRUE</code> to return the number of 
 primary sampling units (PSUs)</p></dd>
+
+
 <dt>...</dt>
 <dd><p>additional parameters passed from <code><a href="https://rdrr.io/pkg/quantreg/man/rq.html" class="external-link">rq</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An <code>edsurvey.rq</code> with the following elements:</p>
+    
+
+<p>An <code>edsurvey.rq</code> with the following elements:</p>
 <dl><dt>call</dt>
 <dd><p>the function call</p></dd>
-<dt>formula</dt>
+
+   <dt>formula</dt>
 <dd><p>the formula used to fit the model</p></dd>
-<dt>tau</dt>
+
+   <dt>tau</dt>
 <dd><p>the quantile to be estimated</p></dd>
-<dt>coef</dt>
+
+   <dt>coef</dt>
 <dd><p>the estimates of the coefficients</p></dd>
-<dt>se</dt>
+
+   <dt>se</dt>
 <dd><p>the standard error estimates of the coefficients</p></dd>
-<dt>Vimp</dt>
+
+   <dt>Vimp</dt>
 <dd><p>the estimated variance from uncertainty in the scores (plausible value variables)</p></dd>
-<dt>Vjrr</dt>
+
+   <dt>Vjrr</dt>
 <dd><p>the estimated variance from sampling</p></dd>
-<dt>M</dt>
+
+   <dt>M</dt>
 <dd><p>the number of plausible values</p></dd>
-<dt>varm</dt>
+
+   <dt>varm</dt>
 <dd><p>the variance estimates under the various plausible values</p></dd>
-<dt>coefm</dt>
+
+   <dt>coefm</dt>
 <dd><p>the values of the coefficients under the various plausible values</p></dd>
-<dt>coefmat</dt>
+
+   <dt>coefmat</dt>
 <dd><p>the coefficient matrix (typically produced by the summary of a model)</p></dd>
-<dt>weight</dt>
+
+   <dt>weight</dt>
 <dd><p>the name of the weight variable</p></dd>
-<dt>npv</dt>
+
+   <dt>npv</dt>
 <dd><p>the number of plausible values</p></dd>
-<dt>njk</dt>
+
+   <dt>njk</dt>
 <dd><p>the number of the jackknife replicates used; set to <code>NA</code> when Taylor series variance
    estimates are used</p></dd>
-<dt>rho</dt>
+
+   <dt>rho</dt>
 <dd><p>the mean value of the objective function across the plausible values</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -198,14 +236,14 @@ data. <em>Journal of Education Statistics</em>, <em>17</em>(2), 175--190.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># read in the example data (generated, not real student data)</span></span>
-<span class="r-in"><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># conduct quantile regression at a given tau value (by default, tau is set to be 0.5) </span></span>
-<span class="r-in"><span class="va">rq1</span> <span class="op">&lt;-</span> <span class="fu">rq.sdf</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span>, data<span class="op">=</span><span class="va">sdf</span>, tau <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">rq1</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># read in the example data (generated, not real student data)</span></span></span>
+<span class="r-in"><span><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># conduct quantile regression at a given tau value (by default, tau is set to be 0.5) </span></span></span>
+<span class="r-in"><span><span class="va">rq1</span> <span class="op">&lt;-</span> <span class="fu">rq.sdf</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span>, data<span class="op">=</span><span class="va">sdf</span>, tau <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">rq1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -220,7 +258,7 @@ data. <em>Journal of Education Statistics</em>, <em>17</em>(2), 175--190.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

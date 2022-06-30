@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -60,22 +60,22 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">mixed.sdf</span><span class="op">(</span>
-  <span class="va">formula</span>,
-  <span class="va">data</span>,
-  weightVars <span class="op">=</span> <span class="cn">NULL</span>,
-  weightTransformation <span class="op">=</span> <span class="cn">TRUE</span>,
-  recode <span class="op">=</span> <span class="cn">NULL</span>,
-  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,
-  tolerance <span class="op">=</span> <span class="fl">0.01</span>,
-  nQuad <span class="op">=</span> <span class="cn">NULL</span>,
-  verbose <span class="op">=</span> <span class="fl">0</span>,
-  family <span class="op">=</span> <span class="cn">NULL</span>,
-  centerGroup <span class="op">=</span> <span class="cn">NULL</span>,
-  centerGrand <span class="op">=</span> <span class="cn">NULL</span>,
-  fast <span class="op">=</span> <span class="cn">FALSE</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mixed.sdf</span><span class="op">(</span></span>
+<span>  <span class="va">formula</span>,</span>
+<span>  <span class="va">data</span>,</span>
+<span>  weightVars <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  weightTransformation <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  recode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  tolerance <span class="op">=</span> <span class="fl">0.01</span>,</span>
+<span>  nQuad <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  family <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  centerGroup <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  centerGrand <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  fast <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -91,13 +91,19 @@ will be used. (You can find the default using
 for a subject scale or subscale (one of the names shown by
 <code><a href="showPlausibleValues.html">showPlausibleValues</a></code>), then that subject scale
 or subscale is used.</p></dd>
+
+
 <dt>data</dt>
 <dd><p>an <code>edsurvey.data.frame</code> or a <code>light.edsurvey.data.frame</code></p></dd>
+
+
 <dt>weightVars</dt>
 <dd><p>character vector indicating weight variables for
 corresponding levels to use. The <code>weightVar</code> must be
 the weights for the <code>edsurvey.data.frame</code>. The weight variables
 must be in the order of level (from lowest to highest level).</p></dd>
+
+
 <dt>weightTransformation</dt>
 <dd><p>a logical value to indicate whether the function
 should standardize weights before using it in the
@@ -109,20 +115,30 @@ survey. Weight transformation can be found in the vignette titled
 If set to <code>FALSE</code> or if the survey of the specified <code>data</code> does
 not have a standard weight transformation method,
 raw weights will be used.</p></dd>
+
+
 <dt>recode</dt>
 <dd><p>a list of lists to recode variables. Defaults to <code>NULL</code>. Can be set as
 <code>recode=</code><code>list(</code><code>var1</code> <code>=</code> <code>list(</code><code>from=</code> <code>c("a",</code> <code>"b",</code> <code>"c"),</code> <code>to=</code> <code>"d"))</code>. 
 See Examples in <code><a href="lm.sdf.html">lm.sdf</a></code>.</p></dd>
+
+
 <dt>defaultConditions</dt>
 <dd><p>a logical value. When set to the default value of
 <code>TRUE</code>, uses the default conditions stored in
 an <code>edsurvey.data.frame</code> to subset the data.
 Use <code>print</code> on an <code>edsurvey.data.frame</code>
 to see the default conditions.</p></dd>
+
+
 <dt>tolerance</dt>
 <dd><p>depreciated, no effect</p></dd>
+
+
 <dt>nQuad</dt>
 <dd><p>depreciated, no effect</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>an integer; when set to <code>1</code>, it will print out
 the brief progress of the function <code>mix.sdf</code>.
@@ -131,58 +147,86 @@ When set to <code>2</code>, it will print
 out the detailed progress, including temporary estimates
    during the optimization. Defaults to <code>0</code>, which 
    will run the function without output.</p></dd>
+
+
 <dt>family</dt>
 <dd><p>this argument is depreciated; please use the <code>WeMix</code>
 package's <code>mix</code> function directly for binomial models.</p></dd>
+
+
 <dt>centerGroup</dt>
 <dd><p>a list in which the name of each element is the name of the aggregation level, 
 and the element is a formula of variable names to be group mean centered. For example, to group mean center
  gender and age within the group student: <code>list("student"= ~gender+age)</code>. Defaults to <code>NULL</code>, which means 
  predictors are not adjusted by group centering. See Examples in the <code>WeMix</code> function <code><a href="https://american-institutes-for-research.github.io/WeMix/reference/mix.html" class="external-link">mix</a></code>.</p></dd>
+
+
 <dt>centerGrand</dt>
 <dd><p>a formula of variable names to be grand mean centered. For example, to center the 
 variable education by overall mean of education: <code>~education</code>. Defaults to <code>NULL</code>, which means predictors
 are not adjusted by grand centering.</p></dd>
+
+
 <dt>fast</dt>
 <dd><p>depreciated, no effect</p></dd>
+
+
 <dt>...</dt>
 <dd><p>other potential arguments to be used in <code><a href="https://american-institutes-for-research.github.io/WeMix/reference/mix.html" class="external-link">mix</a></code></p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>mixedSdfResults</code> object with the following elements:</p>
+    
+
+<p>A <code>mixedSdfResults</code> object with the following elements:</p>
 <dl><dt>call</dt>
 <dd><p>the original call used in <code>mixed.sdf</code></p></dd>
-<dt>formula</dt>
+
+   <dt>formula</dt>
 <dd><p>the formula used to fit the model</p></dd>
-<dt>coef</dt>
+
+   <dt>coef</dt>
 <dd><p>a vector of coefficient estimates</p></dd>
-<dt>se</dt>
+
+   <dt>se</dt>
 <dd><p>a vector with the standard error estimates of the coefficients and the standard error of the variance components</p></dd>
-<dt>vars</dt>
+
+   <dt>vars</dt>
 <dd><p>estimated variance components of the model</p></dd>
-<dt>levels</dt>
+
+   <dt>levels</dt>
 <dd><p>the number of levels in the model</p></dd>
-<dt>ICC</dt>
+
+   <dt>ICC</dt>
 <dd><p>the intraclass correlation coefficient of the model</p></dd>
-<dt>npv</dt>
+
+   <dt>npv</dt>
 <dd><p>the number of plausible values</p></dd>
-<dt>ngroups</dt>
+
+   <dt>ngroups</dt>
 <dd><p>a <code>data.frame</code> that includes the number of observations for each group</p></dd>
-<dt>n0</dt>
+
+   <dt>n0</dt>
 <dd><p>the number of observations in the original data</p></dd>
-<dt>nused</dt>
+
+   <dt>nused</dt>
 <dd><p>the number of observations used in the analysis</p></dd>
+
 </dl><p>If the formula does not involve plausible values, the function will return the following additional elements:</p>
 <dl><dt>lnlf</dt>
 <dd><p>the likelihood function</p></dd>
-<dt>lnl</dt>
+ 
+   <dt>lnl</dt>
 <dd><p>the log-likelihood of the model</p></dd>
+
 </dl><p>If the formula involves plausible values, the function will return the following additional elements:</p>
 <dl><dt>Vimp</dt>
 <dd><p>the estimated variance from uncertainty in the scores</p></dd>
-<dt>Vjrr</dt>
+
+   <dt>Vjrr</dt>
 <dd><p>the estimated variance from sampling</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -221,19 +265,19 @@ survey data. <em>Journal of the Royal Statistical Society: Series A
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># save TIMSS 2015 data to ~/TIMSS/2015</span></span>
-<span class="r-in"><span class="fu"><a href="downloadTIMSS.html">downloadTIMSS</a></span><span class="op">(</span>root<span class="op">=</span><span class="st">"~/"</span>, years<span class="op">=</span><span class="fl">2015</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">fin</span> <span class="op">&lt;-</span> <span class="fu"><a href="readTIMSS.html">readTIMSS</a></span><span class="op">(</span><span class="st">"~/TIMSS/2015"</span>, countries<span class="op">=</span><span class="st">"fin"</span>, gradeLvl<span class="op">=</span><span class="fl">4</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># uses all plausible values</span></span>
-<span class="r-in"><span class="va">mix1</span> <span class="op">&lt;-</span> <span class="fu">mixed.sdf</span><span class="op">(</span><span class="va">mmat</span> <span class="op">~</span> <span class="va">itsex</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">idschool</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">fin</span>,</span>
-<span class="r-in">                  weightVar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"totwgt"</span>,<span class="st">"schwgt"</span><span class="op">)</span>, weightTransformation<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mix1</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># uses only one plausible value</span></span>
-<span class="r-in"><span class="va">mix2</span> <span class="op">&lt;-</span> <span class="fu">mixed.sdf</span><span class="op">(</span><span class="va">asmmat01</span> <span class="op">~</span> <span class="va">itsex</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">idschool</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">fin</span>,</span>
-<span class="r-in">                  weightVar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"totwgt"</span>,<span class="st">"schwgt"</span><span class="op">)</span>, weightTransformation<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mix2</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># save TIMSS 2015 data to ~/TIMSS/2015</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="downloadTIMSS.html">downloadTIMSS</a></span><span class="op">(</span>root<span class="op">=</span><span class="st">"~/"</span>, years<span class="op">=</span><span class="fl">2015</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fin</span> <span class="op">&lt;-</span> <span class="fu"><a href="readTIMSS.html">readTIMSS</a></span><span class="op">(</span><span class="st">"~/TIMSS/2015"</span>, countries<span class="op">=</span><span class="st">"fin"</span>, gradeLvl<span class="op">=</span><span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># uses all plausible values</span></span></span>
+<span class="r-in"><span><span class="va">mix1</span> <span class="op">&lt;-</span> <span class="fu">mixed.sdf</span><span class="op">(</span><span class="va">mmat</span> <span class="op">~</span> <span class="va">itsex</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">idschool</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">fin</span>,</span></span>
+<span class="r-in"><span>                  weightVar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"totwgt"</span>,<span class="st">"schwgt"</span><span class="op">)</span>, weightTransformation<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mix1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># uses only one plausible value</span></span></span>
+<span class="r-in"><span><span class="va">mix2</span> <span class="op">&lt;-</span> <span class="fu">mixed.sdf</span><span class="op">(</span><span class="va">asmmat01</span> <span class="op">~</span> <span class="va">itsex</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span><span class="op">|</span><span class="va">idschool</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">fin</span>,</span></span>
+<span class="r-in"><span>                  weightVar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"totwgt"</span>,<span class="st">"schwgt"</span><span class="op">)</span>, weightTransformation<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mix2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -248,7 +292,7 @@ survey data. <em>Journal of the Royal Statistical Society: Series A
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

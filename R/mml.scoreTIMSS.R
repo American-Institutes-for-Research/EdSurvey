@@ -99,6 +99,7 @@ defaultTIMSSScoreDict <- function() {
 #'                  Here, \emph{scoring} refers to turning item responses into scores on each item.
 #'                  To see the default scoring guidelines, call the function \code{defaultTIMSSScoreDict()}.
 #' @return a TIMSS edsurvey.data.frame with updated attributes
+#' @export
 setTIMSSScoreDict <- function(data, subject, scoreDict=NULL) {
   # get data info
   theYear <- as.numeric(getAttributes(data, "year"))

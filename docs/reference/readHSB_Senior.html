@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -64,12 +64,12 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">readHSB_Senior</span><span class="op">(</span>
-  <span class="va">HSR8086_PRI_FilePath</span>,
-  <span class="va">HSR8086_SASSyntax_Path</span>,
-  forceReread <span class="op">=</span> <span class="cn">FALSE</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">readHSB_Senior</span><span class="op">(</span></span>
+<span>  <span class="va">HSR8086_PRI_FilePath</span>,</span>
+<span>  <span class="va">HSR8086_SASSyntax_Path</span>,</span>
+<span>  forceReread <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -78,22 +78,31 @@
 <dd><p>a character value to the main study-derived
 analytical data file (HSR8086_REV.PRI).
 Located within the <code>REVISED_ASCII</code> Folder.</p></dd>
+
+
 <dt>HSR8086_SASSyntax_Path</dt>
 <dd><p>a character value to the SAS syntax file for
 parsing the <code>HSR8086_REV.PRI</code> data file.
 Located within the <code>SAS_EXTRACT_LOGIC</code> Folder.</p></dd>
+
+
 <dt>forceReread</dt>
 <dd><p>a logical value to force rereading of all processed data.
 The default value of <code>FALSE</code> will speed up the read
 function by using existing read-in data already processed.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>a logical value that will determine if you want verbose output
 while the <code>readHSB_Senior</code> function is running to
 indicate processing progress. The default value is <code>TRUE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>an <code>edsurvey.data.frame</code> for the HS&amp;B Senior 1980--1986 longitudinal dataset</p>
+    
+
+<p>an <code>edsurvey.data.frame</code> for the HS&amp;B Senior 1980--1986 longitudinal dataset</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -118,21 +127,21 @@ cache data.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">wrkFld</span> <span class="op">&lt;-</span> <span class="st">"~/HSB/SENIOR"</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">dataPath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">wrkFld</span>, <span class="st">"REVISED_ASCII"</span>, <span class="st">"HSR8086_REV.PRI"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sasPath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">wrkFld</span>, <span class="st">"SAS_EXTRACT_LOGIC"</span>, <span class="st">"HSBsr_READ_HSR8086.SAS"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># with verbose output as default</span></span>
-<span class="r-in"><span class="va">hsbSR</span> <span class="op">&lt;-</span> <span class="fu">readHSB_Senior</span><span class="op">(</span><span class="va">dataPath</span>, <span class="va">sasPath</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># silent output</span></span>
-<span class="r-in"><span class="va">hsbSR</span> <span class="op">&lt;-</span> <span class="fu">readHSB_Senior</span><span class="op">(</span><span class="va">dataPath</span>, <span class="va">sasPath</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># force cache update</span></span>
-<span class="r-in"><span class="va">hsbSR</span> <span class="op">&lt;-</span> <span class="fu">readHSB_Senior</span><span class="op">(</span><span class="va">dataPath</span>, <span class="va">sasPath</span>, forceReread <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">wrkFld</span> <span class="op">&lt;-</span> <span class="st">"~/HSB/SENIOR"</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">dataPath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">wrkFld</span>, <span class="st">"REVISED_ASCII"</span>, <span class="st">"HSR8086_REV.PRI"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sasPath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">wrkFld</span>, <span class="st">"SAS_EXTRACT_LOGIC"</span>, <span class="st">"HSBsr_READ_HSR8086.SAS"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># with verbose output as default</span></span></span>
+<span class="r-in"><span><span class="va">hsbSR</span> <span class="op">&lt;-</span> <span class="fu">readHSB_Senior</span><span class="op">(</span><span class="va">dataPath</span>, <span class="va">sasPath</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># silent output</span></span></span>
+<span class="r-in"><span><span class="va">hsbSR</span> <span class="op">&lt;-</span> <span class="fu">readHSB_Senior</span><span class="op">(</span><span class="va">dataPath</span>, <span class="va">sasPath</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># force cache update</span></span></span>
+<span class="r-in"><span><span class="va">hsbSR</span> <span class="op">&lt;-</span> <span class="fu">readHSB_Senior</span><span class="op">(</span><span class="va">dataPath</span>, <span class="va">sasPath</span>, forceReread <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -147,7 +156,7 @@ cache data.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

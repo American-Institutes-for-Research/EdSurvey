@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -64,13 +64,13 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">readNAEP</span><span class="op">(</span>
-  <span class="va">path</span>,
-  defaultWeight <span class="op">=</span> <span class="st">"origwt"</span>,
-  defaultPvs <span class="op">=</span> <span class="st">"composite"</span>,
-  omittedLevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Multiple"</span>, <span class="cn">NA</span>, <span class="st">"Omitted"</span><span class="op">)</span>,
-  frPath <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">readNAEP</span><span class="op">(</span></span>
+<span>  <span class="va">path</span>,</span>
+<span>  defaultWeight <span class="op">=</span> <span class="st">"origwt"</span>,</span>
+<span>  defaultPvs <span class="op">=</span> <span class="st">"composite"</span>,</span>
+<span>  omittedLevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Multiple"</span>, <span class="cn">NA</span>, <span class="st">"Omitted"</span><span class="op">)</span>,</span>
+<span>  frPath <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -78,75 +78,110 @@
     <dl><dt>path</dt>
 <dd><p>a character value indicating the full filepath location and name
 of the (.dat) data file</p></dd>
+
+
 <dt>defaultWeight</dt>
 <dd><p>a character value that indicates the default weight
 specified in the resulting <code>edsurvey.data.frame</code>.  
 Default value is <code>origwt</code> if not specified.</p></dd>
+
+
 <dt>defaultPvs</dt>
 <dd><p>a character value that indicates the default plausible value
 specified in the resulting <code>edsurvey.data.frame</code>.
 Default value is <code>composite</code> if not specified.</p></dd>
+
+
 <dt>omittedLevels</dt>
 <dd><p>a character vector indicating which factor levels/labels
 should be excluded. When set to the default value of
 <code>c('Multiple',NA,'Omitted')</code>, adds the vector to
 the <code>edsurvey.data.frame</code>.</p></dd>
+
+
 <dt>frPath</dt>
 <dd><p>a character value indicating the location of the <code>fr2</code>
 parameter layout file included with the data companion to
 parse the specified <code>filepath</code> data file</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An <code>edsurvey.data.frame</code> containing the following elements:</p>
+    
+
+<p>An <code>edsurvey.data.frame</code> containing the following elements:</p>
 <dl><dt>userConditions</dt>
 <dd><p>a list containing all user conditions set using the <code>subset.edsurvey.data.frame</code> method</p></dd>
-<dt>defaultConditions</dt>
+
+   <dt>defaultConditions</dt>
 <dd><p>the default conditions to be applied to the <code>edsurvey.data.frame</code></p></dd>
-<dt>data</dt>
+
+   <dt>data</dt>
 <dd><p>an <code>LaF</code> object containing a connection to the student dataset on disk</p></dd>
-<dt>dataSch</dt>
+
+   <dt>dataSch</dt>
 <dd><p>an <code>LaF</code> object containing a connection to the school dataset on disk</p></dd>
-<dt>dataTch</dt>
+
+   <dt>dataTch</dt>
 <dd><p>not applicable for NAEP data; returns <code>NULL</code></p></dd>
-<dt>weights</dt>
+
+   <dt>weights</dt>
 <dd><p>a list containing the weights found on the <code>edsurvey.data.frame</code></p></dd>
-<dt>pvvar</dt>
+
+   <dt>pvvar</dt>
 <dd><p>a list containing the plausible values found on the <code>edsurvey.data.frame</code></p></dd>
-<dt>subject</dt>
+
+   <dt>subject</dt>
 <dd><p>the subject of the dataset contained in the <code>edsurvey.data.frame</code></p></dd>
-<dt>year</dt>
+
+   <dt>year</dt>
 <dd><p>the year of assessment of the dataset contained in the <code>edsurvey.data.frame</code></p></dd>
-<dt>assessmentCode</dt>
+
+   <dt>assessmentCode</dt>
 <dd><p>the code of the dataset contained in the <code>edsurvey.data.frame</code></p></dd>
-<dt>dataType</dt>
+
+   <dt>dataType</dt>
 <dd><p>the type of data (whether student or school) contained in the <code>edsurvey.data.frame</code></p></dd>
-<dt>gradeLevel</dt>
+
+   <dt>gradeLevel</dt>
 <dd><p>the grade of the dataset contained in the <code>edsurvey.data.frame</code></p></dd>
-<dt>achievementLevels</dt>
+
+   <dt>achievementLevels</dt>
 <dd><p>default NAEP achievement cutoff scores</p></dd>
-<dt>omittedLevels</dt>
+
+   <dt>omittedLevels</dt>
 <dd><p>the levels of the factor variables that will be omitted from the <code>edsurvey.data.frame</code></p></dd>
-<dt>fileFormat</dt>
+
+   <dt>fileFormat</dt>
 <dd><p>a <code>data.frame</code> containing the parsed information from the student .fr2 file associated with the data</p></dd>
-<dt>fileFormatSchool</dt>
+
+   <dt>fileFormatSchool</dt>
 <dd><p>a <code>data.frame</code> containing the parsed information from the school .fr2 file associated with the data</p></dd>
-<dt>fileFormatTeacher</dt>
+
+   <dt>fileFormatTeacher</dt>
 <dd><p>not applicable for NAEP data; returns <code>NULL</code></p></dd>
-<dt>survey</dt>
+
+   <dt>survey</dt>
 <dd><p>the type of survey data contained in the <code>edsurvey.data.frame</code></p></dd>
-<dt>dichotParamTab</dt>
+
+   <dt>dichotParamTab</dt>
 <dd><p>IRT item paramters for dichotomous items in a data frame; returns <code>NULL</code> if unavailable in <code>NAEPirtparams</code></p></dd>
-<dt>polyParamTab</dt>
+
+   <dt>polyParamTab</dt>
 <dd><p>IRT item parameters for polytomous items in a data frame; returns <code>NULL</code> if unavailable in <code>NAEPirtparams</code></p></dd>
-<dt>adjustedData</dt>
+
+   <dt>adjustedData</dt>
 <dd><p>IRT item parameter adjustment information in a data frame; returns <code>NULL</code> if unavailable in <code>NAEPirtparams</code></p></dd>
-<dt>testData</dt>
+
+   <dt>testData</dt>
 <dd><p>IRT transformation constants in a data frame; returns <code>NULL</code> if unavailable in <code>NAEPirtparams</code></p></dd>
-<dt>scoreCard</dt>
+
+   <dt>scoreCard</dt>
 <dd><p>item scoring information in a data frame; returns <code>NULL</code> if unavailable</p></dd>
-<dt>scoreDict</dt>
+
+   <dt>scoreDict</dt>
 <dd><p>generic scoring information in a data frame; returns <code>NULL</code> if unavailable</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -163,19 +198,19 @@ When present, simply use the <code>_linking</code> version of a variable to get 
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># read in the example data (generated, not real student data)</span></span>
-<span class="r-in"><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu">readNAEP</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sdf</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># To read in an NCES file first set the directory to the /Data subfolder,</span></span>
-<span class="r-in"><span class="co"># then read in the appropriate .dat file:</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd</a></span><span class="op">(</span><span class="st">"location/of/Data"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu">readNAEP</span><span class="op">(</span>path<span class="op">=</span><span class="st">"M36NT2PM.dat"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Or read in the .dat file directly through the folder pathway:</span></span>
-<span class="r-in"><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu">readNAEP</span><span class="op">(</span>path<span class="op">=</span><span class="st">"location/of/Data/M36NT2PM.dat"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># read in the example data (generated, not real student data)</span></span></span>
+<span class="r-in"><span><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu">readNAEP</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sdf</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># To read in an NCES file first set the directory to the /Data subfolder,</span></span></span>
+<span class="r-in"><span><span class="co"># then read in the appropriate .dat file:</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd</a></span><span class="op">(</span><span class="st">"location/of/Data"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu">readNAEP</span><span class="op">(</span>path<span class="op">=</span><span class="st">"M36NT2PM.dat"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Or read in the .dat file directly through the folder pathway:</span></span></span>
+<span class="r-in"><span><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu">readNAEP</span><span class="op">(</span>path<span class="op">=</span><span class="st">"location/of/Data/M36NT2PM.dat"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -190,7 +225,7 @@ When present, simply use the <code>_linking</code> version of a variable to get 
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

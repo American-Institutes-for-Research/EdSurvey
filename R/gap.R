@@ -695,7 +695,7 @@ gap <- function(variable, data, groupA = "default", groupB = "default",
               pctdf0$nPSUB[i] <- ifelse(is.null(resi$labels$nPSUB),NA,resi$labels$nPSUB)
             }
           } # end if(j == 1) 
-        } # end if(class(temp) == "gap")
+        } # end if(inherits(temp, "gap"))
       } # End of for(i in 1:i) loop
       # Compute diff statistics (across different edsurvey.data.frame)
       resdf$diffAA <- ifelse(1:nrow(resdf) == refi, NA, resdf$estimateA[refi] - resdf$estimateA)
@@ -1911,7 +1911,7 @@ parseVars <- function(ccall,x) {
   }
   for(i in 1:length(ccall)) {
     # if it is a name
-    if(class(ccall[[i]]) %in% c("name")) {
+    if(inherits(ccall[[i]], "name")) {
       ccall_c <- as.character(ccall[[i]])
       # if it is not in the data and is in the parent.frame, it might be a variable.
       if(ccall_c %in% colnames(x) ) {  #orignally:: if(ccall_c %in% names(x$data) ) { TOM FINK::dataList update
@@ -1922,7 +1922,7 @@ parseVars <- function(ccall,x) {
         } 
       } # End of if statment: if (ccall_c %in% names(x$data))
     } # end if(class(ccall[[i]]) %in% c("name")) {
-    if(class(ccall[[i]]) %in% "call") {
+    if(inherits(ccall[[i]], "name")) {
       # if this is a call, recursively parse that
       vars <- c(vars, parseVars(ccall[[i]], x))
     } #end of if statment: if class(ccall[[i]]) %in% "call"

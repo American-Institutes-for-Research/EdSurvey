@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -62,32 +62,44 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">waldTest</span><span class="op">(</span><span class="va">model</span>, <span class="va">coefficients</span>, H0 <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">waldTest</span><span class="op">(</span><span class="va">model</span>, <span class="va">coefficients</span>, H0 <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>model</dt>
 <dd><p>an <code>edsurveyGlm</code> and <code>edsurveyLm</code></p></dd>
+
+
 <dt>coefficients</dt>
 <dd><p>coefficients to be tested, by name or position in
 <code>coef</code> vector. See Details.</p></dd>
+
+
 <dt>H0</dt>
 <dd><p>reference values to test coefficients against, default = 0</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An <code>edsurveyWaldTest</code> object with the following elements:</p>
+    
+
+<p>An <code>edsurveyWaldTest</code> object with the following elements:</p>
 <dl><dt>Sigma</dt>
 <dd><p>coefficient covariance matrix</p></dd>
-<dt>coefficients</dt>
+
+   <dt>coefficients</dt>
 <dd><p>indices of the coefficients tested</p></dd>
-<dt>H0</dt>
+
+   <dt>H0</dt>
 <dd><p>null hypothesis values of coefficients tested</p></dd>
-<dt>result</dt>
+
+   <dt>result</dt>
 <dd><p>result object containing the values of the chi-square and <em>F</em>-tests</p></dd>
-<dt>hypoMatrix</dt>
+
+   <dt>hypoMatrix</dt>
 <dd><p>hypothesis matrix used for the Wald Test</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -123,40 +135,40 @@ in the vignette titled
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># read in the example data (generated, not real student data)</span></span>
-<span class="r-in"><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># example with glm model</span></span>
-<span class="r-in"><span class="va">myLogit</span> <span class="op">&lt;-</span> <span class="fu"><a href="glm.sdf.html">logit.sdf</a></span><span class="op">(</span><span class="va">dsex</span> <span class="op">~</span> <span class="va">b017451</span> <span class="op">+</span> <span class="va">b003501</span>, data <span class="op">=</span> <span class="va">sdf</span>, returnVarEstInputs <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># single coefficient integer</span></span>
-<span class="r-in"><span class="fu">waldTest</span><span class="op">(</span>model <span class="op">=</span> <span class="va">myLogit</span>, coefficients <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># set of coefficients integer vector</span></span>
-<span class="r-in"><span class="fu">waldTest</span><span class="op">(</span>model <span class="op">=</span> <span class="va">myLogit</span>, coefficients <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># specify levels of factor variable to test</span></span>
-<span class="r-in"><span class="fu">waldTest</span><span class="op">(</span><span class="va">myLogit</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"b017451Every day"</span>, <span class="st">"b017451About once a week"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># specify all levels of factor variable to test</span></span>
-<span class="r-in"><span class="fu">waldTest</span><span class="op">(</span><span class="va">myLogit</span>, <span class="st">"b017451"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># example with lm model</span></span>
-<span class="r-in"><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="lm.sdf.html">lm.sdf</a></span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span>, data <span class="op">=</span> <span class="va">sdf</span>, returnVarEstInputs <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">waldTest</span><span class="op">(</span>model <span class="op">=</span> <span class="va">fit</span>, coefficients <span class="op">=</span> <span class="st">"b017451"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># examples with alternative (nonzero) null hypothesis values</span></span>
-<span class="r-in"><span class="fu">waldTest</span><span class="op">(</span>model <span class="op">=</span> <span class="va">myLogit</span>, coefficients <span class="op">=</span> <span class="fl">2</span>, H0 <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">waldTest</span><span class="op">(</span>model <span class="op">=</span> <span class="va">myLogit</span>, coefficients <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">5</span>, H0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.6</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">waldTest</span><span class="op">(</span>model <span class="op">=</span> <span class="va">myLogit</span>, coefficients <span class="op">=</span> <span class="st">"b017451"</span>, H0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.6</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">waldTest</span><span class="op">(</span>model <span class="op">=</span> <span class="va">myLogit</span>, coefficients <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"b017451Every day"</span>, <span class="st">"b017451About once a week"</span><span class="op">)</span>,</span>
-<span class="r-in">         H0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.2</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># read in the example data (generated, not real student data)</span></span></span>
+<span class="r-in"><span><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># example with glm model</span></span></span>
+<span class="r-in"><span><span class="va">myLogit</span> <span class="op">&lt;-</span> <span class="fu"><a href="glm.sdf.html">logit.sdf</a></span><span class="op">(</span><span class="va">dsex</span> <span class="op">~</span> <span class="va">b017451</span> <span class="op">+</span> <span class="va">b003501</span>, data <span class="op">=</span> <span class="va">sdf</span>, returnVarEstInputs <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># single coefficient integer</span></span></span>
+<span class="r-in"><span><span class="fu">waldTest</span><span class="op">(</span>model <span class="op">=</span> <span class="va">myLogit</span>, coefficients <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># set of coefficients integer vector</span></span></span>
+<span class="r-in"><span><span class="fu">waldTest</span><span class="op">(</span>model <span class="op">=</span> <span class="va">myLogit</span>, coefficients <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># specify levels of factor variable to test</span></span></span>
+<span class="r-in"><span><span class="fu">waldTest</span><span class="op">(</span><span class="va">myLogit</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"b017451Every day"</span>, <span class="st">"b017451About once a week"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># specify all levels of factor variable to test</span></span></span>
+<span class="r-in"><span><span class="fu">waldTest</span><span class="op">(</span><span class="va">myLogit</span>, <span class="st">"b017451"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># example with lm model</span></span></span>
+<span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="lm.sdf.html">lm.sdf</a></span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span>, data <span class="op">=</span> <span class="va">sdf</span>, returnVarEstInputs <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">waldTest</span><span class="op">(</span>model <span class="op">=</span> <span class="va">fit</span>, coefficients <span class="op">=</span> <span class="st">"b017451"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># examples with alternative (nonzero) null hypothesis values</span></span></span>
+<span class="r-in"><span><span class="fu">waldTest</span><span class="op">(</span>model <span class="op">=</span> <span class="va">myLogit</span>, coefficients <span class="op">=</span> <span class="fl">2</span>, H0 <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">waldTest</span><span class="op">(</span>model <span class="op">=</span> <span class="va">myLogit</span>, coefficients <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">5</span>, H0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.6</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">waldTest</span><span class="op">(</span>model <span class="op">=</span> <span class="va">myLogit</span>, coefficients <span class="op">=</span> <span class="st">"b017451"</span>, H0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.6</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">waldTest</span><span class="op">(</span>model <span class="op">=</span> <span class="va">myLogit</span>, coefficients <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"b017451Every day"</span>, <span class="st">"b017451About once a week"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>         H0 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -171,7 +183,7 @@ in the vignette titled
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -64,12 +64,12 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">downloadTIMSS</span><span class="op">(</span>
-  <span class="va">root</span>,
-  years <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2003</span>, <span class="fl">2007</span>, <span class="fl">2011</span>, <span class="fl">2015</span>, <span class="fl">2019</span><span class="op">)</span>,
-  cache <span class="op">=</span> <span class="cn">FALSE</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">downloadTIMSS</span><span class="op">(</span></span>
+<span>  <span class="va">root</span>,</span>
+<span>  years <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2003</span>, <span class="fl">2007</span>, <span class="fl">2011</span>, <span class="fl">2015</span>, <span class="fl">2019</span><span class="op">)</span>,</span>
+<span>  cache <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -78,16 +78,23 @@
 <dd><p>a character string indicating the directory where the TIMSS
 data should be stored. Files are placed in a
 subdirectory named TIMSS/[year].</p></dd>
+
+
 <dt>years</dt>
 <dd><p>an integer vector of the assessment years to download. Valid years are 2003, 2007, 2011,
 2015, and 2019.</p></dd>
+
+
 <dt>cache</dt>
 <dd><p>a logical value set to process and cache the text (.txt) version of files.
 This takes a very long time but saves time for future uses of 
 the data. Default value is <code>FALSE</code>.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>a logical value to either print or suppress status message output.
 The default value is <code>TRUE</code>.</p></dd>
+
 </dl></div>
     <div id="see-also">
     <h2>See also</h2>
@@ -100,17 +107,17 @@ The default value is <code>TRUE</code>.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># root argument will vary by operating system conventions</span></span>
-<span class="r-in"><span class="fu">downloadTIMSS</span><span class="op">(</span>year<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2019</span>, <span class="fl">2015</span>, <span class="fl">2011</span><span class="op">)</span>, root <span class="op">=</span> <span class="st">"~/"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># cache=TRUE will download then process the datafiles</span></span>
-<span class="r-in"><span class="fu">downloadTIMSS</span><span class="op">(</span>year<span class="op">=</span><span class="fl">2015</span>, root <span class="op">=</span> <span class="st">"~/"</span>, cache <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># set verbose=FALSE for silent output</span></span>
-<span class="r-in"><span class="co"># if year not specified, download all years</span></span>
-<span class="r-in"><span class="fu">downloadTIMSS</span><span class="op">(</span>root<span class="op">=</span><span class="st">"~/"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># root argument will vary by operating system conventions</span></span></span>
+<span class="r-in"><span><span class="fu">downloadTIMSS</span><span class="op">(</span>year<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2019</span>, <span class="fl">2015</span>, <span class="fl">2011</span><span class="op">)</span>, root <span class="op">=</span> <span class="st">"~/"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># cache=TRUE will download then process the datafiles</span></span></span>
+<span class="r-in"><span><span class="fu">downloadTIMSS</span><span class="op">(</span>year<span class="op">=</span><span class="fl">2015</span>, root <span class="op">=</span> <span class="st">"~/"</span>, cache <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># set verbose=FALSE for silent output</span></span></span>
+<span class="r-in"><span><span class="co"># if year not specified, download all years</span></span></span>
+<span class="r-in"><span><span class="fu">downloadTIMSS</span><span class="op">(</span>root<span class="op">=</span><span class="st">"~/"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -125,7 +132,7 @@ The default value is <code>TRUE</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

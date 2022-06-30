@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -60,20 +60,21 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">mml.sdf</span><span class="op">(</span>
-  <span class="va">formula</span>,
-  <span class="va">data</span>,
-  weightVar <span class="op">=</span> <span class="cn">NULL</span>,
-  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,
-  composite <span class="op">=</span> <span class="cn">TRUE</span>,
-  verbose <span class="op">=</span> <span class="fl">0</span>,
-  multiCore <span class="op">=</span> <span class="cn">FALSE</span>,
-  numberOfCores <span class="op">=</span> <span class="cn">NULL</span>,
-  minNode <span class="op">=</span> <span class="op">-</span><span class="fl">4</span>,
-  maxNode <span class="op">=</span> <span class="fl">4</span>,
-  Q <span class="op">=</span> <span class="fl">34</span>,
-  idVar <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mml.sdf</span><span class="op">(</span></span>
+<span>  <span class="va">formula</span>,</span>
+<span>  <span class="va">data</span>,</span>
+<span>  weightVar <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  composite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  multiCore <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  numberOfCores <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  minNode <span class="op">=</span> <span class="op">-</span><span class="fl">4</span>,</span>
+<span>  maxNode <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>  Q <span class="op">=</span> <span class="fl">34</span>,</span>
+<span>  idVar <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  returnMmlCall <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -81,53 +82,79 @@
     <dl><dt>formula</dt>
 <dd><p>a <code><a href="https://rdrr.io/r/stats/formula.html" class="external-link">formula</a></code> for the
 model.</p></dd>
+
+
 <dt>data</dt>
 <dd><p>an <code>edsurvey.data.frame</code> for the National Assessment of Educational Progress (NAEP) 
 and the Trends in International Mathematics and Science Study (TIMSS). 
 The attributes <code>dichotParamTab</code>, <code>polyParamTab</code>, <code>testData</code>,
 <code>scoreCard</code> (for NAEP), and <code>scoreDict</code> (for TIMSS) must not be <code>NULL</code>.
 Use the function <code>setNAEPScoreCard</code> or <code>setTIMSSScoreDict</code> to set attributes.</p></dd>
+
+
 <dt>weightVar</dt>
 <dd><p>a character indicating the weight variable to use.
 The <code>weightVar</code> must be one of the weights for the
 <code>edsurvey.data.frame</code>. If <code>NULL</code>, it  uses the default
 for the <code>edsurvey.data.frame</code>.</p></dd>
+
+
 <dt>omittedLevels</dt>
 <dd><p>a logical value. When set to the default value of <code>TRUE</code>, drops
 the levels of all factor variables that are specified
 in an <code>edsurvey.data.frame</code>. Use <code>print</code> on an
 <code>edsurvey.data.frame</code> to see the omitted levels.</p></dd>
+
+
 <dt>composite</dt>
 <dd><p>logical; for a NAEP composite, setting to <code>FALSE</code> fits the model to all items at once,
 in a single construct, whereas setting to <code>TRUE</code> fits the model as a NAEP composite
 (i.e., a weighted average of the subscales). This argument is not applicable for TIMSS.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>logical; indicates whether a detailed printout should display during execution, only for NAEP data.</p></dd>
+
+
 <dt>multiCore</dt>
 <dd><p>allows the <code>foreach</code> package to be used. You should
                  have already set up
 <code><a href="https://rdrr.io/pkg/doParallel/man/registerDoParallel.html" class="external-link">registerDoParallel</a></code>.</p></dd>
+
+
 <dt>numberOfCores</dt>
 <dd><p>the number of cores to be used when using <code>multiCore</code>. Defaults to 75% of available cores. Users 
 can check available cores with <code>detectCores()</code>.</p></dd>
+
+
 <dt>minNode</dt>
 <dd><p>numeric; minimum integration point in direct estimation; see <code><a href="https://american-institutes-for-research.github.io/Dire/reference/mml.html" class="external-link">mml</a></code>.</p></dd>
+
+
 <dt>maxNode</dt>
 <dd><p>numeric; maximum integration point in direct estimation; see <code><a href="https://american-institutes-for-research.github.io/Dire/reference/mml.html" class="external-link">mml</a></code>.</p></dd>
+
+
 <dt>Q</dt>
 <dd><p>integer; number of integration points per student used when integrating over the levels of the latent outcome construct.</p></dd>
+
+
 <dt>idVar</dt>
 <dd><p>a variable that is used to explicitly define the name of the student identifier 
 variable to be used from <code>data</code>. Defaults to <code>NULL</code>, and <code>sid</code> is used 
 as the student identifier.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An <code>mml.sdf</code> object, which is the outcome from <code>mml.sdf</code>, with the following elements:</p>
+    
+
+<p>An <code>mml.sdf</code> object, which is the outcome from <code>mml.sdf</code>, with the following elements:</p>
 <dl><dt>mml</dt>
 <dd><p>an object containing information from the <code>mml</code> procedure. 
    <code>?mml</code> can be used for further information.</p></dd>
-<dt>scoreDict</dt>
+
+   <dt>scoreDict</dt>
 <dd><p>the scoring used in the <code>mml</code> procedure</p></dd>
 </dl><p>.</p>
 <dl><dt>itemMapping</dt>
@@ -152,43 +179,43 @@ an incorrect response, an NA does not change the student's score, and 1 is corre
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co">## Direct Estimation with NAEP </span></span>
-<span class="r-in"><span class="co"># Load data </span></span>
-<span class="r-in"><span class="va">sdfNAEP</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Inspect scoring guidelines</span></span>
-<span class="r-in"><span class="fu">defaultNAEPScoreCard</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># example output: </span></span>
-<span class="r-in"><span class="co">#          resCat pointMult pointConst</span></span>
-<span class="r-in"><span class="co"># 1     Multiple         8          0</span></span>
-<span class="r-in"><span class="co"># 2  Not Reached        NA         NA</span></span>
-<span class="r-in"><span class="co"># 3      Missing        NA         NA</span></span>
-<span class="r-in"><span class="co"># 4      Omitted         8          0</span></span>
-<span class="r-in"><span class="co"># 5    Illegible         0          0</span></span>
-<span class="r-in"><span class="co"># 6 Non-Rateable         0          0</span></span>
-<span class="r-in"><span class="co"># 7     Off Task         0          0</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Run NAEP model, warnings are about item codings</span></span>
-<span class="r-in"><span class="va">mmlNAEP</span> <span class="op">&lt;-</span> <span class="fu">mml.sdf</span><span class="op">(</span><span class="va">algebra</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b013801</span>, <span class="va">sdfNAEP</span>, weightVar<span class="op">=</span><span class="st">'origwt'</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Call with Taylor</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mmlNAEP</span>, varType<span class="op">=</span><span class="st">"Taylor"</span>, strataVar<span class="op">=</span><span class="st">"repgrp1"</span>, PSUVar<span class="op">=</span><span class="st">"jkunit"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## Direct Estimation with TIMSS </span></span>
-<span class="r-in"><span class="co"># Load data </span></span>
-<span class="r-in"><span class="fu"><a href="downloadTIMSS.html">downloadTIMSS</a></span><span class="op">(</span><span class="st">"~/"</span>, year<span class="op">=</span><span class="fl">2015</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sdfTIMSS</span> <span class="op">&lt;-</span> <span class="fu"><a href="readTIMSS.html">readTIMSS</a></span><span class="op">(</span><span class="st">"~/TIMSS/2015"</span>, countries<span class="op">=</span><span class="st">"usa"</span>, grade <span class="op">=</span> <span class="st">"4"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Run TIMSS model, warnings are about item codings </span></span>
-<span class="r-in"><span class="va">mmlTIMSS</span> <span class="op">&lt;-</span> <span class="fu">mml.sdf</span><span class="op">(</span><span class="va">mmat</span> <span class="op">~</span> <span class="va">itsex</span> <span class="op">+</span> <span class="va">asbg04</span>, <span class="va">sdfTIMSS</span>, weightVar<span class="op">=</span><span class="st">'totwgt'</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Call with Taylor</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mmlTIMSS</span>, varType<span class="op">=</span><span class="st">"Taylor"</span>, strataVar<span class="op">=</span><span class="st">"jkzone"</span>, PSUVar<span class="op">=</span><span class="st">"jkrep"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co">## Direct Estimation with NAEP </span></span></span>
+<span class="r-in"><span><span class="co"># Load data </span></span></span>
+<span class="r-in"><span><span class="va">sdfNAEP</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Inspect scoring guidelines</span></span></span>
+<span class="r-in"><span><span class="fu">defaultNAEPScoreCard</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># example output: </span></span></span>
+<span class="r-in"><span><span class="co">#          resCat pointMult pointConst</span></span></span>
+<span class="r-in"><span><span class="co"># 1     Multiple         8          0</span></span></span>
+<span class="r-in"><span><span class="co"># 2  Not Reached        NA         NA</span></span></span>
+<span class="r-in"><span><span class="co"># 3      Missing        NA         NA</span></span></span>
+<span class="r-in"><span><span class="co"># 4      Omitted         8          0</span></span></span>
+<span class="r-in"><span><span class="co"># 5    Illegible         0          0</span></span></span>
+<span class="r-in"><span><span class="co"># 6 Non-Rateable         0          0</span></span></span>
+<span class="r-in"><span><span class="co"># 7     Off Task         0          0</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Run NAEP model, warnings are about item codings</span></span></span>
+<span class="r-in"><span><span class="va">mmlNAEP</span> <span class="op">&lt;-</span> <span class="fu">mml.sdf</span><span class="op">(</span><span class="va">algebra</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b013801</span>, <span class="va">sdfNAEP</span>, weightVar<span class="op">=</span><span class="st">'origwt'</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Call with Taylor</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mmlNAEP</span>, varType<span class="op">=</span><span class="st">"Taylor"</span>, strataVar<span class="op">=</span><span class="st">"repgrp1"</span>, PSUVar<span class="op">=</span><span class="st">"jkunit"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Direct Estimation with TIMSS </span></span></span>
+<span class="r-in"><span><span class="co"># Load data </span></span></span>
+<span class="r-in"><span><span class="fu"><a href="downloadTIMSS.html">downloadTIMSS</a></span><span class="op">(</span><span class="st">"~/"</span>, year<span class="op">=</span><span class="fl">2015</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sdfTIMSS</span> <span class="op">&lt;-</span> <span class="fu"><a href="readTIMSS.html">readTIMSS</a></span><span class="op">(</span><span class="st">"~/TIMSS/2015"</span>, countries<span class="op">=</span><span class="st">"usa"</span>, grade <span class="op">=</span> <span class="st">"4"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Run TIMSS model, warnings are about item codings </span></span></span>
+<span class="r-in"><span><span class="va">mmlTIMSS</span> <span class="op">&lt;-</span> <span class="fu">mml.sdf</span><span class="op">(</span><span class="va">mmat</span> <span class="op">~</span> <span class="va">itsex</span> <span class="op">+</span> <span class="va">asbg04</span>, <span class="va">sdfTIMSS</span>, weightVar<span class="op">=</span><span class="st">'totwgt'</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Call with Taylor</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mmlTIMSS</span>, varType<span class="op">=</span><span class="st">"Taylor"</span>, strataVar<span class="op">=</span><span class="st">"jkzone"</span>, PSUVar<span class="op">=</span><span class="st">"jkrep"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -203,7 +230,7 @@ an incorrect response, an NA does not change the student's score, and 1 is corre
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

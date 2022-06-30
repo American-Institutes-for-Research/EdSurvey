@@ -20,7 +20,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -66,38 +66,38 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">glm.sdf</span><span class="op">(</span><span class="va">formula</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, <span class="va">data</span>,
-  weightVar <span class="op">=</span> <span class="cn">NULL</span>, relevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, 
-  varMethod<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"jackknife"</span>, <span class="st">"Taylor"</span><span class="op">)</span>, jrrIMax <span class="op">=</span> <span class="fl">1</span>,
-  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>, defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>, recode <span class="op">=</span> <span class="cn">NULL</span>,
-  returnNumberOfPSU<span class="op">=</span><span class="cn">FALSE</span>, returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="fu">logit.sdf</span><span class="op">(</span>
-  <span class="va">formula</span>,
-  <span class="va">data</span>,
-  weightVar <span class="op">=</span> <span class="cn">NULL</span>,
-  relevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,
-  varMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"jackknife"</span>, <span class="st">"Taylor"</span><span class="op">)</span>,
-  jrrIMax <span class="op">=</span> <span class="fl">1</span>,
-  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,
-  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,
-  recode <span class="op">=</span> <span class="cn">NULL</span>,
-  returnNumberOfPSU <span class="op">=</span> <span class="cn">FALSE</span>,
-  returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span>
-
-<span class="fu">probit.sdf</span><span class="op">(</span>
-  <span class="va">formula</span>,
-  <span class="va">data</span>,
-  weightVar <span class="op">=</span> <span class="cn">NULL</span>,
-  relevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,
-  varMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"jackknife"</span>, <span class="st">"Taylor"</span><span class="op">)</span>,
-  jrrIMax <span class="op">=</span> <span class="fl">1</span>,
-  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,
-  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,
-  recode <span class="op">=</span> <span class="cn">NULL</span>,
-  returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">glm.sdf</span><span class="op">(</span><span class="va">formula</span>, family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">binomial</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"logit"</span><span class="op">)</span>, <span class="va">data</span>,</span>
+<span>  weightVar <span class="op">=</span> <span class="cn">NULL</span>, relevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, </span>
+<span>  varMethod<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"jackknife"</span>, <span class="st">"Taylor"</span><span class="op">)</span>, jrrIMax <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>, defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>, recode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  returnNumberOfPSU<span class="op">=</span><span class="cn">FALSE</span>, returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">logit.sdf</span><span class="op">(</span></span>
+<span>  <span class="va">formula</span>,</span>
+<span>  <span class="va">data</span>,</span>
+<span>  weightVar <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  relevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  varMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"jackknife"</span>, <span class="st">"Taylor"</span><span class="op">)</span>,</span>
+<span>  jrrIMax <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  recode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  returnNumberOfPSU <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">probit.sdf</span><span class="op">(</span></span>
+<span>  <span class="va">formula</span>,</span>
+<span>  <span class="va">data</span>,</span>
+<span>  weightVar <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  relevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  varMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"jackknife"</span>, <span class="st">"Taylor"</span><span class="op">)</span>,</span>
+<span>  jrrIMax <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  recode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -107,27 +107,39 @@
 linear model. See <code><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></code>.
 For logit and probit, we recommend using the <code><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I()</a></code> function 
 to define the level used for success. (See Examples.)</p></dd>
+
+
 <dt>family</dt>
 <dd><p>the <code>glm.sdf</code> function currently fits only the binomial
 outcome models, such as logit and probit, although other link
 functions are available for binomial models. See the <code>link</code>
 argument in the help for 
 <code><a href="https://rdrr.io/r/stats/family.html" class="external-link">family</a></code>.</p></dd>
+
+
 <dt>data</dt>
 <dd><p>an <code>edsurvey.data.frame</code></p></dd>
+
+
 <dt>weightVar</dt>
 <dd><p>character indicating the weight variable to use (see Details).
 The <code>weightVar</code> must be one of the weights for the
 <code>edsurvey.data.frame</code>. If <code>NULL</code>, uses the default
 for the <code>edsurvey.data.frame</code>.</p></dd>
+
+
 <dt>relevels</dt>
 <dd><p>a list; used to change the contrasts from the
 default treatment contrasts to the treatment contrasts with a chosen omitted
 group. The name of each element should be the variable name, and the value 
 should be the group to be omitted.</p></dd>
+
+
 <dt>varMethod</dt>
 <dd><p>a character set to “jackknife” or “Taylor” that indicates the variance
 estimation method to be used. See Details.</p></dd>
+
+
 <dt>jrrIMax</dt>
 <dd><p>the <code>Vjrr</code> sampling variance term (see 
 <a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link"><em>Statistical Methods Used in EdSurvey</em></a>)
@@ -138,67 +150,96 @@ estimation method to be used. See Details.</p></dd>
                   <code>jrrIMax</code> is set to <code>Inf</code>, all plausible values will be used.
                   Higher values of <code>jrrIMax</code> lead to longer computing times and more
                   accurate variance estimates.</p></dd>
+
+
 <dt>omittedLevels</dt>
 <dd><p>a logical value. When set to the default value of <code>TRUE</code>, drops
 those levels of all factor variables that are specified
 in <code>edsurvey.data.frame</code>. Use <code>print</code> on an
 <code>edsurvey.data.frame</code> to see the omitted levels.</p></dd>
+
+
 <dt>defaultConditions</dt>
 <dd><p>a logical value. When set to the default value of <code>TRUE</code>, uses
 the default conditions stored in an <code>edsurvey.data.frame</code>
 to subset the data. Use <code>print</code> on an
 <code>edsurvey.data.frame</code> to see the default conditions.</p></dd>
+
+
 <dt>recode</dt>
 <dd><p>a list of lists to recode variables. Defaults to <code>NULL</code>. Can be set as
 <code>recode=</code> <code>list(</code><code>var1=</code> <code>list(from=</code> <code>c("a",</code> <code>"b",</code> <code>"c"),</code> <code>to=</code><code>"d"))</code>.</p></dd>
+
+
 <dt>returnNumberOfPSU</dt>
 <dd><p>a logical value set to <code>TRUE</code> to return the number of 
 primary sampling units (PSUs)</p></dd>
+
+
 <dt>returnVarEstInputs</dt>
 <dd><p>a logical value set to <code>TRUE</code> to return the
 inputs to the jackknife and imputation variance
 estimates, which allow for
 the computation
 of covariances between estimates.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An <code>edsurveyGlm</code> with the following elements:</p>
+    
+
+<p>An <code>edsurveyGlm</code> with the following elements:</p>
 <dl><dt>call</dt>
 <dd><p>the function call</p></dd>
-<dt>formula</dt>
+
+   <dt>formula</dt>
 <dd><p>the formula used to fit the model</p></dd>
-<dt>coef</dt>
+
+   <dt>coef</dt>
 <dd><p>the estimates of the coefficients</p></dd>
-<dt>se</dt>
+
+   <dt>se</dt>
 <dd><p>the standard error estimates of the coefficients</p></dd>
-<dt>Vimp</dt>
+
+   <dt>Vimp</dt>
 <dd><p>the estimated variance caused by uncertainty in the scores (plausible value variables)</p></dd>
-<dt>Vjrr</dt>
+
+   <dt>Vjrr</dt>
 <dd><p>the estimated variance from sampling</p></dd>
-<dt>M</dt>
+
+   <dt>M</dt>
 <dd><p>the number of plausible values</p></dd>
-<dt>nPSU</dt>
+
+   <dt>nPSU</dt>
 <dd><p>the number of PSUs used in the calculation</p></dd>
-<dt>varm</dt>
+
+   <dt>varm</dt>
 <dd><p>the variance estimates under the various plausible values</p></dd>
-<dt>coefm</dt>
+
+   <dt>coefm</dt>
 <dd><p>the values of the coefficients under the various plausible values</p></dd>
-<dt>coefmat</dt>
+
+   <dt>coefmat</dt>
 <dd><p>the coefficient matrix (typically produced by the summary of a model)</p></dd>
-<dt>weight</dt>
+
+   <dt>weight</dt>
 <dd><p>the name of the weight variable</p></dd>
-<dt>npv</dt>
+
+   <dt>npv</dt>
 <dd><p>the number of plausible values</p></dd>
-<dt>njk</dt>
+
+   <dt>njk</dt>
 <dd><p>the number of the jackknife replicates used</p></dd>
-<dt>varMethod</dt>
+
+   <dt>varMethod</dt>
 <dd><p>always <code>jackknife</code></p></dd>
-<dt>varEstInputs</dt>
+
+   <dt>varEstInputs</dt>
 <dd><p>when <code>returnVarEstInputs</code> is <code>TRUE</code>,
                        this element is returned. These are
                        used for calculating covariances with
                        <code><a href="varEstToCov.html">varEstToCov</a></code>.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -279,32 +320,32 @@ the vignette titled
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># read in the example data (generated, not real student data)</span></span>
-<span class="r-in"><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># by default uses the jackknife variance method using replicate weights</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">sdf</span><span class="op">$</span><span class="va">b013801</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">logit1</span> <span class="op">&lt;-</span> <span class="fu">logit.sdf</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">b013801</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"26-100"</span>, <span class="st">"&gt;100"</span><span class="op">)</span><span class="op">)</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span>, data<span class="op">=</span><span class="va">sdf</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># use summary to get detailed results</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">logit1</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Taylor series variance estimation</span></span>
-<span class="r-in"><span class="va">logit1t</span> <span class="op">&lt;-</span> <span class="fu">logit.sdf</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">b013801</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"26-100"</span>, <span class="st">"&gt;100"</span><span class="op">)</span><span class="op">)</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span>, data<span class="op">=</span><span class="va">sdf</span>,</span>
-<span class="r-in">                     varMethod<span class="op">=</span><span class="st">"Taylor"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">logit1t</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">logit2</span> <span class="op">&lt;-</span> <span class="fu">logit.sdf</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">composite</span> <span class="op">&gt;=</span> <span class="fl">300</span><span class="op">)</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b013801</span>, data<span class="op">=</span><span class="va">sdf</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">logit2</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">logit3</span> <span class="op">&lt;-</span> <span class="fu">glm.sdf</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">composite</span> <span class="op">&gt;=</span> <span class="fl">300</span><span class="op">)</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b013801</span>, data<span class="op">=</span><span class="va">sdf</span>, </span>
-<span class="r-in">                  family<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">quasibinomial</a></span><span class="op">(</span>link<span class="op">=</span><span class="st">"logit"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Wald test for joint hypothesis that all coefficients in b013801 are zero</span></span>
-<span class="r-in"><span class="fu"><a href="waldTest.html">waldTest</a></span><span class="op">(</span><span class="va">logit3</span>, <span class="st">"b013801"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">logit3</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># read in the example data (generated, not real student data)</span></span></span>
+<span class="r-in"><span><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># by default uses the jackknife variance method using replicate weights</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">sdf</span><span class="op">$</span><span class="va">b013801</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">logit1</span> <span class="op">&lt;-</span> <span class="fu">logit.sdf</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">b013801</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"26-100"</span>, <span class="st">"&gt;100"</span><span class="op">)</span><span class="op">)</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span>, data<span class="op">=</span><span class="va">sdf</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># use summary to get detailed results</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">logit1</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Taylor series variance estimation</span></span></span>
+<span class="r-in"><span><span class="va">logit1t</span> <span class="op">&lt;-</span> <span class="fu">logit.sdf</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">b013801</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"26-100"</span>, <span class="st">"&gt;100"</span><span class="op">)</span><span class="op">)</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span>, data<span class="op">=</span><span class="va">sdf</span>,</span></span>
+<span class="r-in"><span>                     varMethod<span class="op">=</span><span class="st">"Taylor"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">logit1t</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">logit2</span> <span class="op">&lt;-</span> <span class="fu">logit.sdf</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">composite</span> <span class="op">&gt;=</span> <span class="fl">300</span><span class="op">)</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b013801</span>, data<span class="op">=</span><span class="va">sdf</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">logit2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">logit3</span> <span class="op">&lt;-</span> <span class="fu">glm.sdf</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="va">composite</span> <span class="op">&gt;=</span> <span class="fl">300</span><span class="op">)</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b013801</span>, data<span class="op">=</span><span class="va">sdf</span>, </span></span>
+<span class="r-in"><span>                  family<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">quasibinomial</a></span><span class="op">(</span>link<span class="op">=</span><span class="st">"logit"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Wald test for joint hypothesis that all coefficients in b013801 are zero</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="waldTest.html">waldTest</a></span><span class="op">(</span><span class="va">logit3</span>, <span class="st">"b013801"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">logit3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -319,7 +360,7 @@ the vignette titled
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

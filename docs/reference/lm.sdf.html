@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -60,11 +60,11 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">lm.sdf</span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, weightVar <span class="op">=</span> <span class="cn">NULL</span>, relevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,
-              varMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"jackknife"</span>, <span class="st">"Taylor"</span><span class="op">)</span>, jrrIMax <span class="op">=</span> <span class="fl">1</span>,
-              omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>, defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>, recode <span class="op">=</span> <span class="cn">NULL</span>,
-              returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span>, returnNumberOfPSU <span class="op">=</span> <span class="cn">FALSE</span>,
-              standardizeWithSamplingVar <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">lm.sdf</span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, weightVar <span class="op">=</span> <span class="cn">NULL</span>, relevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>              varMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"jackknife"</span>, <span class="st">"Taylor"</span><span class="op">)</span>, jrrIMax <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>              omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>, defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>, recode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>              returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span>, returnNumberOfPSU <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>              standardizeWithSamplingVar <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -78,22 +78,32 @@ will be used. (You can find the default using
 If <em>y</em> is a variable for a subject scale or subscale (one of the
 names shown by <code><a href="showPlausibleValues.html">showPlausibleValues</a></code>),
 then that subject scale or subscale is used.</p></dd>
+
+
 <dt>data</dt>
 <dd><p>an <code>edsurvey.data.frame</code>, a <code>light.edsurvey.data.frame</code>,
 or an <code>edsurvey.data.frame.list</code></p></dd>
+
+
 <dt>weightVar</dt>
 <dd><p>a character indicating the weight variable to use (see Details).
 The <code>weightVar</code> must be one of the weights for the
 <code>edsurvey.data.frame</code>. If <code>NULL</code>, it  uses the default
 for the <code>edsurvey.data.frame</code>.</p></dd>
+
+
 <dt>relevels</dt>
 <dd><p>a list. Used to change the contrasts from the
 default treatment contrasts to the treatment contrasts with a chosen omitted
 group (the reference group). The name of each element should be the variable name, and the value 
 should be the group to be omitted (the reference group).</p></dd>
+
+
 <dt>varMethod</dt>
 <dd><p>a character set to “jackknife” or “Taylor” that indicates the variance
 estimation method to be used. See Details.</p></dd>
+
+
 <dt>jrrIMax</dt>
 <dd><p>a numeric value; when using the jackknife variance estimation method, the default estimation option, <code>jrrIMax=1</code>, uses the 
                   sampling variance from the first plausible value as the component for sampling variance estimation. The <code>Vjrr</code> 
@@ -102,107 +112,152 @@ estimation method to be used. See Details.</p></dd>
                   can be estimated with any number of plausible values, and values larger than the number of 
                   plausible values on the survey (including <code>Inf</code>) will result in all plausible values being used. 
                   Higher values of <code>jrrIMax</code> lead to longer computing times and more accurate variance estimates.</p></dd>
+
+
 <dt>omittedLevels</dt>
 <dd><p>a logical value. When set to the default value of <code>TRUE</code>, drops
 those levels of all factor variables that are specified
 in an <code>edsurvey.data.frame</code>. Use <code>print</code> on an
 <code>edsurvey.data.frame</code> to see the omitted levels.</p></dd>
+
+
 <dt>defaultConditions</dt>
 <dd><p>a logical value. When set to the default value of <code>TRUE</code>, uses
 the default conditions stored in an <code>edsurvey.data.frame</code>
 to subset the data. Use <code>print</code> on an
 <code>edsurvey.data.frame</code> to see the default conditions.</p></dd>
+
+
 <dt>recode</dt>
 <dd><p>a list of lists to recode variables. Defaults to <code>NULL</code>. Can be set as
 <code>recode=</code><code>list(</code><code>var1</code> <code>=</code> <code>list(</code><code>from=</code> <code>c("a",</code> <code>"b",</code> <code>"c"),</code> <code>to=</code> <code>"d"))</code>. See Examples.</p></dd>
+
+
 <dt>returnVarEstInputs</dt>
 <dd><p>a logical value set to <code>TRUE</code> to return the
 inputs to the jackknife and imputation variance
 estimates, which allow for the computation
 of covariances between estimates.</p></dd>
+
+
 <dt>returnNumberOfPSU</dt>
 <dd><p>a logical value set to <code>TRUE</code> to return the number of 
 primary sampling units (PSUs)</p></dd>
+
+
 <dt>standardizeWithSamplingVar</dt>
 <dd><p>a logical value indicating if the standardized coefficients
 should have the variance of the regressors and outcome measured
 with sampling variance. Defaults to <code>FALSE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An <code>edsurvey.lm</code> with the following elements:</p>
+    
+
+<p>An <code>edsurvey.lm</code> with the following elements:</p>
 <dl><dt>call</dt>
 <dd><p>the function call</p></dd>
-<dt>formula</dt>
+
+   <dt>formula</dt>
 <dd><p>the formula used to fit the model</p></dd>
-<dt>coef</dt>
+
+   <dt>coef</dt>
 <dd><p>the estimates of the coefficients</p></dd>
-<dt>se</dt>
+
+   <dt>se</dt>
 <dd><p>the standard error estimates of the coefficients</p></dd>
-<dt>Vimp</dt>
+
+   <dt>Vimp</dt>
 <dd><p>the estimated variance from uncertainty in the scores (plausible value variables)</p></dd>
-<dt>Vjrr</dt>
+
+   <dt>Vjrr</dt>
 <dd><p>the estimated variance from sampling</p></dd>
-<dt>M</dt>
+
+   <dt>M</dt>
 <dd><p>the number of plausible values</p></dd>
-<dt>varm</dt>
+
+   <dt>varm</dt>
 <dd><p>the variance estimates under the various plausible values</p></dd>
-<dt>coefm</dt>
+
+   <dt>coefm</dt>
 <dd><p>the values of the coefficients under the various plausible values</p></dd>
-<dt>coefmat</dt>
+
+   <dt>coefmat</dt>
 <dd><p>the coefficient matrix (typically produced by the summary of a model)</p></dd>
-<dt>r.squared</dt>
+
+   <dt>r.squared</dt>
 <dd><p>the coefficient of determination</p></dd>
-<dt>weight</dt>
+
+   <dt>weight</dt>
 <dd><p>the name of the weight variable</p></dd>
-<dt>npv</dt>
+
+   <dt>npv</dt>
 <dd><p>the number of plausible values</p></dd>
-<dt>jrrIMax</dt>
+
+   <dt>jrrIMax</dt>
 <dd><p>the <code>jrrIMax</code> value used in computation</p></dd>
-<dt>njk</dt>
+
+   <dt>njk</dt>
 <dd><p>the number of the jackknife replicates used; set to <code>NA</code>
               when Taylor series variance estimates are used</p></dd>
-<dt>varMethod</dt>
+
+   <dt>varMethod</dt>
 <dd><p>one of <code>Taylor series</code> or the <code>jackknife</code></p></dd>
-<dt>residuals</dt>
+
+   <dt>residuals</dt>
 <dd><p>residuals from the average regression coefficients</p></dd>
-<dt>PV.residuals</dt>
+
+   <dt>PV.residuals</dt>
 <dd><p>residuals from the by plausible value coefficients</p></dd>
-<dt>PV.fitted.values</dt>
+
+   <dt>PV.fitted.values</dt>
 <dd><p>fitted values from the by plausible value coefficients</p></dd>
-<dt>B</dt>
+
+   <dt>B</dt>
 <dd><p>imputation variance covariance matrix, before multiplication by (M+1)/M</p></dd>
-<dt>U</dt>
+
+   <dt>U</dt>
 <dd><p>sampling variance covariance matrix</p></dd>
-<dt>rbar</dt>
+
+   <dt>rbar</dt>
 <dd><p>average relative increase in variance; see van Buuren (2012, eq. 2.29)</p></dd>
-<dt>nPSU</dt>
+
+   <dt>nPSU</dt>
 <dd><p>number of PSUs used in calculation</p></dd>
-<dt>n0</dt>
+
+   <dt>n0</dt>
 <dd><p>number of rows on an <code>edsurvey.data.frame</code> before any conditions were applied</p></dd>
-<dt>nUsed</dt>
+
+   <dt>nUsed</dt>
 <dd><p>number of observations with valid data and weights larger than zero</p></dd>
-<dt>data</dt>
+
+   <dt>data</dt>
 <dd><p>data used for the computation</p></dd>
-<dt>Xstdev</dt>
+
+   <dt>Xstdev</dt>
 <dd><p>standard deviations of regressors, used for computing standardized
                  regression coefficients when <code>standardizeWithSamplingVar</code> is set to
                  <code>FALSE</code> (the default)</p></dd>
-<dt>varSummary</dt>
+
+   <dt>varSummary</dt>
 <dd><p>the result of running <code>summary2</code> (unweighted) on each variable in the
                      regression</p></dd>
-<dt>varEstInputs</dt>
+
+   <dt>varEstInputs</dt>
 <dd><p>when <code>returnVarEstInputs</code> is <code>TRUE</code>,
                        this element is returned. These are
                        used for calculating covariances with
                        <code><a href="varEstToCov.html">varEstToCov</a></code>.</p></dd>
-<dt>standardizeWithSamplingVar</dt>
+
+   <dt>standardizeWithSamplingVar</dt>
 <dd><p>when <code>standardizeWithSamplingVar</code>
                                      is set to <code>TRUE</code>, this element is
                                      returned. Calculates the standard deviation
                                      of the standardized
                                      regression coefficients like any other
                                      variable.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -292,42 +347,42 @@ the vignette titled
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># read in the example data (generated, not real student data)</span></span>
-<span class="r-in"><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># by default uses jackknife variance method using replicate weights</span></span>
-<span class="r-in"><span class="va">lm1</span> <span class="op">&lt;-</span> <span class="fu">lm.sdf</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span>, data<span class="op">=</span><span class="va">sdf</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">lm1</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># the summary function displays detailed results</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">lm1</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># to show standardized regression coefficients</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">lm1</span>, src<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># to specify a variance method, use varMethod</span></span>
-<span class="r-in"><span class="va">lm2</span> <span class="op">&lt;-</span> <span class="fu">lm.sdf</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span>, data<span class="op">=</span><span class="va">sdf</span>, varMethod<span class="op">=</span><span class="st">"Taylor"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">lm2</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">lm2</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># use relevel to set a new omitted category</span></span>
-<span class="r-in"><span class="va">lm3</span> <span class="op">&lt;-</span> <span class="fu">lm.sdf</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span>, data<span class="op">=</span><span class="va">sdf</span>, relevels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>dsex<span class="op">=</span><span class="st">"Female"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">lm3</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># test of a simple joint hypothesis</span></span>
-<span class="r-in"><span class="fu"><a href="waldTest.html">waldTest</a></span><span class="op">(</span><span class="va">lm3</span>, <span class="st">"b017451"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># use recode to change values for specified variables</span></span>
-<span class="r-in"><span class="va">lm4</span> <span class="op">&lt;-</span> <span class="fu">lm.sdf</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span>, data<span class="op">=</span><span class="va">sdf</span>,</span>
-<span class="r-in">              recode<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>b017451<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Never or hardly ever"</span>,</span>
-<span class="r-in">                                              <span class="st">"Once every few weeks"</span>,</span>
-<span class="r-in">                                              <span class="st">"About once a week"</span><span class="op">)</span>,</span>
-<span class="r-in">                                       to<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Infrequently"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">                          b017451<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2 or 3 times a week"</span>,<span class="st">"Every day"</span><span class="op">)</span>,</span>
-<span class="r-in">                                       to<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Frequently"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># Note: "Infrequently" is the dropped level for the recoded b017451</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">lm4</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># read in the example data (generated, not real student data)</span></span></span>
+<span class="r-in"><span><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># by default uses jackknife variance method using replicate weights</span></span></span>
+<span class="r-in"><span><span class="va">lm1</span> <span class="op">&lt;-</span> <span class="fu">lm.sdf</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span>, data<span class="op">=</span><span class="va">sdf</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">lm1</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># the summary function displays detailed results</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">lm1</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># to show standardized regression coefficients</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">lm1</span>, src<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># to specify a variance method, use varMethod</span></span></span>
+<span class="r-in"><span><span class="va">lm2</span> <span class="op">&lt;-</span> <span class="fu">lm.sdf</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span>, data<span class="op">=</span><span class="va">sdf</span>, varMethod<span class="op">=</span><span class="st">"Taylor"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">lm2</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">lm2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># use relevel to set a new omitted category</span></span></span>
+<span class="r-in"><span><span class="va">lm3</span> <span class="op">&lt;-</span> <span class="fu">lm.sdf</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span>, data<span class="op">=</span><span class="va">sdf</span>, relevels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>dsex<span class="op">=</span><span class="st">"Female"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">lm3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># test of a simple joint hypothesis</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="waldTest.html">waldTest</a></span><span class="op">(</span><span class="va">lm3</span>, <span class="st">"b017451"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># use recode to change values for specified variables</span></span></span>
+<span class="r-in"><span><span class="va">lm4</span> <span class="op">&lt;-</span> <span class="fu">lm.sdf</span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span>, data<span class="op">=</span><span class="va">sdf</span>,</span></span>
+<span class="r-in"><span>              recode<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>b017451<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Never or hardly ever"</span>,</span></span>
+<span class="r-in"><span>                                              <span class="st">"Once every few weeks"</span>,</span></span>
+<span class="r-in"><span>                                              <span class="st">"About once a week"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                       to<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Infrequently"</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                          b017451<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2 or 3 times a week"</span>,<span class="st">"Every day"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                       to<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Frequently"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Note: "Infrequently" is the dropped level for the recoded b017451</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">lm4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -342,7 +397,7 @@ the vignette titled
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

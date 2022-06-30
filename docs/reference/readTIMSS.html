@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -64,13 +64,13 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">readTIMSS</span><span class="op">(</span>
-  <span class="va">path</span>,
-  <span class="va">countries</span>,
-  gradeLvl <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"4"</span>, <span class="st">"8"</span>, <span class="st">"4b"</span>, <span class="st">"8b"</span><span class="op">)</span>,
-  forceReread <span class="op">=</span> <span class="cn">FALSE</span>,
-  verbose <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">readTIMSS</span><span class="op">(</span></span>
+<span>  <span class="va">path</span>,</span>
+<span>  <span class="va">countries</span>,</span>
+<span>  gradeLvl <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"4"</span>, <span class="st">"8"</span>, <span class="st">"4b"</span>, <span class="st">"8b"</span><span class="op">)</span>,</span>
+<span>  forceReread <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -78,6 +78,8 @@
     <dl><dt>path</dt>
 <dd><p>a character vector to the full directory path(s) to the TIMSS
 extracted SPSS (.sav) set of data</p></dd>
+
+
 <dt>countries</dt>
 <dd><p>a character vector of the country/countries to include using
 the three-digit ISO country code.
@@ -88,22 +90,31 @@ documentation to help determine what countries
 are included within a specific testing year of TIMSS and
 for country code definitions.
 To select all countries available, use a wildcard value of <strong><code>*</code></strong>.</p></dd>
+
+
 <dt>gradeLvl</dt>
 <dd><p>a character value to indicate the specific grade level you wish to return</p><ul><li><p><strong>4</strong> = fourth grade (the default if not specified)</p></li>
 <li><p><strong>8</strong> = eighth grade</p></li>
 <li><p><strong>4B</strong> = fourth grade bridge study (TIMSS 2019 only)</p></li>
 <li><p><strong>8B</strong> = eight grade bridge study (TIMSS 2019 only)</p></li>
 </ul></dd>
+
+
 <dt>forceReread</dt>
 <dd><p>a logical value to force rereading of all processed data.
 The default value of <code>FALSE</code> will speed up the <code>readTIMSS</code> function by using existing read-in data already processed.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>a logical value to either print or suppress status message output.
 The default value is <code>TRUE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>an <code>edsurvey.data.frame</code> for a single specified country or an <code>edsurvey.data.frame.list</code> if multiple countries specified</p>
+    
+
+<p>an <code>edsurvey.data.frame</code> for a single specified country or an <code>edsurvey.data.frame.list</code> if multiple countries specified</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -160,18 +171,18 @@ for the Grade 8 bridge study files.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># single country specified</span></span>
-<span class="r-in"><span class="va">fin</span> <span class="op">&lt;-</span> <span class="fu">readTIMSS</span><span class="op">(</span><span class="st">"~/TIMSS/2015"</span>, countries <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fin"</span><span class="op">)</span>, gradeLvl <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gg</span> <span class="op">&lt;-</span> <span class="fu"><a href="getData.html">getData</a></span><span class="op">(</span><span class="va">fin</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"asbg01"</span>, <span class="st">"totwgt"</span>, <span class="st">"srea"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">gg</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="edsurveyTable.html">edsurveyTable</a></span><span class="op">(</span><span class="va">srea</span> <span class="op">~</span> <span class="va">asbg01</span>, <span class="va">fin</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># multiple countries returned as edsurvey.data.frame.list, specify all countries with '*' argument</span></span>
-<span class="r-in"><span class="va">timss2011</span> <span class="op">&lt;-</span> <span class="fu">readTIMSS</span><span class="op">(</span><span class="st">"~/TIMSS/2011"</span>, countries<span class="op">=</span><span class="st">"*"</span>, gradeLvl <span class="op">=</span> <span class="fl">8</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># print out edsurvey.data.frame.list covariates</span></span>
-<span class="r-in"><span class="va">timss2011</span><span class="op">$</span><span class="va">covs</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># single country specified</span></span></span>
+<span class="r-in"><span><span class="va">fin</span> <span class="op">&lt;-</span> <span class="fu">readTIMSS</span><span class="op">(</span><span class="st">"~/TIMSS/2015"</span>, countries <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fin"</span><span class="op">)</span>, gradeLvl <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gg</span> <span class="op">&lt;-</span> <span class="fu"><a href="getData.html">getData</a></span><span class="op">(</span><span class="va">fin</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"asbg01"</span>, <span class="st">"totwgt"</span>, <span class="st">"srea"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">gg</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="edsurveyTable.html">edsurveyTable</a></span><span class="op">(</span><span class="va">srea</span> <span class="op">~</span> <span class="va">asbg01</span>, <span class="va">fin</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># multiple countries returned as edsurvey.data.frame.list, specify all countries with '*' argument</span></span></span>
+<span class="r-in"><span><span class="va">timss2011</span> <span class="op">&lt;-</span> <span class="fu">readTIMSS</span><span class="op">(</span><span class="st">"~/TIMSS/2011"</span>, countries<span class="op">=</span><span class="st">"*"</span>, gradeLvl <span class="op">=</span> <span class="fl">8</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># print out edsurvey.data.frame.list covariates</span></span></span>
+<span class="r-in"><span><span class="va">timss2011</span><span class="op">$</span><span class="va">covs</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -186,7 +197,7 @@ for the Grade 8 bridge study files.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

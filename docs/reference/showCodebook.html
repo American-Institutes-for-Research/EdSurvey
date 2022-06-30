@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -62,12 +62,12 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">showCodebook</span><span class="op">(</span>
-  <span class="va">data</span>,
-  fileFormat <span class="op">=</span> <span class="cn">NULL</span>,
-  labelLevels <span class="op">=</span> <span class="cn">FALSE</span>,
-  includeRecodes <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">showCodebook</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  fileFormat <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  labelLevels <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  includeRecodes <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -75,23 +75,34 @@
     <dl><dt>data</dt>
 <dd><p>an <code>edsurvey.data.frame</code>, a <code>light.edsurvey.data.frame</code>, or
 an <code>edsurvey.data.frame.list</code></p></dd>
+
+
 <dt>fileFormat</dt>
 <dd><p>a character string indicating the data source to search for variables.
 The default <code>NULL</code> argument searches all available codebooks in the database connection object.</p></dd>
+
+
 <dt>labelLevels</dt>
 <dd><p>a logical value; set to <code>TRUE</code> to return a snapshot of the label levels in
 an <code>edsurvey.data.frame</code>, a <code>light.edsurvey.data.frame</code>, or an <code>edsurvey.data.frame.list</code>. When set to <code>FALSE</code>
 (the default), label levels are removed.</p></dd>
+
+
 <dt>includeRecodes</dt>
 <dd><p>a logical value; set to <code>TRUE</code> to return value labels that have been recoded in
 an <code>edsurvey.data.frame</code>, a <code>light.edsurvey.data.frame</code>, or an <code>edsurvey.data.frame.list</code>. When set to <code>FALSE</code>
 (the default), only the original value labels are included in the returned <code>data.frame</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a <code><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></code> that shows the variable names, variable labels, value labels,
+    
+
+<p>a <code><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></code> that shows the variable names, variable labels, value labels,
                        value levels (if applicable), and the file format data source from an <code>edsurvey.data.frame</code>, a <code>light.edsurvey.data.frame</code>,
                        or an <code>edsurvey.data.frame.list</code></p>
+
+
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -100,25 +111,25 @@ an <code>edsurvey.data.frame</code>, a <code>light.edsurvey.data.frame</code>, o
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># read in the example data (generated, not real student data)</span></span>
-<span class="r-in"><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package<span class="op">=</span><span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># search both the student and school files, returning levels for variable values</span></span>
-<span class="r-in"><span class="fu">showCodebook</span><span class="op">(</span><span class="va">sdf</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"student"</span>,<span class="st">"school"</span><span class="op">)</span>, labelLevels <span class="op">=</span> <span class="cn">TRUE</span>, includeRecodes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># return codebook information for the student file, excluding variable value levels,</span></span>
-<span class="r-in"><span class="co"># including recoded variables</span></span>
-<span class="r-in"><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="recode.sdf.html">recode.sdf</a></span><span class="op">(</span><span class="va">sdf</span>, recode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>dsex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Male"</span><span class="op">)</span>, to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MALE"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">showCodebook</span><span class="op">(</span><span class="va">sdf</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"student"</span><span class="op">)</span>, labelLevels <span class="op">=</span> <span class="cn">FALSE</span>, includeRecodes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># return codebook information for the student file, including variable value levels</span></span>
-<span class="r-in"><span class="co"># and recoded variables</span></span>
-<span class="r-in"><span class="fu">showCodebook</span><span class="op">(</span><span class="va">sdf</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"student"</span>,<span class="st">"school"</span><span class="op">)</span>, labelLevels <span class="op">=</span> <span class="cn">FALSE</span>, includeRecodes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># return codebook information for all codebooks in an edsurvey.data.frame; commonly use View()</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/View.html" class="external-link">View</a></span><span class="op">(</span><span class="fu">showCodebook</span><span class="op">(</span><span class="va">sdf</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># read in the example data (generated, not real student data)</span></span></span>
+<span class="r-in"><span><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package<span class="op">=</span><span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># search both the student and school files, returning levels for variable values</span></span></span>
+<span class="r-in"><span><span class="fu">showCodebook</span><span class="op">(</span><span class="va">sdf</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"student"</span>,<span class="st">"school"</span><span class="op">)</span>, labelLevels <span class="op">=</span> <span class="cn">TRUE</span>, includeRecodes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># return codebook information for the student file, excluding variable value levels,</span></span></span>
+<span class="r-in"><span><span class="co"># including recoded variables</span></span></span>
+<span class="r-in"><span><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="recode.sdf.html">recode.sdf</a></span><span class="op">(</span><span class="va">sdf</span>, recode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>dsex <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Male"</span><span class="op">)</span>, to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MALE"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">showCodebook</span><span class="op">(</span><span class="va">sdf</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"student"</span><span class="op">)</span>, labelLevels <span class="op">=</span> <span class="cn">FALSE</span>, includeRecodes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># return codebook information for the student file, including variable value levels</span></span></span>
+<span class="r-in"><span><span class="co"># and recoded variables</span></span></span>
+<span class="r-in"><span><span class="fu">showCodebook</span><span class="op">(</span><span class="va">sdf</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"student"</span>,<span class="st">"school"</span><span class="op">)</span>, labelLevels <span class="op">=</span> <span class="cn">FALSE</span>, includeRecodes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># return codebook information for all codebooks in an edsurvey.data.frame; commonly use View()</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/View.html" class="external-link">View</a></span><span class="op">(</span><span class="fu">showCodebook</span><span class="op">(</span><span class="va">sdf</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -133,7 +144,7 @@ an <code>edsurvey.data.frame</code>, a <code>light.edsurvey.data.frame</code>, o
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

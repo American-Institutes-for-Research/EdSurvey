@@ -22,6 +22,7 @@
       \item updated warnings and errors when an \code{edsurvey.data.frame} is passed to a vareity of functions that requires use of PSU or stratum variables but they are not on the data.
       \item \code{cor.sdf} now allows dynamic variables for the variables being correlated (\code{x} and \code{y})
       \item \code{searchSDF} now generates a tabled output when passed an \code{edsurvey.data.frame.list}.
+      \item \code{readTIMSS} verbose output (\code{verbose=TRUE}) prints file merge details during data processing to the console. Additionally, \code{readTIMSS} will print \code{dataLevel} details for both processed and cached data for the \code{edsurvey.data.frame}.
     }
   }
   \subsection{STATISTICS}{

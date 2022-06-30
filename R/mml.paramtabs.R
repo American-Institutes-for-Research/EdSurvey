@@ -293,7 +293,14 @@ timssParam <- function(timssDir, theYear, theLevel, subjectFilter) {
       zips <- paste0(". Download them here: ", 
                      "https://timssandpirls.bc.edu/timss2011/downloads/T11_ItemParameters.zip", " and ",
                      "https://timssandpirls.bc.edu/timss2011/downloads/T11_ItemInformation.zip")
-      stop(paste0("Make sure ", df1Name, ", ", df2Name, ", and ", df3Name, " are downloaded in ", timssDir, zips,". ", "Try running: downloadTIMSS('",timssDir, "', '",theYear,"')"))
+      timssDirout <- timssDir
+      if("2011" == basename(timssDirout)) {
+        timssDirout <- dirname(timssDirout)
+      }
+      if("TIMSS" == basename(timssDirout)) {
+        timssDirout <- dirname(timssDirout)
+      }
+      stop(paste0("Make sure ", df1Name, ", ", df2Name, ", and ", df3Name, " are downloaded in ", timssDir, zips,". ", "Try running: downloadTIMSS('",timssDirout, "', '",theYear,"')"))
     }
     df1 <- suppressMessages(read_excel(df1File, sheet = subjectFilter))
     df2 <- suppressMessages(read_excel(df2File, sheet = subjectFilter))
@@ -315,7 +322,14 @@ timssParam <- function(timssDir, theYear, theLevel, subjectFilter) {
                        "https://timssandpirls.bc.edu/timss2015/international-database/downloads/T15_G8_IRTItemParameters.zip", " and ",
                        "https://timssandpirls.bc.edu/timss2015/international-database/downloads/T15_G8_ItemInformation.zip")
       }
-      stop(paste0("Make sure ", df1Name, ", ", df2Name, ", and ", df3Name, " are downloaded in ", timssDir, zips,". ", "Try running: downloadTIMSS('",timssDir, "', '",theYear,"')"))
+      timssDirout <- timssDir
+      if("2015" == basename(timssDirout)) {
+        timssDirout <- dirname(timssDirout)
+      }
+      if("TIMSS" == basename(timssDirout)) {
+        timssDirout <- dirname(timssDirout)
+      }
+      stop(paste0("Make sure ", df1Name, ", ", df2Name, ", and ", df3Name, " are downloaded in ", timssDir, zips,". ", "Try running: downloadTIMSS('",timssDirout, "', '",theYear,"')"))
     }
     df1 <- suppressMessages(read_excel(df1File, sheet = subjectFilter))
     df2 <- suppressMessages(read_excel(df2File, sheet = subjectFilter))
@@ -337,7 +351,14 @@ timssParam <- function(timssDir, theYear, theLevel, subjectFilter) {
                        "https://timss2019.org/international-database/downloads/T19_G8_Item%20Information.zip", " and ",
                        "https://timss2019.org/international-database/downloads/T19_G8_IRT%20Item%20Parameters.zip")
       }
-      stop(paste0("Make sure ", df1Name, ", ", df2Name, ", and ", df3Name, " are downloaded in ", timssDir, zips,". ", "Try running: downloadTIMSS('",timssDir, "', '",theYear,"')"))
+      timssDirout <- timssDir
+      if("2019" == basename(timssDirout)) {
+        timssDirout <- dirname(timssDirout)
+      }
+      if("TIMSS" == basename(timssDirout)) {
+        timssDirout <- dirname(timssDirout)
+      }
+      stop(paste0("Make sure ", df1Name, ", ", df2Name, ", and ", df3Name, " are downloaded in ", timssDir, zips,". ", "Try running: downloadTIMSS('",timssDirout, "', '",theYear,"')"))
     }
     df1 <- suppressMessages(read_excel(df1File, sheet = subjectFilter))
     df2 <- suppressMessages(read_excel(df2File, sheet = subjectFilter))

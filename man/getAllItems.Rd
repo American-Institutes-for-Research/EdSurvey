@@ -20,5 +20,5 @@ Takes an \code{AM dct} file and formats it for use with the \code{mml} method
 as \code{paramTab}.
 }
 \author{
-Sun-Joo Lee
+Sun-Joo Lee, Eric Buehler, and Paul Bailey
 }

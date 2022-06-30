@@ -51,7 +51,7 @@
 #'                    NAEP or TIMSS construct should be returned. Returning questions items 
 #'                    can be helpful if the user plans to use estimate their own plausable values using 
 #'                    \code{mml.sdf}. This option will only work for those TIMSS items available on the \href{https://timssandpirls.bc.edu/}{timsspirls website} 
-#'                      and those NAEP items in the \href{package https://cran.r-project.org/web/packages/NAEPirtparams/index.html}{NAEPirtparams} package. 
+#'                      and those NAEP items in the \href{https://cran.r-project.org/package=NAEPirtparams}{NAEPirtparams} package. 
 #'                    
 #'
 #' @details By default, an \code{edsurvey.data.frame} does not have data read
@@ -116,7 +116,7 @@ getData <- function(data,
   if(!is.null(recode) & !is.list(recode)) stop(paste0("The ", sQuote("recode"), " argument must be a list."))
   if(is.null(varnames) & is.null(formula)) stop(paste0("At least one of ", sQuote("varnames"), " and ", sQuote("formula"), " must be not NULL."))
   if(returnItems == TRUE & !survey %in% c("NAEP", "TIMSS")) {
-    stop(paste0(sQuote("getData()"), " can only return items for NAEP and TIMSS, not ", sQuote(survey),"."))
+    stop(paste0(sQuote("getData()"), " argument ", dQuote("returnItems"), " only works for NAEP and TIMSS, not ", sQuote(survey),"."))
   }
   if(omittedLevels == TRUE & returnItems == TRUE){
     warning(paste0("TIMSS and NAEP items are set to missing, must use ", sQuote("omittedLevels=FALSE"), 

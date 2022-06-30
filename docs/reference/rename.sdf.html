@@ -20,7 +20,7 @@ This function often is used when users want to conduct a gap analysis across
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -66,7 +66,7 @@ This function often is used when users want to conduct a gap analysis across
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">rename.sdf</span><span class="op">(</span><span class="va">x</span>, <span class="va">oldnames</span>, <span class="va">newnames</span>, avoid_duplicated <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rename.sdf</span><span class="op">(</span><span class="va">x</span>, <span class="va">oldnames</span>, <span class="va">newnames</span>, avoid_duplicated <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -74,19 +74,28 @@ This function often is used when users want to conduct a gap analysis across
     <dl><dt>x</dt>
 <dd><p>an <code>edsurvey.data.frame</code>, a <code>light.edsurvey.data.frame</code>,
 or an <code>edsurvey.data.frame.list</code></p></dd>
+
+
 <dt>oldnames</dt>
 <dd><p>a character vector of old variable names</p></dd>
+
+
 <dt>newnames</dt>
 <dd><p>a character vector of new variable names to replace the
 corresponding old names</p></dd>
+
+
 <dt>avoid_duplicated</dt>
 <dd><p>a logical value to indicate whether to avoid renaming the
 variable if the corresponding new name already exists in the data. 
 Defaults to <code>TRUE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>an object of the same class as <code>x</code> with new variable names</p>
+    
+
+<p>an object of the same class as <code>x</code> with new variable names</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -104,14 +113,14 @@ Defaults to <code>TRUE</code>.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">usaG4.15</span> <span class="op">&lt;-</span> <span class="fu"><a href="readTIMSS.html">readTIMSS</a></span><span class="op">(</span><span class="st">"~/TIMSS/2015"</span>, <span class="st">"usa"</span>, <span class="fl">4</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">usaG4.15.renamed</span> <span class="op">&lt;-</span> <span class="fu">rename.sdf</span><span class="op">(</span><span class="va">usaG4.15</span>,</span>
-<span class="r-in">                               <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"itsex"</span>, <span class="st">"mmat"</span><span class="op">)</span>,</span>
-<span class="r-in">                               <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gender"</span>, <span class="st">"math_overall"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">lm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="lm.sdf.html">lm.sdf</a></span><span class="op">(</span><span class="va">math_overall</span> <span class="op">~</span> <span class="va">gender</span>, data <span class="op">=</span> <span class="va">usaG4.15.renamed</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">lm1</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">usaG4.15</span> <span class="op">&lt;-</span> <span class="fu"><a href="readTIMSS.html">readTIMSS</a></span><span class="op">(</span><span class="st">"~/TIMSS/2015"</span>, <span class="st">"usa"</span>, <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">usaG4.15.renamed</span> <span class="op">&lt;-</span> <span class="fu">rename.sdf</span><span class="op">(</span><span class="va">usaG4.15</span>,</span></span>
+<span class="r-in"><span>                               <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"itsex"</span>, <span class="st">"mmat"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                               <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gender"</span>, <span class="st">"math_overall"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">lm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="lm.sdf.html">lm.sdf</a></span><span class="op">(</span><span class="va">math_overall</span> <span class="op">~</span> <span class="va">gender</span>, data <span class="op">=</span> <span class="va">usaG4.15.renamed</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">lm1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -126,7 +135,7 @@ Defaults to <code>TRUE</code>.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

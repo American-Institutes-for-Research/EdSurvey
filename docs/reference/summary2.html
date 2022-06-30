@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -60,67 +60,100 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">summary2</span><span class="op">(</span>
-  <span class="va">data</span>,
-  <span class="va">variable</span>,
-  weightVar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="fu"><a href="edsurvey-class.html">getAttributes</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"weights"</span><span class="op">)</span>, <span class="st">"default"</span><span class="op">)</span>,
-  omittedLevels <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">summary2</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  <span class="va">variable</span>,</span>
+<span>  weightVar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="fu"><a href="edsurvey-class.html">getAttributes</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"weights"</span><span class="op">)</span>, <span class="st">"default"</span><span class="op">)</span>,</span>
+<span>  omittedLevels <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>an <code>edsurvey.data.frame</code>, an <code>edsurvey.data.frame.list</code>, or <code>light.edsurvey.data.frame</code></p></dd>
+
+
 <dt>variable</dt>
 <dd><p>character vector of variable names</p></dd>
+
+
 <dt>weightVar</dt>
 <dd><p>character weight variable name. Default is the default weight of <code>data</code> if it exists.
 If the given survey data do not have a default weight,
 the function will produce unweighted statistics instead. 
 Can be set to <code>NULL</code> to return unweighted statistics.</p></dd>
+
+
 <dt>omittedLevels</dt>
 <dd><p>a logical value. When set to <code>TRUE</code>, drops those levels of the specified <code>variable</code>.
 Use print on an <code>edsurvey.data.frame</code> to see the omitted levels. Defaults to <code>FALSE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>summary of weighted or unweighted statistics of a given variable in an <code>edsurvey.data.frame</code>For categorical variables, the summary results are a crosstab of all variables and include the following:</p>
+    
+
+<p>summary of weighted or unweighted statistics of a given variable in an <code>edsurvey.data.frame</code></p>
+  
+
+
+<p>For categorical variables, the summary results are a crosstab of all variables and include the following:</p>
 <dl><dt>[variable name]</dt>
 <dd><p>level of the variable in the column name that the row regards. There is one column per element of <code>variable</code>.</p></dd>
-<dt>N</dt>
+
+  <dt>N</dt>
 <dd><p>number of cases for each category. Weighted N also is produced if users choose to produce weighted statistics.</p></dd>
-<dt>Percent</dt>
+
+  <dt>Percent</dt>
 <dd><p>percentage of each category. Weighted percent also is produced if users choose to produce weighted statistics.</p></dd>
-<dt>SE</dt>
+
+  <dt>SE</dt>
 <dd><p>standard error of the percentage statistics</p></dd>
+
+ 
 </dl><p>For continuous variables, the summary results are by variable and include the following:</p>
 <dl><dt>Variable</dt>
 <dd><p>name of the variable the row regards</p></dd>
-<dt>N</dt>
+
+  <dt>N</dt>
 <dd><p>total number of cases (both valid and invalid cases)</p></dd>
-<dt>Min.</dt>
+
+  <dt>Min.</dt>
 <dd><p>smallest value of the variable</p></dd>
-<dt>1st Qu.</dt>
+
+  <dt>1st Qu.</dt>
 <dd><p>first quantile of the variable</p></dd>
-<dt>Median</dt>
+
+  <dt>Median</dt>
 <dd><p>median value of the variable</p></dd>
-<dt>Mean</dt>
+
+  <dt>Mean</dt>
 <dd><p>mean of the variable</p></dd>
-<dt>3rd Qu.</dt>
+
+  <dt>3rd Qu.</dt>
 <dd><p>third quantile of the variable</p></dd>
-<dt>Max.</dt>
+
+  <dt>Max.</dt>
 <dd><p>largest value of the variable</p></dd>
-<dt>SD</dt>
+
+  <dt>SD</dt>
 <dd><p>standard deviation or weighted standard deviation</p></dd>
-<dt>NA's</dt>
+
+  <dt>NA's</dt>
 <dd><p>number of <code>NA</code> in variable and in weight variables</p></dd>
-<dt>Zero weights</dt>
+
+  <dt>Zero weights</dt>
 <dd><p>number of zero weight cases if users choose to produce weighted statistics</p></dd>
+
+
 </dl><p>If the weight option is chosen, the function produces weighted percentile and standard deviation. Refer to the vignette titled 
 <em><a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link">Statistical Methods Used in EdSurvey</a></em> and
 the vignette titled
-<em><a href="https://www.air.org/sites/default/files/EdSurvey-Percentiles.pdf" class="external-link">Methods Used for Estimating Percentiles in EdSurvey</a></em>for how the function calculates these statistics (with and without plausible values).</p>
+<em><a href="https://www.air.org/sites/default/files/EdSurvey-Percentiles.pdf" class="external-link">Methods Used for Estimating Percentiles in EdSurvey</a></em></p>
+
+
+<p>for how the function calculates these statistics (with and without plausible values).</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -133,20 +166,20 @@ the vignette titled
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># read in the example data (generated, not real student data)</span></span>
-<span class="r-in"><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># print out summary of weighted statistics of a continuous variable</span></span>
-<span class="r-in"><span class="fu">summary2</span><span class="op">(</span><span class="va">sdf</span>, <span class="st">"composite"</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># print out summary of weighted statistics of a variable, including omitted levels</span></span>
-<span class="r-in"><span class="fu">summary2</span><span class="op">(</span><span class="va">sdf</span>, <span class="st">"b017451"</span>, omittedLevels <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># make a crosstab</span></span>
-<span class="r-in"><span class="fu">summary2</span><span class="op">(</span><span class="va">sdf</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"b017451"</span>, <span class="st">"dsex"</span><span class="op">)</span>, omittedLevels <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># print out summary of unweighted statistics of a variable</span></span>
-<span class="r-in"><span class="fu">summary2</span><span class="op">(</span><span class="va">sdf</span>, <span class="st">"composite"</span>, weightVar <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># read in the example data (generated, not real student data)</span></span></span>
+<span class="r-in"><span><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># print out summary of weighted statistics of a continuous variable</span></span></span>
+<span class="r-in"><span><span class="fu">summary2</span><span class="op">(</span><span class="va">sdf</span>, <span class="st">"composite"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># print out summary of weighted statistics of a variable, including omitted levels</span></span></span>
+<span class="r-in"><span><span class="fu">summary2</span><span class="op">(</span><span class="va">sdf</span>, <span class="st">"b017451"</span>, omittedLevels <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># make a crosstab</span></span></span>
+<span class="r-in"><span><span class="fu">summary2</span><span class="op">(</span><span class="va">sdf</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"b017451"</span>, <span class="st">"dsex"</span><span class="op">)</span>, omittedLevels <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># print out summary of unweighted statistics of a variable</span></span></span>
+<span class="r-in"><span><span class="fu">summary2</span><span class="op">(</span><span class="va">sdf</span>, <span class="st">"composite"</span>, weightVar <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -161,7 +194,7 @@ the vignette titled
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

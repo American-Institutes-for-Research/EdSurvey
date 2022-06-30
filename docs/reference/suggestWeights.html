@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -60,32 +60,41 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">suggestWeights</span><span class="op">(</span>
-  varnames <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">data</span>,
-  showAllWeightSuggestions <span class="op">=</span> <span class="cn">FALSE</span>,
-  verbose <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">suggestWeights</span><span class="op">(</span></span>
+<span>  varnames <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">data</span>,</span>
+<span>  showAllWeightSuggestions <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>varnames</dt>
 <dd><p>character vector indicating variables to be included in the weight suggestion.</p></dd>
+
+
 <dt>data</dt>
 <dd><p>an <code>edsurvey.data.frame</code>, a <code>light.edsurvey.data.frame</code>,
 or an <code>edsurvey.data.frame.list</code></p></dd>
+
+
 <dt>showAllWeightSuggestions</dt>
 <dd><p>a logical value. When set to <code>TRUE</code>, all applicable weights that covers 
 more components, which typically are more conservative with 
 smaller sample size, will be returned. By default (i.e., <code>FALSE</code>), only the most approperate 
 weight is displayed.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>a logical value to either print or suppress status message output.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list of weight variables. The first one is the most approperate choice.</p>
+    
+
+<p>A list of weight variables. The first one is the most approperate choice.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -117,17 +126,17 @@ weight is displayed.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># read-in ECLS-K:2011 data file with parameters specified</span></span>
-<span class="r-in"><span class="va">eclsk11</span> <span class="op">&lt;-</span> <span class="fu"><a href="readECLS_K2011.html">readECLS_K2011</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"~/"</span>, <span class="st">"ECLS_K"</span>, <span class="st">"2011"</span><span class="op">)</span>, filename <span class="op">=</span> <span class="st">"childK5p.dat"</span>,</span>
-<span class="r-in">                           layoutFilename <span class="op">=</span> <span class="st">"ECLSK2011_K5PUF.sps"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># suggest weight for individual variable</span></span>
-<span class="r-in"><span class="fu">suggestWeights</span><span class="op">(</span><span class="st">"x8mscalk5"</span>, <span class="va">eclsk11</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># suggest weight for multiple variables</span></span>
-<span class="r-in"><span class="fu">suggestWeights</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x8mscalk5"</span>, <span class="st">"x_chsex_r"</span>, <span class="st">"x12sesl"</span><span class="op">)</span>, <span class="va">eclsk11</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># read-in ECLS-K:2011 data file with parameters specified</span></span></span>
+<span class="r-in"><span><span class="va">eclsk11</span> <span class="op">&lt;-</span> <span class="fu"><a href="readECLS_K2011.html">readECLS_K2011</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="st">"~/"</span>, <span class="st">"ECLS_K"</span>, <span class="st">"2011"</span><span class="op">)</span>, filename <span class="op">=</span> <span class="st">"childK5p.dat"</span>,</span></span>
+<span class="r-in"><span>                           layoutFilename <span class="op">=</span> <span class="st">"ECLSK2011_K5PUF.sps"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># suggest weight for individual variable</span></span></span>
+<span class="r-in"><span><span class="fu">suggestWeights</span><span class="op">(</span><span class="st">"x8mscalk5"</span>, <span class="va">eclsk11</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># suggest weight for multiple variables</span></span></span>
+<span class="r-in"><span><span class="fu">suggestWeights</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x8mscalk5"</span>, <span class="st">"x_chsex_r"</span>, <span class="st">"x12sesl"</span><span class="op">)</span>, <span class="va">eclsk11</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -142,7 +151,7 @@ weight is displayed.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

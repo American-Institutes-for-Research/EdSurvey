@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -64,7 +64,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">readSSOCS</span><span class="op">(</span><span class="va">sasDataFiles</span>, <span class="va">years</span>, forceReread <span class="op">=</span> <span class="cn">FALSE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">readSSOCS</span><span class="op">(</span><span class="va">sasDataFiles</span>, <span class="va">years</span>, forceReread <span class="op">=</span> <span class="cn">FALSE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -72,21 +72,30 @@
     <dl><dt>sasDataFiles</dt>
 <dd><p>a character vector to the full SAS (*.sas7bdat) data file path(s) you wish to read. 
 If multiple paths are specified as a vector, it will return an <code>edsurvey.data.frame.list</code>.</p></dd>
+
+
 <dt>years</dt>
 <dd><p>an integer vector of the year associated with the index position of the <code>sasDataFile</code> data file vector.
 The year is required to correctly determine required metadata about the file.
 Valid year values are as follows: 2000 (1999--2000), 2004 (2003--2004), 2006 (2005--2006), 2008 (2007--2008), 
 2010 (2009--2010), 2016 (2015--2016), 2018 (2017--2018).</p></dd>
+
+
 <dt>forceReread</dt>
 <dd><p>a logical value to force rereading of all processed data.
 The default value of <code>FALSE</code> will speed up the <code>readSSOCS</code> function by using existing read-in data already processed.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>a logical value to either print or suppress status message output.
 The default value is <code>TRUE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An <code>edsurvey.data.frame</code> if one data file is specified or an <code>edsurvey.data.frame.list</code> if multiple files are specified in the <code>sasDataFiles</code> parameter.</p>
+    
+
+<p>An <code>edsurvey.data.frame</code> if one data file is specified or an <code>edsurvey.data.frame.list</code> if multiple files are specified in the <code>sasDataFiles</code> parameter.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -109,31 +118,31 @@ restricted-use data or other websites, may require additional conversion steps t
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co">#download SSOCS data for years 2016 and 2018 </span></span>
-<span class="r-in"><span class="fu"><a href="downloadSSOCS.html">downloadSSOCS</a></span><span class="op">(</span>years <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2016</span>, <span class="fl">2018</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">rootPath</span> <span class="op">&lt;-</span> <span class="st">"~/"</span><span class="co"># may need to change this </span></span>
-<span class="r-in"><span class="co">#get SAS *.sas7bdat file paths of all SSOCS files for 2016 and 2018</span></span>
-<span class="r-in"><span class="va">filesToImport</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">rootPath</span>, <span class="st">"SSOCS"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2016</span>, <span class="fl">2018</span><span class="op">)</span><span class="op">)</span>,</span>
-<span class="r-in">                            pattern<span class="op">=</span><span class="st">"\\.sas7bdat$"</span>,</span>
-<span class="r-in">                            full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in">  </span>
-<span class="r-in"><span class="co">#import all files to edsurvey.data.frame.list object</span></span>
-<span class="r-in"><span class="va">esdfList</span> <span class="op">&lt;-</span> <span class="fu">readSSOCS</span><span class="op">(</span>sasDataFiles <span class="op">=</span> <span class="va">filesToImport</span>,</span>
-<span class="r-in">                      years <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2016</span>, <span class="fl">2018</span><span class="op">)</span>,</span>
-<span class="r-in">                      forceReread <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span class="r-in">                      verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">#reading in the 2018 to an edsurvey.data.frame object</span></span>
-<span class="r-in"><span class="va">esdf</span> <span class="op">&lt;-</span> <span class="fu">readSSOCS</span><span class="op">(</span>sasDataFiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">rootPath</span>, <span class="st">"SSOCS/2018/pu_ssocs18.sas7bdat"</span><span class="op">)</span>,</span>
-<span class="r-in">                  years <span class="op">=</span> <span class="fl">2018</span>,</span>
-<span class="r-in">                  forceReread <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span class="r-in">                  verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in">  </span>
-<span class="r-in"><span class="co">#search for variables in the edsurvey.data.frame containing the word 'bully'</span></span>
-<span class="r-in"><span class="fu"><a href="searchSDF.html">searchSDF</a></span><span class="op">(</span><span class="st">"bully"</span>, <span class="va">esdf</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co">#download SSOCS data for years 2016 and 2018 </span></span></span>
+<span class="r-in"><span><span class="fu"><a href="downloadSSOCS.html">downloadSSOCS</a></span><span class="op">(</span>years <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2016</span>, <span class="fl">2018</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">rootPath</span> <span class="op">&lt;-</span> <span class="st">"~/"</span><span class="co"># may need to change this </span></span></span>
+<span class="r-in"><span><span class="co">#get SAS *.sas7bdat file paths of all SSOCS files for 2016 and 2018</span></span></span>
+<span class="r-in"><span><span class="va">filesToImport</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">rootPath</span>, <span class="st">"SSOCS"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2016</span>, <span class="fl">2018</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                            pattern<span class="op">=</span><span class="st">"\\.sas7bdat$"</span>,</span></span>
+<span class="r-in"><span>                            full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  </span></span>
+<span class="r-in"><span><span class="co">#import all files to edsurvey.data.frame.list object</span></span></span>
+<span class="r-in"><span><span class="va">esdfList</span> <span class="op">&lt;-</span> <span class="fu">readSSOCS</span><span class="op">(</span>sasDataFiles <span class="op">=</span> <span class="va">filesToImport</span>,</span></span>
+<span class="r-in"><span>                      years <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2016</span>, <span class="fl">2018</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                      forceReread <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>                      verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#reading in the 2018 to an edsurvey.data.frame object</span></span></span>
+<span class="r-in"><span><span class="va">esdf</span> <span class="op">&lt;-</span> <span class="fu">readSSOCS</span><span class="op">(</span>sasDataFiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">rootPath</span>, <span class="st">"SSOCS/2018/pu_ssocs18.sas7bdat"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                  years <span class="op">=</span> <span class="fl">2018</span>,</span></span>
+<span class="r-in"><span>                  forceReread <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>                  verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  </span></span>
+<span class="r-in"><span><span class="co">#search for variables in the edsurvey.data.frame containing the word 'bully'</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="searchSDF.html">searchSDF</a></span><span class="op">(</span><span class="st">"bully"</span>, <span class="va">esdf</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -148,7 +157,7 @@ restricted-use data or other websites, may require additional conversion steps t
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

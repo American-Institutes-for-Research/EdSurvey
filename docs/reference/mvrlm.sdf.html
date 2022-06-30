@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -62,18 +62,18 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">mvrlm.sdf</span><span class="op">(</span>
-  <span class="va">formula</span>,
-  <span class="va">data</span>,
-  weightVar <span class="op">=</span> <span class="cn">NULL</span>,
-  relevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,
-  jrrIMax <span class="op">=</span> <span class="fl">1</span>,
-  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,
-  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,
-  recode <span class="op">=</span> <span class="cn">NULL</span>,
-  returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span>,
-  estMethod <span class="op">=</span> <span class="st">"OLS"</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mvrlm.sdf</span><span class="op">(</span></span>
+<span>  <span class="va">formula</span>,</span>
+<span>  <span class="va">data</span>,</span>
+<span>  weightVar <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  relevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  jrrIMax <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  recode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  estMethod <span class="op">=</span> <span class="st">"OLS"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -83,13 +83,19 @@
 linear model. See <code><a href="https://rdrr.io/pkg/Formula/man/Formula.html" class="external-link">Formula</a></code>;
 left-hand side variables are separated with 
 vertical pipes (<code>|</code>). See Examples.</p></dd>
+
+
 <dt>data</dt>
 <dd><p>an <code>edsurvey.data.frame</code> or an <code>edsurvey.data.frame.list</code></p></dd>
+
+
 <dt>weightVar</dt>
 <dd><p>character indicating the weight variable to use (see Details).
 The <code>weightVar</code> must be one of the weights for the
 <code>edsurvey.data.frame</code>. If <code>NULL</code>, uses the default
 for the <code>edsurvey.data.frame</code>.</p></dd>
+
+
 <dt>relevels</dt>
 <dd><p>a list. Used to change the contrasts from the
 default treatment contrasts to treatment contrasts with a chosen omitted
@@ -99,6 +105,8 @@ a variable to change contrasts on
 and then make the value for that list element equal to the value
 that should
 be the omitted group (the reference group).</p></dd>
+
+
 <dt>jrrIMax</dt>
 <dd><p>a numeric value; when using the jackknife variance estimation method, the default estimation option, <code>jrrIMax=1</code>, uses the 
                   sampling variance from the first plausible value as the component for sampling variance estimation. The \(V_{jrr}\) 
@@ -107,82 +115,119 @@ be the omitted group (the reference group).</p></dd>
                   can be estimated with any number of plausible values, and values larger than the number of 
                   plausible values on the survey (including <code>Inf</code>) will result in all plausible values being used. 
                   Higher values of <code>jrrIMax</code> lead to longer computing times and more accurate variance estimates.</p></dd>
+
+
 <dt>omittedLevels</dt>
 <dd><p>a logical value. When set to the default value of <code>TRUE</code>, drops
 those levels of all factor variables that are specified
 in <code>edsurvey.data.frame</code>. Use <code>print</code> on an
 <code>edsurvey.data.frame</code> to see the omitted levels.</p></dd>
+
+
 <dt>defaultConditions</dt>
 <dd><p>a logical value. When set to the default value of <code>TRUE</code>, uses
 the default conditions stored in <code>edsurvey.data.frame</code>
 to subset the data. Use <code>print</code> on an
 <code>edsurvey.data.frame</code> to see the default conditions.</p></dd>
+
+
 <dt>recode</dt>
 <dd><p>a list of lists to recode variables. Defaults to <code>NULL</code>. Can be set as
 <code>recode</code> <code>=</code> <code>list(var1=</code> <code>list(from=c("a","b","c"),</code> <code>to ="d"))</code>.</p></dd>
+
+
 <dt>returnVarEstInputs</dt>
 <dd><p>a logical value. Set to <code>TRUE</code> to return the
 inputs to the jackknife and imputation variance
 estimates, which allow for
 computation of covariances between estimates.</p></dd>
+
+
 <dt>estMethod</dt>
 <dd><p>a character value indicating which estimation method to use.
 Default is <code>OLS</code>; other option is <code>GLS</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An <code>edsurvey.mvrlm</code> with elements:</p>
+    
+
+<p>An <code>edsurvey.mvrlm</code> with elements:</p>
 <dl><dt>call</dt>
 <dd><p>the function call</p></dd>
-<dt>formula</dt>
+
+   <dt>formula</dt>
 <dd><p>the formula used to fit the model</p></dd>
-<dt>coef</dt>
+
+   <dt>coef</dt>
 <dd><p>the estimates of the coefficients</p></dd>
-<dt>se</dt>
+
+   <dt>se</dt>
 <dd><p>the standard error estimates of the coefficients</p></dd>
-<dt>Vimp</dt>
+
+   <dt>Vimp</dt>
 <dd><p>the estimated variance caused by uncertainty in the scores (plausible value variables)</p></dd>
-<dt>Vjrr</dt>
+
+   <dt>Vjrr</dt>
 <dd><p>the estimated variance caused by sampling</p></dd>
-<dt>M</dt>
+
+   <dt>M</dt>
 <dd><p>the number of plausible values</p></dd>
-<dt>varm</dt>
+
+   <dt>varm</dt>
 <dd><p>the variance estimates under the various plausible values</p></dd>
-<dt>coefm</dt>
+
+   <dt>coefm</dt>
 <dd><p>the values of the coefficients under the various plausible values</p></dd>
-<dt>coefmat</dt>
+
+   <dt>coefmat</dt>
 <dd><p>the coefficient matrix (typically produced by the summary of a model)</p></dd>
-<dt>r.squared</dt>
+
+   <dt>r.squared</dt>
 <dd><p>the coefficient of determination</p></dd>
-<dt>weight</dt>
+
+   <dt>weight</dt>
 <dd><p>the name of the weight variable</p></dd>
-<dt>npv</dt>
+
+   <dt>npv</dt>
 <dd><p>the number of plausible values</p></dd>
-<dt>njk</dt>
+
+   <dt>njk</dt>
 <dd><p>the number of the jackknife replicates used</p></dd>
-<dt>varEstInputs</dt>
+
+   <dt>varEstInputs</dt>
 <dd><p>When <code>returnVarEstInputs</code> is <code>TRUE</code>,
                        this element is returned. These are
                        used for calculating covariances with
                        <code><a href="varEstToCov.html">varEstToCov</a></code>.</p></dd>
-<dt>residuals</dt>
+
+   <dt>residuals</dt>
 <dd><p>residuals for each of the PV models</p></dd>
-<dt>fitted.values</dt>
+
+   <dt>fitted.values</dt>
 <dd><p>model fitted values</p></dd>
-<dt>residCov</dt>
+
+   <dt>residCov</dt>
 <dd><p>residual covariance matrix for dependent variables</p></dd>
-<dt>residPV</dt>
+
+   <dt>residPV</dt>
 <dd><p>residuals for each dependent variable</p></dd>
-<dt>inputs</dt>
+
+   <dt>inputs</dt>
 <dd><p>coefficient estimation input matrices</p></dd>
-<dt>n0</dt>
+
+   <dt>n0</dt>
 <dd><p>full data <em>n</em></p></dd>
-<dt>nUsed</dt>
+
+   <dt>nUsed</dt>
 <dd><p><em>n</em> used for model</p></dd>
-<dt>B</dt>
+
+   <dt>B</dt>
 <dd><p>imputation variance-covariance matrix, before multiplication by (M+1)/M</p></dd>
-<dt>U</dt>
+
+   <dt>U</dt>
 <dd><p>sampling variance-covariance matrix</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -225,58 +270,58 @@ the average R-squared using the sample weights for each set of plausible values.
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># read in the example data (generated, not real student data)</span></span>
-<span class="r-in"><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># use | symbol to separate dependent variables in the left-hand side of formula</span></span>
-<span class="r-in"><span class="va">mvrlm.fit</span> <span class="op">&lt;-</span> <span class="fu">mvrlm.sdf</span><span class="op">(</span><span class="va">algebra</span> <span class="op">|</span> <span class="va">geometry</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">m072801</span>, jrrIMax <span class="op">=</span> <span class="fl">5</span>, data <span class="op">=</span> <span class="va">sdf</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># print method returns coefficients, as does coef method</span></span>
-<span class="r-in"><span class="va">mvrlm.fit</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">mvrlm.fit</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># for more detailed results, use summary:</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mvrlm.fit</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># details of model can also be accessed through components of the returned object; for example:</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># coefficients (one column per dependent variable)</span></span>
-<span class="r-in"><span class="va">mvrlm.fit</span><span class="op">$</span><span class="va">coef</span></span>
-<span class="r-in"><span class="co"># coefficient table with standard errors and p-values (1 table per dependent variable)</span></span>
-<span class="r-in"><span class="va">mvrlm.fit</span><span class="op">$</span><span class="va">coefmat</span></span>
-<span class="r-in"><span class="co"># R-squared values (one per dependent variable)</span></span>
-<span class="r-in"><span class="va">mvrlm.fit</span><span class="op">$</span><span class="va">r.squared</span></span>
-<span class="r-in"><span class="co"># residual covariance matrix</span></span>
-<span class="r-in"><span class="va">mvrlm.fit</span><span class="op">$</span><span class="va">residCov</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># model residuals and other details are available as well</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># show the structure of the residuals objects</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">mvrlm.fit</span><span class="op">$</span><span class="va">residuals</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">mvrlm.fit</span><span class="op">$</span><span class="va">residPV</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># dependent variables can have plausible values or not (or a combination)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">mvrlm.fit</span> <span class="op">&lt;-</span> <span class="fu">mvrlm.sdf</span><span class="op">(</span><span class="va">composite</span> <span class="op">|</span> <span class="va">mrps22</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">m072801</span>, data <span class="op">=</span> <span class="va">sdf</span>, jrrIMax <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mvrlm.fit</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">mvrlm.fit</span> <span class="op">&lt;-</span> <span class="fu">mvrlm.sdf</span><span class="op">(</span><span class="va">algebra</span> <span class="op">|</span> <span class="va">geometry</span> <span class="op">|</span> <span class="va">measurement</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">m072801</span>, data <span class="op">=</span> <span class="va">sdf</span>, jrrIMax <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mvrlm.fit</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">mvrlm.fit</span> <span class="op">&lt;-</span> <span class="fu">mvrlm.sdf</span><span class="op">(</span><span class="va">mrps51</span> <span class="op">|</span> <span class="va">mrps22</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">m072801</span>, data <span class="op">=</span> <span class="va">sdf</span>, jrrIMax <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mvrlm.fit</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># hypotheses about coefficient restrictions can also be tested using the Wald test</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">mvr</span> <span class="op">&lt;-</span> <span class="fu">mvrlm.sdf</span><span class="op">(</span><span class="va">algebra</span> <span class="op">|</span> <span class="va">geometry</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">m072801</span>, data <span class="op">=</span> <span class="va">sdf</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">hypothesis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"geometry_dsexFemale = 0"</span>, <span class="st">"algebra_dsexFemale = 0"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># test statistics based on the F and chi-squared distribution are available</span></span>
-<span class="r-in"><span class="fu">linearHypothesis</span><span class="op">(</span><span class="va">mvr</span>, hypothesis <span class="op">=</span> <span class="va">hypothesis</span>, test <span class="op">=</span> <span class="st">"F"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">linearHypothesis</span><span class="op">(</span><span class="va">mvr</span>, hypothesis <span class="op">=</span> <span class="va">hypothesis</span>, test <span class="op">=</span> <span class="st">"Chisq"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># read in the example data (generated, not real student data)</span></span></span>
+<span class="r-in"><span><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># use | symbol to separate dependent variables in the left-hand side of formula</span></span></span>
+<span class="r-in"><span><span class="va">mvrlm.fit</span> <span class="op">&lt;-</span> <span class="fu">mvrlm.sdf</span><span class="op">(</span><span class="va">algebra</span> <span class="op">|</span> <span class="va">geometry</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">m072801</span>, jrrIMax <span class="op">=</span> <span class="fl">5</span>, data <span class="op">=</span> <span class="va">sdf</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># print method returns coefficients, as does coef method</span></span></span>
+<span class="r-in"><span><span class="va">mvrlm.fit</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">mvrlm.fit</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># for more detailed results, use summary:</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mvrlm.fit</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># details of model can also be accessed through components of the returned object; for example:</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># coefficients (one column per dependent variable)</span></span></span>
+<span class="r-in"><span><span class="va">mvrlm.fit</span><span class="op">$</span><span class="va">coef</span></span></span>
+<span class="r-in"><span><span class="co"># coefficient table with standard errors and p-values (1 table per dependent variable)</span></span></span>
+<span class="r-in"><span><span class="va">mvrlm.fit</span><span class="op">$</span><span class="va">coefmat</span></span></span>
+<span class="r-in"><span><span class="co"># R-squared values (one per dependent variable)</span></span></span>
+<span class="r-in"><span><span class="va">mvrlm.fit</span><span class="op">$</span><span class="va">r.squared</span></span></span>
+<span class="r-in"><span><span class="co"># residual covariance matrix</span></span></span>
+<span class="r-in"><span><span class="va">mvrlm.fit</span><span class="op">$</span><span class="va">residCov</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># model residuals and other details are available as well</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># show the structure of the residuals objects</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">mvrlm.fit</span><span class="op">$</span><span class="va">residuals</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">mvrlm.fit</span><span class="op">$</span><span class="va">residPV</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># dependent variables can have plausible values or not (or a combination)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">mvrlm.fit</span> <span class="op">&lt;-</span> <span class="fu">mvrlm.sdf</span><span class="op">(</span><span class="va">composite</span> <span class="op">|</span> <span class="va">mrps22</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">m072801</span>, data <span class="op">=</span> <span class="va">sdf</span>, jrrIMax <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mvrlm.fit</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">mvrlm.fit</span> <span class="op">&lt;-</span> <span class="fu">mvrlm.sdf</span><span class="op">(</span><span class="va">algebra</span> <span class="op">|</span> <span class="va">geometry</span> <span class="op">|</span> <span class="va">measurement</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">m072801</span>, data <span class="op">=</span> <span class="va">sdf</span>, jrrIMax <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mvrlm.fit</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">mvrlm.fit</span> <span class="op">&lt;-</span> <span class="fu">mvrlm.sdf</span><span class="op">(</span><span class="va">mrps51</span> <span class="op">|</span> <span class="va">mrps22</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">m072801</span>, data <span class="op">=</span> <span class="va">sdf</span>, jrrIMax <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">mvrlm.fit</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># hypotheses about coefficient restrictions can also be tested using the Wald test</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">mvr</span> <span class="op">&lt;-</span> <span class="fu">mvrlm.sdf</span><span class="op">(</span><span class="va">algebra</span> <span class="op">|</span> <span class="va">geometry</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">m072801</span>, data <span class="op">=</span> <span class="va">sdf</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">hypothesis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"geometry_dsexFemale = 0"</span>, <span class="st">"algebra_dsexFemale = 0"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># test statistics based on the F and chi-squared distribution are available</span></span></span>
+<span class="r-in"><span><span class="fu">linearHypothesis</span><span class="op">(</span><span class="va">mvr</span>, hypothesis <span class="op">=</span> <span class="va">hypothesis</span>, test <span class="op">=</span> <span class="st">"F"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">linearHypothesis</span><span class="op">(</span><span class="va">mvr</span>, hypothesis <span class="op">=</span> <span class="va">hypothesis</span>, test <span class="op">=</span> <span class="st">"Chisq"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -291,7 +336,7 @@ the average R-squared using the sample weights for each set of plausible values.
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

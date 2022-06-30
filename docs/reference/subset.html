@@ -18,7 +18,7 @@ or a light.edsurvey.data.frame."><!-- mathjax --><script src="https://cdnjs.clou
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -62,8 +62,8 @@ or a <code>light.edsurvey.data.frame</code>.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for edsurvey.data.frame</span>
-<span class="fu">subset</span><span class="op">(</span><span class="va">x</span>, <span class="va">subset</span>, <span class="va">...</span>, inside <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for edsurvey.data.frame</span></span>
+<span><span class="fu">subset</span><span class="op">(</span><span class="va">x</span>, <span class="va">subset</span>, <span class="va">...</span>, inside <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -71,17 +71,28 @@ or a <code>light.edsurvey.data.frame</code>.</p>
     <dl><dt>x</dt>
 <dd><p>an <code>edsurvey.data.frame</code>, an <code>edsurvey.data.frame.list</code>,
 or a <code>light.edsurvey.data.frame</code></p></dd>
+
+
 <dt>subset</dt>
 <dd><p>a logical expression indicating elements or rows to keep</p></dd>
+
+
 <dt>...</dt>
 <dd><p>not used; included only for compatibility</p></dd>
+
+
 <dt>inside</dt>
 <dd><p>set to <code>TRUE</code> to prevent the <code>substitute</code> condition
 from being called on it (see Details)</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>an object of the same class as <code>x</code></p>
+    
+
+<p>an object of the same class as <code>x</code></p>
+
+
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -107,79 +118,79 @@ See Examples for how to call this function from within another function.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># read in the example data (generated, not real student data)</span></span>
-<span class="r-in"><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># table to compare to subsequent tables with subsets</span></span>
-<span class="r-in"><span class="fu"><a href="edsurveyTable.html">edsurveyTable</a></span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span>, data<span class="op">=</span><span class="va">sdf</span>, returnMeans<span class="op">=</span><span class="cn">FALSE</span>, returnSepct<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># subset to just males</span></span>
-<span class="r-in"><span class="va">newsdf</span> <span class="op">&lt;-</span>  <span class="fu">subset</span><span class="op">(</span>x<span class="op">=</span><span class="va">sdf</span>, subset<span class="op">=</span> <span class="va">dsex</span> <span class="op">==</span> <span class="st">"Male"</span><span class="op">)</span> </span>
-<span class="r-in"><span class="co"># table of dsex after subset</span></span>
-<span class="r-in"><span class="fu"><a href="edsurveyTable.html">edsurveyTable</a></span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span>, data<span class="op">=</span><span class="va">newsdf</span>, returnMeans<span class="op">=</span><span class="cn">FALSE</span>, returnSepct<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Variable names that are not in the sdf get resolved in the parent frame.</span></span>
-<span class="r-in"><span class="co"># practically, that means that the following two subset </span></span>
-<span class="r-in"><span class="co"># calls sdfM1 and sdfM2 do the same thing</span></span>
-<span class="r-in"><span class="va">male_var</span> <span class="op">&lt;-</span> <span class="st">"Male"</span></span>
-<span class="r-in"><span class="va">sdfM1</span> <span class="op">&lt;-</span> <span class="fu">subset</span><span class="op">(</span>x<span class="op">=</span><span class="va">sdf</span>, subset<span class="op">=</span> <span class="va">dsex</span> <span class="op">==</span> <span class="va">male_var</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sdfM2</span> <span class="op">&lt;-</span> <span class="fu">subset</span><span class="op">(</span>x<span class="op">=</span><span class="va">sdf</span>, subset<span class="op">=</span> <span class="va">dsex</span> <span class="op">==</span> <span class="st">"Male"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="getData.html">getData</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">sdfM1</span>, varnames<span class="op">=</span><span class="st">"dsex"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="getData.html">getData</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">sdfM2</span>, varnames<span class="op">=</span><span class="st">"dsex"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># variable can also be resolved as members of lists</span></span>
-<span class="r-in"><span class="va">genders</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Male"</span>, <span class="st">"Female"</span>,<span class="st">"not a sex level"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sdfn</span> <span class="op">&lt;-</span> <span class="fu">subset</span><span class="op">(</span>x<span class="op">=</span><span class="va">sdf</span>, subset<span class="op">=</span> <span class="va">dsex</span> <span class="op">==</span> <span class="va">genders</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span> </span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="getData.html">getData</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">sdfn</span>, varnames<span class="op">=</span><span class="st">"dsex"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># variables can also be subset using %in%</span></span>
-<span class="r-in"><span class="va">sdfM3</span> <span class="op">&lt;-</span> <span class="fu">subset</span><span class="op">(</span>x<span class="op">=</span><span class="va">sdf</span>, subset<span class="op">=</span> <span class="va">dsex</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Male"</span>, <span class="st">"not a sex level"</span><span class="op">)</span><span class="op">)</span> </span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="getData.html">getData</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">sdfM3</span>, varnames<span class="op">=</span><span class="st">"dsex"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># if you need to call a name on the sdf dynamically, you can use as.name</span></span>
-<span class="r-in"><span class="va">dsex_standin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/name.html" class="external-link">as.name</a></span><span class="op">(</span><span class="st">"dsex"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sdfM4</span> <span class="op">&lt;-</span> <span class="fu">subset</span><span class="op">(</span>x<span class="op">=</span><span class="va">sdf</span>, subset<span class="op">=</span> <span class="va">dsex_standin</span> <span class="op">==</span> <span class="st">"Male"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="getData.html">getData</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">sdfM4</span>, varnames<span class="op">=</span><span class="st">"dsex"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Here is an example of how one might want to call</span></span>
-<span class="r-in"><span class="co"># subset from within a function or loop.</span></span>
-<span class="r-in"><span class="co"># First, define a few variables to use dynamically</span></span>
-<span class="r-in"><span class="va">rhs_vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dsex"</span>, <span class="st">"b017451"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">lvls</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Male"</span>, <span class="st">"Female"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># create a parsed condition</span></span>
-<span class="r-in"><span class="va">cond</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/parse.html" class="external-link">parse</a></span><span class="op">(</span>text<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">rhs_vars</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="st">" == \""</span>,<span class="va">lvls</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,<span class="st">"\""</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># when inside=TRUE a parsed condition can be passed to subset</span></span>
-<span class="r-in"><span class="va">dsdf</span> <span class="op">&lt;-</span> <span class="fu">subset</span><span class="op">(</span>x<span class="op">=</span><span class="va">sdf</span>, subset<span class="op">=</span><span class="va">cond</span>, inside<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># check the result</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="getData.html">getData</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">dsdf</span>, varnames<span class="op">=</span><span class="st">"dsex"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># both of these return data, but uses substantial memory</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sdf</span><span class="op">[</span> , <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"origwt"</span>,<span class="st">"m145101"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sdf</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"origwt"</span>,<span class="st">"m145101"</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># subset an edsurvey.data.frame.list</span></span>
-<span class="r-in"><span class="va">sdfA</span> <span class="op">&lt;-</span> <span class="fu">subset</span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">45</span>,<span class="fl">56</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sdfB</span> <span class="op">&lt;-</span> <span class="fu">subset</span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">75</span>,<span class="fl">76</span>,<span class="fl">78</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sdfC</span> <span class="op">&lt;-</span> <span class="fu">subset</span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">100</span><span class="op">:</span><span class="fl">200</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sdfD</span> <span class="op">&lt;-</span> <span class="fu">subset</span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">201</span><span class="op">:</span><span class="fl">300</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># construct an edsurvey.data.frame.list from these four datasets</span></span>
-<span class="r-in"><span class="va">sdfl</span> <span class="op">&lt;-</span> <span class="fu"><a href="edsurvey.data.frame.list.html">edsurvey.data.frame.list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">sdfA</span>, <span class="va">sdfB</span>, <span class="va">sdfC</span>, <span class="va">sdfD</span><span class="op">)</span>,</span>
-<span class="r-in">                                 labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A locations"</span>,</span>
-<span class="r-in">                                           <span class="st">"B locations"</span>,</span>
-<span class="r-in">                                           <span class="st">"C locations"</span>,</span>
-<span class="r-in">                                           <span class="st">"D locations"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">sdfl2</span> <span class="op">&lt;-</span> <span class="fu">subset</span><span class="op">(</span><span class="va">sdfl</span>, <span class="va">dsex</span><span class="op">==</span><span class="st">"Male"</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># the number of rows in each element of the sdfl</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">sdfl</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># the number of rows after subsetting each element to just the Males</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">sdfl2</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># read in the example data (generated, not real student data)</span></span></span>
+<span class="r-in"><span><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># table to compare to subsequent tables with subsets</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="edsurveyTable.html">edsurveyTable</a></span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span>, data<span class="op">=</span><span class="va">sdf</span>, returnMeans<span class="op">=</span><span class="cn">FALSE</span>, returnSepct<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># subset to just males</span></span></span>
+<span class="r-in"><span><span class="va">newsdf</span> <span class="op">&lt;-</span>  <span class="fu">subset</span><span class="op">(</span>x<span class="op">=</span><span class="va">sdf</span>, subset<span class="op">=</span> <span class="va">dsex</span> <span class="op">==</span> <span class="st">"Male"</span><span class="op">)</span> </span></span>
+<span class="r-in"><span><span class="co"># table of dsex after subset</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="edsurveyTable.html">edsurveyTable</a></span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span>, data<span class="op">=</span><span class="va">newsdf</span>, returnMeans<span class="op">=</span><span class="cn">FALSE</span>, returnSepct<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Variable names that are not in the sdf get resolved in the parent frame.</span></span></span>
+<span class="r-in"><span><span class="co"># practically, that means that the following two subset </span></span></span>
+<span class="r-in"><span><span class="co"># calls sdfM1 and sdfM2 do the same thing</span></span></span>
+<span class="r-in"><span><span class="va">male_var</span> <span class="op">&lt;-</span> <span class="st">"Male"</span></span></span>
+<span class="r-in"><span><span class="va">sdfM1</span> <span class="op">&lt;-</span> <span class="fu">subset</span><span class="op">(</span>x<span class="op">=</span><span class="va">sdf</span>, subset<span class="op">=</span> <span class="va">dsex</span> <span class="op">==</span> <span class="va">male_var</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sdfM2</span> <span class="op">&lt;-</span> <span class="fu">subset</span><span class="op">(</span>x<span class="op">=</span><span class="va">sdf</span>, subset<span class="op">=</span> <span class="va">dsex</span> <span class="op">==</span> <span class="st">"Male"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="getData.html">getData</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">sdfM1</span>, varnames<span class="op">=</span><span class="st">"dsex"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="getData.html">getData</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">sdfM2</span>, varnames<span class="op">=</span><span class="st">"dsex"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># variable can also be resolved as members of lists</span></span></span>
+<span class="r-in"><span><span class="va">genders</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Male"</span>, <span class="st">"Female"</span>,<span class="st">"not a sex level"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sdfn</span> <span class="op">&lt;-</span> <span class="fu">subset</span><span class="op">(</span>x<span class="op">=</span><span class="va">sdf</span>, subset<span class="op">=</span> <span class="va">dsex</span> <span class="op">==</span> <span class="va">genders</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span> </span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="getData.html">getData</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">sdfn</span>, varnames<span class="op">=</span><span class="st">"dsex"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># variables can also be subset using %in%</span></span></span>
+<span class="r-in"><span><span class="va">sdfM3</span> <span class="op">&lt;-</span> <span class="fu">subset</span><span class="op">(</span>x<span class="op">=</span><span class="va">sdf</span>, subset<span class="op">=</span> <span class="va">dsex</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Male"</span>, <span class="st">"not a sex level"</span><span class="op">)</span><span class="op">)</span> </span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="getData.html">getData</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">sdfM3</span>, varnames<span class="op">=</span><span class="st">"dsex"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># if you need to call a name on the sdf dynamically, you can use as.name</span></span></span>
+<span class="r-in"><span><span class="va">dsex_standin</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/name.html" class="external-link">as.name</a></span><span class="op">(</span><span class="st">"dsex"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sdfM4</span> <span class="op">&lt;-</span> <span class="fu">subset</span><span class="op">(</span>x<span class="op">=</span><span class="va">sdf</span>, subset<span class="op">=</span> <span class="va">dsex_standin</span> <span class="op">==</span> <span class="st">"Male"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="getData.html">getData</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">sdfM4</span>, varnames<span class="op">=</span><span class="st">"dsex"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Here is an example of how one might want to call</span></span></span>
+<span class="r-in"><span><span class="co"># subset from within a function or loop.</span></span></span>
+<span class="r-in"><span><span class="co"># First, define a few variables to use dynamically</span></span></span>
+<span class="r-in"><span><span class="va">rhs_vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"dsex"</span>, <span class="st">"b017451"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">lvls</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Male"</span>, <span class="st">"Female"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># create a parsed condition</span></span></span>
+<span class="r-in"><span><span class="va">cond</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/parse.html" class="external-link">parse</a></span><span class="op">(</span>text<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">rhs_vars</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="st">" == \""</span>,<span class="va">lvls</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,<span class="st">"\""</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># when inside=TRUE a parsed condition can be passed to subset</span></span></span>
+<span class="r-in"><span><span class="va">dsdf</span> <span class="op">&lt;-</span> <span class="fu">subset</span><span class="op">(</span>x<span class="op">=</span><span class="va">sdf</span>, subset<span class="op">=</span><span class="va">cond</span>, inside<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># check the result</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="getData.html">getData</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">dsdf</span>, varnames<span class="op">=</span><span class="st">"dsex"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># both of these return data, but uses substantial memory</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sdf</span><span class="op">[</span> , <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"origwt"</span>,<span class="st">"m145101"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sdf</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"origwt"</span>,<span class="st">"m145101"</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># subset an edsurvey.data.frame.list</span></span></span>
+<span class="r-in"><span><span class="va">sdfA</span> <span class="op">&lt;-</span> <span class="fu">subset</span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">45</span>,<span class="fl">56</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sdfB</span> <span class="op">&lt;-</span> <span class="fu">subset</span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">75</span>,<span class="fl">76</span>,<span class="fl">78</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sdfC</span> <span class="op">&lt;-</span> <span class="fu">subset</span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">100</span><span class="op">:</span><span class="fl">200</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sdfD</span> <span class="op">&lt;-</span> <span class="fu">subset</span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">201</span><span class="op">:</span><span class="fl">300</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># construct an edsurvey.data.frame.list from these four datasets</span></span></span>
+<span class="r-in"><span><span class="va">sdfl</span> <span class="op">&lt;-</span> <span class="fu"><a href="edsurvey.data.frame.list.html">edsurvey.data.frame.list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">sdfA</span>, <span class="va">sdfB</span>, <span class="va">sdfC</span>, <span class="va">sdfD</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                 labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A locations"</span>,</span></span>
+<span class="r-in"><span>                                           <span class="st">"B locations"</span>,</span></span>
+<span class="r-in"><span>                                           <span class="st">"C locations"</span>,</span></span>
+<span class="r-in"><span>                                           <span class="st">"D locations"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">sdfl2</span> <span class="op">&lt;-</span> <span class="fu">subset</span><span class="op">(</span><span class="va">sdfl</span>, <span class="va">dsex</span><span class="op">==</span><span class="st">"Male"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># the number of rows in each element of the sdfl</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">sdfl</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># the number of rows after subsetting each element to just the Males</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">sdfl2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -194,7 +205,7 @@ See Examples for how to call this function from within another function.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

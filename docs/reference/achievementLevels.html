@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -60,21 +60,21 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">achievementLevels</span><span class="op">(</span>
-  achievementVars <span class="op">=</span> <span class="cn">NULL</span>,
-  aggregateBy <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">data</span>,
-  cutpoints <span class="op">=</span> <span class="cn">NULL</span>,
-  returnDiscrete <span class="op">=</span> <span class="cn">TRUE</span>,
-  returnCumulative <span class="op">=</span> <span class="cn">FALSE</span>,
-  weightVar <span class="op">=</span> <span class="cn">NULL</span>,
-  jrrIMax <span class="op">=</span> <span class="fl">1</span>,
-  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,
-  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,
-  recode <span class="op">=</span> <span class="cn">NULL</span>,
-  returnNumberOfPSU <span class="op">=</span> <span class="cn">FALSE</span>,
-  returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">achievementLevels</span><span class="op">(</span></span>
+<span>  achievementVars <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  aggregateBy <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">data</span>,</span>
+<span>  cutpoints <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  returnDiscrete <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  returnCumulative <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  weightVar <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  jrrIMax <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  recode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  returnNumberOfPSU <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -85,22 +85,34 @@ levels table, potentially with a subject scale or subscale. When the subject
 scale or subscale is omitted, the default subject scale or subscale is 
 used. You can find the default composite scale and all subscales using the 
 function <code><a href="showPlausibleValues.html">showPlausibleValues</a></code>.</p></dd>
+
+
 <dt>aggregateBy</dt>
 <dd><p>character vector specifying variables by which to aggregate achievement levels. The percentage
 column sums up to 100 for all levels of all variables specified here. When set to the 
 default of <code>NULL</code>, the percentage column sums up to 100 for all 
 levels of all variables specified in <code>achievementVars</code>.</p></dd>
+
+
 <dt>data</dt>
 <dd><p>an <code>edsurvey.data.frame</code></p></dd>
+
+
 <dt>cutpoints</dt>
 <dd><p>numeric vector indicating cutpoints. Set to standard NAEP cutpoints for 
 Basic, Proficient, and Advanced by default.</p></dd>
+
+
 <dt>returnDiscrete</dt>
 <dd><p>logical indicating if discrete achievement levels should be returned. Defaults 
 to <code>TRUE</code>.</p></dd>
+
+
 <dt>returnCumulative</dt>
 <dd><p>logical indicating if cumulative achievement levels should be returned. Defaults
 to <code>FALSE</code>. The first and last categories are the same as defined for discrete levels.</p></dd>
+
+
 <dt>weightVar</dt>
 <dd><p>character string indicating the weight variable to use.
 Only the name of the
@@ -108,6 +120,8 @@ weight variable needs to be included here, and any
 replicate weights will be automatically included.
 When this argument is <code>NULL</code>, the function uses the default.
 Use <code><a href="showWeights.html">showWeights</a></code> to find the default.</p></dd>
+
+
 <dt>jrrIMax</dt>
 <dd><p>a numeric value. When using the jackknife variance estimation method, the default estimation option, <code>jrrIMax=1</code>, uses the 
 sampling variance from the first plausible value as the component for sampling variance estimation. The \(V_{jrr}\) 
@@ -115,50 +129,70 @@ term (see <a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.p
 can be estimated with any number of plausible values, and values larger than the number of 
 plausible values on the survey (including <code>Inf</code>) will result in all plausible values being used. 
 Higher values of <code>jrrIMax</code> lead to longer computing times and more accurate variance estimates.</p></dd>
+
+
 <dt>omittedLevels</dt>
 <dd><p>a logical value. When set to the default value (<code>TRUE</code>), 
 it drops those levels in all factor variables that are specified in <code>achievementVars</code> 
 and <code>aggregateBy</code>. Use <code>print</code> on an <code>edsurvey.data.frame</code> 
 to see the omitted levels.</p></dd>
+
+
 <dt>defaultConditions</dt>
 <dd><p>a logical value. When set to the default value of <code>TRUE</code>, uses the default 
 conditions stored in an <code>edsurvey.data.frame</code> to subset the data. 
 Use <code>print</code> on an <code>edsurvey.data.frame</code> to see the default
 conditions.</p></dd>
+
+
 <dt>recode</dt>
 <dd><p>a list of lists to recode variables. Defaults to <code>NULL</code>. Can be set as
 <code>recode</code> <code>=</code> <code>list(var1=</code> <code>list(from=c("a",</code> <code>"b",</code> <code>"c"),</code> <code>to ="d"))</code>. See Examples.</p></dd>
+
+
 <dt>returnNumberOfPSU</dt>
 <dd><p>a logical value set to <code>TRUE</code> to return the number of 
 primary sampling units (PSUs)</p></dd>
+
+
 <dt>returnVarEstInputs</dt>
 <dd><p>a logical value set to <code>TRUE</code> to return the
 inputs to the jackknife and imputation variance
 estimates, which allows for the computation
 of covariances between estimates.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>list</code> containing up to two data frames, one discrete achievement levels (when <code>returnDiscrete</code> is <code>TRUE</code>)
+    
+
+<p>A <code>list</code> containing up to two data frames, one discrete achievement levels (when <code>returnDiscrete</code> is <code>TRUE</code>)
 and one for cumulative achievement levels (when <code>returnCumulative</code> is <code>TRUE</code>). The <code>data.frame</code> contains the following columns:</p>
 <dl><dt>Level</dt>
 <dd><p>one row for each level of the specified achievement cutpoints</p></dd>
+
 <dt>Variables in achievementVars</dt>
 <dd><p>one column for each variable in <code>achievementVars</code> 
 and one row for each level of each variable in <code>achievementVars</code></p></dd>
+
 <dt>Percent</dt>
 <dd><p>the percentage of students at or above each achievement level aggregated as specified by <code>aggregateBy</code></p></dd>
+
 <dt>StandardError</dt>
 <dd><p>the standard error of the percentage, accounting for the survey sampling methodology. 
                             See the vignette titled <a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link">Statistical Methods Used in EdSurvey</a>.</p></dd>
+
 <dt>N</dt>
 <dd><p>the number of observations in the incoming data (the
                  number of rows when <code>omittedLevels</code> and
                  <code>defaultConditions</code> are set to <code>FALSE</code>)</p></dd>
+
 <dt>wtdN</dt>
 <dd><p>the weighted number of observations in the data</p></dd>
+
 <dt>nPSU</dt>
 <dd><p>the number of PSUs at or above each achievement level aggregated as specified by <code>aggregateBy</code>. Only returned with <code>returnNumberOfPSU=TRUE</code>.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -219,53 +253,53 @@ and one row for each level of each variable in <code>achievementVars</code></p><
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># read in the example data (generated, not real student data)</span></span>
-<span class="r-in"><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package<span class="op">=</span><span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># discrete achievement levels</span></span>
-<span class="r-in"><span class="fu">achievementLevels</span><span class="op">(</span>achievementVars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"composite"</span><span class="op">)</span>, aggregateBy<span class="op">=</span><span class="cn">NULL</span>, data<span class="op">=</span><span class="va">sdf</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># discrete achievement levels with a different subscale</span></span>
-<span class="r-in"><span class="fu">achievementLevels</span><span class="op">(</span>achievementVars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"num_oper"</span><span class="op">)</span>, aggregateBy<span class="op">=</span><span class="cn">NULL</span>, data<span class="op">=</span><span class="va">sdf</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># cumulative achievement levels</span></span>
-<span class="r-in"><span class="fu">achievementLevels</span><span class="op">(</span>achievementVars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"composite"</span><span class="op">)</span>, aggregateBy<span class="op">=</span><span class="cn">NULL</span>, data<span class="op">=</span><span class="va">sdf</span>, </span>
-<span class="r-in">                  returnCumulative<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># cumulative achievement levels with a different subscale</span></span>
-<span class="r-in"><span class="fu">achievementLevels</span><span class="op">(</span>achievementVars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"num_oper"</span><span class="op">)</span>, aggregateBy<span class="op">=</span><span class="cn">NULL</span>, data<span class="op">=</span><span class="va">sdf</span>, </span>
-<span class="r-in">                  returnCumulative<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># achievement levels as independent variables, by sex aggregated by composite</span></span>
-<span class="r-in"><span class="fu">achievementLevels</span><span class="op">(</span>achievementVars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"composite"</span>, <span class="st">"dsex"</span><span class="op">)</span>, aggregateBy<span class="op">=</span><span class="st">"composite"</span>,</span>
-<span class="r-in">                  data<span class="op">=</span><span class="va">sdf</span>, returnCumulative<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># achievement levels as independent variables, by sex aggregated by sex</span></span>
-<span class="r-in"><span class="fu">achievementLevels</span><span class="op">(</span>achievementVars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"composite"</span>, <span class="st">"dsex"</span><span class="op">)</span>, aggregateBy<span class="op">=</span><span class="st">"dsex"</span>, </span>
-<span class="r-in">                  data<span class="op">=</span><span class="va">sdf</span>, returnCumulative<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># achievement levels as independent variables, by race aggregated by race</span></span>
-<span class="r-in"><span class="fu">achievementLevels</span><span class="op">(</span>achievementVars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"composite"</span>, <span class="st">"sdracem"</span><span class="op">)</span>,</span>
-<span class="r-in">                  aggregateBy<span class="op">=</span><span class="st">"sdracem"</span>, data<span class="op">=</span><span class="va">sdf</span>, returnCumulative<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># use customized cutpoints</span></span>
-<span class="r-in"><span class="fu">achievementLevels</span><span class="op">(</span>achievementVars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"composite"</span><span class="op">)</span>, aggregateBy<span class="op">=</span><span class="cn">NULL</span>, data<span class="op">=</span><span class="va">sdf</span>, </span>
-<span class="r-in">                  cutpoints <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Customized Basic"</span> <span class="op">=</span> <span class="fl">200</span>, </span>
-<span class="r-in">                                <span class="st">"Customized Proficient"</span> <span class="op">=</span> <span class="fl">300</span>, </span>
-<span class="r-in">                                <span class="st">"Customized Advanced"</span> <span class="op">=</span> <span class="fl">400</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># use recode to change values for specified variables:</span></span>
-<span class="r-in"><span class="fu">achievementLevels</span><span class="op">(</span>achievementVars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"composite"</span>, <span class="st">"dsex"</span>, <span class="st">"b017451"</span><span class="op">)</span>,</span>
-<span class="r-in">                  aggregateBy <span class="op">=</span> <span class="st">"dsex"</span>, <span class="va">sdf</span>,</span>
-<span class="r-in">                  recode<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>b017451<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Never or hardly ever"</span>,</span>
-<span class="r-in">                                                  <span class="st">"Once every few weeks"</span>,</span>
-<span class="r-in">                                                  <span class="st">"About once a week"</span><span class="op">)</span>,</span>
-<span class="r-in">                                           to<span class="op">=</span><span class="st">"Infrequently"</span><span class="op">)</span>,</span>
-<span class="r-in">                              b017451<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2 or 3 times a week"</span>,</span>
-<span class="r-in">                                                  <span class="st">"Every day"</span><span class="op">)</span>,</span>
-<span class="r-in">                                           to<span class="op">=</span><span class="st">"Frequently"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># read in the example data (generated, not real student data)</span></span></span>
+<span class="r-in"><span><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package<span class="op">=</span><span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># discrete achievement levels</span></span></span>
+<span class="r-in"><span><span class="fu">achievementLevels</span><span class="op">(</span>achievementVars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"composite"</span><span class="op">)</span>, aggregateBy<span class="op">=</span><span class="cn">NULL</span>, data<span class="op">=</span><span class="va">sdf</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># discrete achievement levels with a different subscale</span></span></span>
+<span class="r-in"><span><span class="fu">achievementLevels</span><span class="op">(</span>achievementVars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"num_oper"</span><span class="op">)</span>, aggregateBy<span class="op">=</span><span class="cn">NULL</span>, data<span class="op">=</span><span class="va">sdf</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># cumulative achievement levels</span></span></span>
+<span class="r-in"><span><span class="fu">achievementLevels</span><span class="op">(</span>achievementVars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"composite"</span><span class="op">)</span>, aggregateBy<span class="op">=</span><span class="cn">NULL</span>, data<span class="op">=</span><span class="va">sdf</span>, </span></span>
+<span class="r-in"><span>                  returnCumulative<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> </span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># cumulative achievement levels with a different subscale</span></span></span>
+<span class="r-in"><span><span class="fu">achievementLevels</span><span class="op">(</span>achievementVars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"num_oper"</span><span class="op">)</span>, aggregateBy<span class="op">=</span><span class="cn">NULL</span>, data<span class="op">=</span><span class="va">sdf</span>, </span></span>
+<span class="r-in"><span>                  returnCumulative<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> </span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># achievement levels as independent variables, by sex aggregated by composite</span></span></span>
+<span class="r-in"><span><span class="fu">achievementLevels</span><span class="op">(</span>achievementVars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"composite"</span>, <span class="st">"dsex"</span><span class="op">)</span>, aggregateBy<span class="op">=</span><span class="st">"composite"</span>,</span></span>
+<span class="r-in"><span>                  data<span class="op">=</span><span class="va">sdf</span>, returnCumulative<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> </span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># achievement levels as independent variables, by sex aggregated by sex</span></span></span>
+<span class="r-in"><span><span class="fu">achievementLevels</span><span class="op">(</span>achievementVars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"composite"</span>, <span class="st">"dsex"</span><span class="op">)</span>, aggregateBy<span class="op">=</span><span class="st">"dsex"</span>, </span></span>
+<span class="r-in"><span>                  data<span class="op">=</span><span class="va">sdf</span>, returnCumulative<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> </span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># achievement levels as independent variables, by race aggregated by race</span></span></span>
+<span class="r-in"><span><span class="fu">achievementLevels</span><span class="op">(</span>achievementVars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"composite"</span>, <span class="st">"sdracem"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                  aggregateBy<span class="op">=</span><span class="st">"sdracem"</span>, data<span class="op">=</span><span class="va">sdf</span>, returnCumulative<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> </span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># use customized cutpoints</span></span></span>
+<span class="r-in"><span><span class="fu">achievementLevels</span><span class="op">(</span>achievementVars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"composite"</span><span class="op">)</span>, aggregateBy<span class="op">=</span><span class="cn">NULL</span>, data<span class="op">=</span><span class="va">sdf</span>, </span></span>
+<span class="r-in"><span>                  cutpoints <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Customized Basic"</span> <span class="op">=</span> <span class="fl">200</span>, </span></span>
+<span class="r-in"><span>                                <span class="st">"Customized Proficient"</span> <span class="op">=</span> <span class="fl">300</span>, </span></span>
+<span class="r-in"><span>                                <span class="st">"Customized Advanced"</span> <span class="op">=</span> <span class="fl">400</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># use recode to change values for specified variables:</span></span></span>
+<span class="r-in"><span><span class="fu">achievementLevels</span><span class="op">(</span>achievementVars<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"composite"</span>, <span class="st">"dsex"</span>, <span class="st">"b017451"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                  aggregateBy <span class="op">=</span> <span class="st">"dsex"</span>, <span class="va">sdf</span>,</span></span>
+<span class="r-in"><span>                  recode<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>b017451<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Never or hardly ever"</span>,</span></span>
+<span class="r-in"><span>                                                  <span class="st">"Once every few weeks"</span>,</span></span>
+<span class="r-in"><span>                                                  <span class="st">"About once a week"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                           to<span class="op">=</span><span class="st">"Infrequently"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                              b017451<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>from<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2 or 3 times a week"</span>,</span></span>
+<span class="r-in"><span>                                                  <span class="st">"Every day"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                           to<span class="op">=</span><span class="st">"Frequently"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -280,7 +314,7 @@ and one row for each level of each variable in <code>achievementVars</code></p><
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

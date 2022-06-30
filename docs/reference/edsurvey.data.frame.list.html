@@ -28,7 +28,7 @@ An edsurvey.data.frame.list is useful for looking at
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -82,15 +82,17 @@ An edsurvey.data.frame.list is useful for looking at
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">edsurvey.data.frame.list</span><span class="op">(</span><span class="va">datalist</span>, cov <span class="op">=</span> <span class="cn">NULL</span>, labels <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
-
-<span class="fu">append.edsurvey.data.frame.list</span><span class="op">(</span><span class="va">sdfA</span>, <span class="va">sdfB</span>, labelsA <span class="op">=</span> <span class="cn">NULL</span>, labelsB <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">edsurvey.data.frame.list</span><span class="op">(</span><span class="va">datalist</span>, cov <span class="op">=</span> <span class="cn">NULL</span>, labels <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">append.edsurvey.data.frame.list</span><span class="op">(</span><span class="va">sdfA</span>, <span class="va">sdfB</span>, labelsA <span class="op">=</span> <span class="cn">NULL</span>, labelsB <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>datalist</dt>
 <dd><p>a list of <code>edsurvey.data.frame</code>s to be combined</p></dd>
+
+
 <dt>cov</dt>
 <dd><p>a character vector that indicates what varies across
 the <code>edsurvey.data.frame</code> objects.
@@ -98,28 +100,42 @@ Guessed if not supplied. For example,
 if several <code>edsurvey.data.frame</code>s for several
 different countries are supplied, then <code>cov</code> would
 be set to the country.</p></dd>
+
+
 <dt>labels</dt>
 <dd><p>a character vector that specifies labels. Must be the
 same length
 as <code>datalist</code>. Not needed if <code>cov</code> exists or can be
 guessed. See Examples.</p></dd>
+
+
 <dt>sdfA</dt>
 <dd><p>an <code>edsurvey.data.frame</code> or an <code>edsurvey.data.frame.list</code> to be combined</p></dd>
+
+
 <dt>sdfB</dt>
 <dd><p>an <code>edsurvey.data.frame</code> or an <code>edsurvey.data.frame.list</code> to be combined</p></dd>
+
+
 <dt>labelsA</dt>
 <dd><p>a character vector that specifies <code>labels</code> for <code>sdfA</code> when creating 
 the new <code>edsurvey.data.frame.list</code>.</p></dd>
+
+
 <dt>labelsB</dt>
 <dd><p>a character vector that specifies <code>labels</code> for <code>sdfB</code> when creating 
 the new <code>edsurvey.data.frame.list</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>edsurvey.data.frame.list</code> returns an <code>edsurvey.data.frame.list</code> with
+    
+
+<p><code>edsurvey.data.frame.list</code> returns an <code>edsurvey.data.frame.list</code> with
 elements</p>
 <dl><dt>datalist</dt>
 <dd><p>a list of <code>edsurvey.data.frame</code> objects</p></dd>
+
 <dt>covs</dt>
 <dd><p>a character vector of key variables that vary within
                    the <code>edsurvey.data.frame.list</code>.
@@ -128,15 +144,19 @@ elements</p>
                    is an <code>edsurvey.data.frame.list</code>
                    has <code>covs</code>, and labels are not supplied, the <code>covs</code>
                    are simply pasted together with colons between them.</p></dd>
+
+
 </dl><p><code>append.edsurvey.data.frame.list</code> returns an <code>edsurvey.data.frame.list</code> with
 elements</p>
 <dl><dt>datalist</dt>
 <dd><p>a list of <code>edsurvey.data.frame</code> objects</p></dd>
+
 <dt>covs</dt>
 <dd><p>a character vector of key variables that vary within
                    the <code>edsurvey.data.frame.list</code>.
                    When labels are included, they will be included in
                    <code>covs</code>.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -161,74 +181,74 @@ varying covariates, generic labels are automatically generated.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co"># read in the example data (generated, not real student data)</span></span>
-<span class="r-in"><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package<span class="op">=</span><span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># NOTE: the following code would not normally have to be run but is used here</span></span>
-<span class="r-in"><span class="co"># to generate demo data.</span></span>
-<span class="r-in"><span class="co"># Specifically, make subsets of sdf by the scrpsu variable,</span></span>
-<span class="r-in"><span class="co"># "Scrambled PSU and school code"</span></span>
-<span class="r-in"><span class="va">sdfA</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">45</span>,<span class="fl">56</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sdfB</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">75</span>,<span class="fl">76</span>,<span class="fl">78</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sdfC</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">100</span><span class="op">:</span><span class="fl">200</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sdfD</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">201</span><span class="op">:</span><span class="fl">300</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># construct an edsurvey.data.frame.list from these four data sets</span></span>
-<span class="r-in"><span class="va">sdfl</span> <span class="op">&lt;-</span> <span class="fu">edsurvey.data.frame.list</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">sdfA</span>, <span class="va">sdfB</span>, <span class="va">sdfC</span>, <span class="va">sdfD</span><span class="op">)</span>,</span>
-<span class="r-in">                                 labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A locations"</span>,</span>
-<span class="r-in">                                          <span class="st">"B locations"</span>,</span>
-<span class="r-in">                                          <span class="st">"C locations"</span>,</span>
-<span class="r-in">                                          <span class="st">"D locations"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># alternative method of building</span></span>
-<span class="r-in"><span class="va">sdfl2</span> <span class="op">&lt;-</span> <span class="va">sdfA</span> <span class="op">+</span> <span class="va">sdfB</span> <span class="op">+</span> <span class="va">sdfC</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># check contents</span></span>
-<span class="r-in"><span class="va">sdfA</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">sdfl</span></span>
-<span class="r-in"><span class="co"># note %in% checks by survey (NAEP 2005 Math for sdf,</span></span>
-<span class="r-in"><span class="co"># sdfA, sdfB, sdfC, and sdfD) not by subset, so this also return TRUE</span></span>
-<span class="r-in"><span class="va">sdfD</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">sdfl2</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># this shows how these datasets will be described</span></span>
-<span class="r-in"><span class="va">sdfl</span><span class="op">$</span><span class="va">covs</span> </span>
-<span class="r-in"><span class="co"># get the gaps between Male and Female for each data set</span></span>
-<span class="r-in"><span class="va">gap1</span> <span class="op">&lt;-</span> <span class="fu"><a href="gap.html">gap</a></span><span class="op">(</span><span class="st">"composite"</span>, <span class="va">sdfl</span>, <span class="va">dsex</span><span class="op">==</span><span class="st">"Male"</span>, <span class="va">dsex</span><span class="op">==</span><span class="st">"Female"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gap1</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># make combine sdfA and sdfB</span></span>
-<span class="r-in"><span class="va">sdfl1a</span> <span class="op">&lt;-</span> <span class="fu">edsurvey.data.frame.list</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">sdfA</span>, <span class="va">sdfB</span><span class="op">)</span>,</span>
-<span class="r-in">                                   labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A locations"</span>,</span>
-<span class="r-in">                                            <span class="st">"B locations"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># combine sdfC and sdfD</span></span>
-<span class="r-in"><span class="va">sdfl1b</span> <span class="op">&lt;-</span> <span class="fu">edsurvey.data.frame.list</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">sdfC</span>, <span class="va">sdfD</span><span class="op">)</span>,</span>
-<span class="r-in">                                   labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"C locations"</span>,</span>
-<span class="r-in">                                            <span class="st">"D locations"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># append to make sdf3 the same as sdfl</span></span>
-<span class="r-in"><span class="va">sdfl3</span> <span class="op">&lt;-</span> <span class="fu">append.edsurvey.data.frame.list</span><span class="op">(</span><span class="va">sdfl1a</span>, <span class="va">sdfl1b</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">sdfl</span>, <span class="va">sdfl3</span><span class="op">)</span> <span class="co">#TRUE</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># append to make sdf4 the same as sdfl</span></span>
-<span class="r-in"><span class="va">sdfl4</span> <span class="op">&lt;-</span> <span class="fu">append.edsurvey.data.frame.list</span><span class="op">(</span></span>
-<span class="r-in">  <span class="fu">append.edsurvey.data.frame.list</span><span class="op">(</span><span class="va">sdfl1a</span>, <span class="va">sdfC</span>, labelsB <span class="op">=</span> <span class="st">"C locations"</span><span class="op">)</span>,</span>
-<span class="r-in">  <span class="va">sdfD</span>,</span>
-<span class="r-in">  labelsB <span class="op">=</span> <span class="st">"D locations"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">sdfl</span>, <span class="va">sdfl4</span><span class="op">)</span> <span class="co">#TRUE</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># show label deconflicting</span></span>
-<span class="r-in"><span class="fu"><a href="downloadTIMSS.html">downloadTIMSS</a></span><span class="op">(</span>root<span class="op">=</span><span class="st">"~/"</span>, years<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2011</span>, <span class="fl">2015</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">t11</span> <span class="op">&lt;-</span> <span class="fu"><a href="readTIMSS.html">readTIMSS</a></span><span class="op">(</span><span class="st">"~/TIMSS/2011"</span>, countries <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fin"</span>, <span class="st">"usa"</span><span class="op">)</span>, gradeLvl <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">t15</span> <span class="op">&lt;-</span> <span class="fu"><a href="readTIMSS.html">readTIMSS</a></span><span class="op">(</span><span class="st">"~/TIMSS/2015"</span>, countries <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fin"</span>, <span class="st">"usa"</span><span class="op">)</span>, gradeLvl <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># these would not be unique</span></span>
-<span class="r-in"><span class="va">t11</span><span class="op">$</span><span class="va">covs</span></span>
-<span class="r-in"><span class="va">t15</span><span class="op">$</span><span class="va">covs</span></span>
-<span class="r-in"><span class="co"># resulting values includes year now</span></span>
-<span class="r-in"><span class="va">t11_15</span> <span class="op">&lt;-</span> <span class="fu">append.edsurvey.data.frame.list</span><span class="op">(</span><span class="va">t11</span>, <span class="va">t15</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">t11_15</span><span class="op">$</span><span class="va">covs</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># read in the example data (generated, not real student data)</span></span></span>
+<span class="r-in"><span><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package<span class="op">=</span><span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># NOTE: the following code would not normally have to be run but is used here</span></span></span>
+<span class="r-in"><span><span class="co"># to generate demo data.</span></span></span>
+<span class="r-in"><span><span class="co"># Specifically, make subsets of sdf by the scrpsu variable,</span></span></span>
+<span class="r-in"><span><span class="co"># "Scrambled PSU and school code"</span></span></span>
+<span class="r-in"><span><span class="va">sdfA</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>,<span class="fl">45</span>,<span class="fl">56</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sdfB</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">75</span>,<span class="fl">76</span>,<span class="fl">78</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sdfC</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">100</span><span class="op">:</span><span class="fl">200</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sdfD</span> <span class="op">&lt;-</span> <span class="fu"><a href="subset.html">subset</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="va">scrpsu</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fl">201</span><span class="op">:</span><span class="fl">300</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># construct an edsurvey.data.frame.list from these four data sets</span></span></span>
+<span class="r-in"><span><span class="va">sdfl</span> <span class="op">&lt;-</span> <span class="fu">edsurvey.data.frame.list</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">sdfA</span>, <span class="va">sdfB</span>, <span class="va">sdfC</span>, <span class="va">sdfD</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                 labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A locations"</span>,</span></span>
+<span class="r-in"><span>                                          <span class="st">"B locations"</span>,</span></span>
+<span class="r-in"><span>                                          <span class="st">"C locations"</span>,</span></span>
+<span class="r-in"><span>                                          <span class="st">"D locations"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># alternative method of building</span></span></span>
+<span class="r-in"><span><span class="va">sdfl2</span> <span class="op">&lt;-</span> <span class="va">sdfA</span> <span class="op">+</span> <span class="va">sdfB</span> <span class="op">+</span> <span class="va">sdfC</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># check contents</span></span></span>
+<span class="r-in"><span><span class="va">sdfA</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">sdfl</span></span></span>
+<span class="r-in"><span><span class="co"># note %in% checks by survey (NAEP 2005 Math for sdf,</span></span></span>
+<span class="r-in"><span><span class="co"># sdfA, sdfB, sdfC, and sdfD) not by subset, so this also return TRUE</span></span></span>
+<span class="r-in"><span><span class="va">sdfD</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">sdfl2</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># this shows how these datasets will be described</span></span></span>
+<span class="r-in"><span><span class="va">sdfl</span><span class="op">$</span><span class="va">covs</span> </span></span>
+<span class="r-in"><span><span class="co"># get the gaps between Male and Female for each data set</span></span></span>
+<span class="r-in"><span><span class="va">gap1</span> <span class="op">&lt;-</span> <span class="fu"><a href="gap.html">gap</a></span><span class="op">(</span><span class="st">"composite"</span>, <span class="va">sdfl</span>, <span class="va">dsex</span><span class="op">==</span><span class="st">"Male"</span>, <span class="va">dsex</span><span class="op">==</span><span class="st">"Female"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gap1</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># make combine sdfA and sdfB</span></span></span>
+<span class="r-in"><span><span class="va">sdfl1a</span> <span class="op">&lt;-</span> <span class="fu">edsurvey.data.frame.list</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">sdfA</span>, <span class="va">sdfB</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                   labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A locations"</span>,</span></span>
+<span class="r-in"><span>                                            <span class="st">"B locations"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># combine sdfC and sdfD</span></span></span>
+<span class="r-in"><span><span class="va">sdfl1b</span> <span class="op">&lt;-</span> <span class="fu">edsurvey.data.frame.list</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">sdfC</span>, <span class="va">sdfD</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                   labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"C locations"</span>,</span></span>
+<span class="r-in"><span>                                            <span class="st">"D locations"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># append to make sdf3 the same as sdfl</span></span></span>
+<span class="r-in"><span><span class="va">sdfl3</span> <span class="op">&lt;-</span> <span class="fu">append.edsurvey.data.frame.list</span><span class="op">(</span><span class="va">sdfl1a</span>, <span class="va">sdfl1b</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">sdfl</span>, <span class="va">sdfl3</span><span class="op">)</span> <span class="co">#TRUE</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># append to make sdf4 the same as sdfl</span></span></span>
+<span class="r-in"><span><span class="va">sdfl4</span> <span class="op">&lt;-</span> <span class="fu">append.edsurvey.data.frame.list</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu">append.edsurvey.data.frame.list</span><span class="op">(</span><span class="va">sdfl1a</span>, <span class="va">sdfC</span>, labelsB <span class="op">=</span> <span class="st">"C locations"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="va">sdfD</span>,</span></span>
+<span class="r-in"><span>  labelsB <span class="op">=</span> <span class="st">"D locations"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">sdfl</span>, <span class="va">sdfl4</span><span class="op">)</span> <span class="co">#TRUE</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># show label deconflicting</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="downloadTIMSS.html">downloadTIMSS</a></span><span class="op">(</span>root<span class="op">=</span><span class="st">"~/"</span>, years<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2011</span>, <span class="fl">2015</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">t11</span> <span class="op">&lt;-</span> <span class="fu"><a href="readTIMSS.html">readTIMSS</a></span><span class="op">(</span><span class="st">"~/TIMSS/2011"</span>, countries <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fin"</span>, <span class="st">"usa"</span><span class="op">)</span>, gradeLvl <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">t15</span> <span class="op">&lt;-</span> <span class="fu"><a href="readTIMSS.html">readTIMSS</a></span><span class="op">(</span><span class="st">"~/TIMSS/2015"</span>, countries <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fin"</span>, <span class="st">"usa"</span><span class="op">)</span>, gradeLvl <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># these would not be unique</span></span></span>
+<span class="r-in"><span><span class="va">t11</span><span class="op">$</span><span class="va">covs</span></span></span>
+<span class="r-in"><span><span class="va">t15</span><span class="op">$</span><span class="va">covs</span></span></span>
+<span class="r-in"><span><span class="co"># resulting values includes year now</span></span></span>
+<span class="r-in"><span><span class="va">t11_15</span> <span class="op">&lt;-</span> <span class="fu">append.edsurvey.data.frame.list</span><span class="op">(</span><span class="va">t11</span>, <span class="va">t15</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">t11_15</span><span class="op">$</span><span class="va">covs</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -243,7 +263,7 @@ varying covariates, generic labels are automatically generated.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

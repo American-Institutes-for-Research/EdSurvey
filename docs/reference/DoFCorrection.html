@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -64,13 +64,13 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">DoFCorrection</span><span class="op">(</span>
-  <span class="va">varEstA</span>,
-  varEstB <span class="op">=</span> <span class="va">varEstA</span>,
-  <span class="va">varA</span>,
-  varB <span class="op">=</span> <span class="va">varA</span>,
-  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WS"</span>, <span class="st">"JR"</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">DoFCorrection</span><span class="op">(</span></span>
+<span>  <span class="va">varEstA</span>,</span>
+<span>  varEstB <span class="op">=</span> <span class="va">varEstA</span>,</span>
+<span>  <span class="va">varA</span>,</span>
+<span>  varB <span class="op">=</span> <span class="va">varA</span>,</span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WS"</span>, <span class="st">"JR"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -80,29 +80,40 @@
 <code><a href="lm.sdf.html">lm.sdf</a></code> when <code>returnVarEstInputs=</code><code>TRUE</code>).
 The variable <code>varA</code> must be on this dataset.
 See Examples.</p></dd>
+
+
 <dt>varEstB</dt>
 <dd><p>similar to the <code>varEstA</code> argument.
 If left blank, both are assumed to come 
 from <code>varEstA</code>. When set, the degrees of freedom
 are for a contrast between <code>varA</code> and <code>varB</code>,
 and the <code>varB</code> values are taken from <code>varEstB</code>.</p></dd>
+
+
 <dt>varA</dt>
 <dd><p>a character that names the statistic in the <code>varEstA</code>
 argument for which the degrees of freedom calculation is required.</p></dd>
+
+
 <dt>varB</dt>
 <dd><p>a character that names the statistic in the <code>varEstB</code>
 argument for which a covariance is required. When <code>varB</code> 
 is specified, returns the degrees of freedom for
 the contrast between <code>varA</code> and <code>varB</code>.</p></dd>
+
+
 <dt>method</dt>
 <dd><p>a character that is either <code>WS</code> for the Welch-Satterthwaite
 formula or 
 <code>JR</code> for the Johnson-Rust correction to the
 Welch-Satterthwaite formula</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>numeric; the estimated degrees of freedom</p>
+    
+
+<p>numeric; the estimated degrees of freedom</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -126,34 +137,34 @@ section “Estimation of Degrees of Freedom.”</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package<span class="op">=</span><span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">lm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="lm.sdf.html">lm.sdf</a></span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span>, <span class="va">sdf</span>, returnVarEstInputs<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">lm1</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># this output agrees with summary of lm1 coefficient for dsex</span></span>
-<span class="r-in"><span class="fu">DoFCorrection</span><span class="op">(</span><span class="va">lm1</span><span class="op">$</span><span class="va">varEstInputs</span>,</span>
-<span class="r-in">              varA<span class="op">=</span><span class="st">"dsexFemale"</span>,</span>
-<span class="r-in">              method<span class="op">=</span><span class="st">"JR"</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># second example, a covariance term requires more work</span></span>
-<span class="r-in"><span class="co"># first, estimate the covariance between two regression coefficients</span></span>
-<span class="r-in"><span class="co"># note that the variable names are parallel to what they are called in lm1 output</span></span>
-<span class="r-in"><span class="va">covFEveryDay</span> <span class="op">&lt;-</span> <span class="fu"><a href="varEstToCov.html">varEstToCov</a></span><span class="op">(</span><span class="va">lm1</span><span class="op">$</span><span class="va">varEstInputs</span>,</span>
-<span class="r-in">                            varA<span class="op">=</span><span class="st">"dsexFemale"</span>,</span>
-<span class="r-in">                            varB<span class="op">=</span><span class="st">"b017451Every day"</span>,</span>
-<span class="r-in">                            jkSumMultiplier<span class="op">=</span><span class="fu">EdSurvey</span><span class="fu">:::</span><span class="fu"><a href="edsurvey-class.html">getAttributes</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="st">"jkSumMultiplier"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># second, find the difference and the SE of the difference</span></span>
-<span class="r-in"><span class="va">se</span> <span class="op">&lt;-</span> <span class="va">lm1</span><span class="op">$</span><span class="va">coefmat</span><span class="op">[</span><span class="st">"dsexFemale"</span>,<span class="st">"se"</span><span class="op">]</span> <span class="op">+</span> <span class="va">lm1</span><span class="op">$</span><span class="va">coefmat</span><span class="op">[</span><span class="st">"b017451Every day"</span>,<span class="st">"se"</span><span class="op">]</span> <span class="op">+</span></span>
-<span class="r-in">      <span class="op">-</span><span class="fl">2</span><span class="op">*</span><span class="va">covFEveryDay</span></span>
-<span class="r-in"><span class="co"># third, calculate the t-statistic</span></span>
-<span class="r-in"><span class="va">tv</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">lm1</span><span class="op">)</span><span class="op">[</span><span class="st">"dsexFemale"</span><span class="op">]</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">lm1</span><span class="op">)</span><span class="op">[</span><span class="st">"b017451Every day"</span><span class="op">]</span><span class="op">)</span><span class="op">/</span><span class="va">se</span></span>
-<span class="r-in"><span class="co"># fourth, calculate the p-value, which requires the estimated degrees of freedom</span></span>
-<span class="r-in"><span class="va">dofFEveryDay</span> <span class="op">&lt;-</span> <span class="fu">DoFCorrection</span><span class="op">(</span><span class="va">lm1</span><span class="op">$</span><span class="va">varEstInputs</span>,</span>
-<span class="r-in">                              varA<span class="op">=</span><span class="st">"dsexFemale"</span>,</span>
-<span class="r-in">                              varB<span class="op">=</span><span class="st">"b017451Every day"</span>,</span>
-<span class="r-in">                              method<span class="op">=</span><span class="st">"JR"</span><span class="op">)</span></span>
-<span class="r-in"><span class="co"># finally, the p-value</span></span>
-<span class="r-in"><span class="fl">2</span><span class="op">*</span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">pt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">tv</span><span class="op">)</span>, df<span class="op">=</span><span class="va">dofFEveryDay</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">sdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="readNAEP.html">readNAEP</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package<span class="op">=</span><span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">lm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="lm.sdf.html">lm.sdf</a></span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">b017451</span>, <span class="va">sdf</span>, returnVarEstInputs<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">lm1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># this output agrees with summary of lm1 coefficient for dsex</span></span></span>
+<span class="r-in"><span><span class="fu">DoFCorrection</span><span class="op">(</span><span class="va">lm1</span><span class="op">$</span><span class="va">varEstInputs</span>,</span></span>
+<span class="r-in"><span>              varA<span class="op">=</span><span class="st">"dsexFemale"</span>,</span></span>
+<span class="r-in"><span>              method<span class="op">=</span><span class="st">"JR"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># second example, a covariance term requires more work</span></span></span>
+<span class="r-in"><span><span class="co"># first, estimate the covariance between two regression coefficients</span></span></span>
+<span class="r-in"><span><span class="co"># note that the variable names are parallel to what they are called in lm1 output</span></span></span>
+<span class="r-in"><span><span class="va">covFEveryDay</span> <span class="op">&lt;-</span> <span class="fu"><a href="varEstToCov.html">varEstToCov</a></span><span class="op">(</span><span class="va">lm1</span><span class="op">$</span><span class="va">varEstInputs</span>,</span></span>
+<span class="r-in"><span>                            varA<span class="op">=</span><span class="st">"dsexFemale"</span>,</span></span>
+<span class="r-in"><span>                            varB<span class="op">=</span><span class="st">"b017451Every day"</span>,</span></span>
+<span class="r-in"><span>                            jkSumMultiplier<span class="op">=</span><span class="fu">EdSurvey</span><span class="fu">:::</span><span class="fu"><a href="edsurvey-class.html">getAttributes</a></span><span class="op">(</span><span class="va">sdf</span>, <span class="st">"jkSumMultiplier"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># second, find the difference and the SE of the difference</span></span></span>
+<span class="r-in"><span><span class="va">se</span> <span class="op">&lt;-</span> <span class="va">lm1</span><span class="op">$</span><span class="va">coefmat</span><span class="op">[</span><span class="st">"dsexFemale"</span>,<span class="st">"se"</span><span class="op">]</span> <span class="op">+</span> <span class="va">lm1</span><span class="op">$</span><span class="va">coefmat</span><span class="op">[</span><span class="st">"b017451Every day"</span>,<span class="st">"se"</span><span class="op">]</span> <span class="op">+</span></span></span>
+<span class="r-in"><span>      <span class="op">-</span><span class="fl">2</span><span class="op">*</span><span class="va">covFEveryDay</span></span></span>
+<span class="r-in"><span><span class="co"># third, calculate the t-statistic</span></span></span>
+<span class="r-in"><span><span class="va">tv</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">lm1</span><span class="op">)</span><span class="op">[</span><span class="st">"dsexFemale"</span><span class="op">]</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">lm1</span><span class="op">)</span><span class="op">[</span><span class="st">"b017451Every day"</span><span class="op">]</span><span class="op">)</span><span class="op">/</span><span class="va">se</span></span></span>
+<span class="r-in"><span><span class="co"># fourth, calculate the p-value, which requires the estimated degrees of freedom</span></span></span>
+<span class="r-in"><span><span class="va">dofFEveryDay</span> <span class="op">&lt;-</span> <span class="fu">DoFCorrection</span><span class="op">(</span><span class="va">lm1</span><span class="op">$</span><span class="va">varEstInputs</span>,</span></span>
+<span class="r-in"><span>                              varA<span class="op">=</span><span class="st">"dsexFemale"</span>,</span></span>
+<span class="r-in"><span>                              varB<span class="op">=</span><span class="st">"b017451Every day"</span>,</span></span>
+<span class="r-in"><span>                              method<span class="op">=</span><span class="st">"JR"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># finally, the p-value</span></span></span>
+<span class="r-in"><span><span class="fl">2</span><span class="op">*</span><span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/stats/TDist.html" class="external-link">pt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">tv</span><span class="op">)</span>, df<span class="op">=</span><span class="va">dofFEveryDay</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -168,7 +179,7 @@ section “Estimation of Degrees of Freedom.”</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

@@ -636,6 +636,8 @@ percentile <- function(variable, percentiles, data,
     for(i in 1:length(dof)) {
       dof[i] <- DoFCorrection(varEstA=varEstInputs, varA=paste0("P", percentiles[i]), method=dofMethod)
     }
+    # simple dof is #PSUs - # strata. Since 2 PSUs/strata, use that here.
+    dof_simple <- nrow(varEstInputsJK)
 
     # find confidence interval
     # first, find the variance of the fraction that are above/below this
@@ -735,15 +737,15 @@ percentile <- function(variable, percentiles, data,
       } # end else for if(varMethod=="j")
       
       if (! pctMethod %in% 'unbiased') {
-        latent_ci_min <- percentiles + 100 * sqrt(pV) * qt(alpha/2,df=pmax(dof, 1))
-        latent_ci_max <- percentiles + 100 * sqrt(pV) * qt(1-alpha/2,df=pmax(dof, 1))
+        latent_ci_min <- percentiles + 100 * sqrt(pV) * qt(alpha/2, df=pmax(dof, 1))
+        latent_ci_max <- percentiles + 100 * sqrt(pV) * qt(1-alpha/2, df=pmax(dof, 1))
       } else {
-        latent_ci_min <- percentiles + 100 * sqrt(pV) * qt(alpha/2,df=62)
-        latent_ci_max <- percentiles + 100 * sqrt(pV) * qt(1-alpha/2,df=62)
+        latent_ci_min <- percentiles + 100 * sqrt(pV) * qt(alpha/2, df=dof_simple)
+        latent_ci_max <- percentiles + 100 * sqrt(pV) * qt(1-alpha/2, df=dof_simple)
       }
       
-      names(latent_ci_min) <- paste0('P',percentiles)
-      names(latent_ci_max) <- paste0('P',percentiles)
+      names(latent_ci_min) <- paste0('P', percentiles)
+      names(latent_ci_max) <- paste0('P', percentiles)
       latent_ci <- matrix(c(latent_ci_min, latent_ci_max), ncol=2) 
       
       if (! pctMethod %in% 'unbiased') {

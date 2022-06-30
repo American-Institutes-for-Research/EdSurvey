@@ -19,7 +19,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
       </span>
     </div>
 
@@ -64,22 +64,29 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">rebindAttributes</span><span class="op">(</span><span class="va">data</span>, <span class="va">attributeData</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rebindAttributes</span><span class="op">(</span><span class="va">data</span>, <span class="va">attributeData</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
 <dd><p>a <code>data.frame</code></p></dd>
+
+
 <dt>attributeData</dt>
 <dd><p>an <code>edsurvey.data.frame</code> or <code>light.edsurvey.data.frame</code>
 that contains the desired attributes</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>a <code>data.frame</code> with a class of a <code>light.edsurvey.data.frame</code> containing
+    
+
+<p>a <code>data.frame</code> with a class of a <code>light.edsurvey.data.frame</code> containing
 all elements of data and the attributes (except
 <code>names</code> and <code>row.names</code>) from <code>attributeData</code></p>
+
+
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -88,41 +95,41 @@ all elements of data and the attributes (except
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="va">PISA2012</span> <span class="op">&lt;-</span> <span class="fu"><a href="readPISA.html">readPISA</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">edsurveyHome</span>, <span class="st">"PISA/2012"</span><span class="op">)</span>,</span>
-<span class="r-in">                     database <span class="op">=</span> <span class="st">"INT"</span>,</span>
-<span class="r-in">                     countries <span class="op">=</span> <span class="st">"ALB"</span>, verbose<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">ledf</span> <span class="op">&lt;-</span> <span class="fu"><a href="getData.html">getData</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">PISA2012</span>, varnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cnt"</span>, <span class="st">"oecd"</span>, <span class="st">"w_fstuwt"</span>,</span>
-<span class="r-in">                                              <span class="st">"st62q04"</span>, <span class="st">"st62q11"</span>,</span>
-<span class="r-in">                                              <span class="st">"st62q13"</span>, <span class="st">"math"</span><span class="op">)</span>,</span>
-<span class="r-in">                omittedLevels <span class="op">=</span> <span class="cn">FALSE</span>, addAttributes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">omittedLevels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'Invalid'</span>, <span class="st">'N/A'</span>, <span class="st">'Missing'</span>, <span class="st">'Miss'</span>, <span class="st">'NA'</span>, <span class="st">'(Missing)'</span><span class="op">)</span></span>
-<span class="r-in"><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"st62q04"</span>, <span class="st">"st62q11"</span>, <span class="st">"st62q13"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in">  <span class="va">ledf</span><span class="op">[</span>,<span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">ledf</span><span class="op">[</span>,<span class="va">i</span><span class="op">]</span>, exclude<span class="op">=</span><span class="va">omittedLevels</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># after applying some dplyr functions, the "light.edsurvey.data.frame" becomes just "data.frame"</span></span>
-<span class="r-in"><span class="va">PISA2012_ledf</span> <span class="op">&lt;-</span> <span class="va">ledf</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>        </span>
-<span class="r-in">  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rowwise.html" class="external-link">rowwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span class="r-in">  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>avg_3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">st62q04</span>, <span class="va">st62q11</span>, <span class="va">st62q13</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span class="r-in">  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu">rebindAttributes</span><span class="op">(</span><span class="va">PISA2012</span><span class="op">)</span> <span class="co"># could also be called with ledf</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">PISA2012_ledf</span><span class="op">)</span> </span>
-<span class="r-in"><span class="co"># again, a light.edsurvey.data.frame</span></span>
-<span class="r-in"><span class="va">lma</span> <span class="op">&lt;-</span> <span class="fu"><a href="lm.sdf.html">lm.sdf</a></span><span class="op">(</span><span class="va">math</span> <span class="op">~</span> <span class="va">avg_3</span>,data<span class="op">=</span><span class="va">PISA2012_ledf</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">lma</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">PISA2012_ledf</span> <span class="op">&lt;-</span> <span class="va">ledf</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>        </span>
-<span class="r-in">  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rowwise.html" class="external-link">rowwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span class="r-in">  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>avg_3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">st62q04</span>, <span class="va">st62q11</span>, <span class="va">st62q13</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span class="r-in">  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu">rebindAttributes</span><span class="op">(</span><span class="va">ledf</span><span class="op">)</span> <span class="co"># return attributes and make a light.edsurvey.data.frame </span></span>
-<span class="r-in"><span class="co"># again a light.edsurvey.data.frame</span></span>
-<span class="r-in"><span class="va">lma</span> <span class="op">&lt;-</span> <span class="fu"><a href="lm.sdf.html">lm.sdf</a></span><span class="op">(</span><span class="va">math</span> <span class="op">~</span> <span class="va">avg_3</span>,data<span class="op">=</span><span class="va">PISA2012_ledf</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">lma</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">PISA2012</span> <span class="op">&lt;-</span> <span class="fu"><a href="readPISA.html">readPISA</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">edsurveyHome</span>, <span class="st">"PISA/2012"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                     database <span class="op">=</span> <span class="st">"INT"</span>,</span></span>
+<span class="r-in"><span>                     countries <span class="op">=</span> <span class="st">"ALB"</span>, verbose<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ledf</span> <span class="op">&lt;-</span> <span class="fu"><a href="getData.html">getData</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">PISA2012</span>, varnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cnt"</span>, <span class="st">"oecd"</span>, <span class="st">"w_fstuwt"</span>,</span></span>
+<span class="r-in"><span>                                              <span class="st">"st62q04"</span>, <span class="st">"st62q11"</span>,</span></span>
+<span class="r-in"><span>                                              <span class="st">"st62q13"</span>, <span class="st">"math"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                omittedLevels <span class="op">=</span> <span class="cn">FALSE</span>, addAttributes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">omittedLevels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'Invalid'</span>, <span class="st">'N/A'</span>, <span class="st">'Missing'</span>, <span class="st">'Miss'</span>, <span class="st">'NA'</span>, <span class="st">'(Missing)'</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"st62q04"</span>, <span class="st">"st62q11"</span>, <span class="st">"st62q13"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">ledf</span><span class="op">[</span>,<span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">ledf</span><span class="op">[</span>,<span class="va">i</span><span class="op">]</span>, exclude<span class="op">=</span><span class="va">omittedLevels</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># after applying some dplyr functions, the "light.edsurvey.data.frame" becomes just "data.frame"</span></span></span>
+<span class="r-in"><span><span class="va">PISA2012_ledf</span> <span class="op">&lt;-</span> <span class="va">ledf</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>        </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rowwise.html" class="external-link">rowwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>avg_3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">st62q04</span>, <span class="va">st62q11</span>, <span class="va">st62q13</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu">rebindAttributes</span><span class="op">(</span><span class="va">PISA2012</span><span class="op">)</span> <span class="co"># could also be called with ledf</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">PISA2012_ledf</span><span class="op">)</span> </span></span>
+<span class="r-in"><span><span class="co"># again, a light.edsurvey.data.frame</span></span></span>
+<span class="r-in"><span><span class="va">lma</span> <span class="op">&lt;-</span> <span class="fu"><a href="lm.sdf.html">lm.sdf</a></span><span class="op">(</span><span class="va">math</span> <span class="op">~</span> <span class="va">avg_3</span>,data<span class="op">=</span><span class="va">PISA2012_ledf</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">lma</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">PISA2012_ledf</span> <span class="op">&lt;-</span> <span class="va">ledf</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>        </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rowwise.html" class="external-link">rowwise</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>avg_3 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">st62q04</span>, <span class="va">st62q11</span>, <span class="va">st62q13</span><span class="op">)</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu">rebindAttributes</span><span class="op">(</span><span class="va">ledf</span><span class="op">)</span> <span class="co"># return attributes and make a light.edsurvey.data.frame </span></span></span>
+<span class="r-in"><span><span class="co"># again a light.edsurvey.data.frame</span></span></span>
+<span class="r-in"><span><span class="va">lma</span> <span class="op">&lt;-</span> <span class="fu"><a href="lm.sdf.html">lm.sdf</a></span><span class="op">(</span><span class="va">math</span> <span class="op">~</span> <span class="va">avg_3</span>,data<span class="op">=</span><span class="va">PISA2012_ledf</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">lma</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -137,7 +144,7 @@ all elements of data and the attributes (except
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>
