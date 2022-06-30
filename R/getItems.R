@@ -108,7 +108,8 @@ getTimssItems <- function(timssDir, theYear, theLevel, subjectFilter) {
   }
   
   # read items names 
-  items <- suppressMessages(read_excel(dfFile, sheet = subjectFilter))
+  items <- suppressMessages(read_excel(dfFile, sheet = subjectFilter, range = cellranger::cell_cols('A'))$`Item ID`)
+  
   return(tolower(items))
 }
 
