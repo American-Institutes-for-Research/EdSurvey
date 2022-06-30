@@ -353,7 +353,7 @@ dataListItem <- function(lafObject,
                          ignoreVars=NULL,
                          isDimLevel=FALSE) {
 
-  if(class(lafObject)!="laf"){
+  if(!inherits(lafObject,"laf")){
     stop(paste0("The ", dQuote("lafObject"), " must be a LaF object utilizing the LaF Package."))
   }
 

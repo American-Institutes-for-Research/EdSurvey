@@ -218,15 +218,23 @@ mml.sdf <- function(formula,
     indepVars <- labels(terms(formula))
     # TIMSS items are set to missing, must use omittedLevels=FALSE
     getDataArgs <- list(data=data, varnames=c(polyParamTab$ItemID, dichotParamTab$ItemID, indepVars, weightVar, strataVar, psuVar, idVar), omittedLevels = FALSE) 
+
     edf <- quietGetData(data, getDataArgs)
     # mml uses character id variables, so recast here
     edf[[idVar]] <- as.character(edf[[idVar]])
     # check completeness
     incomplete <- !complete.cases(edf[,c(indepVars, weightVar)])
     if(any(incomplete)) {
-      warning("Removing ", sum(incomplete), " rows with NAs from analysis.")
+      message("Removing ", sum(incomplete), " rows with NAs from analysis.")
       edf <- edf[!incomplete,]
     }
+    # remove non-positive (full sample) weights
+    if(any(edf[,weightVar] <= 0)) {
+      posWeights <- edf[,weightVar] > 0
+      message("Removing ", sum(!posWeights), " rows with nonpositive weight from analysis.")
+      edf <- edf[posWeights,]
+    }
+
     # check that there is some data to work with
     if(nrow(edf) <= 0) {
       stop(paste0(sQuote("data"), " must have more than 0 rows after a call to ",
