@@ -437,7 +437,7 @@ mml.sdf <- function(formula,
   # get call
   call <- match.call()
   # main mml.sdf class 
-  obj <- structure(list("Call"        = clObj,
+  obj <- structure(list("Call"        = call,
                         "mml"         = mmlObj,
                         "survey"      = survey,
                         "getDataArgs" = getDataArgs,

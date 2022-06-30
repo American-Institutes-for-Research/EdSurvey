@@ -106,9 +106,17 @@ checkNewData <- function(mml, sCard, data, getDataArgs, newStuDat, newStuItems){
     getDataArgs$data <- data
     # supressWarings so it does not again warn about recodes; user has already seen any warnings
     suppressWarnings(edf <- do.call(getData, getDataArgs))
+
     stuDatColnames <- getStuDatColnames(mml)
     incomplete <- !complete.cases(edf[ , stuDatColnames])
     edf <- edf[!incomplete, ]
+    # remove non-positive (full sample) weights
+    if(any(edf[ ,  mml$weightVar] <= 0)) {
+      posWeights <- edf[ , mml$weightVar] > 0
+      edf <- edf[posWeights, ]
+    }
+    # necessary because TIMSS, for example, will generate up to a row per teacher/student pair
+    edf <- edf[!duplicated(mml$idVar), ]
     if(is.null(newStuDat)){
       # make stuDat format
       newStuDat <- edf[ , stuDatColnames]
