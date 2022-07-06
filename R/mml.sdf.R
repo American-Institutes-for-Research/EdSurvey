@@ -31,6 +31,7 @@
 #' @param idVar a variable that is used to explicitly define the name of the student identifier 
 #'              variable to be used from \code{data}. Defaults to \code{NULL}, and \code{sid} is used 
 #'              as the student identifier. 
+#' @param returnMmlCall logical; when \code{TRUE}, do not process the mml call but instead return it for the user to edit before calling
 #'
 #' @details 
 #' Typically, models are fit with NAEP data using plausible values to integrate out the uncertainty in the measurement of individual
@@ -56,7 +57,7 @@
 #' @importFrom Dire mml    
 #' @importFrom stats na.omit
 #' @importFrom utils flush.console
-#' @aliases defaultNAEPScoreCard
+#' @aliases defaultNAEPScoreCard defaultTIMSSScoreDict
 #' @example /man/examples/mml.sdf.R
 #' @export
 mml.sdf <- function(formula,
@@ -207,7 +208,7 @@ mml.sdf <- function(formula,
       warning(paste0('These items were in the assessment, but not in your data: ', pasteItems(itemsNotInData, final = 'and '))) 
     } 
     if (length(itemsUse) < 1){
-      stop(paste0(dQuote(data), ' does not contain parameter items for ', sQuote(subject)))
+      stop(paste0(dQuote(data), ' does not contain parameter items for ', sQuote(theSubject)))
     }
     
     # check for data items not in paramTab -- this is hard to do
@@ -469,11 +470,9 @@ quietGetData <- function(data, args) {
   }) 
 }
 
-#' Purpose: 
-#' Give error if Strata and PSU var not present on light edsurvey dataframe.
-#' We may want to change these to warnings later.
-#' But leaving as errors right now. Otherwise we'll need to change getData() call to not use 
-#' getStatumVar() and getPSUVar() functions. 
+#' Give error if Strata and PSU var not present on light edsurvey data frame.
+#' @param data an \code{edsurvey.data.frame} or \code{light.edsurvey.data.frame} to check for PSU and Strata variables
+#' @keywords internal
 checkPsuStrata <- function(data) {
   strataVar <- getStratumVar(data)
   psuVar <- getPSUVar(data)
@@ -499,9 +498,11 @@ getResponse <- function(form) {
   return(attr(tf,"variables")[[1+attr(tf, "response")]])
 }
 
-#' Purpose: 
 #' Give warning if idVar is null on on light edsurvey dataframe.
-#' Without an idVar the users won't be able to merge PVs back to a light.edsurvey.data.frame.  
+#' @param data an \code{edsurvey.data.frame}, \code{light.edsurvey.data.frame}, or \code{data.frame} to look for the \code{idVar} on
+#' @param idVar the variable to look for
+#' Without an idVar the users won't be able to merge PVs back to the data after running an mml.  If there is no idVar, a default is chosen.
+#' @keywords internal
 checkIdVar <- function(data, idVar){ 
   if(inherits(data,'light.edsurvey.data.frame')){
     if(is.null(idVar)){

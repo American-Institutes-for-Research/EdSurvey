@@ -1,4 +1,3 @@
-skip_on_cran()
 context("mergev: basic testing")
 dfa <- data.frame(key=letters[1:10],
                   key2=LETTERS[1:10],

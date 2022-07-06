@@ -8,8 +8,12 @@ dat1Summary.Ref <- c("     stu_id          bysex                                
                      " Max.   :461234                 MORE THAN ONE RACE, NON-HISPANIC        : 735  ",
                      "                                WHITE, NON-HISPANIC                     :8682  ")
 
-dat2Summary.Ref <- c("     sch_id          byregion       byurban    ", " Min.   :1011   MISSING  :  8   MISSING :   8  ", " 1st Qu.:3391   NORTHEAST:283   URBAN   :1374  ",
-                     " Median :5398   MIDWEST  :468   SUBURBAN: 400  ", " Mean   :4833   SOUTH    :758   RURAL   : 172  ", " 3rd Qu.:6273   WEST     :437                  ",
+dat2Summary.Ref <- c("     sch_id          byregion       byurban    ",
+                     " Min.   :1011   MISSING  :  8   MISSING :   8  ",
+                     " 1st Qu.:3391   NORTHEAST:283   URBAN   :1374  ",
+                     " Median :5398   MIDWEST  :468   SUBURBAN: 400  ",
+                     " Mean   :4833   SOUTH    :758   RURAL   : 172  ",
+                     " 3rd Qu.:6273   WEST     :437                  ",
                      " Max.   :9999                                  ")
 
 dat3Summary.Ref <- c("     stu_id           f1ses1                     f1ses1qu        f1ses2                     f1ses2qu   ",

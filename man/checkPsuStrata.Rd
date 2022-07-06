@@ -2,18 +2,14 @@
 % Please edit documentation in R/mml.sdf.R
 \name{checkPsuStrata}
 \alias{checkPsuStrata}
-\title{Purpose: 
-Give error if Strata and PSU var not present on light edsurvey dataframe.
-We may want to change these to warnings later.
-But leaving as errors right now. Otherwise we'll need to change getData() call to not use 
-getStatumVar() and getPSUVar() functions.}
+\title{Give error if Strata and PSU var not present on light edsurvey data frame.}
 \usage{
 checkPsuStrata(data)
 }
-\description{
-Purpose: 
-Give error if Strata and PSU var not present on light edsurvey dataframe.
-We may want to change these to warnings later.
-But leaving as errors right now. Otherwise we'll need to change getData() call to not use 
-getStatumVar() and getPSUVar() functions.
+\arguments{
+\item{data}{an \code{edsurvey.data.frame} or \code{light.edsurvey.data.frame} to check for PSU and Strata variables}
 }
+\description{
+Give error if Strata and PSU var not present on light edsurvey data frame.
+}
+\keyword{internal}

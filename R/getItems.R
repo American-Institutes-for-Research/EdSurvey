@@ -3,30 +3,30 @@
 #' Takes an \code{AM dct} file and formats it for use with the \code{mml} method
 #' as \code{paramTab}.
 #' 
-#' @param dct a file location from which to read the \code{dct} file
-#' @param mml a logical for if the paramTab is being used in \code{mml.sdf}
+#' @param sdf and \code{edsurvey.data.frame} or \code{light.edsurvey.data.frame} for which to get items
+#' @param construct the construct to get items for
 #' 
 #' @return a \code{data.frame} in a format suitable for use with \code{mml} as
 #' a \code{paramTab}.
 #' 
 #' @author Sun-Joo Lee, Eric Buehler, and Paul Bailey
 #' @export
-getAllItems <- function(x, npv, construct, omittedLevels=FALSE,...) {
+getAllItems <- function(sdf, construct) {
   cl <- match.call()
-  survey <- getAttributes(x, "survey")
+  survey <- getAttributes(sdf, "survey")
   if(survey %in% "NAEP") {
     cl[[1]] <- quote(getAllItems_NAEP)
-    return(eval(cl))
+    return(eval(cl, envir=parent.frame()))
   }
   if(survey %in% "TIMSS") {
     cl[[1]] <- quote(getAllItems_TIMSS)
-    return(eval(cl))
+    return(eval(cl, envir=parent.frame()))
   }
   stop(paste0(dQuote("getAllItems")," does not support ", survey))
 }
 
 # a function for returning all items associated with a NAEP or TIMSS construct.
-getAllItems_TIMSS <- function(sdf, construct, omittedLevels){
+getAllItems_TIMSS <- function(sdf, construct){
   survey <- getAttributes(sdf, "survey")
   ### TIMSS data ###
   ### building paramTabs
@@ -83,16 +83,16 @@ getTimssItems <- function(timssDir, theYear, theLevel, subjectFilter) {
   theDecade <- gsub('\\d\\d(\\d\\d)',"\\1", theYear)
   
   # the grade 
-  if(theYear == 2011){
+  if(theYear %in% 2011){
     theGrade <- ""
   } else {
     theGrade <- paste0("_G",theLevel)
   }
   
   # the year 
-  if(theYear %in% c(2015, 2019)){
+  if(theYear %in% c(2015, 2019)) {
     database <- "international-database"
-    }
+  }
   
   # link
   download_link1 <- paste0("https://timssandpirls.bc.edu/timss",theYear, "/", database, "/downloads/T", 
@@ -103,17 +103,18 @@ getTimssItems <- function(timssDir, theYear, theLevel, subjectFilter) {
   # check for file 
   dfFile <- paste0(timssDir, "/", file)
   if (!file.exists(dfFile)) {
-    zips <- paste0(". Download them here: ", download_link1)
-    stop(paste0("Make sure ", df1Name, ", ", df2Name, ", and ", df3Name, " are downloaded in ", timssDir, zips,". ", "Try running: downloadTIMSS('",timssDir, "', '",theYear,"')"))
+    stop(paste0("Cannot find item information. Try running: downloadTIMSS('",timssDir, "', '",theYear,"')"))
   }
   
   # read items names 
   items <- suppressMessages(read_excel(dfFile, sheet = subjectFilter))
+  # grab Item ID column
+  items <- items[["Item ID"]]
   
   return(tolower(items))
 }
 
-getAllItems_NAEP <- function(sdf, construct, omittedLevels){
+getAllItems_NAEP <- function(sdf, construct){
 
   ### building paramTabs
   # filter IRT params to year, subject, grade level

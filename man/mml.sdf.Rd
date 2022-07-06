@@ -3,6 +3,7 @@
 \name{mml.sdf}
 \alias{mml.sdf}
 \alias{defaultNAEPScoreCard}
+\alias{defaultTIMSSScoreDict}
 \title{EdSurvey Direct Estimation}
 \usage{
 mml.sdf(
@@ -63,6 +64,8 @@ can check available cores with \code{detectCores()}.}
 \item{idVar}{a variable that is used to explicitly define the name of the student identifier 
 variable to be used from \code{data}. Defaults to \code{NULL}, and \code{sid} is used 
 as the student identifier.}
+
+\item{returnMmlCall}{logical; when \code{TRUE}, do not process the mml call but instead return it for the user to edit before calling}
 }
 \value{
 An \code{mml.sdf} object, which is the outcome from \code{mml.sdf}, with the following elements:

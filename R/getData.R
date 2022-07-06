@@ -148,7 +148,7 @@ getData <- function(data,
 
   # get variables from formula
   formulaVars <- all.vars(formula)
-  varnames <-c(varnames,formulaVars)
+  varnames <-c(varnames, formulaVars)
   #Retrieve the default conditions
   dConditions <- NULL
   varNamesDefaults <- c()
@@ -203,7 +203,7 @@ getData <- function(data,
   if(sum(hpv) > 0) {
     if(returnItems == TRUE){
       items <- getAllItems(sdf, varnames[hpv], omittedLevels)
-      if(length(items) < 0){
+      if(length(items) == 0){
         warning(paste0("No items found for this ", survey, " and ", getAttributes(sdf, "year"), 
                        ". None will be returned. Item parameters are likely not readily avaliable for this survey and year. See ",
                        sQuote("?getData()", " for more detail.")))

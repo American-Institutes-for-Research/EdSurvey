@@ -4,13 +4,13 @@
 #' @param edf             a TIMSS \code{light.edsurvey.data.frame} or \code{edsurvey.data.frame}
 #' @param polyParamTab    a dataframe containing IRT parameters for all polytomous items in \code{edf}
 #' @param dichotParamTab  a dataframe containing IRT parameters for all dichotomous items in \code{edf}
+#' @param scoreDict       result of call to \code{defaultTIMSSScoreDict}, or data frame with same column names, see Description
 #' @return                scored \code{edf}
 #' @details This function scores TIMSS data. 
 #' For multiple choice items, correct answers are assigned 1 point, and incorrect answers are assigned 0 points.
 #' For constructed response items, correct answers are assigned 2 points, partially correct answers are assigned 1 point,
 #' and incorrect answers are assigned 0 points. For both types of items, "NOT REACHED" and "OMITTED OR INVALID" are assigned 0 points.
-
-
+#' these defaults can be changed by modifying the \code{scoreDict} columns \code{pointMult} and \code{pointConst}, respectively.
 scoreTIMSS <- function(edf, polyParamTab, dichotParamTab, scoreDict) {
   correct <- c("^CORRECT RESPONSE", "^CORRECT RESPONSE:1", "^CORRECT RESPONSE:2", "^CORRECT RESPONSE:3", "^CORRECT RESPONSE:4", "^CORRECT RESPONSE:5", "^CORRECT RESPONSE:6", "^CORRECT RESPONSE:7", "^CORRECT RESPONSE:8", "^CORRECT RESPONSE:9") 
   partial <- c("PARTIALLY CORRECT RESPONSE", "PARTIALLY CORRECT RESPONSE:1", "PARTIALLY CORRECT RESPONSE:2", "PARTIALLY CORRECT RESPONSE:3")

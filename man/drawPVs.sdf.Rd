@@ -27,7 +27,15 @@
 
 \item{stochasticBeta}{logical when \code{TRUE} the regressopm coefficients will be drawn from their posterior distribution. Can also be a data frame of values (see Details).}
 
+\item{normalApprox}{logical; use the normal approximation to draw PVs}
+
+\item{newStuDat}{new student-level covariate data}
+
+\item{newStuItems}{new student item data}
+
 \item{returnPosterior}{logical set to \code{TRUE} to change output to include two additional data frames (see Value).}
+
+\item{construct}{the construct to draw PVs for}
 
 \item{...}{additional parameters}
 }

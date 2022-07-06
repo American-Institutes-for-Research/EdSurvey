@@ -12,6 +12,8 @@ scoreTIMSS(edf, polyParamTab, dichotParamTab, scoreDict)
 \item{polyParamTab}{a dataframe containing IRT parameters for all polytomous items in \code{edf}}
 
 \item{dichotParamTab}{a dataframe containing IRT parameters for all dichotomous items in \code{edf}}
+
+\item{scoreDict}{result of call to \code{defaultTIMSSScoreDict}, or data frame with same column names, see Description}
 }
 \value{
 scored \code{edf}
@@ -24,4 +26,5 @@ This function scores TIMSS data.
 For multiple choice items, correct answers are assigned 1 point, and incorrect answers are assigned 0 points.
 For constructed response items, correct answers are assigned 2 points, partially correct answers are assigned 1 point,
 and incorrect answers are assigned 0 points. For both types of items, "NOT REACHED" and "OMITTED OR INVALID" are assigned 0 points.
+these defaults can be changed by modifying the \code{scoreDict} columns \code{pointMult} and \code{pointConst}, respectively.
 }

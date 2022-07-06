@@ -997,9 +997,7 @@ test_that("mml.sdf", {
   invisible(withr::with_options(list(digits=4),
                                 capture.output(
                                   mmlNAEP <- suppressWarnings(mml.sdf(algebra~1, sdf, weightVar='origwt', verbose=TRUE))
-                                )
-  )
-  ) 
+                                ))) 
   # capture output 
   # intercept 
   coInt <- withr::with_options(list(digits=4),capture.output(mmlNAEP)) 
@@ -1013,19 +1011,16 @@ test_that("mml.sdf", {
   invisible(withr::with_options(list(digits=4),
                                 capture.output(
                                   mmlDsexNaep <- suppressWarnings(mml.sdf(algebra~dsex, sdf, weightVar='origwt', verbose=TRUE))
-                                )
-  )
-  ) 
+                                ))) 
   # capture output 
   # intercept 
   coDsexInt <- withr::with_options(list(digits=2), 
-                                   capture.output(mmlDsexNaep)
-  )
+                                   capture.output(mmlDsexNaep))
+
   expect_equal(coDsexInt, mmlDsexIntREF)
   # summary 
   coDsexSum <- withr::with_options(list(digits=2), 
-                                   capture.output(summary(mmlNAEP))
-  )
+                                   capture.output(summary(mmlNAEP)))
   expect_equal(coDsexSum, mmlDsexSumREF)
 })
 

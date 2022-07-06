@@ -66,13 +66,13 @@ read_ePIRLS <- function(path,
   path <- suppressWarnings(normalizePath(unique(path), winslash = "/"))
   path <- ifelse(grepl("[.][a-zA-Z]{1,4}$", path, perl=TRUE, ignore.case=TRUE), dirname(path), path)
 
-  if(!all(dir.exists(path))){
+  if(!all(dir.exists(path))) {
     stop(paste0("The argument ", sQuote("path"), " cannot be located: ", pasteItems(dQuote(path[!dir.exists(path)])), "."))
   }
-  if(!is.logical(forceReread)){
+  if(!is.logical(forceReread)) {
     stop(paste0("The argument ", sQuote("forceReread"), " must be a logical value."))
   }
-  if(!is.logical(verbose)){
+  if(!is.logical(verbose)) {
     stop(paste0("The argument ", sQuote("verbose"), " must be a logical value."))
   }
   
@@ -82,7 +82,7 @@ read_ePIRLS <- function(path,
   gradeLvl <- 4 #PIRLS is only 4th grade data
   gradeL <- "a" 
   
-  if(unlist(countries)[1]=="*"){ #user has requested data for all countries::grab all country codes
+  if(unlist(countries)[1]=="*") { #user has requested data for all countries::grab all country codes
     countries <- unique(tolower(substring(list.files(path, 
                                                      pattern=paste0("^", gradeL, ".....(",
                                                                     paste(get_ePIRLSYearCodes(), collapse = "|"), ")\\.sav$"), full.names=FALSE, ignore.case = TRUE),4,6)))
@@ -103,8 +103,8 @@ read_ePIRLS <- function(path,
   procCountryData <- list()
   iProcCountry <- 0 #index counter for adding countries to the list
   
-  for(yrCode in fileYrs){ #loop through all the year codes
-    for(cntry in countries){
+  for(yrCode in fileYrs) { #loop through all the year codes
+    for(cntry in countries) {
       
       ePIRLSfiles <- list()#empty list
       
@@ -137,7 +137,7 @@ read_ePIRLS <- function(path,
       if (sum(hasMissing)>0 && hasData==TRUE) {
         stop(paste0("Missing ePIRLS datafile(s) for country ", dQuote(cntry), " ", pasteItems(ePIRLSfiles[hasMissing]), "."))
       }
-      if (sum(hasExcess)>0 && hasData==TRUE){
+      if (sum(hasExcess)>0 && hasData==TRUE) {
         stop(paste0("Excess/duplicate ePIRLS datafile(s) for country ", dQuote(cntry), " ", pasteItems(ePIRLSfiles[hasExcess]), "."))
       }
       
@@ -149,7 +149,7 @@ read_ePIRLS <- function(path,
       iProcCountry <- iProcCountry + 1 #update the processed country index value after we confirm that there is data to process
       processedData <- list()
       
-      if(hasData==TRUE){
+      if(hasData==TRUE) {
         processArgs <- list(dataFolderPath = unique(dirname(unlist(fnames))), #specify only the directory in which the files exist
                             countryCode = cntry, 
                             fnames = fnames, 
@@ -159,16 +159,16 @@ read_ePIRLS <- function(path,
         
         retryProc <- tryCatch({processedData <- do.call("process_ePIRLS", processArgs, quote = TRUE)
                                 FALSE
-                              }, error = function(e){
+                              }, error = function(e) {
                                 TRUE #flag to retry
-                              }, warning = function(w){
+                              }, warning = function(w) {
                                 TRUE #flag to retry
                               })
 
-        if (retryProc){
+        if (retryProc) {
           processArgs[["forceReread"]] <- TRUE #try it again reprocessing the data
           processedData <- tryCatch(do.call("process_ePIRLS", processArgs, quote = TRUE),
-                                    error = function(e){
+                                    error = function(e) {
                                       stop(paste0("Unable to process ePIRLS data for country code ", dQuote(cntry),
                                                   " having year code ", dQuote(yrCode) ," at folder path(s) ", pasteItems(dQuote(path)),
                                                   ". Possible file corruption with source data.",
@@ -184,18 +184,18 @@ read_ePIRLS <- function(path,
       testJKprefix <- c("JK", "JK.TCHWGT") #have any jk prefix values here that are applicable for this dataset
       weights <- NULL #default value
       
-      for(i in 1:length(testJKprefix)){
+      for(i in 1:length(testJKprefix)) {
         ujkz <- unique(tolower(grep(paste0("^","(", testJKprefix[i] ,")","[1-9]"), c(names(processedData$dataList$student), names(processedData$dataList$teacher)), value = TRUE, ignore.case = TRUE)))
         ujkz <- gsub(tolower(testJKprefix[i]), "", ujkz, fixed = TRUE) #remove jk to leave the numeric values
         
-        if(length(ujkz)>0){
-          if(testJKprefix[i]=="JK"){
+        if(length(ujkz)>0) {
+          if(testJKprefix[i]=="JK") {
             tmpWgt <- list()
             tmpWgt[[1]] <- list(jkbase="jk", jksuffixes=as.character(ujkz))
             names(tmpWgt)[[1]] <- "totwgt"
             weights <- c(weights,tmpWgt)
           }
-          if(testJKprefix[i]=="JK.TCHWGT"){
+          if(testJKprefix[i]=="JK.TCHWGT") {
             tmpWgt <- list()
             tmpWgt[[1]] <- list(jkbase="jk.tchwgt", jksuffixes=as.character(ujkz))
             names(tmpWgt)[[1]] <- "tchwgt"
@@ -272,7 +272,7 @@ read_ePIRLS <- function(path,
 
 #@param yrCode a character value used in the PIRLS filenaming structure to identify the specific year (e.g. m1, m2, m6)
 #@return a numeric 4 digit year value
-convert_ePIRLSYearCode <- function(yrCode){
+convert_ePIRLSYearCode <- function(yrCode) {
   
   yrTest <- tolower(sort(unique(yrCode)))
   yrTest[yrTest %in% "e1"] <- 2016
@@ -280,7 +280,7 @@ convert_ePIRLSYearCode <- function(yrCode){
   return(yrTest)
 }
 
-get_ePIRLSYearCodes <- function(){
+get_ePIRLSYearCodes <- function() {
   #retrieve the TIMMS years based on their filenaming structure
   
   yrVals = c("e1")
@@ -290,7 +290,7 @@ get_ePIRLSYearCodes <- function(){
 }
 
 #builds the list of pvvars from the passed fileformat data.frame
-buildPVVARS_ePIRLS <- function(fileFormat, defaultPV = "rrea"){
+buildPVVARS_ePIRLS <- function(fileFormat, defaultPV = "rrea") {
   
   pvFields <- subset(fileFormat, nchar(fileFormat$Type)>0) #type is identified in writeTibbleToFWFReturnFileFormat function
   constructs <- unique(pvFields$Type)
@@ -301,13 +301,13 @@ buildPVVARS_ePIRLS <- function(fileFormat, defaultPV = "rrea"){
   pvvars <- vector("list", length(constructs))
   names(pvvars) <- constructs
   
-  for(i in names(pvvars)){
+  for(i in names(pvvars)) {
     varList <- tolower(sort(pvFields$variableName[pvFields$Type == i]))
     pvvars[[i]] <- list(varnames=varList)
   }
   
   #test if defaultPV in the list and make it default::otherwise set it to the first pvvar in the list
-  if (defaultPV %in% names(pvvars)){
+  if (defaultPV %in% names(pvvars)) {
     attr(pvvars, "default") <- defaultPV
   }else{
     attr(pvvars, "default") <- names(pvvars)[1]
@@ -333,12 +333,12 @@ process_ePIRLS <- function(dataFolderPath, countryCode, fnames, fileYrs, forceRe
                                            yearCode, "\\.txt$"), full.names=TRUE, ignore.case = TRUE)
   
   #determine if we can use the .meta RDS file for reading, OR process the data and create the .meta RDS
-  if(length(metaCacheFP)==0 || length(txtCacheFWF)<3 || forceReread==TRUE){ #ensure we have a full dataset of cache files
+  if(length(metaCacheFP)==0 || length(txtCacheFWF)<3 || forceReread==TRUE) { #ensure we have a full dataset of cache files
     runProcessing <- TRUE
   }else{
     cacheFile <- readRDS(unlist(metaCacheFP)[1])
     
-    if (cacheMetaReqUpdate(cacheFile$cacheFileVer, "PIRLS")){ #cacheMetaReqUpdates resides in its own R file
+    if (cacheMetaReqUpdate(cacheFile$cacheFileVer, "PIRLS")) { #cacheMetaReqUpdates resides in its own R file
       runProcessing <- TRUE
     }else{
       #rebuild the file connections from the .meta serialized cache file using the stored fileFormats
@@ -355,14 +355,14 @@ process_ePIRLS <- function(dataFolderPath, countryCode, fnames, fileYrs, forceRe
     }
   } #end if(length(metaCacheFP)==0 || length(txtCacheFWF)<3 || forceReread==TRUE)
   
-  if(runProcessing==TRUE){
+  if(runProcessing==TRUE) {
     
-    if(verbose==TRUE){
+    if(verbose==TRUE) {
       cat(paste0("Processing data for country ", dQuote(countryCode),".\n"))
     }
     
     #delete the .meta file (if exists) before processing in case of error/issue
-    if(length(metaCacheFP)>0 && file.exists(metaCacheFP)){
+    if(length(metaCacheFP)>0 && file.exists(metaCacheFP)) {
       file.remove(metaCacheFP)
     }
     
@@ -434,7 +434,7 @@ process_ePIRLS <- function(dataFolderPath, countryCode, fnames, fileYrs, forceRe
     } else {
       idsmm3 <- ids12
     }
-    if(min(is.na(asr)) == 0){
+    if(min(is.na(asr)) == 0) {
       stuDF4 <- read_sav(asr, user_na = TRUE)
       stuDF4 <- UnclassCols(stuDF4)
       colnames(stuDF4) <- toupper(colnames(stuDF4))
@@ -444,7 +444,7 @@ process_ePIRLS <- function(dataFolderPath, countryCode, fnames, fileYrs, forceRe
       
       #test here for duplicate rows::special case for PIRLS 2001 for 'HKG' datafile having multiple data rows
       #anyDuplicated will return the row index of the first duplicate found. if no duplicates found, then it returns '0'
-      if(anyDuplicated(stuDF4)>0){
+      if(anyDuplicated(stuDF4)>0) {
         stuDF4 <- dropTibbleDupes(stuDF4)
       }
       
@@ -527,7 +527,7 @@ process_ePIRLS <- function(dataFolderPath, countryCode, fnames, fileYrs, forceRe
     saveRDS(cacheFile, file.path(dataFolderPath,paste0("a", countryCode, yearCode,".meta")))
     
   } else { #used the cache files
-    if(verbose==TRUE){
+    if(verbose==TRUE) {
       cat(paste0("Found cached data for country code ", dQuote(tolower(countryCode)),".\n"))
     }
   } #end if(runProcessing==TRUE)
@@ -537,12 +537,12 @@ process_ePIRLS <- function(dataFolderPath, countryCode, fnames, fileYrs, forceRe
               dim0=dim0)) 
 }
 
-export_ePIRLSToCSV <- function(folderPath, exportPath, cntryCodes, ...){
+export_ePIRLSToCSV <- function(folderPath, exportPath, cntryCodes, ...) {
   
   sdfList <- read_ePIRLS(folderPath, cntryCodes, ...)
   
   if (inherits(sdfList, "edsurvey.data.frame.list")) {
-    for(i in 1:length(sdfList$datalist)){
+    for(i in 1:length(sdfList$datalist)) {
       
       sdf  <- sdfList$datalist[[i]]
       cntry <- sdf$country
@@ -554,7 +554,7 @@ export_ePIRLSToCSV <- function(folderPath, exportPath, cntryCodes, ...){
       write.csv(data, file=file.path(exportPath, paste0(cntry, ".csv")), na="", row.names = FALSE)
       cat(paste(cntry, "completed.\n"))
     }
-  } else if (class(sdfList) == "edsurvey.data.frame"){
+  } else if (inherits(sdfList, "edsurvey.data.frame")) {
     
     sdf <- sdfList
     cntry <- sdf$country
@@ -572,7 +572,7 @@ export_ePIRLSToCSV <- function(folderPath, exportPath, cntryCodes, ...){
 #get the full country name to aide the user, so they won't have to track them down.
 #cntryCode should be the 3 character country code vector defined in the data filename scheme (e.g., usa = United States, swe = Sweden)
 #if a match is not found, this funtion will return a character value indicating it is unknown '(unknown) CountryCode: xxx'
-get_ePIRLSCountryName <- function(countryCode){
+get_ePIRLSCountryName <- function(countryCode) {
   
   cntryCodeDF <- data.frame(
     cntryCode = c("aad", "adu", "are",
@@ -599,10 +599,10 @@ get_ePIRLSCountryName <- function(countryCode){
   
   lookupNames <- vector(mode = "character", length = length(countryCode))
   
-  for(i in 1:length(countryCode)){
+  for(i in 1:length(countryCode)) {
     testName <- cntryCodeDF[cntryCodeDF$cntryCode==countryCode[i], "cntryName"]
     
-    if(length(testName)==0){ #test if no value found
+    if(length(testName)==0) { #test if no value found
       testName <- paste("(unknown) CountryCode:", countryCode[i])
     }
     
@@ -614,12 +614,12 @@ get_ePIRLSCountryName <- function(countryCode){
 
 #perform any label modifications here.  these should not be needed but we found an issue with the read_sav
 #not correclty applying the labels to these specific variables
-ePIRLS_ValueLabelCorrection <- function(fileFormat, yrCode){
+ePIRLS_ValueLabelCorrection <- function(fileFormat, yrCode) {
   
-  if(tolower(yrCode)=="e1"){ #for 2016 only
+  if(tolower(yrCode)=="e1") { #for 2016 only
     valLbl <- fileFormat$labelValues[tolower(fileFormat$variableName)=="en11mtiml"] #the value label we are going to model after (correctly applied)
     
-    if(nchar(valLbl)>0){
+    if(nchar(valLbl)>0) {
       varPattern <- "EN11(M|R|B|Z|T)TIM(L|S)"
       
       fileFormat$labelValues[grepl(varPattern, fileFormat$variableName, ignore.case = TRUE)] <- valLbl
@@ -630,7 +630,7 @@ ePIRLS_ValueLabelCorrection <- function(fileFormat, yrCode){
 }
 
 #builds the PIRLS dataList object
-build_ePIRLS_dataList <- function(stuLaf, stuFF, schLaf, schFF, tchLaf, tchFF){
+build_ePIRLS_dataList <- function(stuLaf, stuFF, schLaf, schFF, tchLaf, tchFF) {
   
   dataList <- list()
   

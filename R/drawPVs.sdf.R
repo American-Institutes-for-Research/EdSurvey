@@ -5,6 +5,10 @@
 #' @param npv integer indicating the number of plausible values to draw
 #' @param stochasticBeta logical when \code{TRUE} the regressopm coefficients will be drawn from their posterior distribution. Can also be a data frame of values (see Details).
 #' @param returnPosterior logical set to \code{TRUE} to change output to include two additional data frames (see Value).
+#' @param normalApprox logical; use the normal approximation to draw PVs
+#' @param newStuDat new student-level covariate data
+#' @param newStuItems new student item data
+#' @param construct the construct to draw PVs for
 #' @param ... additional parameters
 #' @importFrom Dire drawPVs
 #' @export

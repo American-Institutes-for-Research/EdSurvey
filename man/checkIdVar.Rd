@@ -2,14 +2,17 @@
 % Please edit documentation in R/mml.sdf.R
 \name{checkIdVar}
 \alias{checkIdVar}
-\title{Purpose: 
-Give warning if idVar is null on on light edsurvey dataframe.
-Without an idVar the users won't be able to merge PVs back to a light.edsurvey.data.frame.}
+\title{Give warning if idVar is null on on light edsurvey dataframe.}
 \usage{
 checkIdVar(data, idVar)
 }
-\description{
-Purpose: 
-Give warning if idVar is null on on light edsurvey dataframe.
-Without an idVar the users won't be able to merge PVs back to a light.edsurvey.data.frame.
+\arguments{
+\item{data}{an \code{edsurvey.data.frame}, \code{light.edsurvey.data.frame}, or \code{data.frame} to look for the \code{idVar} on}
+
+\item{idVar}{the variable to look for
+Without an idVar the users won't be able to merge PVs back to the data after running an mml.  If there is no idVar, a default is chosen.}
 }
+\description{
+Give warning if idVar is null on on light edsurvey dataframe.
+}
+\keyword{internal}

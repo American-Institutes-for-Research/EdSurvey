@@ -69,7 +69,7 @@ readCivEDICCS <- function(path,
   path <- suppressWarnings(normalizePath(unique(path), winslash = "/"))
   path <- ifelse(grepl("[.][a-zA-Z]{1,4}$", path, perl=TRUE, ignore.case=TRUE), dirname(path), path)
   
-  if(!all(dir.exists(path))){
+  if(!all(dir.exists(path))) {
     stop(paste0("The argument ", sQuote("path"), " cannot be located: ", pasteItems(dQuote(path[!dir.exists(path)])), "."))
   }
   
@@ -79,22 +79,22 @@ readCivEDICCS <- function(path,
   gradeLvl <- tolower(gradeLvl)
   gradeLvl <- match.arg(gradeLvl)
   
-  if (length(dataSet) > 1){
+  if (length(dataSet) > 1) {
     dataSet <- dataSet[1]
   }
-  if(length(gradeLvl) > 1){
+  if(length(gradeLvl) > 1) {
     gradeLvl <- gradeLvl[1]
   }
-  if(sum(!(dataSet %in% c("student", "teacher"))>0)){
+  if(sum(!(dataSet %in% c("student", "teacher"))>0)) {
     stop(paste0("The argument ", sQuote("dataSet"), " must be either ", sQuote("student"), " or ", sQuote("teacher"), "."))
   }
   if(sum(!dir.exists(path)) > 0) { #validate the paths to ensure they all exist
     stop(paste0("Cannot find ", sQuote("path") , " value in ", pasteItems(dQuote(path[!dir.exists(path)])),"."))
   }
-  if(!is.logical(forceReread)){
+  if(!is.logical(forceReread)) {
     stop(paste0("The argument ", sQuote("forceReread"), " must be a logical value."))
   }
-  if(!is.logical(verbose)){
+  if(!is.logical(verbose)) {
     stop(paste0("The argument ", sQuote("verbose"), " must be a logical value."))
   }
   
@@ -102,17 +102,17 @@ readCivEDICCS <- function(path,
   countries <- tolower(unique(countries))
   # grab first gradeLvl to use for all
   gradeLvl <- gradeLvl[[1]] 
-  if(gradeLvl=="8"){ #i is for ICCS and b is for 1999 CivEd
+  if(gradeLvl=="8") { #i is for ICCS and b is for 1999 CivEd
     gradeL <- c("i", "b")
-  }else if(gradeLvl=="9"){ #j is for ICCS 9th grade
+  }else if(gradeLvl=="9") { #j is for ICCS 9th grade
     gradeL <- "j"
-  }else if(gradeLvl=="12"){ #c is for CivED 12th grade
+  }else if(gradeLvl=="12") { #c is for CivED 12th grade
     gradeL <- "c"
   }else{
     stop(paste0("The argument ", sQuote("gradeLvl"), " must be either ", sQuote("8"), ", ", sQuote("9"), " or ", sQuote("12"), "."))
   }
   
-  if(unlist(countries)[1]=="*"){ #user has requested data for all countries::grab all country codes
+  if(unlist(countries)[1]=="*") { #user has requested data for all countries::grab all country codes
     countries <- unique(tolower(substring(list.files(path, 
                                                      pattern=paste0("^", "(",paste(gradeL, collapse = "|"), ")", ".....(",
                                                                     paste(getICCSYearCodes(), collapse = "|"), ")\\.sav$"), full.names=FALSE, ignore.case = TRUE),4,6)))
@@ -136,14 +136,14 @@ readCivEDICCS <- function(path,
   procCountryData <- list()
   iProcCountry <- 0 #index counter for adding countries to the list
   
-  for(yrCode in fileYrs){ #loop through all the year codes first
-    for(cntry in countries){
+  for(yrCode in fileYrs) { #loop through all the year codes first
+    for(cntry in countries) {
       
       ICCSfiles <- list()#empty list
       CivEDfiles <- list()#empty list
       
-      if(gradeLvl=="8"){ #i is for ICCS and b is for 1999 CivEd
-        if(dataSet=="student"){
+      if(gradeLvl=="8") { #i is for ICCS and b is for 1999 CivEd
+        if(dataSet=="student") {
           ICCSfiles <- c("icg",  #school background
                          "isa",  #student achievement
                          "ise",  #student european module
@@ -155,14 +155,14 @@ readCivEDICCS <- function(path,
                           "bs_", #student background
                           "bt_", #teacher background
                           "bl_") #student-teacher linkage
-        }else if(dataSet=="teacher"){
+        }else if(dataSet=="teacher") {
           ICCSfiles <- c("icg",  #school background
                          "itg")  #teacher background
           CivEDfiles <- c("bc_", #school background
                           "bt_") #teacher background
         }
         
-      }else if(gradeLvl=="9"){ #j is for ICCS 9th grade
+      }else if(gradeLvl=="9") { #j is for ICCS 9th grade
         ICCSfiles <- c("jcg",  #school background
                        "jsa",  #student achievement
                        "jse",  #student european module
@@ -171,7 +171,7 @@ readCivEDICCS <- function(path,
                        "jsr",  #student scoring reliability
                        "jss")  #student asian module
         CivEDfiles <- NULL #not applicable
-      }else if(gradeLvl=="12"){ #c is for CivED 12th grade
+      }else if(gradeLvl=="12") { #c is for CivED 12th grade
         ICCSfiles <- NULL #not applicable
         CivEDfiles <- c("cc_", #school background::this filetype does not exist for 12th grade, but still pass it along
                         "cs_", #student background
@@ -196,10 +196,10 @@ readCivEDICCS <- function(path,
       hasCivEDData <- FALSE
       
       #both of these will never be true since we are looping on the year codes
-      if(sum(nchar(unlist(fnamesICCS)))>0){ #test if we have any ICCS files
+      if(sum(nchar(unlist(fnamesICCS)))>0) { #test if we have any ICCS files
         hasICCSData <- TRUE  
       }
-      if(sum(nchar(unlist(fnamesCivED)))>0){ #test if we have any CivED files
+      if(sum(nchar(unlist(fnamesCivED)))>0) { #test if we have any CivED files
         hasCivEDData <- TRUE  
       }
       
@@ -252,7 +252,7 @@ readCivEDICCS <- function(path,
       if (sum(hasMissingICCS)>0 && hasICCSData==TRUE && sum(nchar(unlist(fnamesICCS)))>0) {
         stop(paste0("Missing ICCS datafile(s) for country (", cntry, ") ", paste(ICCSfiles[hasMissingICCS], collapse=", "), " for dataset ", sQuote(dataSet),"."))
       }
-      if (sum(hasExcessICCS)>0 && hasICCSData==TRUE && sum(nchar(unlist(fnamesICCS)))>0){
+      if (sum(hasExcessICCS)>0 && hasICCSData==TRUE && sum(nchar(unlist(fnamesICCS)))>0) {
         stop(paste0("Excess/duplicate ICCS datafile(s) for country (", cntry, ") ", paste(ICCSfiles[hasExcessICCS], collapse=", "), " for dataset ", sQuote(dataSet),"."))
       }
       
@@ -260,7 +260,7 @@ readCivEDICCS <- function(path,
       if (sum(hasMissingCivED)>0 && hasCivEDData==TRUE && sum(nchar(unlist(fnamesCivED)))>0) {
         stop(paste0("Missing CivED datafile(s) for country (", cntry, ") ", paste(CivEDfiles[hasMissingCivED], collapse=", "), " for dataset ", sQuote(dataSet), "."))
       }
-      if (sum(hasExcessCivED)>0 && hasCivEDData==TRUE && sum(nchar(unlist(fnamesCivED)))>0){
+      if (sum(hasExcessCivED)>0 && hasCivEDData==TRUE && sum(nchar(unlist(fnamesCivED)))>0) {
         stop(paste0("Excess/duplicate CivED datafile(s) for country (", cntry, ") ", paste(CivEDfiles[hasExcessCivED], collapse=", "), " for dataset ", sQuote(dataSet), "."))
       }
       
@@ -273,7 +273,7 @@ readCivEDICCS <- function(path,
       iProcCountry <- iProcCountry + 1 #update the processed country index value after we confirm that there is data to process
       processedData <- list()
       
-      if(dataSet=="student" && hasICCSData==TRUE){
+      if(dataSet=="student" && hasICCSData==TRUE) {
         processArgs <- list(dataFolderPath = unique(dirname(unlist(fnamesICCS))), #specify only the directory in which the files exist 
                             countryCode = cntry, 
                             fnames = fnamesICCS, 
@@ -283,16 +283,16 @@ readCivEDICCS <- function(path,
         
         retryProc <- tryCatch({processedData <- do.call("processICCS.Student", processArgs, quote = TRUE)
                                 FALSE
-                              }, error = function(e){
+                              }, error = function(e) {
                                 TRUE #flag to retry
-                              }, warning = function(w){
+                              }, warning = function(w) {
                                 TRUE #flag to retry
                               })
         
-        if (retryProc){
+        if (retryProc) {
           processArgs[["forceReread"]] <- TRUE #try it again reprocessing the data
           processedData <- tryCatch(do.call("processICCS.Student", processArgs, quote = TRUE),
-                                    error = function(e){
+                                    error = function(e) {
                                       stop(paste0("Unable to process ICCS student data for country code ", sQuote(cntry), 
                                                   " having year code ", sQuote(yrCode) ," at folder path(s) ", paste(sQuote(path), collapse = " & "),
                                                   ". Possible file corruption with source data.",
@@ -301,10 +301,10 @@ readCivEDICCS <- function(path,
         }
         
         #ICCS student level achievement levels
-        if(convertICCSYearCode(yrCode)=="2009"){
+        if(convertICCSYearCode(yrCode)=="2009") {
           processedData$achievementLevels <- c("395", "479", "563")
           names(processedData$achievementLevels) <- c("Level 1", "Level 2", "Level 3")
-        }else if(convertICCSYearCode(yrCode)=="2016"){
+        }else if(convertICCSYearCode(yrCode)=="2016") {
           processedData$achievementLevels <- c(310.9999, 394.9999, 478.9999, 562.9999)
           names(processedData$achievementLevels) <- c("Level D", "Level C", "Level B", "Level A")
         }else{
@@ -315,12 +315,12 @@ readCivEDICCS <- function(path,
         testJKprefix <- c("JK") #have any jk prefix values here that are applicable for this dataset
         weights <- NULL #default value
         
-        for(i in 1:length(testJKprefix)){
+        for(i in 1:length(testJKprefix)) {
           ujkz <- unique(tolower(grep(paste0("^","(", testJKprefix[i] ,")","[1-9]"), c(names(processedData$dataList$student), names(processedData$dataList$teacher)), value = TRUE, ignore.case = TRUE)))
           ujkz <- gsub(tolower(testJKprefix[i]), "", ujkz, fixed = TRUE) #remove jk to leave the numeric values
           
-          if(length(ujkz)>0){
-            if(testJKprefix[i]=="JK"){
+          if(length(ujkz)>0) {
+            if(testJKprefix[i]=="JK") {
               tmpWgt <- list()
               tmpWgt[[1]] <- list(jkbase="jk", jksuffixes=as.character(ujkz))
               names(tmpWgt)[[1]] <- "totwgts"
@@ -330,7 +330,7 @@ readCivEDICCS <- function(path,
           }
         }
         
-        if(!is.null(weights)){
+        if(!is.null(weights)) {
           attr(weights, "default") <- "totwgts"
         }
         
@@ -342,7 +342,7 @@ readCivEDICCS <- function(path,
         processedData$pvvars <- buildPVVARS_ICCS(processedData$dataListFF$student, defaultPV = "civ")
         processedData$jkSumMultiplier = 1.0 #defined by the method of JK weight replication used (JK1)
         
-      }else if(dataSet=="teacher" && hasICCSData==TRUE){
+      }else if(dataSet=="teacher" && hasICCSData==TRUE) {
         processArgs <- list(dataFolderPath = unique(dirname(unlist(fnamesICCS))), #specify only the directory in which the files exist 
                             countryCode = cntry, 
                             fnames = fnamesICCS, 
@@ -352,16 +352,16 @@ readCivEDICCS <- function(path,
         
         retryProc <- tryCatch({processedData <- do.call("processICCS.Teacher", processArgs, quote = TRUE)
                                 FALSE
-                              }, error = function(e){
+                              }, error = function(e) {
                                 TRUE #flag to retry
-                              }, warning = function(w){
+                              }, warning = function(w) {
                                 TRUE #flag to retry
                               })
         
-        if (retryProc){
+        if (retryProc) {
           processArgs[["forceReread"]] <- TRUE #try it again reprocessing the data
           processedData <- tryCatch(do.call("processICCS.Teacher", processArgs, quote = TRUE),
-                                    error = function(e){
+                                    error = function(e) {
                                       stop(paste0("Unable to process ICCS teacher data for country code ", sQuote(cntry), 
                                                   " having year code ", sQuote(yrCode) ," at folder path(s) ", paste(sQuote(path), collapse = " & "),
                                                   ". Possible file corruption with source data.",
@@ -375,12 +375,12 @@ readCivEDICCS <- function(path,
         testJKprefix <- c("JK.TOTWGTT") #have any jk prefix values here that are applicable for this dataset
         weights <- NULL #default value
         
-        for(i in 1:length(testJKprefix)){
+        for(i in 1:length(testJKprefix)) {
           ujkz <- unique(tolower(grep(paste0("^","(", testJKprefix[i] ,")","[1-9]"), c(names(processedData$dataList$student), names(processedData$dataList$teacher)), value = TRUE, ignore.case = TRUE)))
           ujkz <- gsub(tolower(testJKprefix[i]), "", ujkz, fixed = TRUE) #remove jk to leave the numeric values
           
-          if(length(ujkz)>0){
-            if(testJKprefix[i]=="JK.TOTWGTT"){
+          if(length(ujkz)>0) {
+            if(testJKprefix[i]=="JK.TOTWGTT") {
               tmpWgt <- list()
               tmpWgt[[1]] <- list(jkbase="jk.totwgtt", jksuffixes=as.character(ujkz))
               names(tmpWgt)[[1]] <- "totwgtt"
@@ -390,7 +390,7 @@ readCivEDICCS <- function(path,
           }
         }
         
-        if(!is.null(weights)){
+        if(!is.null(weights)) {
           attr(weights, "default") <- "totwgtt"
         }
         
@@ -402,7 +402,7 @@ readCivEDICCS <- function(path,
         processedData$pvvars <- NULL #no pvvars for teachers
         processedData$jkSumMultiplier = 1.0 #defined by the method of JK weight replication used (JK1)
         
-      }else if(dataSet=="student" && hasCivEDData==TRUE){
+      }else if(dataSet=="student" && hasCivEDData==TRUE) {
         processArgs <- list(dataFolderPath = unique(dirname(unlist(fnamesCivED))), #specify only the directory in which the files exist
                             countryCode = cntry, 
                             fnames = fnamesCivED, 
@@ -412,16 +412,16 @@ readCivEDICCS <- function(path,
         
         retryProc <- tryCatch({processedData <- do.call("processCivED.Student", processArgs, quote = TRUE)
                                 FALSE
-                              }, error = function(e){
+                              }, error = function(e) {
                                 TRUE #flag to retry
-                              }, warning = function(w){
+                              }, warning = function(w) {
                                 TRUE #flag to retry
                               })
         
-        if (retryProc){
+        if (retryProc) {
           processArgs[["forceReread"]] <- TRUE #try it again reprocessing the data
           processedData <- tryCatch(do.call("processCivED.Student", processArgs, quote = TRUE),
-                                    error = function(e){
+                                    error = function(e) {
                                       stop(paste0("Unable to process CivED student data for country code ", sQuote(cntry), 
                                                   " having year code ", sQuote(yrCode) ," at folder path(s) ", paste(sQuote(path), collapse = " & "),
                                                   ". Possible file corruption with source data.",
@@ -434,19 +434,19 @@ readCivEDICCS <- function(path,
         testJKprefix <- c("JK", "JK.TOTWGTCH") #have any jk prefix values here that are applicable for this dataset
         weights <- NULL #default value
         
-        for(i in 1:length(testJKprefix)){
+        for(i in 1:length(testJKprefix)) {
           ujkz <- unique(tolower(grep(paste0("^","(", testJKprefix[i] ,")","[1-9]"), c(names(processedData$dataList$student), names(processedData$dataList$teacher)), value = TRUE, ignore.case = TRUE)))
           ujkz <- gsub(tolower(testJKprefix[i]), "", ujkz, fixed = TRUE) #remove jk to leave the numeric values
           
           #for CivED some countries don't have any jkzone/jkrep data, thus they really don't have weight variables
-          if(length(ujkz)>0){
-            if(testJKprefix[i]=="JK"){
+          if(length(ujkz)>0) {
+            if(testJKprefix[i]=="JK") {
               tmpWgt <- list()
               tmpWgt[[1]] <- list(jkbase="jk", jksuffixes=as.character(ujkz))
               names(tmpWgt)[[1]] <- "totwgt"
               weights <- c(weights,tmpWgt)
             }
-            if(testJKprefix[i]=="JK.TOTWGTCH"){
+            if(testJKprefix[i]=="JK.TOTWGTCH") {
               tmpWgt <- list()
               tmpWgt[[1]] <- list(jkbase="jk.totwgtch", jksuffixes=as.character(ujkz))
               names(tmpWgt)[[1]] <- "totwgtch"
@@ -455,7 +455,7 @@ readCivEDICCS <- function(path,
           }
         }
         
-        if(!is.null(weights)){
+        if(!is.null(weights)) {
           attr(weights, "default") <- "totwgt"
         }
         
@@ -467,7 +467,7 @@ readCivEDICCS <- function(path,
         processedData$pvvars <- buildPVVARS_ICCS(processedData$dataListFF$student, defaultPV = "civ")
         processedData$jkSumMultiplier = 1.0 #defined by the method of JK weight replication used (JK1)
         
-      }else if(dataSet=="teacher" && hasCivEDData==TRUE){
+      }else if(dataSet=="teacher" && hasCivEDData==TRUE) {
         processArgs <- list(dataFolderPath = unique(dirname(unlist(fnamesCivED))), #specify only the directory in which the files exist 
                             countryCode = cntry, 
                             fnames = fnamesCivED, 
@@ -477,16 +477,16 @@ readCivEDICCS <- function(path,
         
         retryProc <- tryCatch({processedData <- do.call("processCivED.Teacher", processArgs, quote = TRUE)
                                 FALSE
-                              }, error = function(e){
+                              }, error = function(e) {
                                 TRUE #flag to retry
-                              }, warning = function(w){
+                              }, warning = function(w) {
                                 TRUE #flag to retry
                               })
         
-        if (retryProc){
+        if (retryProc) {
           processArgs[["forceReread"]] <- TRUE #try it again reprocessing the data
           processedData <- tryCatch(do.call("processCivED.Teacher", processArgs, quote = TRUE),
-                                    error = function(e){
+                                    error = function(e) {
                                       stop(paste0("Unable to process CivED teacher data for country code ", sQuote(cntry), 
                                                   " having year code ", sQuote(yrCode) ," at folder path(s) ", paste(sQuote(path), collapse = " & "),
                                                   ". Possible file corruption with source data.",
@@ -557,7 +557,7 @@ readCivEDICCS <- function(path,
     return(edsurvey.data.frame.list(procCountryData)) #do not apply country labels::the edsurvey.data.frame.list does a better job of detecting the differences
   } else {
     # just one country
-    if(length(procCountryData)>0){
+    if(length(procCountryData)>0) {
       return(procCountryData[[1]])
     }else{
       return(NULL) #no data to return
@@ -565,7 +565,7 @@ readCivEDICCS <- function(path,
   } 
 }
 
-convertICCSYearCode <- function(yrCode){
+convertICCSYearCode <- function(yrCode) {
   
   yrTest <- tolower(sort(unique(yrCode)))
   yrTest[yrTest %in% c("f2")] <- 1999
@@ -575,7 +575,7 @@ convertICCSYearCode <- function(yrCode){
   return(yrTest)
 }
 
-getICCSYearCodes <- function(){
+getICCSYearCodes <- function() {
   #retrieve the TIMMS years based on their filenaming structure
   
   yrVals = c("f2","c2", "c3")
@@ -600,18 +600,18 @@ processICCS.Student <- function(dataFolderPath, countryCode, fnames, fileYrs, fo
                                            yearCode, "\\.txt$"), full.names=TRUE, ignore.case = TRUE)
   
   #determine if we can use the .meta RDS file for reading, OR process the data and create the .meta RDS
-  if(length(metaCacheFP)==0 || length(txtCacheFWF)<ifelse(gradeLvlCode=="j",1,2) || forceReread==TRUE){ #ensure we have a full dataset of cache files
+  if(length(metaCacheFP)==0 || length(txtCacheFWF)<ifelse(gradeLvlCode=="j",1,2) || forceReread==TRUE) { #ensure we have a full dataset of cache files
       runProcessing <- TRUE
   
   }else{
     cacheFile <- readRDS(unlist(metaCacheFP)[1])
     
-    if (cacheMetaReqUpdate(cacheFile$cacheFileVer, "ICCS")){ #cacheMetaReqUpdates resides in own R file
+    if (cacheMetaReqUpdate(cacheFile$cacheFileVer, "ICCS")) { #cacheMetaReqUpdates resides in own R file
       runProcessing <- TRUE
     }else{
       #rebuild the file connections from the .meta serialized cache file using the stored fileFormats
       
-      if(!is.null(cacheFile$dataListFF$school)){
+      if(!is.null(cacheFile$dataListFF$school)) {
         studentLAF <- getFWFLaFConnection(txtCacheFWF[tolower(substr(basename(txtCacheFWF),1,3))==paste0(gradeLvlCode, "sg")], cacheFile$dataListFF$student)
         schoolLAF <- getFWFLaFConnection(txtCacheFWF[tolower(substr(basename(txtCacheFWF),1,3))==paste0(gradeLvlCode, "cg")], cacheFile$dataListFF$school)
         
@@ -636,14 +636,14 @@ processICCS.Student <- function(dataFolderPath, countryCode, fnames, fileYrs, fo
     }
   } #end if(length(metaCacheFP)==0 || length(txtCacheFWF)<ifelse(gradeLvlCode=="j",1,2) || forceReread==TRUE)
   
-  if(runProcessing==TRUE){
+  if(runProcessing) {
     
-    if(verbose==TRUE){
+    if(verbose) {
       cat(paste0("Processing data for country ", dQuote(countryCode),".\n"))
     }
     
     #delete the .meta file (if exists) before processing in case of error/issue
-    if(length(metaCacheFP)>0 && file.exists(metaCacheFP)){
+    if(length(metaCacheFP)>0 && file.exists(metaCacheFP)) {
       file.remove(metaCacheFP)
     }
     #SCHOOL LEVEL===================================================
@@ -726,7 +726,7 @@ processICCS.Student <- function(dataFolderPath, countryCode, fnames, fileYrs, fo
       idsmm3 <- ids12
     }
     
-    if(min(is.na(se)) == 0){
+    if(min(is.na(se)) == 0) {
       stuDF4 <- read_sav(se, user_na = TRUE)
       stuDF4 <- UnclassCols(stuDF4)
       colnames(stuDF4) <- toupper(colnames(stuDF4))
@@ -751,7 +751,7 @@ processICCS.Student <- function(dataFolderPath, countryCode, fnames, fileYrs, fo
       idsmm4 <- idsmm3
     }
     
-    if(min(is.na(sl)) == 0){
+    if(min(is.na(sl)) == 0) {
       stuDF5 <- read_sav(sl, user_na = TRUE)
       stuDF5 <- UnclassCols(stuDF5)
       colnames(stuDF5) <- toupper(colnames(stuDF5))
@@ -776,7 +776,7 @@ processICCS.Student <- function(dataFolderPath, countryCode, fnames, fileYrs, fo
       idsmm5 <- idsmm4
     }
     
-    if(min(is.na(ss)) == 0){
+    if(min(is.na(ss)) == 0) {
       stuDF6 <- read_sav(ss, user_na = TRUE)
       stuDF6 <- UnclassCols(stuDF6)
       colnames(stuDF6) <- toupper(colnames(stuDF6))
@@ -803,7 +803,7 @@ processICCS.Student <- function(dataFolderPath, countryCode, fnames, fileYrs, fo
     ffstu <- writeTibbleToFWFReturnFileFormat(mm, stuFP, jkType = "JK1")  
     #===============================================================
     
-    if(!is.null(ffsch)){
+    if(!is.null(ffsch)) {
       schoolLAF <- getFWFLaFConnection(schoolFP, ffsch)
       studentLAF <- getFWFLaFConnection(stuFP, ffstu)
       
@@ -838,10 +838,10 @@ processICCS.Student <- function(dataFolderPath, countryCode, fnames, fileYrs, fo
     saveRDS(cacheFile, file.path(dataFolderPath,paste0(gradeLvlCode, "s", countryCode, yearCode,".meta")))
     
   } else { #used the cache files
-    if(verbose==TRUE){
+    if(verbose) {
       cat(paste0("Found cached data for country code ", dQuote(countryCode),".\n"))
     }
-  } #end if(runProcessing==TRUE)
+  } #end if(runProcessing)
   
   return(list(dataList = dataList,
               dataListFF = dataListFF,
@@ -865,12 +865,12 @@ processICCS.Teacher <- function(dataFolderPath, countryCode, fnames, fileYrs, fo
                                            yearCode, "\\.txt$"), full.names=TRUE, ignore.case = TRUE)
   
   #determine if we can use the .meta RDS file for reading, OR process the data and create the .meta RDS
-  if(length(metaCacheFP)==0 || length(txtCacheFWF)<2 || forceReread==TRUE){ #ensure we have a full dataset of cache files
+  if(length(metaCacheFP)==0 || length(txtCacheFWF)<2 || forceReread==TRUE) { #ensure we have a full dataset of cache files
     runProcessing <- TRUE
   }else{
     cacheFile <- readRDS(unlist(metaCacheFP)[1])
     
-    if (cacheMetaReqUpdate(cacheFile$cacheFileVer, "ICCS")){ #cacheMetaReqUpdates resides in own R file
+    if (cacheMetaReqUpdate(cacheFile$cacheFileVer, "ICCS")) { #cacheMetaReqUpdates resides in own R file
       runProcessing <- TRUE
     }else{
       #rebuild the file connections from the .meta serialized cache file using the stored fileFormats
@@ -887,14 +887,14 @@ processICCS.Teacher <- function(dataFolderPath, countryCode, fnames, fileYrs, fo
     }
   } #end if(length(metaCacheFP)==0 || length(txtCacheFWF)<2 || forceReread==TRUE)
   
-  if(runProcessing==TRUE){
+  if(runProcessing==TRUE) {
     
-    if(verbose==TRUE){
+    if(verbose==TRUE) {
       cat(paste0("Processing data for country ", dQuote(countryCode),".\n"))
     }
     
     #delete the .meta file (if exists) before processing in case of error/issue
-    if(length(metaCacheFP)>0 && file.exists(metaCacheFP)){
+    if(length(metaCacheFP)>0 && file.exists(metaCacheFP)) {
       file.remove(metaCacheFP)
     }
     
@@ -939,7 +939,7 @@ processICCS.Teacher <- function(dataFolderPath, countryCode, fnames, fileYrs, fo
     saveRDS(cacheFile, file.path(dataFolderPath,paste0(gradeLvlCode, "t", countryCode, yearCode,".meta")))
     
   } else { #used the cache files
-    if(verbose==TRUE){
+    if(verbose==TRUE) {
       cat(paste0("Found cached data for country code ", dQuote(countryCode),".\n"))
     }
   } #end if(runProcessing==TRUE)
@@ -965,22 +965,22 @@ processCivED.Student <- function(dataFolderPath, countryCode, fnames, fileYrs, f
                                            yearCode, "\\.txt$"), full.names=TRUE, ignore.case = TRUE)
   
   #determine if we can use the .meta RDS file for reading, OR process the data and create the .meta RDS
-  if(length(metaCacheFP)==0 || length(txtCacheFWF)<ifelse(gradeLvlCode=="c",1,2) || forceReread==TRUE){ #ensure we have a full dataset of cache files
+  if(length(metaCacheFP)==0 || length(txtCacheFWF)<ifelse(gradeLvlCode=="c",1,2) || forceReread==TRUE) { #ensure we have a full dataset of cache files
     runProcessing <- TRUE
     
   }else{
     cacheFile <- readRDS(unlist(metaCacheFP)[1])
     
-    if (cacheMetaReqUpdate(cacheFile$cacheFileVer, "CivED")){ #cacheMetaReqUpdates resides in its own R file
+    if (cacheMetaReqUpdate(cacheFile$cacheFileVer, "CivED")) { #cacheMetaReqUpdates resides in its own R file
       runProcessing <- TRUE
     }else{
       #rebuild the file connections from the .meta serialized cache file using the stored fileFormats
       
-      if(!is.null(cacheFile$dataListFF$school)){
+      if(!is.null(cacheFile$dataListFF$school)) {
         studentLAF <- getFWFLaFConnection(txtCacheFWF[tolower(substr(basename(txtCacheFWF),1,3))==paste0(gradeLvlCode, "s_")], cacheFile$dataListFF$student)
         schoolLAF <- getFWFLaFConnection(txtCacheFWF[tolower(substr(basename(txtCacheFWF),1,3))==paste0(gradeLvlCode, "c_")], cacheFile$dataListFF$school)
         
-        if(!is.null(cacheFile$dataListFF$teacher)){
+        if(!is.null(cacheFile$dataListFF$teacher)) {
           teacherLAF <- getFWFLaFConnection(txtCacheFWF[tolower(substr(basename(txtCacheFWF),1,3))==paste0(gradeLvlCode, "z_")], cacheFile$dataListFF$teacher) #use the 'z' here for cache file since we don't want to interfere w/ the teacher function and we include linkage data
           dataList <- list(student = studentLAF, school = schoolLAF, teacher = teacherLAF) #ORDER THE dataList in a heirarchy, ie. student list should be first
         }else{
@@ -1006,14 +1006,14 @@ processCivED.Student <- function(dataFolderPath, countryCode, fnames, fileYrs, f
     }
   } #end if(length(metaCacheFP)==0 || length(txtCacheFWF)<ifelse(gradeLvlCode=="c",1,3) || forceReread==TRUE)
   
-  if(runProcessing==TRUE){
+  if(runProcessing==TRUE) {
     
-    if(verbose==TRUE){
+    if(verbose==TRUE) {
       cat(paste0("Processing data for country ", dQuote(countryCode),".\n"))
     }
     
     #delete the .meta file (if exists) before processing in case of error/issue
-    if(length(metaCacheFP)>0 && file.exists(metaCacheFP)){
+    if(length(metaCacheFP)>0 && file.exists(metaCacheFP)) {
       file.remove(metaCacheFP)
     }
     
@@ -1054,19 +1054,19 @@ processCivED.Student <- function(dataFolderPath, countryCode, fnames, fileYrs, f
     tg <- unlist(fnames[paste0(gradeLvlCode,"t_")])[1] #teacher file
     tl <- unlist(fnames[paste0(gradeLvlCode,"l_")])[1] #teacher/student linkage file
     
-    if(min(is.na(tg)) == 0 &&  min(is.na(tl)) == 0){
+    if(min(is.na(tg)) == 0 &&  min(is.na(tl)) == 0) {
       tchLink <- read_sav(tl, user_na = TRUE)
       tchLink <- UnclassCols(tchLink)
       
       #a few countries in the BL_ file have duplicate records in them::this will remove them
-      if(anyDuplicated(tchLink)>0){
+      if(anyDuplicated(tchLink)>0) {
         tchLink <- dropTibbleDupes(tchLink)
       }
     
       tchBK <- read_sav(tg, user_na = TRUE)
       tchBK <- UnclassCols(tchBK)
       
-      if(anyDuplicated(tchBK)>0){
+      if(anyDuplicated(tchBK)>0) {
         tchBK <- dropTibbleDupes(tchBK)
       }
       
@@ -1101,11 +1101,11 @@ processCivED.Student <- function(dataFolderPath, countryCode, fnames, fileYrs, f
     }#end if(min(is.na(tg)) == 0 &&  min(is.na(tl)) == 0)
     #===============================================================
     
-    if(!is.null(ffsch)){
+    if(!is.null(ffsch)) {
       schoolLAF <- getFWFLaFConnection(schoolFP, ffsch)
       studentLAF <- getFWFLaFConnection(stuFP, ffstu)
       
-      if(!is.null(fftch)){
+      if(!is.null(fftch)) {
         teacherLAF <- getFWFLaFConnection(tchFP, fftch)
         
         dataList <- list(student = studentLAF, school = schoolLAF, teacher = teacherLAF) #ORDER THE dataList in a heirarchy, ie. student list should be first
@@ -1152,7 +1152,7 @@ processCivED.Student <- function(dataFolderPath, countryCode, fnames, fileYrs, f
     saveRDS(cacheFile, file.path(dataFolderPath,paste0(gradeLvlCode, "s", countryCode, yearCode,".meta")))
     
   } else { #used the cache files
-    if(verbose==TRUE){
+    if(verbose==TRUE) {
       cat(paste0("Found cached data for country code ", dQuote(countryCode),".\n"))
     }
   } #end if(runProcessing==TRUE)
@@ -1178,18 +1178,18 @@ processCivED.Teacher <- function(dataFolderPath, countryCode, fnames, fileYrs, f
                                            yearCode, "\\.txt$"), full.names=TRUE, ignore.case = TRUE)
   
   #determine if we can use the .meta RDS file for reading, OR process the data and create the .meta RDS
-  if(length(metaCacheFP)==0 || length(txtCacheFWF)<ifelse(gradeLvlCode=="c",1,2) || forceReread==TRUE){ #ensure we have a full dataset of cache files
+  if(length(metaCacheFP)==0 || length(txtCacheFWF)<ifelse(gradeLvlCode=="c",1,2) || forceReread==TRUE) { #ensure we have a full dataset of cache files
     runProcessing <- TRUE
     
   }else{
     cacheFile <- readRDS(unlist(metaCacheFP)[1])
     
-    if (cacheMetaReqUpdate(cacheFile$cacheFileVer, "CivED")){ #cacheMetaReqUpdates resides in its own R file
+    if (cacheMetaReqUpdate(cacheFile$cacheFileVer, "CivED")) { #cacheMetaReqUpdates resides in its own R file
       runProcessing <- TRUE
     }else{
       #rebuild the file connections from the .meta serialized cache file using the stored fileFormats
       
-      if(!is.null(cacheFile$dataListFF$school)){
+      if(!is.null(cacheFile$dataListFF$school)) {
         studentLAF <- getFWFLaFConnection(txtCacheFWF[tolower(substr(basename(txtCacheFWF),1,3))==paste0(gradeLvlCode, "t_")], cacheFile$dataListFF$student)
         schoolLAF <- getFWFLaFConnection(txtCacheFWF[tolower(substr(basename(txtCacheFWF),1,3))==paste0(gradeLvlCode, "c_")], cacheFile$dataListFF$school)
         
@@ -1214,14 +1214,14 @@ processCivED.Teacher <- function(dataFolderPath, countryCode, fnames, fileYrs, f
     }
   } #end if(length(metaCacheFP)==0 || length(txtCacheFWF)<ifelse(gradeLvlCode=="c",1,2) || forceReread==TRUE)
   
-  if(runProcessing==TRUE){
+  if(runProcessing==TRUE) {
     
-    if(verbose==TRUE){
+    if(verbose==TRUE) {
       cat(paste0("Processing data for country ", dQuote(countryCode),".\n"))
     }
     
     #delete the .meta file (if exists) before processing in case of error/issue
-    if(length(metaCacheFP)>0 && file.exists(metaCacheFP)){
+    if(length(metaCacheFP)>0 && file.exists(metaCacheFP)) {
       file.remove(metaCacheFP)
     }
     
@@ -1259,7 +1259,7 @@ processCivED.Teacher <- function(dataFolderPath, countryCode, fnames, fileYrs, f
     ffstu <- writeTibbleToFWFReturnFileFormat(stuDF1, stuFP, jkType = "JK1")  
     #===============================================================
     
-    if(!is.null(ffsch)){
+    if(!is.null(ffsch)) {
       schoolLAF <- getFWFLaFConnection(schoolFP, ffsch)
       studentLAF <- getFWFLaFConnection(stuFP, ffstu)
       
@@ -1296,7 +1296,7 @@ processCivED.Teacher <- function(dataFolderPath, countryCode, fnames, fileYrs, f
     saveRDS(cacheFile, file.path(dataFolderPath,paste0(gradeLvlCode, "t", countryCode, yearCode,".meta")))
     
   } else { #used the cache files
-    if(verbose==TRUE){
+    if(verbose==TRUE) {
       cat(paste0("Found cached data for country code ", dQuote(countryCode),".\n"))
     }
   } #end if(runProcessing==TRUE)
@@ -1307,20 +1307,20 @@ processCivED.Teacher <- function(dataFolderPath, countryCode, fnames, fileYrs, f
 }
 
 #builds the list of pvvars from the passed fileformat data.frame
-buildPVVARS_ICCS <- function(fileFormat, defaultPV = "civ"){
+buildPVVARS_ICCS <- function(fileFormat, defaultPV = "civ") {
   
   pvFields <- subset(fileFormat, nchar(fileFormat$Type)>0) #type is identified in writeTibbleToFWFReturnFileFormat function
   constructs <- unique(pvFields$Type)
   pvvars <- vector("list", length(constructs))
   names(pvvars) <- constructs
   
-  for(i in names(pvvars)){
+  for(i in names(pvvars)) {
     varList <- tolower(sort(pvFields$variableName[pvFields$Type == i]))
     pvvars[[i]] <- list(varnames=varList)
   }
   
   #test if defaultPV in the list and make it default::otherwise set it to the first pvvar in the list
-  if (defaultPV %in% names(pvvars)){
+  if (defaultPV %in% names(pvvars)) {
     attr(pvvars, "default") <- defaultPV
   }else{
     attr(pvvars, "default") <- names(pvvars)[1]
@@ -1330,7 +1330,7 @@ buildPVVARS_ICCS <- function(fileFormat, defaultPV = "civ"){
 }
 
 #returns the full country name based on the three letter country abbrev
-getICCSCountryName <- function(countryCode){
+getICCSCountryName <- function(countryCode) {
   
   cntryCodeDF <- data.frame(
     cntryCode = c("aus", "aut",
@@ -1373,10 +1373,10 @@ getICCSCountryName <- function(countryCode){
   
   lookupNames <- vector(mode = "character", length = length(countryCode))
   
-  for(i in 1:length(countryCode)){
+  for(i in 1:length(countryCode)) {
     testName <- cntryCodeDF[cntryCodeDF$cntryCode==countryCode[i], "cntryName"]
     
-    if(length(testName)==0){ #test if no value found
+    if(length(testName)==0) { #test if no value found
       testName <- paste("(unknown) CountryCode:", countryCode[i])
     }
     
@@ -1386,31 +1386,24 @@ getICCSCountryName <- function(countryCode){
   return(lookupNames)
 }
 
-exportCivEDICCSToCSV <- function(folderPath, exportPath, cntryCodes, dataSet, gradeLvl, ...){
+exportCivEDICCSToCSV <- function(folderPath, exportPath, cntryCodes, dataSet, gradeLvl, ...) {
   
   sdfList <- readCivEDICCS(folderPath, cntryCodes, dataSet = dataSet, gradeLvl = gradeLvl, ...)
   
-  if (class(sdfList) == "edsurvey.data.frame.list"){
-    for(i in 1:length(sdfList$datalist)){
-      
+  if (inherits(sdfList, "edsurvey.data.frame.list")) {
+    for(i in 1:length(sdfList$datalist)) {
       sdf  <- sdfList$datalist[[i]]
       cntry <- sdf$country
-      
       cat(paste(cntry, "working.\n"))
       data <- getData(sdf, colnames(sdf), dropUnusedLevels = FALSE, omittedLevels = FALSE)
-      
-      
       write.csv(data, file=file.path(exportPath, paste0(cntry, ".csv")), na="", row.names = FALSE)
       cat(paste(cntry, "completed.\n"))
     }
   } else if (inherits(sdfList, "edsurvey.data.frame")) {
-    
     sdf <- sdfList
     cntry <- sdf$country
-    
     cat(paste(cntry, "working.\n"))
     data <- getData(sdf, colnames(sdf), dropUnusedLevels = FALSE, omittedLevels = FALSE)
-    
     write.csv(data, file=file.path(exportPath, paste0(cntry, ".csv")), na="", row.names = FALSE)
     cat(paste(cntry, "completed.\n"))
   }
@@ -1419,25 +1412,25 @@ exportCivEDICCSToCSV <- function(folderPath, exportPath, cntryCodes, dataSet, gr
 
 #return back an updated spssDF with fixed/updated CivED data labels that are undefined/incorrectly labeled
 #passing along the yearCode in case further CivED studies
-fixCivED_DataLabels <- function(spssDF, yrCode, cntryCode){
+fixCivED_DataLabels <- function(spssDF, yrCode, cntryCode) {
   
   #ensure CivED 1999 study
-  if(tolower(yrCode)=="f2"){
-    for(var in colnames(spssDF)){
+  if(tolower(yrCode)=="f2") {
+    for(var in colnames(spssDF)) {
       
       #grab the labels and the names of the labels for this column
       tmpLbl <- attr(spssDF[[var]], "labels")
       tmpNames <- names(tmpLbl)
       
       #School Level Vars=====================================
-      if(var=="BCVIOLEN"){
+      if(var=="BCVIOLEN") {
         tmpLbl <- c(tmpLbl, 0)
         names(tmpLbl) <- c(tmpNames, "<UNKNOWN LABEL:0>")
         attr(spssDF[[var]], "labels") <- sort(tmpLbl)
         next
       }
       
-      if(var=="BCYOURSC"){
+      if(var=="BCYOURSC") {
         tmpLbl <- c(tmpLbl, 3)
         names(tmpLbl) <- c(tmpNames, "<UNKNOWN LABEL:3>")
         attr(spssDF[[var]], "labels") <- sort(tmpLbl)
@@ -1446,14 +1439,14 @@ fixCivED_DataLabels <- function(spssDF, yrCode, cntryCode){
       #======================================================
       
       #Student Level Vars====================================
-      if(var=="BSGASOFT"){
+      if(var=="BSGASOFT") {
         tmpLbl <- c(tmpLbl, 7)
         names(tmpLbl) <- c(tmpNames, "INVALID")
         attr(spssDF[[var]], "labels") <- sort(tmpLbl)
         next
       }
       
-      if(var=="BSGDSCR"){
+      if(var=="BSGDSCR") {
         tmpLbl <- c(tmpLbl, 0, 6, 7, 8, 9, 10)
         names(tmpLbl) <- c(tmpNames, 
                            "<UNKNOWN LABEL:0>",
@@ -1466,14 +1459,14 @@ fixCivED_DataLabels <- function(spssDF, yrCode, cntryCode){
         next
       }
       
-      if(var=="BSGTALK"){
+      if(var=="BSGTALK") {
         tmpLbl <- c(tmpLbl, 7)
         names(tmpLbl) <- c(tmpNames, "INVALID")
         attr(spssDF[[var]], "labels") <- sort(tmpLbl)
         next
       }
       
-      if(var=="BSGWATC"){
+      if(var=="BSGWATC") {
         tmpLbl <- c(1, 2, 3, 4, 5, 7, 8, 9)
         names(tmpLbl) <- c("NO TIME", 
                            "LESS THAN 1 HOUR",
@@ -1487,7 +1480,7 @@ fixCivED_DataLabels <- function(spssDF, yrCode, cntryCode){
         next
       }
       
-      if(var %in% c("ITPART1", "ITPART2")){ #this applies to the 12th grade data as well
+      if(var %in% c("ITPART1", "ITPART2")) { #this applies to the 12th grade data as well
         tmpLbl <- c(tmpLbl, 4, 6)
         names(tmpLbl) <- c(tmpNames, 
                            "<NATIONALLY DEFINED RESPONSE:4>",
@@ -1501,7 +1494,7 @@ fixCivED_DataLabels <- function(spssDF, yrCode, cntryCode){
       if(var %in% c("CS101", "CS102", "CS103", "CS105", "CS106", "CS107", "CS108", "CS109", "CS110", "CS111", "CS112", "CS113",
                     "CS114", "CS115", "CS116", "CS117", "CS118", "CS119", "CS120", "CS121", "CS122", "CS124", "CS125", "CS126",
                     "CS127", "CS128", "CS129", "CS130", "CS131", "CS132", "CS134", "CS135", "CS136", "CS137", "CS138", "CS140",
-                    "CS141", "CS142", "CS143")){
+                    "CS141", "CS142", "CS143")) {
         tmpLbl <- c(tmpLbl, 7)
         names(tmpLbl) <- c(tmpNames, "INVALID")
         attr(spssDF[[var]], "labels") <- sort(tmpLbl)
@@ -1512,21 +1505,21 @@ fixCivED_DataLabels <- function(spssDF, yrCode, cntryCode){
                     "CS1R1", "CS1R2", "CS1R3", "CS1R4", "CS1R5",
                     "CS1S1", "CS1S2", "CS1S3", "CS1S4", "CS1S5",
                     "CS1T1", "CS1T2", "CS1T3", "CS1T4", "CS1T5",
-                    "CS4Q1", "CS4Q2", "CS4Q3", "CS4Q4", "CS4Q5")){
+                    "CS4Q1", "CS4Q2", "CS4Q3", "CS4Q4", "CS4Q5")) {
         tmpLbl <- c(tmpLbl, 0) #add new code
         names(tmpLbl) <- c(tmpNames, "<UNKNOWN LABEL:0>")
         attr(spssDF[[var]], "labels") <- sort(tmpLbl)
         next
       }
       
-      if(var %in% c("CSGADU1")){
+      if(var %in% c("CSGADU1")) {
         tmpLbl <- c(tmpLbl, 0) #add new code
         names(tmpLbl) <- c(tmpNames, "<UNKNOWN LABEL:0>")
         attr(spssDF[[var]], "labels") <- sort(tmpLbl)
         next
       }
       
-      if(var %in% c("CSGADU2")){
+      if(var %in% c("CSGADU2")) {
         tmpLbl <- c(tmpLbl, 3, 5, 6, 7) #add new code
         names(tmpLbl) <- c(tmpNames, 
                            "<UNKNOWN LABEL:3>", 
@@ -1537,35 +1530,35 @@ fixCivED_DataLabels <- function(spssDF, yrCode, cntryCode){
         next
       }
       
-      if(var %in% c("CSGAS08", "CSGAS14", "CSGAS15")){
+      if(var %in% c("CSGAS08", "CSGAS14", "CSGAS15")) {
         tmpLbl <- c(tmpLbl, 3) #add new code
         names(tmpLbl) <- c(tmpNames, "<UNKNOWN LABEL:3>")
         attr(spssDF[[var]], "labels") <- sort(tmpLbl)
         next
       }
       
-      if(var %in% c("CSGASOFT")){
+      if(var %in% c("CSGASOFT")) {
         tmpLbl <- c(tmpLbl, 0, 5, 6) #add new code
         names(tmpLbl) <- c(tmpNames, "<UNKNOWN LABEL:0>", "<UNKNOWN LABEL:5>", "<UNKNOWN LABEL:6>")
         attr(spssDF[[var]], "labels") <- sort(tmpLbl)
         next
       }
       
-      if(var %in% c("CSGBOOK")){
+      if(var %in% c("CSGBOOK")) {
         tmpLbl <- c(tmpLbl, 7) #add new code
         names(tmpLbl) <- c(tmpNames, "INVALID")
         attr(spssDF[[var]], "labels") <- sort(tmpLbl)
         next
       }
       
-      if(var %in% c("CSGBRN1")){
+      if(var %in% c("CSGBRN1")) {
         tmpLbl <- c(tmpLbl, 3) #add new code
         names(tmpLbl) <- c(tmpNames, "<UNKNOWN LABEL:3>")
         attr(spssDF[[var]], "labels") <- sort(tmpLbl)
         next
       }
       
-      if(var %in% c("CSGDSCR")){
+      if(var %in% c("CSGDSCR")) {
         tmpLbl <- c(tmpLbl, 6, 7, 8, 9, 10, 11) #add new code
         names(tmpLbl) <- c(tmpNames, 
                            "<UNKNOWN LABEL:6>",
@@ -1578,7 +1571,7 @@ fixCivED_DataLabels <- function(spssDF, yrCode, cntryCode){
         next
       }
       
-      if(var %in% c("CSGEDUF", "CSGEDUM")){
+      if(var %in% c("CSGEDUF", "CSGEDUM")) {
         tmpLbl <- c(tmpLbl, 8, 9, 10, 11, 12, 13) #add new code
         names(tmpLbl) <- c(tmpNames, 
                            "<UNKNOWN LABEL:8>",
@@ -1591,14 +1584,14 @@ fixCivED_DataLabels <- function(spssDF, yrCode, cntryCode){
         next
       }
       
-      if(var %in% c("CSGLANG")){
+      if(var %in% c("CSGLANG")) {
         tmpLbl <- c(tmpLbl, 4) #add new code
         names(tmpLbl) <- c(tmpNames, "<UNKNOWN LABEL:4>")
         attr(spssDF[[var]], "labels") <- sort(tmpLbl)
         next
       }
       
-      if(var %in% c("CSGNEWS")){
+      if(var %in% c("CSGNEWS")) {
         tmpLbl <- c(tmpLbl, 3, 4, 5) #add new code
         names(tmpLbl) <- c(tmpNames, 
                            "<UNKNOWN LABEL:3>", 
@@ -1608,7 +1601,7 @@ fixCivED_DataLabels <- function(spssDF, yrCode, cntryCode){
         next
       }
       
-      if(var %in% c("CSNAT1", "CSNAT2", "CSNAT3", "CSNAT4")){
+      if(var %in% c("CSNAT1", "CSNAT2", "CSNAT3", "CSNAT4")) {
         tmpLbl <- c(tmpLbl, 2, 3, 4) #add new code
         names(tmpLbl) <- c(tmpNames, 
                            "<UNKNOWN LABEL:2>", 
@@ -1621,7 +1614,7 @@ fixCivED_DataLabels <- function(spssDF, yrCode, cntryCode){
       
       #TEACHER LEVEL VARS====================================
       if(var %in% c("BTCASSE1", "BTCASSE2", "BTCASSE3", "BTCASSE4", "BTCASSE5", "BTCASSE6", 
-                    "BTCBEMAT", "BTCCOPEX", "BTCCOPSU", "BTCMOAUT", "BTCMOMAT", "BTCMOOPP", "BTCMORES", "BTCMOTIM", "BTCSUBME", "BTCTEMET")){
+                    "BTCBEMAT", "BTCCOPEX", "BTCCOPSU", "BTCMOAUT", "BTCMOMAT", "BTCMOOPP", "BTCMORES", "BTCMOTIM", "BTCSUBME", "BTCTEMET")) {
         tmpLbl <- c(tmpLbl, 0, 7)
         names(tmpLbl) <- c(tmpNames, 
                            "<UNKNOWN LABEL:0>",
@@ -1630,21 +1623,21 @@ fixCivED_DataLabels <- function(spssDF, yrCode, cntryCode){
         next
       }
       
-      if(var %in% c("BTCMEM1", "BTCMEM2")){
+      if(var %in% c("BTCMEM1", "BTCMEM2")) {
         tmpLbl <- c(tmpLbl, 7)
         names(tmpLbl) <- c(tmpNames, "INVALID")
         attr(spssDF[[var]], "labels") <- sort(tmpLbl)
         next
       }
       
-      if(var=="BTGEDUC"){
+      if(var=="BTGEDUC") {
         tmpLbl <- c(tmpLbl, 6)
         names(tmpLbl) <- c(tmpNames, "<UNKNOWN LABEL:6>")
         attr(spssDF[[var]], "labels") <- sort(tmpLbl)
         next
       }
       
-      if(var=="BTGEDUC3"){ #convert this to a continuous var like BTGEDUC1 by removing the unlabeled value of '1'
+      if(var=="BTGEDUC3") { #convert this to a continuous var like BTGEDUC1 by removing the unlabeled value of '1'
         tmpLbl <- c(98, 99)
         names(tmpLbl) <- c("NOT ADMIN.",
                            "MISSING")
@@ -1652,7 +1645,7 @@ fixCivED_DataLabels <- function(spssDF, yrCode, cntryCode){
         next
       }
       
-      if(var %in% c("BTGWEXP1", "BTGWEXP2", "BTGWEXP3", "BTTEASUB")){
+      if(var %in% c("BTGWEXP1", "BTGWEXP2", "BTGWEXP3", "BTTEASUB")) {
         tmpLbl <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
                     21, 22, 23, 24, 25, 26, 27, 28, 30, 31, 32, 33, 34, 40, 41, 42, 43, 46,
                     47, 50, 51, 52, 53, 61, 62, 63, 64, 71, 72, 73, 74, 80, 98, 99)
@@ -1679,7 +1672,7 @@ fixCivED_DataLabels <- function(spssDF, yrCode, cntryCode){
 
 #temporary helper function only used a few times to help identify CivED variables with missing/issue value labels
 #will leave code here for reference only
-testBadCivED_Labels <- function(spssDF, cntry){
+testBadCivED_Labels <- function(spssDF, cntry) {
   
   cntryVal <- c()
   varNames <- c()
@@ -1688,21 +1681,21 @@ testBadCivED_Labels <- function(spssDF, cntry){
   
   #loop through each column to inspect the value labels to determine if they have defined all labels.
   #if the value labels don't match, then we want to include them for output
-  for(col in names(spssDF)){
+  for(col in names(spssDF)) {
     
-    if(!is.null(attr(spssDF[[col]], "labels"))){
+    if(!is.null(attr(spssDF[[col]], "labels"))) {
       uVal <- sort(unique(spssDF[[col]]))
       lbls <- attr(spssDF[[col]], "labels")
       
-      if(all(names(lbls) %in% c("missing", "not admin."))){
+      if(all(names(lbls) %in% c("missing", "not admin."))) {
         next
       }
       
-      if(all(is.na(uVal))){
+      if(all(is.na(uVal))) {
         next
       }
       
-      if(!all(uVal %in% lbls)){
+      if(!all(uVal %in% lbls)) {
         cntryVal <- c(cntryVal, cntry)
         varNames <- c(varNames, col)
         lblVars <- c(lblVars, paste0(lbls, "=", names(lbls), collapse = "^"))
@@ -1717,12 +1710,12 @@ testBadCivED_Labels <- function(spssDF, cntry){
 #build the ICCS Datalist.  
 #dataSet is either 'teacher' or 'student'
 #hasICCSData and hasCivEDData are logicals, only one of which will be TRUE
-buildICCS_dataList <- function(dataSet, hasICCSData, hasCivEDData, stuLaf, stuFF, schLaf, schFF, tchLaf, tchFF){
+buildICCS_dataList <- function(dataSet, hasICCSData, hasCivEDData, stuLaf, stuFF, schLaf, schFF, tchLaf, tchFF) {
   
   dataList <- list()
   
   #build the list hierarchical based on the order in which the data levels would be merged in getData
-  if(hasICCSData==TRUE && dataSet=="student"){
+  if(hasICCSData==TRUE && dataSet=="student") {
     dataList[["Student"]] <- dataListItem(lafObject = stuLaf,
                                           fileFormat = stuFF,
                                           levelLabel = "Student",
@@ -1733,7 +1726,7 @@ buildICCS_dataList <- function(dataSet, hasICCSData, hasCivEDData, stuLaf, stuFF
                                           ignoreVars = NULL,
                                           isDimLevel = TRUE)
     
-    if(!is.null(schLaf)){
+    if(!is.null(schLaf)) {
       dataList[["School"]] <- dataListItem(lafObject = schLaf,
                                            fileFormat = schFF,
                                            levelLabel = "School",
@@ -1747,7 +1740,7 @@ buildICCS_dataList <- function(dataSet, hasICCSData, hasCivEDData, stuLaf, stuFF
 
   }
   
-  if(hasICCSData==TRUE && dataSet=="teacher"){
+  if(hasICCSData==TRUE && dataSet=="teacher") {
     #use the student LAF and student FF here as a product of the processing, it's really the teacher data
     dataList[["Teacher"]] <- dataListItem(lafObject = stuLaf,
                                           fileFormat = stuFF,
@@ -1770,7 +1763,7 @@ buildICCS_dataList <- function(dataSet, hasICCSData, hasCivEDData, stuLaf, stuFF
                                          isDimLevel = FALSE)
   }
   
-  if(hasCivEDData==TRUE && dataSet=="student"){
+  if(hasCivEDData==TRUE && dataSet=="student") {
     dataList[["Student"]] <- dataListItem(lafObject = stuLaf,
                                           fileFormat = stuFF,
                                           levelLabel = "Student",
@@ -1781,7 +1774,7 @@ buildICCS_dataList <- function(dataSet, hasICCSData, hasCivEDData, stuLaf, stuFF
                                           ignoreVars = NULL,
                                           isDimLevel = TRUE)
     
-    if(!is.null(schLaf)){
+    if(!is.null(schLaf)) {
       dataList[["School"]] <- dataListItem(lafObject = schLaf,
                                            fileFormat = schFF,
                                            levelLabel = "School",
@@ -1793,7 +1786,7 @@ buildICCS_dataList <- function(dataSet, hasICCSData, hasCivEDData, stuLaf, stuFF
                                            isDimLevel = FALSE)
     }
     
-    if(!is.null(tchLaf)){
+    if(!is.null(tchLaf)) {
       dataList[["Teacher"]] <- dataListItem(lafObject = tchLaf,
                                            fileFormat = tchFF,
                                            levelLabel = "Teacher",
@@ -1808,7 +1801,7 @@ buildICCS_dataList <- function(dataSet, hasICCSData, hasCivEDData, stuLaf, stuFF
     }
   }
   
-  if(hasCivEDData==TRUE && dataSet=="teacher"){
+  if(hasCivEDData==TRUE && dataSet=="teacher") {
     #use the student LAF and student FF here as a product of the processing, it's really the teacher data
     dataList[["Teacher"]] <- dataListItem(lafObject = stuLaf,
                                           fileFormat = stuFF,

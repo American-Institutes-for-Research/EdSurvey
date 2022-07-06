@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EdSurvey</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.7.9004</span>
       </span>
     </div>
 
@@ -76,6 +76,10 @@
 <dt>dichotParamTab</dt>
 <dd><p>a dataframe containing IRT parameters for all dichotomous items in <code>edf</code></p></dd>
 
+
+<dt>scoreDict</dt>
+<dd><p>result of call to <code>defaultTIMSSScoreDict</code>, or data frame with same column names, see Description</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -90,7 +94,8 @@
     <p>This function scores TIMSS data. 
 For multiple choice items, correct answers are assigned 1 point, and incorrect answers are assigned 0 points.
 For constructed response items, correct answers are assigned 2 points, partially correct answers are assigned 1 point,
-and incorrect answers are assigned 0 points. For both types of items, "NOT REACHED" and "OMITTED OR INVALID" are assigned 0 points.</p>
+and incorrect answers are assigned 0 points. For both types of items, "NOT REACHED" and "OMITTED OR INVALID" are assigned 0 points.
+these defaults can be changed by modifying the <code>scoreDict</code> columns <code>pointMult</code> and <code>pointConst</code>, respectively.</p>
     </div>
 
   </div>

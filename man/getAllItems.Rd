@@ -4,12 +4,12 @@
 \alias{getAllItems}
 \title{Format AM dct File for Use with DirectEstimation}
 \usage{
-getAllItems(x, npv, construct, omittedLevels = FALSE, ...)
+getAllItems(sdf, construct)
 }
 \arguments{
-\item{dct}{a file location from which to read the \code{dct} file}
+\item{sdf}{and \code{edsurvey.data.frame} or \code{light.edsurvey.data.frame} for which to get items}
 
-\item{mml}{a logical for if the paramTab is being used in \code{mml.sdf}}
+\item{construct}{the construct to get items for}
 }
 \value{
 a \code{data.frame} in a format suitable for use with \code{mml} as
