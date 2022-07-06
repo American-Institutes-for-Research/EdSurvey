@@ -46,16 +46,16 @@ test_that("mml.sdf TIMSS",{
 
 context("drawPVs TIMSS") 
 test_that("drawPVs TIMSS",{
-  skip_if_not( packageVersion("Dire") > "2.0.0" )
+  skip_if_not( packageVersion("Dire") >= "2.1.0" )
   # draw for edsurvey.data.frame
   set.seed(2)
-  pvsTIMSS1 <- drawPVs(sdfTIMSS, mmlTIMSS)
+  pvsTIMSS1 <- drawPVs(data=sdfTIMSS, x=mmlTIMSS)
   expect_s3_class(pvsTIMSS1, "edsurvey.data.frame")
   # should not drop rows
   expect_equal(nrow(sdfTIMSS), nrow(pvsTIMSS1))
   # draw for light.edsurvey.data.frame
   set.seed(2)
-  pvsTIMSS2 <- drawPVs(gdat, mmlTIMSSlight)
+  pvsTIMSS2 <- drawPVs(data=gdat, x=mmlTIMSSlight)
   expect_s3_class(pvsTIMSS2, "light.edsurvey.data.frame")
   # should not drop rows
   expect_equal(nrow(gdat), nrow(pvsTIMSS2))
@@ -64,9 +64,9 @@ test_that("drawPVs TIMSS",{
 
   # Beta Stochastic
   smry <- summary(mmlTIMSS)
-  pvsTIMSS <- drawPVs(gdat, smry, stochasticBeta=TRUE)
+  pvsTIMSS <- drawPVs(data=gdat, x=smry, stochasticBeta=TRUE)
   # Beta, non-summary 
-  expect_error(drawPVs(gdat, mmlTIMSS, stochasticBeta=TRUE))
+  expect_error(drawPVs(data=gdat, x=mmlTIMSS, stochasticBeta=TRUE))
 })
 
 # NAEP 
@@ -82,9 +82,9 @@ test_that("NAEP getData  w/ Items",{
 
 context("mml.sdf NAEP") 
 test_that("mml.sdf NAEP",{
-  suppressWarnings(mmlNAEP <<- mml.sdf(algebra ~ dsex + b018201, sdfNAEP, idVar="ROWID"))
+  suppressWarnings(mmlNAEP <<- mml.sdf(algebra ~ dsex + b018201, sdfNAEP))
   expect_s3_class(mmlNAEP, "mml.NAEP")
-  suppressWarnings(mmlNAEPlight <<- mml.sdf(algebra ~ dsex + b018201, gdat, idVar="ROWID", multiCore = TRUE, numberOfCores = 10))
+  suppressWarnings(mmlNAEPlight <<- mml.sdf(algebra ~ dsex + b018201, gdat, multiCore = TRUE, numberOfCores = 10))
   expect_s3_class(mmlNAEPlight, "mml.NAEP")
   # test that coefficients are the same
   expect_equal(mmlNAEP$mml$coef, mmlNAEPlight$mml$coef)
@@ -94,16 +94,16 @@ test_that("mml.sdf NAEP",{
 
 context("drawPVs NAEP") 
 test_that("drawPVs NAEP",{
-  skip_if_not( packageVersion("Dire") > "1.1" )
+  skip_if_not( packageVersion("Dire") > "2.1" )
   # draw for edsurvey.data.frame
   set.seed(2)
-  pvsNAEP <- drawPVs(sdfNAEP, mmlNAEP)
+  pvsNAEP <- drawPVs(data=sdfNAEP, x=mmlNAEP)
   expect_s3_class(pvsNAEP, "edsurvey.data.frame")
   expect_equal(nrow(sdfNAEP), nrow(pvsNAEP))
   expect_true("algebra_dire1" %in% colnames(pvsNAEP))
   # draw for light.edsurvey.data.frame
   set.seed(2)
-  pvsNAEPlight <- drawPVs(gdat, mmlNAEPlight)
+  pvsNAEPlight <- drawPVs(data=gdat, x=mmlNAEPlight)
   expect_equal(nrow(gdat), nrow(pvsNAEPlight))
   expect_s3_class(pvsNAEPlight, "light.edsurvey.data.frame")
   expect_true("algebra_dire1" %in% colnames(pvsNAEPlight))
@@ -111,10 +111,10 @@ test_that("drawPVs NAEP",{
   expect_equal( pvsNAEP$algebra_dire1, pvsNAEPlight$algebra_dire1)
   # Beta Stochastic
   # must use a summary
-  expect_error(drawPVs(gdat, mmlNAEP, stochasticBeta=TRUE))
+  expect_error(drawPVs(data=gdat, x=mmlNAEP, stochasticBeta=TRUE))
   smry <- summary(mmlNAEP)
   set.seed(2)
-  pvsNAEPs <- drawPVs(sdfNAEP, smry, stochasticBeta=TRUE)
+  pvsNAEPs <- drawPVs(data=sdfNAEP, x=smry, stochasticBeta=TRUE)
   expect_s3_class(pvsNAEPs, "edsurvey.data.frame")
   expect_equal(nrow(sdfNAEP), nrow(pvsNAEPs))
   expect_true("algebra_dire1" %in% colnames(pvsNAEPs))
@@ -123,7 +123,7 @@ test_that("drawPVs NAEP",{
   # light
   lsmry <- summary(mmlNAEPlight)
   set.seed(2)
-  pvsNAEPslight <- drawPVs(gdat, lsmry, stochasticBeta=TRUE)
+  pvsNAEPslight <- drawPVs(data=gdat, x=lsmry, stochasticBeta=TRUE)
   expect_true("algebra_dire1" %in% colnames(pvsNAEPslight))
   # stochastic v non-stochastic should be close-ish
   expect_equal( mean(pvsNAEPlight$algebra_dire1), mean(pvsNAEPslight$algebra_dire1), tol=0.005)
@@ -135,6 +135,7 @@ test_that("drawPVs NAEP",{
 context("Other getData  w/ Items") 
 test_that("Other getData  w/ Items",{
   # shouldn't work with other surveys
+  downloadPIAAC(edsurveyHome, root=edsurveyHome, cycle=1)
   sdfPIAAC <- readPIAAC(file.path(edsurveyHome, "PIAAC", "Cycle 1"), countries = c("usa12_14"), verbose=FALSE)
   expect_error(gdat <- getData(sdfPIAAC, c("gender_r", "g_q03h"), omittedLevels = TRUE, returnItems = TRUE, addAttributes=TRUE))
   

@@ -1,21 +1,19 @@
 #' Draw plausible values from an mml fit
-#' @param data an \code{edsurvey.data.frame} or \code{light.edsurvey.data.frame} to which the plausible values will be added. 
-#' @param mml a fit from a call to \code{\link{mml.sdf}}, or a \code{summary.mml.sdf}, which is a  \code{summary} of 
+#' @param x a fit from a call to \code{\link{mml.sdf}}, or a \code{summary.mml.sdf}, which is a  \code{summary} of 
 #' \code{mml.sdf} call. 
 #' @param npv integer indicating the number of plausible values to draw
+#' @param pvVariableNameSuffix suffix to append to the name of the new plausible values
+#' @param data an \code{edsurvey.data.frame} or \code{light.edsurvey.data.frame} to which the plausible values will be added and from which the covariates and item responses will be taken to generate them
 #' @param stochasticBeta logical when \code{TRUE} the regressopm coefficients will be drawn from their posterior distribution. Can also be a data frame of values (see Details).
-#' @param returnPosterior logical set to \code{TRUE} to change output to include two additional data frames (see Value).
-#' @param normalApprox logical; use the normal approximation to draw PVs
-#' @param newStuDat new student-level covariate data
-#' @param newStuItems new student item data
 #' @param construct the construct to draw PVs for
 #' @param ... additional parameters
 #' @importFrom Dire drawPVs
 #' @export
-drawPVs.sdf <- function(data, mml, npv=5L,
-                        stochasticBeta=FALSE, normalApprox=TRUE, newStuDat=NULL,
-                        newStuItems=NULL, returnPosterior=FALSE,
-                        construct=NULL, ...) {
+drawPVs.sdf <- function(x, npv=5L, pvVariableNameSuffix="_dire",
+                        data,
+                        stochasticBeta=FALSE, 
+                        construct=NULL,  ...) {
+  mml <- x
   checkDataClass(data, c("light.edsurvey.data.frame", "edsurvey.data.frame")) 
   ### check data class 
   checkDataClass(mml, c("summary.mml.sdf", "mml.sdf"))
@@ -50,15 +48,15 @@ drawPVs.sdf <- function(data, mml, npv=5L,
   }
   mml <- getMmlDat(mml, stochasticBeta)
   # check if new data was provided, otherwise use original from mml call 
-  newDat <- checkNewData(mml, sCard, data, getDataArgs, newStuDat, newStuItems)
+  newDat <- checkNewData(mml, sCard, data, getDataArgs, newStuDat=NULL, newStuItems=NULL)
   #draw plausible values
   pvs <- drawPVs(x=mml,
                  npv=npv,
                  stochasticBeta=stochasticBeta,
-                 normalApprox=normalApprox,
+                 normalApprox=TRUE,
                  newStuDat=newDat[['stuDat']],
                  newStuItems=newDat[['stuItems']],
-                 returnPosterior=returnPosterior,
+                 returnPosterior=FALSE,
                  construct=construct,
                  ...)
   newPVDat <- pvs$data
@@ -74,14 +72,15 @@ drawPVs.sdf <- function(data, mml, npv=5L,
   return(mergedPvs)
 }
 
+#' @method drawPVs mml.sdf
 #' @export
-drawPVs.edsurvey.data.frame <- function(data, mml, ...) {
-  drawPVs.sdf(data=data, mml=mml, ...)
+drawPVs.mml.sdf <- function(x, npv=5L, pvVariableNameSuffix="_dire", data, ...) {
+  drawPVs.sdf(x=x, npv=npv, pvVariableNameSuffix=pvVariableNameSuffix, data=data, ...)
 }
-
+#' @method drawPVs summary.mml.sdf
 #' @export
-drawPVs.light.edsurvey.data.frame <- function(data, mml, ...) {
-  drawPVs.sdf(data=data, mml=mml, ...)
+drawPVs.summary.mml.sdf <- function(x, npv=5L, pvVariableNameSuffix="_dire", data, ...) {
+  drawPVs.sdf(x=x, npv=npv, pvVariableNameSuffix=pvVariableNameSuffix, data=data, ...)
 }
 
 mergePVGeneral <- function(x, pvs, idVar){

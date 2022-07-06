@@ -5,35 +5,26 @@
 \title{Draw plausible values from an mml fit}
 \usage{
 \method{drawPVs}{sdf}(
-  data,
-  mml,
+  x,
   npv = 5L,
+  pvVariableNameSuffix = "_dire",
+  data,
   stochasticBeta = FALSE,
-  normalApprox = TRUE,
-  newStuDat = NULL,
-  newStuItems = NULL,
-  returnPosterior = FALSE,
   construct = NULL,
   ...
 )
 }
 \arguments{
-\item{data}{an \code{edsurvey.data.frame} or \code{light.edsurvey.data.frame} to which the plausible values will be added.}
-
-\item{mml}{a fit from a call to \code{\link{mml.sdf}}, or a \code{summary.mml.sdf}, which is a  \code{summary} of 
+\item{x}{a fit from a call to \code{\link{mml.sdf}}, or a \code{summary.mml.sdf}, which is a  \code{summary} of 
 \code{mml.sdf} call.}
 
 \item{npv}{integer indicating the number of plausible values to draw}
 
+\item{pvVariableNameSuffix}{suffix to append to the name of the new plausible values}
+
+\item{data}{an \code{edsurvey.data.frame} or \code{light.edsurvey.data.frame} to which the plausible values will be added and from which the covariates and item responses will be taken to generate them}
+
 \item{stochasticBeta}{logical when \code{TRUE} the regressopm coefficients will be drawn from their posterior distribution. Can also be a data frame of values (see Details).}
-
-\item{normalApprox}{logical; use the normal approximation to draw PVs}
-
-\item{newStuDat}{new student-level covariate data}
-
-\item{newStuItems}{new student item data}
-
-\item{returnPosterior}{logical set to \code{TRUE} to change output to include two additional data frames (see Value).}
 
 \item{construct}{the construct to draw PVs for}
 
