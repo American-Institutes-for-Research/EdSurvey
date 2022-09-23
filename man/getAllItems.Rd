@@ -2,23 +2,61 @@
 % Please edit documentation in R/getItems.R
 \name{getAllItems}
 \alias{getAllItems}
-\title{Format AM dct File for Use with DirectEstimation}
+\title{Retrieve IRT Item Variable Names}
 \usage{
-getAllItems(sdf, construct)
+getAllItems(sdf, construct = NULL)
 }
 \arguments{
-\item{sdf}{and \code{edsurvey.data.frame} or \code{light.edsurvey.data.frame} for which to get items}
+\item{sdf}{an \code{edsurvey.data.frame} or \code{light.edsurvey.data.frame} containing IRT information. Supports NAEP and TIMSS 2011, 2015, and 2019 studies only.}
 
-\item{construct}{the construct to get items for}
+\item{construct}{a character value (or vector) for which to return the associated item variable names. Default value is \code{NULL} which returns all IRT item variable names.
+Use the \code{showPlausibleValues} function to view construct details.}
 }
 \value{
-a \code{data.frame} in a format suitable for use with \code{mml} as
-a \code{paramTab}.
+a character vector of the items names associated for the values in \code{construct}.
 }
 \description{
-Takes an \code{AM dct} file and formats it for use with the \code{mml} method
-as \code{paramTab}.
+Retrieves the IRT item variable names associated with construct names for use with \code{mml.sdf} function.
+}
+\note{
+if \code{construct} is a vector, all item names will be returned for those constructs. Use \code{getAllItems} with \code{getData} when creating a \code{light.edsurvey.data.frame}, see example for use.
+}
+\examples{
+\dontrun{
+  #TIMSS Example
+  t15 <- readTIMSS("~/TIMSS/2015", "usa", 4)
+  
+  showPlausibleValues(t15) #view constructs in console
+  
+  #ensure we have all data needed for mml.sdf on light.edsurvey.data.frame
+  #must be specified ahead of time.  the 'getAllItems' function makes this easy
+  mathItems <- getAllItems(t15, "mmat") #get mathematics items
+  sciItems <- getAllItems(t15, "ssci") #get science items
+  allItems <- getAllItems(t15, construct = "NULL")
+  
+  wgtVar <- "totwgt"
+  psustr <- c(getPSUVar(t15, wgtVar), getStratumVar(t15, wgtVar))
+  lsdf <- getData(data = t15,
+                  varnames = c("ROWID", "mmat", mathItems, psustr, wgtVar),
+                  omittedLevels = FALSE,
+                  addAttributes = TRUE) #builds light.edsurvey.data.frame
+  
+  #as a light.edsurvey.data.frame all elements must be present
+  mml.sdf(mmat ~ 1, lsdf, weightVar = "totwgt")
+  
+  #as edsurvey.data.frame elements retrieved automatically for user
+  mml.sdf(mmat ~ 1, t15, weightVar = "totwgt") 
+  
+  #NAEP example
+  sdf <- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
+  
+  allItems <- getAllItems(sdf, construct = NULL)
+  algebraItems <- getAllItems(sdf, construct = "algebra")
+}
+}
+\seealso{
+\code{\link{mml.sdf}}
 }
 \author{
-Sun-Joo Lee, Eric Buehler, and Paul Bailey
+Tom Fink, Sun-Joo Lee, Eric Buehler, and Paul Bailey
 }

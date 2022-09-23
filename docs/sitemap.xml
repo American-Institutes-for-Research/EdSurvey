@@ -250,6 +250,9 @@
     <loc>/reference/rq.sdf.html</loc>
   </url>
   <url>
+    <loc>/reference/scoreDefault.html</loc>
+  </url>
+  <url>
     <loc>/reference/scoreTIMSS.html</loc>
   </url>
   <url>
@@ -260,9 +263,6 @@
   </url>
   <url>
     <loc>/reference/setNAEPScoreCard.html</loc>
-  </url>
-  <url>
-    <loc>/reference/setTIMSSScoreDict.html</loc>
   </url>
   <url>
     <loc>/reference/showCodebook.html</loc>

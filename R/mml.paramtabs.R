@@ -18,8 +18,9 @@ parseNAEPdct <- function(dct, mml=TRUE) {
   testDat <- data.frame()
   
   # correct factors
-  subjects<-c('Mathematics', 'Reading', 'Science', 'Geography', 'History','Writing', 'Civics', 'Economics', 'Arts')
-  subtests<-c('algebra', 'geometry', 'measurement', 'number', 'data','information', 'literary', 'earth', 'life', 'physical','environment', 'space', 'spatial', 'cultures', 'democracy','technology', 'world', 'task', 'ltt', 'ltt_bridge','international', 'market', 'national', 'vocabulary', 'univariate', 'one', 'overall')
+  subjects <- c('Mathematics', 'Reading', 'Science', 'Geography', 'History','Writing', 'Civics', 'Economics', 'Arts')
+  CompositeSubjects <- c('Mathematics', 'Reading', 'Science', 'Geography', 'History','Writing', 'Civics', 'Economics', 'Arts')
+  subtests <- c('algebra', 'geometry', 'measurement', 'number', 'data','information', 'literary', 'earth', 'life', 'physical','environment', 'space', 'spatial', 'cultures', 'democracy','technology', 'world', 'task', 'ltt', 'ltt_bridge','international', 'market', 'national', 'vocabulary', 'univariate', 'one', 'overall')
   
   dct_obj <- readLines(dct)
   for (line in dct_obj) {
@@ -124,7 +125,7 @@ parseNAEPdct <- function(dct, mml=TRUE) {
       
     } else if (grepl('^test', line)) {
       line_split <- trimws(gsub('[[:punct:] ]+',' ',(unlist(strsplit(unlist(strsplit(line, " ")), '=')))))
-      nums <- grep('[[:digit:]]+', line_split, value = T)
+      nums <- grep('[[:digit:]]+', line_split, value = TRUE)
       theyear <- as.numeric(nums[1])
       thelevel <- as.numeric(nums[2])
       if (('age' %in% line_split) & ('grade' %in% line_split)) {
@@ -152,7 +153,7 @@ parseNAEPdct <- function(dct, mml=TRUE) {
         thesubject <- thesubject
       } else {
         for (part in line_split) {
-          subject <- grep(part, tolower(subjects), value = T)
+          subject <- grep(part, tolower(subjects), value = TRUE)
           if (length(subject) == 1) {
             thesubject <- subject
             break
@@ -164,23 +165,46 @@ parseNAEPdct <- function(dct, mml=TRUE) {
     }
   } 
   
+  #check that the DCT had IRT attributes, if not return an error
+  if(nrow(dichotParamTab) == 0 && nrow(polyParamTab) == 0 && nrow(testDat) == 0){
+    stop(paste0("Unable to locate dichotomous or polytomous IRT parameters in DCT file: ", dQuote(dct), 
+                ".  Ensure you specified the correct file and retry."))
+  }
+  if(nrow(testDat) == 0){
+    stop(paste0("Unable to locate any test/subtest data IRT parameters in DCT file: ", dQuote(dct), 
+                ".  Ensure you specified the correct file and retry."))
+  }
   
   # change subtest from number to label
   dichotParamTab$subtest <- unlist(lapply(dichotParamTab$subtest, function(x) testDat[testDat$subtestNumber==x, 'subtest']))
   polyParamTab$subtest <- unlist(lapply(polyParamTab$subtest, function(x) testDat[testDat$subtestNumber==x, 'subtest']))
   testDat$subtestNumber <- NULL 
-  
+  if(tolower(thesubject) %in% tolower(CompositeSubjects)) {
+    testDat$test <- "composite"
+  } else {
+    testDat$test <- "overall"
+  }
   # for feeding into mml.sdf
   if (mml) {
     if (nrow(dichotParamTab) > 0) {
       dichotParamTab$D <- 1.7
       dichotParamTab$missingValue <- 'c'
       dichotParamTab$missingCode <- 8
+      if(tolower(thesubject) %in% tolower(CompositeSubjects)) {
+        dichotParamTab$test <- "composite"
+      } else {
+        dichotParamTab$test <- "overall"
+      }
     }
     if (nrow(polyParamTab) > 0) {
       polyParamTab$D <- 1.7
       polyParamTab$missingValue <- 'c'
       polyParamTab$missingCode <- 8
+      if(tolower(thesubject) %in% tolower(CompositeSubjects)) {
+        polyParamTab$test <- "composite"
+      } else {
+        polyParamTab$test <- "overall"
+      }
     }
     
   } else {
@@ -191,6 +215,7 @@ parseNAEPdct <- function(dct, mml=TRUE) {
       dichotParamTab$assessmentCode <- paste0(toupper(substr(theregion, 1, 1)), substr(theregion, 2, nchar(theregion)))
       dichotParamTab$subject <- paste0(toupper(substr(thesubject, 1, 1)), substr(thesubject, 2, nchar(thesubject)))
       dichotParamTab$year <- theyear
+      
     }
     
     if (nrow(polyParamTab) > 0) {
@@ -210,12 +235,11 @@ parseNAEPdct <- function(dct, mml=TRUE) {
   }
   
   # return list
-  ret <- list()
-  ret$dichotParamTab <- dichotParamTab
-  ret$polyParamTab <- polyParamTab
-  ret$testDat <- testDat
+  res <- list(dichotParamTab = dichotParamTab,
+              polyParamTab = polyParamTab,
+              testDat = testDat)
   
-  return(ret)
+  return(res)
 }
 
 naepParamTabs <- function(params_use) {
@@ -253,13 +277,18 @@ naepParamTabs <- function(params_use) {
 
 
 timssParamTabs <- function(params_use) {
-  paramTabs <- list()
   
+  paramTabs <- list()
   # polyParamTab
   poly <- params_use[!is.na(params_use$d1),]
   polyParamTab <- poly[, colnames(poly)[!colnames(poly) %in% c('c')]]
-  polyParamTab <- polyParamTab[, c('TIMSSid','subtest', 'a','b',paste0('d',1:2))]
-  colnames(polyParamTab) <- c('ItemID','subtest', 'slope', 'itemLocation', paste0('d',1:2))
+  ds <- grep("^d[0-9]$", colnames(polyParamTab), value=TRUE)
+  polyParamTab <- polyParamTab[, c('TIMSSid','content_subtest', 'cognitive_subtest', 'a','b', ds, 'subject', 'scorePoints') ]
+  colnames(polyParamTab) <- c('ItemID','content_subtest', 'cognitive_subtest', 'slope', 'itemLocation', ds, 'test', 'scorePoints')
+  ss <- is.na(polyParamTab$scorePoints)
+  for(i in 1:length(ds)) {
+    polyParamTab$scorePoints[ss] <- ifelse(!is.na(polyParamTab[ss, ds[i]]), i, polyParamTab$scorePoints[ss])
+  }
   polyParamTab$ItemID <- tolower(polyParamTab$ItemID)
   if (nrow(polyParamTab) > 0) {
     polyParamTab$D <- 1.7
@@ -268,8 +297,8 @@ timssParamTabs <- function(params_use) {
   # dichotomous
   bi <- params_use[!params_use$TIMSSid %in% poly$TIMSSid,]
   dichotParamTab <- bi[, colnames(bi)[!colnames(bi) %in% paste0('d',1:2)]]
-  dichotParamTab <- dichotParamTab[, c('TIMSSid','subtest', 'a','b','c')]
-  colnames(dichotParamTab) <- c('ItemID', 'subtest', 'slope', 'difficulty', 'guessing')
+  dichotParamTab <- dichotParamTab[, c('TIMSSid','content_subtest', 'cognitive_subtest', 'a','b','c', 'subject')]
+  colnames(dichotParamTab) <- c('ItemID', 'content_subtest', 'cognitive_subtest', 'slope', 'difficulty', 'guessing', 'test')
   dichotParamTab$ItemID <- tolower(dichotParamTab$ItemID)
   if (nrow(dichotParamTab) > 0) {
     dichotParamTab[is.na(dichotParamTab$guessing), 'guessing'] <- 0
@@ -277,19 +306,22 @@ timssParamTabs <- function(params_use) {
   }
   paramTabs$polyParamTab <- polyParamTab
   paramTabs$dichotParamTab <- dichotParamTab
-  
   return(paramTabs)
 }
 
-timssParam <- function(timssDir, theYear, theLevel, subjectFilter) {
+timssParam <- function(timssDir, theYear, theLevel) {
+  
+  theYear <- as.numeric(theYear)
+  theLevel <- as.numeric(unlist(regmatches(theLevel, gregexpr("[[:digit:]]+", theLevel))))
+  
   if (theYear == 2011) {
-    df1Name <- paste0("T11_G", theLevel, "_ItemParameters.xlsx")
-    df2Name <- paste0("T11_G", theLevel, "_ItemInformation.xlsx")
-    df3Name <- paste0("T11_G", theLevel, "_Transform.xlsx")
-    df1File <- paste0(timssDir, "/", df1Name)
-    df2File <- paste0(timssDir, "/", df2Name)
-    df3File <- paste0(timssDir, "/", df3Name)
-    if (!file.exists(df1File) | !file.exists(df2File) | !file.exists(df3File)) {
+    df1Name <- paste0("^T11_G", theLevel, "_ItemParameters[.]xlsx$")
+    df2Name <- paste0("^T11_G", theLevel, "_ItemInformation[.]xlsx$")
+    df3Name <- paste0("^T11_G", theLevel, "_Transform[.]xlsx$")
+    df1File <- list.files(timssDir, df1Name, full.names = TRUE, ignore.case = TRUE) #if multiple files found, assume they are the same file but in different dirs
+    df2File <- list.files(timssDir, df2Name, full.names = TRUE, ignore.case = TRUE)
+    df3File <- list.files(timssDir, df3Name, full.names = TRUE, ignore.case = TRUE)
+    if (length(df1File) == 0 || length(df2File) == 0 || length(df3File) == 0) {
       zips <- paste0(". Download them here: ", 
                      "https://timssandpirls.bc.edu/timss2011/downloads/T11_ItemParameters.zip", " and ",
                      "https://timssandpirls.bc.edu/timss2011/downloads/T11_ItemInformation.zip")
@@ -302,17 +334,20 @@ timssParam <- function(timssDir, theYear, theLevel, subjectFilter) {
       }
       stop(paste0("Make sure ", df1Name, ", ", df2Name, ", and ", df3Name, " are downloaded in ", timssDir, zips,". ", "Try running: downloadTIMSS('",timssDirout, "', '",theYear,"')"))
     }
-    df1 <- suppressMessages(read_excel(df1File, sheet = subjectFilter))
-    df2 <- suppressMessages(read_excel(df2File, sheet = subjectFilter))
-    df3 <- suppressMessages(read_excel(df3File, sheet = "T11_Transform"))
+    df1m <- suppressMessages(read_excel(df1File[1], sheet = 'MAT', progress = FALSE))
+    df2m <- suppressMessages(read_excel(df2File[1], sheet = 'MAT', progress = FALSE))
+    df3m <- suppressMessages(read_excel(df3File[1], sheet = "T11_Transform", progress = FALSE))
+    df1s <- suppressMessages(read_excel(df1File[1], sheet = 'SCI', progress = FALSE))
+    df2s <- suppressMessages(read_excel(df2File[1], sheet = 'SCI', progress = FALSE))
+    df3s <- suppressMessages(read_excel(df3File[1], sheet = "T11_Transform", progress = FALSE))
   } else if (theYear == 2015) {
-    df1Name <- paste0("T15_G", theLevel, "_ItemParameters.xlsx")
-    df2Name <- paste0("T15_G", theLevel, "_ItemInformation.xlsx")
-    df3Name <- paste0("T15_G", theLevel, "_TransformConstants.xlsx")
-    df1File <- paste0(timssDir, "/", df1Name)
-    df2File <- paste0(timssDir, "/", df2Name)
-    df3File <- paste0(timssDir, "/", df3Name)
-    if (!file.exists(df1File) | !file.exists(df2File) | !file.exists(df3File)) {
+    df1Name <- paste0("^T15_G", theLevel, "_ItemParameters[.]xlsx$")
+    df2Name <- paste0("^T15_G", theLevel, "_ItemInformation[.]xlsx$")
+    df3Name <- paste0("^T15_G", theLevel, "_TransformConstants[.]xlsx$")
+    df1File <- list.files(timssDir, df1Name, full.names = TRUE, ignore.case = TRUE) #if multiple files found, assume they are the same file but in different dirs
+    df2File <- list.files(timssDir, df2Name, full.names = TRUE, ignore.case = TRUE)
+    df3File <- list.files(timssDir, df3Name, full.names = TRUE, ignore.case = TRUE)
+    if (length(df1File) == 0 || length(df2File) == 0 || length(df3File) == 0) {
       if (theLevel == 4) {
         zips <- paste0(". Download them here: ", 
                        "https://timssandpirls.bc.edu/timss2015/international-database/downloads/T15_G4_IRTItemParameters.zip", " and ",
@@ -331,17 +366,20 @@ timssParam <- function(timssDir, theYear, theLevel, subjectFilter) {
       }
       stop(paste0("Make sure ", df1Name, ", ", df2Name, ", and ", df3Name, " are downloaded in ", timssDir, zips,". ", "Try running: downloadTIMSS('",timssDirout, "', '",theYear,"')"))
     }
-    df1 <- suppressMessages(read_excel(df1File, sheet = subjectFilter))
-    df2 <- suppressMessages(read_excel(df2File, sheet = subjectFilter))
-    df3 <- suppressMessages(read_excel(df3File, sheet = subjectFilter))
+    df1m <- suppressMessages(read_excel(df1File[1], sheet = 'MAT', progress = FALSE))
+    df2m <- suppressMessages(read_excel(df2File[1], sheet = 'MAT', progress = FALSE))
+    df3m <- suppressMessages(read_excel(df3File[1], sheet = 'MAT', progress = FALSE))
+    df1s <- suppressMessages(read_excel(df1File[1], sheet = 'SCI', progress = FALSE))
+    df2s <- suppressMessages(read_excel(df2File[1], sheet = 'SCI', progress = FALSE))
+    df3s <- suppressMessages(read_excel(df3File[1], sheet = 'SCI', progress = FALSE))
   } else if (theYear == 2019) {
-    df1Name <- paste0("eT19_G", theLevel, "_Item Parameters Adj.xlsx")
-    df2Name <- paste0("eT19_G", theLevel, "_Item Information.xlsx")
-    df3Name <- paste0("T19_G", theLevel, "_Transform Constants.xlsx")
-    df1File <- paste0(timssDir, "/", df1Name)
-    df2File <- paste0(timssDir, "/", df2Name)
-    df3File <- paste0(timssDir, "/", df3Name)
-    if (!file.exists(df1File) | !file.exists(df2File) | !file.exists(df3File)) {
+    df1Name <- paste0("^eT19_G", theLevel, "_Item Parameters Adj[.]xlsx$")
+    df2Name <- paste0("^eT19_G", theLevel, "_Item Information[.]xlsx$")
+    df3Name <- paste0("^T19_G", theLevel, "_Transform Constants[.]xlsx$")
+    df1File <- list.files(timssDir, df1Name, full.names = TRUE, ignore.case = TRUE) #if multiple files found, assume they are the same file but in different dirs
+    df2File <- list.files(timssDir, df2Name, full.names = TRUE, ignore.case = TRUE)
+    df3File <- list.files(timssDir, df3Name, full.names = TRUE, ignore.case = TRUE)
+    if (length(df1File) == 0 || length(df2File) == 0 || length(df3File) == 0) {
       if (theLevel == 4) {
         zips <- paste0(". Download them here: ", 
                        "https://timss2019.org/international-database/downloads/T19_G4_Item%20Information.zip", " and ",
@@ -360,14 +398,21 @@ timssParam <- function(timssDir, theYear, theLevel, subjectFilter) {
       }
       stop(paste0("Make sure ", df1Name, ", ", df2Name, ", and ", df3Name, " are downloaded in ", timssDir, zips,". ", "Try running: downloadTIMSS('",timssDirout, "', '",theYear,"')"))
     }
-    df1 <- suppressMessages(read_excel(df1File, sheet = subjectFilter))
-    df2 <- suppressMessages(read_excel(df2File, sheet = subjectFilter))
-    df3 <- suppressMessages(read_excel(df3File, sheet = subjectFilter))
+    df1m <- suppressMessages(read_excel(df1File[1], sheet = 'MAT', progress = FALSE))
+    df2m <- suppressMessages(read_excel(df2File[1], sheet = 'MAT', progress = FALSE))
+    df3m <- suppressMessages(read_excel(df3File[1], sheet = 'MAT', progress = FALSE))
+    df1s <- suppressMessages(read_excel(df1File[1], sheet = 'SCI', progress = FALSE))
+    df2s <- suppressMessages(read_excel(df2File[1], sheet = 'SCI', progress = FALSE))
+    df3s <- suppressMessages(read_excel(df3File[1], sheet = 'SCI', progress = FALSE))
     
   } else {
     stop(paste0("Item parameters are currently not available for ", theYear,"."))
   }
-  allParams <- timssParamForm(df1, df2, df3, theYear, theLevel, subjectFilter)
+  allParamsM <- timssParamForm(df1m, df2m, df3m, theYear, theLevel, 'MAT')
+  allParamsS <- timssParamForm(df1s, df2s, df3s, theYear, theLevel, 'SCI')
+  allParams <- list(params=rbind(allParamsM$params, allParamsS$params),
+                    transformations = rbind(allParamsM$transformations, allParamsS$transformations))
+
   return(allParams)
 } 
 
@@ -384,20 +429,33 @@ timssParamForm <- function(itemParamDf, itemInfoDf, transConst, theYear, theLeve
   }
   itemParamDf <- itemParamDf[, !colnames(itemParamDf) %in% '']
   itemParamDf <- itemParamDf[!is.na(itemParamDf$`Item ID`),]
-  itemInfoDf <- itemInfoDf[, c("Item ID", "Grade", "Subject", "Content Domain")]
-  
+  itemInfoDf <- itemInfoDf[, c("Item ID", "Grade", "Subject", "Content Domain", "Cognitive Domain", "Maximum Points")]
+  # these did not merge, they will not be on this assessment
+  params <- merge(itemParamDf, itemInfoDf, by = 'Item ID', all.x = TRUE)
   # merge param and info together
-  params <- merge(itemParamDf, itemInfoDf, by = 'Item ID', all.x = T)
+  params <- params[ !params$"Cognitive Domain" %in% c("", NA), ]
   params[is.na(params$Grade),'Grade'] <- unique(na.omit(params$Grade))
   params[is.na(params$`Content Domain`),'Content Domain'] <- ''
-  params$Subject <- ifelse(subjectFilter=='MAT','Mathematics', ifelse(subjectFilter=='SCI', 'Science', ''))
+  params$Subject <- ifelse(subjectFilter=='MAT','mmat', ifelse(subjectFilter=='SCI', 'ssci', ''))
   params$year <- as.numeric(theYear)
-  colnames(params) <- c('TIMSSid',	'a',	'b',	'c',	'd1',	'd2',	'level',	'subject',	'subtest',	'year')
+  colnames(params) <- c('TIMSSid', 'a', 'b', 'c', 'd1', 'd2', 'level',
+                        'subject', 'content_subtest', 'cognitive_subtest',
+                        'scorePoints', 'year')
   
   # clean
   params$TIMSSid <- tolower(params$TIMSSid)
-  colsNum <- c('a',	'b',	'c',	'd1',	'd2')
+  colsNum <- c('a',  'b',  'c',  'd1',  'd2')
   params[colsNum] <- sapply(params[colsNum],as.numeric)
+  params$content_subtest <- ifelse(params$content_subtest == "Data Display", "mdat", params$content_subtest)
+  params$content_subtest <- ifelse(params$content_subtest == "Geometric Shapes and Measures", "mgeo", params$content_subtest)
+  params$content_subtest <- ifelse(params$content_subtest == "Number", "mnum", params$content_subtest)
+  params$content_subtest <- ifelse(params$content_subtest == "Earth Science", "sear", params$content_subtest)
+  params$content_subtest <- ifelse(params$content_subtest == "Life Science", "slif", params$content_subtest)
+  params$content_subtest <- ifelse(params$content_subtest == "Physical Science", "sphy", params$content_subtest)
+  prefix <- ifelse(subjectFilter == 'MAT', 'm', 's')
+  params$cognitive_subtest <- ifelse(params$cognitive_subtest == "Applying", paste0(prefix, "app"), params$cognitive_subtest)
+  params$cognitive_subtest <- ifelse(params$cognitive_subtest == "Knowing", paste0(prefix, "kno"), params$cognitive_subtest)
+  params$cognitive_subtest <- ifelse(params$cognitive_subtest == "Reasoning", paste0(prefix, "rea"), params$cognitive_subtest)
   allParams$params <- params
   
   # transformations
@@ -420,6 +478,7 @@ timssParamForm <- function(itemParamDf, itemInfoDf, transConst, theYear, theLeve
   # year, grade
   transformations$year <- theYear
   transformations$level <- theLevel
+  params$subject <- ifelse(subjectFilter=='MAT','mmat', ifelse(subjectFilter=='SCI', 'ssci', ''))
   allParams$transformations <- transformations
   
   return(allParams)

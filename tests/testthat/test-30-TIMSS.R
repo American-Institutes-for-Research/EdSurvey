@@ -49,7 +49,7 @@ test_that("TIMSS data reads in correctly", {
   expect_equal(dim(usa8.11), c(20859, 2394))
   expect_equal(dim(kwt4.15), c(11318, 2262))
   expect_equal(dim(zaf8.15), c(25029, 2432))
-  expect_equal(dim(dnk4.19), c(5131, 3669))
+  expect_equal(dim(dnk4.19), c(5131, 3674))
   expect_equal(length(multiESDFL$datalist), 3)
   
   co <- capture.output(multiESDFL$covs)
@@ -358,19 +358,54 @@ test_that("TIMSS gap dynamic subsets", {
 context("mml.sdf")
 test_that("mml.sdf", {
   # load data 
-  mmlSDF <- readTIMSS(file.path(edsurveyHome, "TIMSS", "2015"), countries="usa", grade = c("4"), verbose=FALSE)
+  usa4.15 <- readTIMSS(file.path(edsurveyHome, "TIMSS", "2015"), countries="usa", grade = c("4"), verbose=FALSE)
+  
+  pv <- c("mmat")
+  wgt <- "totwgt"
+  pvi <- getAllItems(usa4.15, pv)
+  psustr <- c(getPSUVar(usa4.15, wgt), getStratumVar(usa4.15, wgt))
+  otherVars <- c("ROWID", "asbg05a")
+  
+  lesdf <- suppressWarnings(getData(usa4.15, varnames = c(pv, pvi, psustr, wgt, otherVars), omittedLevels = FALSE, addAttributes = TRUE, returnJKreplicates = TRUE))
   # run mml
-  mmlSDF <- setTIMSSScoreDict(mmlSDF, 'mmat')
-  mmlTIMSS <- suppressWarnings(mml.sdf(mmat~1, mmlSDF, weightVar='totwgt', verbose=TRUE))
-  # capture output 
+  mml1 <- suppressWarnings(mml.sdf(mmat ~ 1, usa4.15, weightVar='totwgt', verbose=TRUE))
+  mml2 <- suppressWarnings(mml.sdf(mmat ~ 1, lesdf, weightVar='totwgt', verbose=TRUE)) #test with light.edsurvey.data.frame
+  
+  mml3 <- suppressWarnings(mml.sdf(mmat ~ asbg05a, usa4.15, weightVar='totwgt', omittedLevels = FALSE, verbose=TRUE)) #86 rows removed from analysis message
+  mml4 <- suppressWarnings(mml.sdf(mmat ~ asbg05a, lesdf, weightVar='totwgt', omittedLevels = FALSE, verbose=TRUE))
+  
   # intercept 
-  coInt <- withr::with_options(list(digits=4),
-                               capture.output(mmlTIMSS)
+  coInt1 <- withr::with_options(list(digits=4),
+                               capture.output(mml1)
                                )
-  expect_equal(coInt, mmlIntREF)
+  coInt2 <- withr::with_options(list(digits=4),
+                                capture.output(mml2)
+  )
+  coInt3 <- withr::with_options(list(digits=4),
+                                capture.output(mml3)
+  )
+  coInt4 <- withr::with_options(list(digits=4),
+                                capture.output(mml4)
+  )
+  expect_equal(coInt1, mmlIntREF)
+  expect_equal(coInt1, coInt2)
+  expect_equal(coInt3, coInt4)
   # summary 
-  coSum <- withr::with_options(list(digits=4),
-                               capture.output(summary(mmlTIMSS))
+  coSum1 <- withr::with_options(list(digits=4),
+                               capture.output(summary(mml1))
                                )
-  expect_equal(coSum, mmlSumREF)
+  coSum2 <- withr::with_options(list(digits=4),
+                                capture.output(summary(mml2))
+  )
+  
+  #remove 'data = xxx' and 'object = xxx' from summary output to test for equality between esdf and light esdf
+  dataRegex <-  "data = (\\w|[.])+"
+  objRegex <- "[(]object = \\w+[)]"
+  coSum1x <- sub(dataRegex, "", coSum1, ignore.case = FALSE)
+  coSum1x <- sub(objRegex, "", coSum1x, ignore.case = FALSE)
+  coSum2x <- sub(dataRegex, "", coSum2, ignore.case = FALSE)
+  coSum2x <- sub(objRegex, "", coSum2x, ignore.case = FALSE)
+  
+  expect_equal(coSum1, mmlSumREF)
+  expect_equal(coSum1x, coSum2x)
 })

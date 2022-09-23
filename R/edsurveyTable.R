@@ -307,16 +307,7 @@ calcEdsurveyTable <- function(formula,
   # test class of incoming data
   checkDataClass(data, c("edsurvey.data.frame", "light.edsurvey.data.frame", "edsurvey.data.frame.list"))
   
-  if(is.null(weightVar)) {
-    wgt <- attributes(getAttributes(data, "weights"))$default
-  } else {
-    wgt <- weightVar
-  }
-  if(min(nchar(wgt)) == 0) {
-    # no weight
-    stop(paste0("There is no default weight variable for ",getAttributes(data,"survey")," data, so the argument ",sQuote("weightVar"), " must be specified."))
-  }
-
+  wgt <- checkWeightVar(data, weightVar)
   
   # use just the first character, j or t
   varMethod <- substr(tolower(varMethod[[1]]), 0, 1)

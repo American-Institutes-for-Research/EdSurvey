@@ -30,27 +30,27 @@ model.}
 and the Trends in International Mathematics and Science Study (TIMSS). 
 The attributes \code{dichotParamTab}, \code{polyParamTab}, \code{testData},
 \code{scoreCard} (for NAEP), and \code{scoreDict} (for TIMSS) must not be \code{NULL}.
-Use the function \code{setNAEPScoreCard} or \code{setTIMSSScoreDict} to set attributes.}
+Use the function \code{setNAEPScoreCard} or \code{setAttributes} to set attributes.}
 
 \item{weightVar}{a character indicating the weight variable to use.
 The \code{weightVar} must be one of the weights for the
 \code{edsurvey.data.frame}. If \code{NULL}, it  uses the default
 for the \code{edsurvey.data.frame}.}
 
-\item{omittedLevels}{a logical value. When set to the default value of \code{TRUE}, drops
+\item{omittedLevels}{a logical value. When set to the value of \code{TRUE}, drops
 the levels of all factor variables that are specified
 in an \code{edsurvey.data.frame}. Use \code{print} on an
-\code{edsurvey.data.frame} to see the omitted levels.}
+\code{edsurvey.data.frame} to see the omitted levels.
+To draw plausible values for the full dataset, the user must set this to \code{FALSE}.}
 
 \item{composite}{logical; for a NAEP composite, setting to \code{FALSE} fits the model to all items at once,
 in a single construct, whereas setting to \code{TRUE} fits the model as a NAEP composite
-(i.e., a weighted average of the subscales). This argument is not applicable for TIMSS.}
+(i.e., a weighted average of the subscales). This argument is not applicable for TIMSS which is always
+fit as an overall (non-composite).}
 
 \item{verbose}{logical; indicates whether a detailed printout should display during execution, only for NAEP data.}
 
-\item{multiCore}{allows the \code{foreach} package to be used. You should
-                 have already set up
-\ifelse{latex}{the \code{registerDoParallel} function in the \code{doParallel} package}{\code{\link[doParallel]{registerDoParallel}}}.}
+\item{multiCore}{allows the \code{foreach} package to be used. This function will setup and take down the cluster.}
 
 \item{numberOfCores}{the number of cores to be used when using \code{multiCore}. Defaults to 75\% of available cores. Users 
 can check available cores with \code{detectCores()}.}

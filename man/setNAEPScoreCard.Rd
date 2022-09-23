@@ -4,17 +4,13 @@
 \alias{setNAEPScoreCard}
 \title{setNAEPScoreCard}
 \usage{
-setNAEPScoreCard(data, dctPath = NULL, scoreDict = NULL)
+setNAEPScoreCard(data, dctPath = NULL)
 }
 \arguments{
 \item{data}{a NAEP edsurvey.data.frame}
 
 \item{dctPath}{a connection that points to the location of a NAEP dct file. A dct file can be used to input custom item response theory (IRT)
 parameters and subscale/subtest weights for NAEP assessments compared with those provided in the \code{NAEPirtparams} package.}
-
-\item{scoreDict}{a data frame that includes guidelines for scoring the provided NAEP data. 
-Here, \emph{scoring} refers to turning item responses into scores on each item.
-To see the default scoring guidelines, call the function \code{defaultNAEPScoreCard()}, or see the Examples section.}
 }
 \value{
 a NAEP edsurvey.data.frame with updated attributes

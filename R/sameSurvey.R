@@ -1,12 +1,9 @@
 # identify if two edsurvey.data.frames (or lesdf's) are the same survey
 # that includes year and the name of the survey.
 sameSurvey <- function(x, y) {
-  if(! (inherits(x,"edsurvey.data.frame") | inherits(x, "light.edsurvey.data.frame")) ) {
-    stop(paste0("The argument ", sQuote("x"), " must be an edsurvey.data.frame or a light.edsurvey.data.frame."))
-  }
-  if(! (inherits(y,"edsurvey.data.frame") | inherits(y, "light.edsurvey.data.frame")) ) {
-    stop(paste0("The argument ", sQuote("y"), " must be an edsurvey.data.frame or a light.edsurvey.data.frame."))
-  }
+  checkDataClass(x, c("edsurvey.data.frame", "light.edsurvey.data.frame"))
+  checkDataClass(y, c("edsurvey.data.frame", "light.edsurvey.data.frame"))
+
   if(inherits(x, "light.edsurvey.data.frame")) {
     x <- attributes(x)
   } else {

@@ -212,7 +212,7 @@ processELS <- function (files,
         if(hasWeightFile){
           fileFormatWgt <- cacheRDS$fileFormat$wgt
           
-          if(is.na(fileFormatWgt) || is.null(fileFormatWgt)){ #user previously ran the file without specifying weights and we must re-cache with weights
+          if(is.null(fileFormatWgt)){ #user previously ran the file without specifying weights and we must re-cache with weights
             runProcessing <- TRUE
           }
         }

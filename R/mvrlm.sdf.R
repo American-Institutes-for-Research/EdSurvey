@@ -185,11 +185,7 @@ calc.mvrlm.sdf <- function(formula,
   checkDataClass(data, c("edsurvey.data.frame", "light.edsurvey.data.frame", "edsurvey.data.frame.list"))
   sdf <- data # short for survey data.frame
   
-  if(is.null(weightVar)) {
-    wgt <- attributes(getAttributes(sdf, "weights"))$default
-  } else {
-    wgt <- weightVar
-  } # End of if/else: is.null(weightVar)
+  wgt <- checkWeightVar(data, weightVar)
   
   # checking for linking error and stop
   if(any(grepl("_linking", all.vars(formula), fixed=TRUE))) {

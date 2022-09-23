@@ -47,11 +47,6 @@
 #'                      more information on \code{light.edsurvey.data.frame}. 
 #' @param returnJKreplicates a logical value indicating if JK replicate weights
 #'                           should be returned. Defaults to \code{TRUE}.
-#' @param returnItems a logical value indicating if the questions items associated with a 
-#'                    NAEP or TIMSS construct should be returned. Returning questions items 
-#'                    can be helpful if the user plans to use estimate their own plausable values using 
-#'                    \code{mml.sdf}. This option will only work for those TIMSS items available on the \href{https://timssandpirls.bc.edu/}{timsspirls website} 
-#'                      and those NAEP items in the \href{https://cran.r-project.org/package=NAEPirtparams}{NAEPirtparams} package. 
 #'                    
 #'
 #' @details By default, an \code{edsurvey.data.frame} does not have data read
@@ -100,13 +95,11 @@ getData <- function(data,
                     recode = NULL,
                     includeNaLabel=FALSE,
                     addAttributes=FALSE,
-                    returnJKreplicates=TRUE,
-                    returnItems=FALSE) {
+                    returnJKreplicates=TRUE) {
   # check inputs
   checkDataClass(data, c("edsurvey.data.frame", "light.edsurvey.data.frame", "edsurvey.data.frame.list"))
   sdf <- data
   data <- NULL
-  survey <- getAttributes(sdf, "survey")
   if(!inherits(varnames, c("NULL", "character"))) stop("The ", sQuote("varnames"), " argument must be either NULL or a character vector.")
   if(!inherits(formula, c("NULL", "formula"))) stop("The ", sQuote("formula"), " argument must be either NULL or a formula.")
   if(!is.logical(drop)) stop("The ", sQuote("drop"), " argument must be logical.")
@@ -115,14 +108,6 @@ getData <- function(data,
   if(!is.logical(defaultConditions)) stop("The ", sQuote("defaultConditions"), " argument must be logical.")
   if(!is.null(recode) & !is.list(recode)) stop(paste0("The ", sQuote("recode"), " argument must be a list."))
   if(is.null(varnames) & is.null(formula)) stop(paste0("At least one of ", sQuote("varnames"), " and ", sQuote("formula"), " must be not NULL."))
-  if(returnItems == TRUE & !survey %in% c("NAEP", "TIMSS")) {
-    stop(paste0(sQuote("getData()"), " argument ", dQuote("returnItems"), " only works for NAEP and TIMSS, not ", sQuote(survey),"."))
-  }
-  if(omittedLevels == TRUE & returnItems == TRUE){
-    warning(paste0("TIMSS and NAEP items are set to missing, must use ", sQuote("omittedLevels=FALSE"), 
-                    " with ", sQuote("returnItems=TRUE."), " Switching to ", sQuote("omittedLevels"), " to ", sQuote("FALSE"),"."))
-    omittedLevels <- FALSE
-  }
   
   # for edsurvey.data.frame.list, just return a list of results
   if (inherits(sdf, c("edsurvey.data.frame.list"))) {
@@ -132,6 +117,7 @@ getData <- function(data,
     }
     return(res)
   }
+  survey <- getAttributes(sdf, "survey")
   
   if(!inherits(sdf, "edsurvey.data.frame")) {
     # if this is a light.edsurvey.data.frame
@@ -148,7 +134,7 @@ getData <- function(data,
 
   # get variables from formula
   formulaVars <- all.vars(formula)
-  varnames <-c(varnames, formulaVars)
+  varnames <- c(varnames, formulaVars)
   #Retrieve the default conditions
   dConditions <- NULL
   varNamesDefaults <- c()
@@ -195,26 +181,27 @@ getData <- function(data,
   vars <- c()
   v <-c ()
 
+  hasIRTAttr <- has_IRTAttributes(sdf, errorCheck = FALSE) #in mml.sdf.R file, no need to throw error if IRT not set
   hpv <- hasPlausibleValue(varnames, sdf) # Boolean vector that is TRUE when the variable has plausible values
   iw <- isWeight(varnames, sdf) # Boolean vector that is TRUE when the variable is a weight
   vars <- c(vars, varnames[!(iw | hpv)])
   vars_exclude_omitted <- c()
-
-  if(sum(hpv) > 0) {
-    if(returnItems == TRUE){
-      items <- getAllItems(sdf, varnames[hpv])
-      if(length(items) == 0){
-        warning(paste0("No items found for this ", survey, " and ", getAttributes(sdf, "year"), 
-                       ". None will be returned. Item parameters are likely not readily avaliable for this survey and year. See ",
-                       sQuote("?getData()", " for more detail.")))
-      } 
-    } else {
-      items <- c()
+  
+  if(any(hpv) || hasIRTAttr) { #if SDF has IRT attributes, we need to ensure those items are excluded from the 'omittedLevels' checks down the line
+    if(any(hpv)){
+      pvs <- getPlausibleValue(varnames[hpv], sdf)
+      vars_exclude_omitted <- c(vars_exclude_omitted, pvs[-1])
+      vars <- c(vars, pvs)
     }
-    pvs <- getPlausibleValue(varnames[hpv], sdf)
-    vars_exclude_omitted <- c(vars_exclude_omitted, pvs[-1])
-    vars <- c(vars, pvs, items)
-  }
+    if(hasIRTAttr){
+      if (any(hpv)){ #test if any vars are plausible value names
+        items <- getAllItems(sdf, varnames[hpv]) #suitable for TIMSS for subject
+      } else {
+        items <- getAllItems(sdf, NULL) #suitable for NAEP, as all items are returned
+      }
+      vars_exclude_omitted <- c(vars_exclude_omitted, items)
+    }
+  }# if(any(hpv) || hasIRTAttr)
 
   #getAllPSUVar and getallStratumVar are defined in getData.R to return a vector of all the PSU & Stratum variables associated with the edsurvey.data.frame/light.edsurvey.data.frame
   vars_exclude_omitted <- c(vars_exclude_omitted, getAllPSUVar(sdf), getAllStratumVar(sdf))
@@ -277,7 +264,7 @@ getData <- function(data,
 
     #loop through dataList in reverse order to determine the highest levels that have requested variables.  mark those levels, and their required parent levels as 'TRUE'
     for(dlevel in rev(sdf$dataList)){
-      #check if the level requires to be merged either by: 1) forceMerged flag is TRUE. 2) Has a variable requested by the user that is not contained in the levels 'ignoreVars' list.
+      #check if the level requires to be merged either by: 1) forceMerged Flag is TRUE. 2) Has a variable requested by the user that is not contained in the levels 'ignoreVars' list.
       if(dlevel$forceMerge || any(dlevel$fileFormat$variableName[!dlevel$fileFormat$variableName %in% dlevel$ignoreVars] %in% uncachedVars)){
         mergeLevels[names(mergeLevels)==dlevel$levelLabel | names(mergeLevels) %in% dlevel$parentMergeLevels] <- TRUE #specify which levels we need to specifically loop through/merge
 
@@ -392,7 +379,7 @@ getData <- function(data,
     #apply the decimal conversion prior to applying the labels AND the merge in case we have a decimal value used as the key in the key/value label or need to adjust any weights
     #PISA reads in csv files so no need to convert to decimal values
     if (sdf$reqDecimalConversion==TRUE) {
-      for(i in c(1:length(colnames(sdf)))) {
+      for(i in seq_along(variables)) {
         varn <- variables[i] # the variable being considered
         decLen <- decimals[i]
         decLen[is.na(decLen)] <- 0 #use a 0 if NA is specified for decimal length (character value)
@@ -645,30 +632,30 @@ getData <- function(data,
 
     # apply omittedLevels when TRUE or equal to some levels
     # this code should execute on all of the variables when omittedLevels is TRUE
-    flag <- FALSE # set to TRUE when using ommittedLevels in some capacity
+    omittedLevelsFlag <- FALSE # set to TRUE when using ommittedLevels in some capacity
     # lev variable is the levels that are being omitted
-    if(omittedLevels == TRUE) {
+    if(all(omittedLevels %in% TRUE)) {
       lev <- unlist(sdf$omittedLevels) # here we know it is an edsurvey.data.frame
-      flag <- TRUE
+      omittedLevelsFlag <- TRUE
     }
     if(!is.logical(omittedLevels)) {
       lev <- omittedLevels
-      flag <- TRUE
+      omittedLevelsFlag <- TRUE
     }
 
-    #flag variable is calculated above to determine if omitted values should be excluded from results
-    if(flag) {
+    #omittedLevelsFlag variable is calculated above to determine if omitted values should be excluded from results
+    if(omittedLevelsFlag) {
       keep <- rep(0, nrow(data))
       for (i in 1:length(varnamesTotal)) {
         vari <- varnamesTotal[i]
         if(! vari %in% vars_exclude_omitted) {
           # omit data at these levels
-          keep <- keep + (data[ , vari] %in% lev)
+          keep <- keep | (data[ , vari] %in% lev)
         }
       }
-      if(sum(keep>0) > 0) {
+      if(any(!keep)) {
         # only omit if something gets omitted
-        data <- data[keep==0, , drop=FALSE]
+        data <- data[!keep, , drop=FALSE]
       }
     }
 
@@ -693,17 +680,17 @@ getData <- function(data,
     data <- sdf
 
     # check omittedLevels argument to see if should be applied
-    flag <- FALSE
-    if(omittedLevels == TRUE) {
+    omittedLevelsFlag <- FALSE
+    if(omittedLevels[1] == TRUE) {
       lev <- unlist(attributes(sdf)$omittedLevels) # this is a light.edsurvey.data.frame
-      flag <- TRUE
+      omittedLevelsFlag <- TRUE
     }
     if(!is.logical(omittedLevels)) {
       lev <- omittedLevels
-      flag <- TRUE
+      omittedLevelsFlag <- TRUE
     }
     # if it should be applied, apply omittedLevels
-    if(flag) {
+    if(omittedLevelsFlag) {
       keep <- rep(0, nrow(data))
       for (i in 1:length(varnamesTotal)) {
         vari <- varnamesTotal[i]

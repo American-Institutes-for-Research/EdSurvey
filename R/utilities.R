@@ -1,4 +1,63 @@
 # utilities functions
+setupMulticore <- function(multiCore, numberOfCores, verbose) {
+  if(multiCore == TRUE){
+    if(verbose>0) {
+      message("Starting parallel processing.")
+    }
+    # check doParallel 
+    if(requireNamespace("doParallel")){
+      detCores <- parallel::detectCores()
+      # set numberOfCores default if not provided 
+      if(is.null(numberOfCores)){
+        numberOfCores <- detCores * .75
+      }
+      # check that they aren't using too many cores 
+      if(numberOfCores > detCores){
+        defaultCores <- detCores * .75
+        warning(paste0(sQuote(numberOfCores), " is greater than number of avaliable cores,",
+                       sQuote(detCores)," setting number of cores to default of ",
+                       sQuote(defaultCores)))
+        numberOfCores <- defaultCores
+      }
+    } else {
+      multiCore <- FALSE
+      message(paste0("Unable to find package doParallel, setting multiCore to FALSE. Install the ", dQuote("doParallel"), " package to use multiCore option."))
+    }
+    # https://bugs.r-project.org/bugzilla/show_bug.cgi?id=18119
+    # R on OS X bug that prevents parallel
+    if (grepl("Darwin", Sys.info()[1]) &&
+        getRversion() <= "4.1.0") {
+      multiCore <- FALSE
+      message("Upgrade to R 4.1.1 or higher to use multiCore on Mac OS.")
+    }
+  }
+  return(list(multiCore=multiCore, numberOfCores=numberOfCores))
+}
+
+# multiCoreSetup is the result of a call to setupMulticore
+# verbose allows this function to use message to print the number of cores to the screen
+# ExitDepth says what depth of parent.frame should this clean up the cluster when it exits.
+#           numbers less than 1 lead to no cluster stop being called. Numbers over 1 increase the parent depth
+startMulticore <- function(multiCoreSetup, verbose=FALSE, ExitDepth=2) {
+  if(multiCoreSetup$multiCore){
+    # check if cluster is already running 
+    if(nrow(showConnections()) == 0) {
+      cores <- round(multiCoreSetup$numberOfCores, 0) # use 75 percent of cores 
+      cl <- parallel::makeCluster(cores)
+      if(verbose >= 1) {
+        message(paste0("Starting cluster with ", cl, " cores"))
+      }
+      doParallel::registerDoParallel(cl, cores=cores)
+      # stop cluster before any exit
+      if(ExitDepth > 0) {
+        pf <- parent.frame(n=ExitDepth)
+        assign("cl", cl, envir=pf)
+        do.call( "on.exit", alist( parallel::stopCluster(cl) ), pf)
+      }
+    }
+  } # end if(multiCore)
+  return(NULL)
+}
 
 getAllTaylorVars <- function(data) {
   res <- c(getAttributes(data, "psuVar"), getAttributes(data, "stratumVar"))
@@ -256,14 +315,24 @@ checkTaylorVars <- function(psuVar, stratumVar, wgt, varMethod="t", returnNumber
 #
 # it is also helpful in resolving variables passed to function calls in the subset functions
 #
+
+
+#>   lm10D <- lm.sdf(composite ~ dsex + b017451, sdf, weightVar=c("origwt"))
+#Error in if (as.character(iparseCall) %in% unlist(colnames(x))) { : 
+#  the condition has length > 1
+
 iparse <- function(iparseCall, iparseDepth=1, x) {
   # if this is just a character (before substitute was called) return it
-  if(iparseDepth == 1) {
+  if(iparseDepth == 1 && length(iparseCall) == 1 ) {
     skip <- tryCatch(inherits(eval(iparseCall), "character"),
                     error=function(e) { FALSE },
                     warning=function(w) { FALSE })
     if(skip) {
-      return(eval(iparseCall))
+      if(as.character(iparseCall) %in% unlist(colnames(x))) {
+        return(iparseCall)
+      } else {
+        return(eval(iparseCall))
+      }
     }
   }
   # if it is still a character, return it
@@ -286,6 +355,15 @@ iparse <- function(iparseCall, iparseDepth=1, x) {
         if(length(find(iparseCall_c)) > 0) {
           if (iparseCall[[iparseind]] == "%in%" || is.function(iparseCall[[iparseind]]) || is.function(get(iparseCall_c, find(iparseCall_c)))) {
             iparseEval <- eval(substitute(iparseCall[[iparseind]]), parent.frame())
+            if(iparseCall_c == "c") {
+              idx <- 2:length(iparseCall) #omit the first 'c' argument
+              res <- character(0) #character result
+              #we want to omit evaluating the 'c', but evaluate all of the internal items
+              for(ii in idx){
+                res <- c(res, iparse(iparseCall[[ii]], iparseDepth =  iparseDepth + 1, x)) #use c here in case of multiple nested levels since we don't have known lengths
+              }
+              return(res)
+            }
           } else {
             # get the variable
             iparseEval <- eval(iparseCall[[iparseind]], parent.frame())
@@ -327,3 +405,15 @@ iparse <- function(iparseCall, iparseDepth=1, x) {
   }
   iparseCall
 } # End of fucntion: iparse
+
+
+checkWeightVar <- function(data, weightVar) {
+  if(is.null(weightVar)) {
+    weightVar <- attributes(getAttributes(data, "weights"))$default
+    if(min(nchar(weightVar)) == 0) {
+      # no weight
+      stop(paste0("There is no default weight variable for ",getAttributes(data,"survey")," data, so the argument ",sQuote("weightVar"), " must be specified."))
+    }
+  }
+  return(weightVar)
+}

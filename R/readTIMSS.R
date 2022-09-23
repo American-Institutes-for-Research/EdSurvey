@@ -488,7 +488,9 @@ readTIMSS <- function(path,
                                                                jkSumMultiplier = 0.5, #defined by the method of JK weight replication used (JK2)
                                                                reqDecimalConversion = FALSE,
                                                                dim0=processedData$dim0) 
-
+        
+        #will add the IRT parameter information for TIMSS for 2011, 2015, and 2019 to the ESDF
+        procCountryData[[iProcCountry]] <- appendIRTAttributes_TIMSS(path, procCountryData[[iProcCountry]])
 
         if(verbose){
           printMergeStats_ESDF(procCountryData[[iProcCountry]]) #print out the data level detail and merge stats
@@ -2162,4 +2164,66 @@ buildTIMSS_dataList <- function(stuLaf, stuFF, schLaf, schFF, tchLaf, tchFF){
                                         isDimLevel = TRUE)
 
   return(dataList)
+}
+
+#sets the IRT parameter values for applicable TIMSS years for the edsurvey.data.frame
+appendIRTAttributes_TIMSS <- function(path, esdf) {
+  
+  validYears <- c("2011", "2015", "2019")
+  if (esdf$year %in% validYears) {
+    
+    allParams <- timssParam(timssDir = path, theYear = esdf$year, theLevel = esdf$gradeLevel)
+    # get params and transformations and scores
+    params <- allParams$params
+    transformations <- allParams$transformations
+    scoreDict <- defaultTIMSSScoreDict()
+    
+    # get paramTabs
+    paramTabs <- timssParamTabs(params)
+    polyParamTab <- paramTabs$polyParamTab
+    dichotParamTab <- paramTabs$dichotParamTab
+    
+    # set max scorepoints for poly items
+    polyParamTab$scorePoints <- scoreDict[scoreDict$resCat %in% 'Correct', 'pointConst']
+    
+    # for testDat, average the location and scale
+    testData <- aggregate(. ~ subject, transformations, mean )
+
+    testData <- testData[, 1:3]
+    colnames(testData) <- c('test', 'location', 'scale')
+    testData$subtest <- NA
+    # organize correctly
+    testData <- testData[, c('test', 'subtest', 'location', 'scale')]
+    mathSubtests <- with(dichotParamTab[dichotParamTab$test == "mmat", ],
+                        unique(c(content_subtest, cognitive_subtest)))
+    mathSubtests <- mathSubtests[!mathSubtests %in% c("", NA)]
+    sceiSubtests <- with(dichotParamTab[dichotParamTab$test ==  "ssci", ],
+                        unique(c(content_subtest, cognitive_subtest)))
+    sceiSubtests <- sceiSubtests[!sceiSubtests  %in% c("", NA)]
+    mathValues <- testData[ testData$test == "Mathematics",c("location", "scale"), drop=FALSE][1,]
+    sceiValues <- testData[ testData$test == "Science",c("location", "scale"), drop=FALSE][1,]
+    for(i in 1:length(mathSubtests)) {
+      nextTDrow <- nrow(testData) + 1
+      testData[nextTDrow, "test"] <- "mmat"
+      testData[nextTDrow, "subtest"] <- mathSubtests[i]
+      testData[nextTDrow, "location"] <- mathValues$location
+      testData[nextTDrow, "scale"] <- mathValues$scale
+    }
+    for(i in 1:length(sceiSubtests)) {
+      nextTDrow <- nrow(testData) + 1
+      testData[nextTDrow, "test"] <- "ssci"
+      testData[nextTDrow, "subtest"] <- sceiSubtests[i]
+      testData[nextTDrow, "location"] <- sceiValues$location
+      testData[nextTDrow, "scale"] <- sceiValues$scale
+    }
+    testData$subtestWeight <- NA
+
+    # set attributes
+    esdf <- setAttributes(esdf, "scoreDict", scoreDict)
+    esdf <- setAttributes(esdf, "dichotParamTab", dichotParamTab)
+    esdf <- setAttributes(esdf, "polyParamTab", polyParamTab)
+    esdf <- setAttributes(esdf, "testData", testData)
+    esdf <- setAttributes(esdf, "scoreFunction", EdSurvey::scoreTIMSS)
+  }
+  return(esdf)
 }

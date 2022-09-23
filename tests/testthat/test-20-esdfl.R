@@ -107,7 +107,7 @@ test_that("ESDFL error handling",{
                  "E locations")
   
   suppressWarnings(et2 <- edsurveyTable(composite ~ b017451, sdfl_error, returnMeans=FALSE, returnSepct=FALSE))
-  withr::with_options(list(digits=0),
+  withr::with_options(list(digits=1),
                         et2c <- capture.output(et2)
                      )
 

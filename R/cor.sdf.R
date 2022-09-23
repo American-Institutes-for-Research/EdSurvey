@@ -181,28 +181,27 @@ cor.sdf <- function(x,
 
   # get weight variable
   if(is.null(weightVar)) {
-    weightVar <- "one"
     wgt <- "one"
   } else {  # if the weights are not null
-    if(weightVar=="default") { # if weightsVar is default
+    if(weightVar %in% "default") { # if weightsVar is default
       wgt <- attributes(getAttributes(data, "weights"))$default
-    } else { # if weightVar is not defaut
+    } else { # if wgt is not defaut
       wgt <- weightVar
-    } # End of nested if statment: if weightVar is defalt
-  } # End of if statment: if weightVar is null
+    } # End of nested if statment: if wgt is defalt
+  } # End of if statment: if wgt is null
   
   # setup Jack Knife replicate weight variables
-  if(weightVar == "one") {
+  if(wgt == "one") {
     wgtl <- list(jkbase="one",jksuffixes="")
-  } else { # if weightVar is not "one"
+  } else { # if wgt is not "one"
     wgtl <- getAttributes(data, "weights")[[wgt]]
-  } # End of if statment: if weightVar is "one" 
+  } # End of if statment: if wgt is "one" 
   wgts <- c(paste0(wgtl$jkbase, wgtl$jksuffixes))
-  if(weightVar == "one") { 
+  if(wgt == "one") { 
     getV <- c(vars)
-  } else { # if weightVar is not "one"
+  } else { # if wgt is not "one"
     getV <- c(vars, wgt)
-  } # end of if statment: if weightVar is "one"
+  } # end of if statment: if wgt is "one"
 
   # setup the getData call
   getDataArgs <- list(data = data,
@@ -254,7 +253,7 @@ cor.sdf <- function(x,
     }
   }
   # if the weight variable is "one" then that will need to be a valid column
-  if(weightVar == "one") {
+  if(wgt == "one") {
     if("one" %in% colnames(lsdf) && any(lsdf$one != 1)) {
       stop(paste0("A column named one cannot be included in the input when weights of one are implicitly used. You can rename the ", dQuote("one"), " column."))
     }
@@ -268,7 +267,7 @@ cor.sdf <- function(x,
       }
       warning("Removing rows with 0 weight from the analysis.")
     }
-  } # end if(weightVar=="one")
+  } # end if(wgt=="one")
   
   # do reordering of variables when the user requets a reorder
   if(!is.null(reorder[[x]])) {
@@ -448,19 +447,19 @@ cor.sdf <- function(x,
   } 
   
 
-  if(weightVar=="one") {
+  if(wgt=="one") {
     cor <- list(correlation=mcc, Zse=NA, correlates=vars, variables=variables, order=varOrder, method=method,
                 Vjrr=NA, Vimp=NA, weight="unweighted", npv=M, njk=NA, se=NA, ZconfidenceInterval=NA, confidenceInterval=NA)
-  } else { # else if weightVar is not "one"
+  } else { # else if wgt is not "one"
     dof <- DoFCorrection(varEstInputs, varA="cor", method="JR")
     tstat <- qt(p=0.975, df=dof)
     Zci <- premcc + c(-1,1) * tstat * Zse
     ci <- itrans(Zci)
     se <- setrans(premcc, Zse)
     cor <- list(correlation=mcc, Zse=Zse, correlates=vars, variables=variables, order=varOrder, method=pm,
-                Vjrr=Vjrr, Vimp=Vimp, weight=weightVar, npv=M, njk=length(wgtl$jksuffixes),
+                Vjrr=Vjrr, Vimp=Vimp, weight=wgt, npv=M, njk=length(wgtl$jksuffixes),
                 se=se, ZconfidenceInterval=Zci, confidenceInterval=ci)
-  } # End of if statment: if weightVar is "one"
+  } # End of if statment: if wgt is "one"
   cor <- c(cor, list(n0=nrow2.edsurvey.data.frame(data), nUsed=nrow(lsdf)))
   cor <- c(cor, list(transformation=transformation$name))
   class(cor) <- "edsurveyCor"

@@ -13,8 +13,7 @@ getAttributes <- function(data, attribute = NULL) {
   } else {
     # data is not an edsurvey.data.frame, so attributes returned in
     # attributes(data)
-    attrs <- names(attributes(data))[!names(attributes(data)) %in% c("names", 
-      "class", "row.names")]
+    attrs <- names(attributes(data))[!names(attributes(data)) %in% c("names", "class", "row.names")]
   }
   
   # validate
@@ -39,7 +38,7 @@ getAttributes <- function(data, attribute = NULL) {
     attr <- data[[attribute]]
   } else {
     attr <- attributes(data)[[attribute]]
-    if(length(attr) == 1 && attr == "NULL") {
+    if(length(attr) == 1 && inherits(attr, "character") && attr == "NULL") {
       return(NULL)
     }
   }

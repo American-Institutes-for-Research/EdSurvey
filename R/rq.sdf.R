@@ -178,15 +178,7 @@ calc.rq.sdf <- function(formula,
   varMethod <- substr(tolower(match.arg(varMethod)), 0, 1) 
   
   # if the weight var is not set, use the default
-  if(is.null(weightVar)) {
-    wgt <- attributes(getAttributes(sdf, "weights"))$default
-  } else {
-    wgt <- weightVar
-  } # End of if/else: is.null(weightVar)
-  if(min(nchar(wgt)) == 0) {
-    # no weight
-    stop(paste0("There is no default weight variable for ",getAttributes(sdf,"survey")," data, so the argument ",sQuote("weightVar"), " must be specified."))
-  }
+  wgt <- checkWeightVar(data, weightVar)
 
   psuVar <- getPSUVar(data, weightVar = wgt)
   stratumVar <- getStratumVar(data, weightVar = wgt)

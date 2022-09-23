@@ -923,17 +923,7 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
   pctMethod <- match.arg(pctMethod)
   # get the weight var
   # if the weight var is not set, use the default
-  if(is.null(weightVar)) {
-    wgt <- attributes(getAttributes(data, "weights"))$default
-  } else {
-    wgt <- weightVar
-  } # End of if/else: is.null(weightVar)
-  if(min(nchar(wgt)) == 0) {
-    # no weight
-    stop(paste0("There is no default weight variable for ",
-                getAttributes(data,"survey")," data, so the argument ",sQuote("weightVar"), 
-                " must be specified."))
-  }
+  wgt <- checkWeightVar(data, weightVar)
   
   varEstInputs <- NULL
   type <- "mu" # mean is the default
@@ -984,7 +974,7 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
     dataB <- subset(data, substitute(groupB), inside=TRUE)
     dataAB <- subset(dataA, substitute(groupB), inside=TRUE)
   }
-  callv <- list(weightVar=weightVar,
+  callv <- list(weightVar=wgt,
                 jrrIMax=jrrIMax,
                 omittedLevels=omittedLevels,
                 recode=NULL) # recode.sdf is already done in line 335

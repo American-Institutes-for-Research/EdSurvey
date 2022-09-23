@@ -19,7 +19,7 @@ dat2Summary.Ref <- c("     sch_id          byregion       byurban    ",
 dat3Summary.Ref <- c("     stu_id           f1ses1                     f1ses1qu        f1ses2                     f1ses2qu   ",
                      " Min.   :101101   Min.   :-2.12000   LOWEST QUARTILE :3875   Min.   :-2.12000   LOWEST QUARTILE :3860  ",
                      " 1st Qu.:190180   1st Qu.:-0.51000   SECOND QUARTILE :3853   1st Qu.:-0.52000   SECOND QUARTILE :3826  ",
-                     " Median :281128   Median : 0.03000   THIRD QUARTILE  :3925   Median :-0.02000   THIRD QUARTILE  :3991  ",
+                     " Median :281129   Median : 0.03000   THIRD QUARTILE  :3925   Median :-0.02000   THIRD QUARTILE  :3991  ",
                      " Mean   :279662   Mean   : 0.03343   HIGHEST QUARTILE:4507   Mean   : 0.03608   HIGHEST QUARTILE:4483  ",
                      " 3rd Qu.:369213   3rd Qu.: 0.59000                           3rd Qu.: 0.57000                          ",
                      " Max.   :461234   Max.   : 1.87000                           Max.   : 1.97000                          ")

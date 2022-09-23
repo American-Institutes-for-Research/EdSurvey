@@ -49,8 +49,8 @@ getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, sco
   # get item key, answers, and points per item
   for (line in itemLines) {
     # initialize portion of scorecard for item 
-    subScoreCard <- data.frame(matrix(ncol = 3, nrow = 12))
-    colnames(subScoreCard) <- c('key', 'answer', 'score')
+    subScoreCard <- data.frame(matrix(ncol = 4, nrow = 12))
+    colnames(subScoreCard) <- c("key", "answer", "score", "scorePoints")
     
     # get key (question id)
     itemId <- tolower(substring(line, 1,7))
@@ -73,7 +73,9 @@ getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, sco
     # split and process points
     if (nchar(points) != 0) {
       points <- unlist(strsplit(points,''))
-      points <- replace(NA * c(1:12), c(1:length(points)), points)
+      #scorePoints will be the maxium value as defined by the 'scoring key'
+      scorePoints <- max(as.numeric(points))
+      points <- replace(NA * c(1:12), c(1:length(points)), points) #make it length 12 filled with NAs where applicable
     } else {
       points <- NA * c(1:12)
     }
@@ -113,13 +115,16 @@ getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, sco
     subScoreCard$answer <- labels
     subScoreCard$score <- points
     subScoreCard$key <- itemId
+    #set the score points, exclude NAs and 
+    subScoreCard$scorePoints <- scorePoints
+    
     scoreCard <- rbind(scoreCard, subScoreCard)
   }
   
   # reconfigure
   scoreCard$score <- as.numeric(scoreCard$score)
   scoreCard <- scoreCard[complete.cases(scoreCard),] # take out rows with NA ScorePoints
-  colnames(scoreCard) <- c('key', 'answer', 'score')
+  colnames(scoreCard) <- c("key", "answer", "score", "scorePoints")
   
   # extra configuration for partial scores (make labeling uniform)
   partialKeys <- scoreCard[scoreCard$answer=='Partial','key']
@@ -156,68 +161,42 @@ defaultNAEPScoreCard <- function() {
 #' @param data a NAEP edsurvey.data.frame
 #' @param dctPath a connection that points to the location of a NAEP dct file. A dct file can be used to input custom item response theory (IRT)
 #'                parameters and subscale/subtest weights for NAEP assessments compared with those provided in the \code{NAEPirtparams} package. 
-#' @param scoreDict a data frame that includes guidelines for scoring the provided NAEP data. 
-#'                  Here, \emph{scoring} refers to turning item responses into scores on each item.
-#'                  To see the default scoring guidelines, call the function \code{defaultNAEPScoreCard()}, or see the Examples section.
 #' @return a NAEP edsurvey.data.frame with updated attributes
-setNAEPScoreCard <- function(data, dctPath=NULL, scoreDict=NULL){
-  # check if we can continue
-  if (is.null(dctPath) & is.null(scoreDict)) {
-    stop("You must provide dctPath and/or scoreDict.")
-  }
-  # check if we can continue
-  if (nrow(getAttributes(data, "polyParamTab")) == 0 & nrow(getAttributes(data, "dichotParamTab")) == 0 & is.null(dctPath)) {
-    stop("You must provide a dctPath to continue.")
-  }
-
-  # for scoreDict
-  if (is.null(scoreDict)) {
-    # use attribute
-    scoreDict <- getAttributes(data, "scoreDict")
-  } else {
-    # update attribute
-    data <- setAttributes(data, "scoreDict", scoreDict)
-  }
+setNAEPScoreCard <- function(data, dctPath=NULL) {
   
-  # for dctPath
+  # check if we can continue
   if (is.null(dctPath)) {
-    # get IRT parms from attributes
-    polyParamTab <- getAttributes(data, "polyParamTab")
-    dichotParamTab <- getAttributes(data, "dichotParamTab")
-    testDat <- getAttributes(data, "testData")
-    adjustments <- getAttributes(data, "adjustedData")
-  } else {
-    # get IRT params from dct
-    allTables <- parseNAEPdct(dctPath) 
-    polyParamTab <- allTables$polyParamTab
-    dichotParamTab <- allTables$dichotParamTab
-    testDat <- allTables$testDat
-    adjustments <- data.frame()
+    stop("You must provide dctPath.")
   }
-
-  # create sCard
-  sCard <- getNAEPScoreCard(getAttributes(data, "fr2Path"), 
-                            polyParamTab$ItemID, 
-                            dichotParamTab$ItemID, 
-                            adjustments, 
-                            scoreDict)
   
+  # get IRT params from dct
+  allTables <- parseNAEPdct(dctPath) 
+  polyParamTab <- allTables$polyParamTab
+  dichotParamTab <- allTables$dichotParamTab
+  testDat <- allTables$testDat
+  adjustments <- data.frame()
+  # get the scoreCard
+  scoreCard <- getNAEPScoreCard(getAttributes(data, "fr2Path"), 
+                                polyParamTab$ItemID, 
+                                dichotParamTab$ItemID, 
+                                adjustments)
   # update dichotparamtab: 1/k for missing value
-  dichotScores <- sCard[sCard$key %in% dichotParamTab$ItemID & !sCard$answer %in% defaultNAEPScoreCard()$resCat, ]
-  if (nrow(dichotScores) > 0) {
-    Ks <- aggregate(answer~key, dichotScores, length)
-    Ks$answer <- 1 / Ks$answer
-    dichotParamTab <- merge(dichotParamTab, Ks, by.x = 'ItemID', by.y = 'key', all.x = T)
-    dichotParamTab$missingValue <- ifelse(is.na(dichotParamTab$answer), dichotParamTab$missingValue, dichotParamTab$answer)
-    dichotParamTab$answer <- NULL
-  }
+  
+  dscoreCard <- scoreCard[scoreCard$score %in% c(0,1) & 
+                          nchar(trimws(gsub("[*]", "", gsub("^[A-G]", "", scoreCard$answer)))) == 0, ]
+  Ks <- aggregate(answer ~ key, dscoreCard, length)
+  Ks$answer <- 1 / Ks$answer
+  dichotParamTab <- merge(dichotParamTab, Ks, by.x = 'ItemID', by.y = 'key', all.x = TRUE, all.y=FALSE)
+  # if it is not in this lookup table, it is constructed response and so the missing value should be zero
+  dichotParamTab$missingValue <- ifelse(is.na(dichotParamTab$answer), 0, dichotParamTab$answer)
+  dichotParamTab$answer <- NULL
   
   # set attribute
   data <- setAttributes(data, "dichotParamTab", dichotParamTab)
   data <- setAttributes(data, "polyParamTab", polyParamTab)
   data <- setAttributes(data, "testData", testDat)
   data <- setAttributes(data, "adjustedData", adjustments)
-  data <- setAttributes(data, "scoreCard", sCard)
+  data <- setAttributes(data, "scoreDict", scoreCard)
+  data <- setAttributes(data, "scoreFunction", EdSurvey::scoreDefault)
   return(data)
 }
-

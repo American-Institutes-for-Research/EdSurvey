@@ -21,3 +21,12 @@ setOldClass("edsurveyLm")
 setOldClass("edsurveyLmList")
 setOldClass("edsurveyGlm")
 setOldClass("edsurveyGlmList")
+
+# stub
+writeNAEP_XML <- function(fileContents){
+  stop("remove writeNAEP_XML from all.R")
+}
+
+parseNAEP_XML <- function(filename) {
+  stop("remove parseNAEP_XML from all.R")
+}

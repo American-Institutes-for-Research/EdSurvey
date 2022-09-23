@@ -1,9 +1,19 @@
 \name{NEWS}
 \title{NEWS for EdSurvey}
-\section{Changes in version 2.7.1}{
+\section{Changes in version 3.0.0}{
   \subsection{UPDATES}{
     \itemize{
+      \item add \code{mml.sdf} to allow direct estimation using the \code{Dire} package.
+      \item add \code{drawPVs} to enable users to draw plausible values using \code{Dire} after running \code{mml.sdf}.
+      \item \code{suggestWeights} function assists researchers in deciding which weight to use for analyses with ECLS-K:2011 data. See the \code{suggestWeights} documentation and vignette for more information.
       \item \code{summary2} output now shows zero weights without a colon.
+      \item it is now possible to subset an \code{edsurvey.data.frame} to just one row with square braces.
+    }
+  }
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item \code{readELS} would sometimes re-cache files when they did not need to be. This has now been corrected.
+      \item \code{readPIAAC} is now set to validate variables with missing value labels undefined in the codebook. For missing label values it will now return the numeric value as the label instead of an NA value. Thanks to GitHub user webervienna for identifying and reporting this bug.
     }
   }
 }

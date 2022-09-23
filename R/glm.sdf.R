@@ -319,11 +319,7 @@ calc.glm.sdf <- function(formula,
   # varMethod always jackknife
   
   # if the weight var is not set, use the default
-  if(is.null(weightVar)) {
-    wgt <- attributes(getAttributes(data, "weights"))$default
-  } else {
-    wgt <- weightVar
-  } # End of if/else: is.null(weightVar)
+  wgt <- checkWeightVar(data, weightVar)
   
   # check if there is an outcome variable and set it to the default if it is missing
   zeroLengthLHS <- attr(terms(formula), "response") == 0

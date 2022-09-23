@@ -15,8 +15,7 @@ getData(
   recode = NULL,
   includeNaLabel = FALSE,
   addAttributes = FALSE,
-  returnJKreplicates = TRUE,
-  returnItems = FALSE
+  returnJKreplicates = TRUE
 )
 }
 \arguments{
@@ -73,12 +72,6 @@ more information on \code{light.edsurvey.data.frame}.}
 
 \item{returnJKreplicates}{a logical value indicating if JK replicate weights
 should be returned. Defaults to \code{TRUE}.}
-
-\item{returnItems}{a logical value indicating if the questions items associated with a 
-NAEP or TIMSS construct should be returned. Returning questions items 
-can be helpful if the user plans to use estimate their own plausable values using 
-\code{mml.sdf}. This option will only work for those TIMSS items available on the \href{https://timssandpirls.bc.edu/}{timsspirls website} 
-  and those NAEP items in the \href{https://cran.r-project.org/package=NAEPirtparams}{NAEPirtparams} package.}
 }
 \value{
 When \code{addAttributes} is \code{FALSE}, \code{getData} returns a

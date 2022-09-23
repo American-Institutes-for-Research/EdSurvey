@@ -17,13 +17,13 @@ can <- readPIAAC("~/PIAAC/Cycle 1/", countries = "can", us)
 # Otherwise, the read function will return usa 2012-2014. See "?readPIACC()" for more info. 
 
 # read in usa 2012-2014 
-usa12 <- readPIAAC("/Users/ebuehler/EdSurveyData/PIAAC/Cycle 1",
+usa12 <- readPIAAC("~/PIAAC/Cycle 1",
                    countries = "usa", usaOption="12_14")
 # read in usa 2017 
-usa17 <- readPIAAC("/Users/ebuehler/EdSurveyData/PIAAC/Cycle 1",
+usa17 <- readPIAAC("~/PIAAC/Cycle 1",
                    countries = "usa", usaOption="17")
 # if reading in all piaac data, the user can still specify usa option. 
 # Otherwise, by default 2012-1014 will be used when reading in all piaac data. 
-all_piaac <- readPIAAC("/Users/ebuehler/EdSurveyData/PIAAC/Cycle 1",
+all_piaac <- readPIAAC("~/PIAAC/Cycle 1",
                        countries = "*", usaOption="17")
 }

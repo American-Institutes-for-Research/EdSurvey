@@ -17,7 +17,7 @@ readNAEP(
 of the (.dat) data file}
 
 \item{defaultWeight}{a character value that indicates the default weight
-specified in the resulting \code{edsurvey.data.frame}.  
+specified in the resulting \code{edsurvey.data.frame}.
 Default value is \code{origwt} if not specified.}
 
 \item{defaultPvs}{a character value that indicates the default plausible value
@@ -29,50 +29,29 @@ should be excluded. When set to the default value of
 \code{c('Multiple',NA,'Omitted')}, adds the vector to
 the \code{edsurvey.data.frame}.}
 
-\item{frPath}{a character value indicating the location of the \code{fr2}
+\item{frPath}{a character value indicating the file location of the \code{.fr2}
 parameter layout file included with the data companion to
-parse the specified \code{filepath} data file}
+parse the specified \code{filepath} data file.
+The default value of \code{NULL} will attempt to search the parent directory for the corresponding \code{.fr2} file for the specified \code{path} data file.}
 }
 \value{
-An \code{edsurvey.data.frame} containing the following elements:
-   \item{userConditions}{a list containing all user conditions set using the \code{subset.edsurvey.data.frame} method}
-   \item{defaultConditions}{the default conditions to be applied to the \code{edsurvey.data.frame}}
-   \item{data}{an \code{LaF} object containing a connection to the student dataset on disk}
-   \item{dataSch}{an \code{LaF} object containing a connection to the school dataset on disk}
-   \item{dataTch}{not applicable for NAEP data; returns \code{NULL}}
-   \item{weights}{a list containing the weights found on the \code{edsurvey.data.frame}}
-   \item{pvvar}{a list containing the plausible values found on the \code{edsurvey.data.frame}}
-   \item{subject}{the subject of the dataset contained in the \code{edsurvey.data.frame}}
-   \item{year}{the year of assessment of the dataset contained in the \code{edsurvey.data.frame}}
-   \item{assessmentCode}{the code of the dataset contained in the \code{edsurvey.data.frame}}
-   \item{dataType}{the type of data (whether student or school) contained in the \code{edsurvey.data.frame}}
-   \item{gradeLevel}{the grade of the dataset contained in the \code{edsurvey.data.frame}}
-   \item{achievementLevels}{default NAEP achievement cutoff scores}
-   \item{omittedLevels}{the levels of the factor variables that will be omitted from the \code{edsurvey.data.frame}}
-   \item{fileFormat}{a \code{data.frame} containing the parsed information from the student .fr2 file associated with the data}
-   \item{fileFormatSchool}{a \code{data.frame} containing the parsed information from the school .fr2 file associated with the data}
-   \item{fileFormatTeacher}{not applicable for NAEP data; returns \code{NULL}}
-   \item{survey}{the type of survey data contained in the \code{edsurvey.data.frame}}
-   \item{dichotParamTab}{IRT item paramters for dichotomous items in a data frame; returns \code{NULL} if unavailable in \code{NAEPirtparams}}
-   \item{polyParamTab}{IRT item parameters for polytomous items in a data frame; returns \code{NULL} if unavailable in \code{NAEPirtparams}}
-   \item{adjustedData}{IRT item parameter adjustment information in a data frame; returns \code{NULL} if unavailable in \code{NAEPirtparams}}
-   \item{testData}{IRT transformation constants in a data frame; returns \code{NULL} if unavailable in \code{NAEPirtparams}}
-   \item{scoreCard}{item scoring information in a data frame; returns \code{NULL} if unavailable}
-   \item{scoreDict}{generic scoring information in a data frame; returns \code{NULL} if unavailable}
+An \code{edsurvey.data.frame} for a NAEP data file.
 }
 \description{
-Opens a connection to an NAEP data file residing
-             on the disk and returns an \code{edsurvey.data.frame} with 
+Opens a connection to a Main NAEP, or Long-Term Trend NAEP data file residing
+             on the disk. Returns an \code{edsurvey.data.frame} with
              information about the file and data.
 }
 \details{
-The function uses the \code{frPath} file layout (.fr2) data to read in the
-fixed-width data file (.dat) and builds the \code{edsurvey.data.frame}.
+The \code{xmlPath} file will take precedence over the \code{frPath} file if both parameters are set and able to be located, or when both parameters are \code{NULL} (the default).
 
-NAEP includes both scaled scores and theta scores, with the latter having names ending in \code{\_theta}.
+The \code{readNAEP} function includes both scaled scores and theta scores, with the latter having names ending in \code{\_theta}.
 
 When a NAEP administration includes a linking error variable those variables are included and end in \code{_linking}.
 When present, simply use the \code{_linking} version of a variable to get a standard error estimate that includes linking error.
+
+This function supports both the Main NAEP data files, and Long-Term Trend NAEP data files.
+A table outlining the differences can be found on the \href{https://nces.ed.gov/nationsreportcard/about/ltt_main_diff.aspx}{NAEP Nations Report Card website}.
 }
 \examples{
 \dontrun{
@@ -88,6 +67,9 @@ sdf <- readNAEP(path="M36NT2PM.dat")
 # Or read in the .dat file directly through the folder pathway:
 sdf <- readNAEP(path="location/of/Data/M36NT2PM.dat")
 }
+}
+\seealso{
+\code{\link{edsurvey.data.frame}} \code{\link{getData}}
 }
 \author{
 Tom Fink and Ahmad Emad

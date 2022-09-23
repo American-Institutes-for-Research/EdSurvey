@@ -1,3 +1,6 @@
+require(data.table)
+require(tibble)
+
 context("mergev: basic testing")
 dfa <- data.frame(key=letters[1:10],
                   key2=LETTERS[1:10],
@@ -161,7 +164,7 @@ test_that("merge stats correct",{
 })
 
 context("mergev: data.table integration")
-require(data.table)
+
 dfa <- data.frame(key=letters[1:10],
                   key2=LETTERS[1:10],
                   cola=paste("a",letters[1:10], sep=":"))
@@ -326,7 +329,7 @@ test_that("merge stats correct",{
 })
 
 context("mergev: tibble integration")
-require(tibble)
+
 dfa <- data.frame(key=letters[1:10],
                   key2=LETTERS[1:10],
                   cola=paste("a",letters[1:10], sep=":"))

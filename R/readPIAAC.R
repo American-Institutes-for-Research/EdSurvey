@@ -177,7 +177,8 @@ readPIAAC <- function(path,
                                         psuVar = ifelse(as.numeric(processedData$cacheFile$method) == 1,"JK1","varunit"),
                                         stratumVar = ifelse(as.numeric(processedData$cacheFile$method) == 1,"JK1","varstrat"),
                                         jkSumMultiplier = processedData$jkSumMultiplier,
-                                        reqDecimalConversion = FALSE)
+                                        reqDecimalConversion = FALSE,
+                                        validateFactorLabels = TRUE) #toggled to TRUE for issue found with cntryid (#1848)
   }
   
   if(length(sdf) > 1) {

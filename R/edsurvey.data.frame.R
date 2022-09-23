@@ -99,12 +99,13 @@
 #'    \item{\code{dataType}}{the type of data (e.g., \code{student} or \code{school})}
 #'    \item{\code{gradeLevel}}{the grade of the dataset contained in the \code{edsurvey.data.frame}}
 #' \emph{Elements used in \code{mml.sdf}}
-#'    \item{\code{dichotParamTab}}{IRT item paramters for dichotomous items in a data frame}
+#'    \item{\code{dichotParamTab}}{IRT item parameters for dichotomous items in a data frame}
 #'    \item{\code{polyParamTab}}{IRT item parameters for polytomous items in a data frame}
 #'    \item{\code{adjustedData}}{IRT item parameter adjustment information in a data frame}
 #'    \item{\code{testData}}{IRT transformation constants in a data frame}
 #'    \item{\code{scoreCard}}{item scoring information in a data frame}
 #'    \item{\code{scoreDict}}{generic scoring information in a data frame}
+#'    \item{\code{scoreFunction}}{a function that turns the variables with items in them into numeric scores}
 #' @section EdSurvey Classes:
 #' \code{edsurvey.data.frame} is an object that stores connection to data on the
 #' disk along with important survey sample design information.
@@ -243,12 +244,14 @@ edsurvey.data.frame <- function(userConditions,
               validateFactorLabels=validateFactorLabels,
               reqDecimalConversion=reqDecimalConversion,
               fr2Path=fr2Path,
-              dichotParamTab=NULL,
-              polyParamTab=NULL,
-              adjustedData=NULL,
-              testData=NULL,
-              scoreCard=NULL,
-              scoreDict=NULL)
+              dichotParamTab=NULL, #IRT Param
+              polyParamTab=NULL, #IRT Param
+              adjustedData=NULL, #IRT Param
+              testData=NULL, #IRT Param
+              scoreCard=NULL, #IRT Param
+              scoreDict=NULL, #IRT Param
+              scoreFunction=NULL #IRT scoring
+              )
   
   # form cache, first grab dim
   ROWID <- 1
@@ -531,6 +534,9 @@ subset.edsurvey.data.frame <- function(x, subset, ..., inside=FALSE) {
 #' @export
 "[.edsurvey.data.frame" <- function(x, i, j, ...) {
   # check for $ calls to list elements
+  if(missing(j)) {
+    j <- colnames(x)
+  }
   if(length(j) == 1) {
     if(j %in% names(x)) {
       class(x) <- "list"

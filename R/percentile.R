@@ -217,15 +217,7 @@ percentile <- function(variable, percentiles, data,
     # clean incoming vars
 
     # if the weight var is not set, use the default
-    if(is.null(weightVar)) {
-      wgt <- attributes(getAttributes(data, "weights"))$default
-    } else {
-      wgt <- weightVar
-    } # End of if/else: is.null(weightVar)
-    if(min(nchar(wgt)) == 0) {
-      # no weight
-      stop(paste0("There is no default weight variable for ",getAttributes(data,"survey")," data, so the argument ",sQuote("weightVar"), " must be specified."))
-    }
+    wgt <- checkWeightVar(data, weightVar)
 
     # 1) get data for this variable and weight
     taylorVars <- NULL

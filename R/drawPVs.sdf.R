@@ -26,14 +26,18 @@ drawPVs.sdf <- function(x, npv=5L, pvVariableNameSuffix="_dire",
   # get mml data, depending whether a summary or mml object was given
   construct0 <- NULL
   if(inherits(mml, "summary.mml.sdf")) {
+    theSubject <- mml$object$theSubject
+    survey <- mml$object$survey
     getDataArgs <- mml$object$getDataArgs
-    sCard <- mml$object$sCard
+    scoreDict <- mml$object$scoreDict
     if("formula" %in% names(mml$object$Call)) {
       construct0 <- mml$object$Call$formula[[2]]
     }
   } else{
+    theSubject <- mml$theSubject
+    survey <- mml$survey
     getDataArgs <- mml$getDataArgs
-    sCard <- mml$sCard
+    scoreDict <- mml$scoreDict
     if("formula" %in% names(mml$Call)) {
       construct0 <- mml$Call$formula[[2]]
     }
@@ -48,7 +52,7 @@ drawPVs.sdf <- function(x, npv=5L, pvVariableNameSuffix="_dire",
   }
   mml <- getMmlDat(mml, stochasticBeta)
   # check if new data was provided, otherwise use original from mml call 
-  newDat <- checkNewData(mml, sCard, data, getDataArgs, newStuDat=NULL, newStuItems=NULL)
+  newDat <- checkNewData(mml, scoreDict, data, getDataArgs, theSubject, survey)
   #draw plausible values
   pvs <- drawPVs(x=mml,
                  npv=npv,
@@ -102,73 +106,32 @@ mergePVGeneral <- function(x, pvs, idVar){
   return(x)
 }
 
-checkNewData <- function(mml, sCard, data, getDataArgs, newStuDat, newStuItems){
+checkNewData <- function(mml, scoreDict, data, getDataArgs, theSubject, survey){
   ### check if new studat / stuitems are given
-  if(is.null(newStuDat) || is.null(newStuItems)) {
-    # get data from "data" argument
-    getDataArgs$data <- data
-    # supressWarings so it does not again warn about recodes; user has already seen any warnings
-    suppressWarnings(edf <- do.call(getData, getDataArgs))
+  # get data from "data" argument
+  getDataArgs$data <- data
+  # supressWarings so it does not again warn about recodes; user has already seen any warnings
+  suppressWarnings(edf <- do.call(getData, getDataArgs))
 
-    stuDatColnames <- getStuDatColnames(mml)
-    incomplete <- !complete.cases(edf[ , stuDatColnames])
-    edf <- edf[!incomplete, ]
-    # remove non-positive (full sample) weights
-    if(any(edf[ ,  mml$weightVar] <= 0)) {
-      posWeights <- edf[ , mml$weightVar] > 0
-      edf <- edf[posWeights, ]
-    }
-    # necessary because TIMSS, for example, will generate up to a row per teacher/student pair
-    edf <- edf[!duplicated(mml$idVar), ]
-    if(is.null(newStuDat)){
-      # make stuDat format
-      newStuDat <- edf[ , stuDatColnames]
-    }
-    if(is.null(newStuItems)){
-      if (is.null(sCard)) {
-        ### this is TIMSS data
-        scoreDict <- getAttributes(data, "scoreDict")
-        polyParamTab <- getAttributes(data, "polyParamTab")
-        polyParamTab <- polyParamTab[polyParamTab$ItemID %in% colnames(edf), ]
-        dichotParamTab <- getAttributes(data, "dichotParamTab")
-        dichotParamTab <- dichotParamTab[dichotParamTab$ItemID %in% colnames(edf), ]
-        items <- c(polyParamTab$ItemID, dichotParamTab$ItemID)
-        # format stuItemsWide
-        stuItemsWide <- edf[ , c(mml$idVar, items)]
-        stuItemsWide <- data.table(stuItemsWide)
-        # if unweighed, then a weight column named "one" with values of 1 was created. recreate that here
-        if("one" %in% stuDatColnames & !"one" %in% colnames(edf)) {
-          edf$one <- 1
-        }
+  stuDatColnames <- getStuDatColnames(mml)
+  idVar <- mml$idVar
+  # fix idVar
+  edf[[idVar]] <- as.character(edf[[idVar]])
+  # necessary because TIMSS, for example, will generate up to a row per teacher/student pair
+  edf <- edf[!duplicated(idVar), ]
+  newStuDat <- filterOutIncompleteZeroWeight(edf, stuDatColnames, weightVar=NULL)[ , stuDatColnames]
 
-        # scoring 
-        edf <- scoreTIMSS(edf, polyParamTab, dichotParamTab, scoreDict)
-        # creat stuItems
+  scoreInfo <- getScoreInfo(data, survey, theSubject)
+  scoreInfo <- checkParamTabAgainstItems(data, scoreInfo)
+  scoreCall <- getScoreCall(data)
+  scoreCallEnv <- list2env(scoreInfo)
+  assign("edf", edf, envir = scoreCallEnv) # add edf to the environment
+  edf <- eval(scoreCall, envir=scoreCallEnv)
+  newStuItems <- as.data.frame(melt(as.data.table(edf[ , c(scoreInfo$itemsUse, idVar)]),
+                                 id.vars=idVar,
+                                 measure.vars=c(scoreInfo$itemsUse)))
+  colnames(newStuItems) <- c(idVar, 'key', 'score')
 
-        newStuItems <- as.data.frame(melt(as.data.table(edf[ , c(polyParamTab$ItemID,dichotParamTab$ItemID, mml$idVar)]),
-                                       id.vars=mml$idVar,
-                                       measure.vars=c(polyParamTab$ItemID,dichotParamTab$ItemID)))
-        colnames(newStuItems) <- c(mml$idVar, 'key', 'score')
-      } else {
-        ### this is NAEP data
-        items <- unique(sCard$key)
-        # format stuItemsWide
-        stuItemsWide <- edf[ , c(mml$idVar, items)]
-        stuItemsWide <- data.table(stuItemsWide)
-        # if unweighed, then a weight column named "one" with values of 1 was created. recreate that here
-        if("one" %in% stuDatColnames & !"one" %in% colnames(edf)) {
-          edf$one <- 1
-        }
-        # may issue a warning about item classes. Not useful in this context.
-        suppressWarnings(stuItemsLong <- melt(stuItemsWide, id.vars=mml$idVar, measure.vars=items))
-        colnames(stuItemsLong) <- c('id', 'key', 'answer')
-        stuItemsLong <- stuItemsLong[!is.na(answer)]
-        stuItems <- merge(stuItemsLong, sCard, by=c('key', 'answer'), all.x=TRUE)  # score through merge
-        newStuItems <- as.data.frame(stuItems)[ , c("id", "key", "score")]
-        colnames(newStuItems)[1] <- mml$idVar
-      }
-    }
-  }
   return(list("stuItems" = newStuItems, "stuDat" = newStuDat))
 }
 

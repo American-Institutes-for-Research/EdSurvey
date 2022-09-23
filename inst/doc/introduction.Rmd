@@ -19,7 +19,7 @@ The `EdSurvey` package also seamlessly takes advantage of the `LaF` package to r
 
 ## Book and Journal Publication
 
-Bailey, P., Lee, M., Nguyen, T., & Zhang, T. (2020). [*Using EdSurvey to Analyse PIAAC Data*](https://link.springer.com/content/pdf/10.1007%2F978-3-030-47515-4_9.pdf). In *Large-Scale Cognitive Assessment* (pp. 209-237). Springer, Cham.
+Bailey, P., Lee, M., Nguyen, T., & Zhang, T. (2020). [*Using EdSurvey to Analyse PIAAC Data*](https://link.springer.com/content/pdf/10.1007/978-3-030-47515-4_9.pdf). In *Large-Scale Cognitive Assessment* (pp. 209-237). Springer, Cham.
 
 
 ## Data Set Specific Overviews

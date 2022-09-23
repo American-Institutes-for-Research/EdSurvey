@@ -1,86 +1,99 @@
-# @author Ahmad Emad
+# @author Tom Fink and Ahmad Emad
+#returns the file information of a NAEP filename, as the filename has specific meanings for it's contents
 descriptionOfFile <- function(filename) {
-  # parse NAEP file names
-  filename <- casefold(filename, upper = TRUE)
-  file <- filename
-  filename <- substring(filename, 1:nchar(filename), 1:nchar(filename))
-  if(length(filename) != 8) 
-    return("Sorry, no information available about this file")
-  meaning_of_digits <- vector(mode = 'list', length = 6)
-  # There are 8 digits in a NAEP Filename. Defining each 
-  # digit here.
   
-  names(meaning_of_digits) <- c('1','23','4','5','6','78')
-  meaning_of_digits[['1']] <- "Subject"
-  meaning_of_digits[['23']] <- "Year"
-  meaning_of_digits[['4']] <- "Assessment_Code"
-  meaning_of_digits[['5']] <- "Data_Type"
-  meaning_of_digits[['6']] <- "Grade_Level"
-  meaning_of_digits[['78']] <- "Assessment_Sample"
+  filename <- toupper(filename)
+  filename0 <- filename #original
   
-  Subject <- vector(mode='list', length = 0)
-  Subject[['C']] <- 'Civics'
-  Subject[['E']] <- 'Economics'
-  Subject[['G']] <- 'Geography'
-  Subject[['H']] <- 'History'
-  Subject[['M']] <- 'Mathematics'
-  Subject[['R']] <- 'Reading'
-  Subject[['S']] <- 'Science'
-  Subject[['U']] <- 'Music'
-  Subject[['V']] <- 'Visual Arts'
-  Subject[['W']] <- 'Writing'
-  
-  Assessment_Code <- vector(mode = 'list', length = 0)
-  Assessment_Code[['L']] <- "Long-Term Trend"
-  Assessment_Code[['N']] <- 'National'
-  Assessment_Code[['S']] <- 'State'
-  
-  Data_Type <- vector(mode = 'list', length = 0)
-  Data_Type[['T']] <- 'Student Data'
-  Data_Type[['C']] <- 'School Data'
-  
-  Assessment_Sample <- vector(mode = 'list', length = 0)
-  Assessment_Sample[['AT']] <- 'Total Sample'
-  Assessment_Sample[['RT']] <- 'Modified Sample'
-  
-  Grade_Level <- vector(mode = 'list', length = 0)
-  Grade_Level[['L_1']] <- 'Age 9'
-  Grade_Level[['L_2']] <- 'Age 13'
-  Grade_Level[['L_3']] <- 'Age 17'
-  Grade_Level[['N_1']] <- 'Grade 4'
-  Grade_Level[['N_2']] <- 'Grade 8'
-  Grade_Level[['N_3']] <- 'Grade 12'
-  Grade_Level[['S_1']] <- 'Grade 4'
-  Grade_Level[['S_2']] <- 'Grade 8'
-  Grade_Level[['S_3']] <- 'Grade 12'
-  
-  year <- as.numeric(paste(filename[2],filename[3],sep='')) + 1969
-  codes <- c(filename[1],
-             paste(filename[2],
-                   filename[3],
-                   sep=''),
-             filename[4],
-             filename[5],
-             paste(filename[4],
-                   filename[6],
-                   sep='_'),
-             paste(filename[7],
-                   filename[8],
-                   sep=''))
-  
-  attributes <- vector(mode = 'list', length = 0)
-  for (i in 1:6) {
-    code <- codes[i]
-    area <- meaning_of_digits[[names(meaning_of_digits)[i]]]
-    
-    if(area!='Year') {
-      temp <- get(area)[[code]]
-      attributes[[area]] <- temp 
-    }
-    else attributes[[area]] <- year
+  if(!is.character(filename) || nchar(filename) != 8){
+    stop(paste0("The specified ", dQuote("filename"), " is invalid and must be 8 characters in length: ", dQuote(filename), "."))
   }
-  attributes[['filename']] <- file
-  return(attributes)  
+    
+  #extract the meaningful characters in the filename
+  subjC <- substr(filename, 1, 1)
+  yrC <- substr(filename, 2, 3)
+  assessCodeC <- substr(filename, 4, 4)
+  dataTypeC <- substr(filename, 5, 5)
+  gradeLvlC <- substr(filename, 6, 6)
+  assessSampC <- substr(filename, 7, 8)
+  
+  #==== Subject ====
+  validSubj <- c(Civics = "C",
+                 Economics = "E",
+                 Geography = "G",
+                 History = "H",
+                 Mathematics = "M",
+                 Reading = "R",
+                 Science = "S",
+                 Music = "U",
+                 'Visual Arts' = "V",
+                 Writing = "W")
+  if(!any(subjC %in% validSubj)) {
+    stop(paste0("The specified ", dQuote("filename"), " has an invalid subject character at index 1. ", dQuote(subjC), " must match one of the following: ",
+                paste(sQuote(validSubj), "-", names(validSubj), sep = "", collapse = ", ")))
+  }
+  subjName <- names(validSubj[subjC == validSubj])
+    
+  #==== Year ====
+  if(!grepl("^\\d{2}$", yrC)){
+    stop(paste0("The specified ", dQuote("filename"), " has an invalid year code at index 2 and 3. ", dQuote(yrC), " must be an integer value indicating the number of years from 1969."))
+  }
+  year <- as.numeric(yrC) + 1969
+  
+  #==== Assessment Code ====
+  validAssessCodes <- c('Long-Term Trend' = "L",
+                        National = "N",
+                        State = "S")
+  if(!any(assessCodeC %in% validAssessCodes)) {
+    stop(paste0("The specified ", dQuote("filename"), " has an invalid assessment code character at index 4. ", dQuote(assessCodeC), " must match one of the following: ",
+                paste(sQuote(validAssessCodes), "-", names(validAssessCodes), sep = "", collapse = ", ")))
+  }
+  assessmentCode <- names(validAssessCodes[assessCodeC == validAssessCodes])
+  
+  #==== Data Type ====
+  validDataType <- c('Student Data' = "T",
+                     'School Data' = "C")
+  if(!any(dataTypeC %in% validDataType)) {
+    stop(paste0("The specified ", dQuote("filename"), " has an invalid data type code character at index 5. ", dQuote(dataTypeC), " must match one of the following: ",
+                paste(sQuote(validDataType), "-", names(validDataType), sep = "", collapse = ", ")))
+  }
+  dataType <- names(validDataType[dataTypeC == validDataType])
+  
+  #==== Grade Level ====
+  if(!grepl("^[1-3]$", gradeLvlC)){
+    stop(paste0("The specified ", dQuote("filename"), " has an invalid year code at index 6. ", dQuote(gradeLvlC), " must be an integer value between 1 and 3."))
+  }
+  
+  if(assessCodeC == "L") { #special case for long-term trend
+    gradeLvlDesc <- switch(gradeLvlC,
+                           "1" = "Age 9",
+                           "2" = "Age 13",
+                           "3" = "Age 17")
+  }else {
+    gradeLvlDesc <- switch(gradeLvlC,
+                           "1" = "Grade 4",
+                           "2" = "Grade 8",
+                           "3" = "Grade 12")
+  }
+  
+  #==== Assessment Sample ====
+  #don't throw error if match not found
+  validAssessSample <- c('Total Sample' = "AT",
+                         'Modified Sample' = "RT")
+  assessSample <- names(validAssessSample[assessSampC == validAssessSample])
+  if(length(assessSample)==0){ #match not found, set to NULL for return status.
+    assessSample <- NULL
+  }
+  
+  #output list object
+  res <- list(Subject = subjName,
+              Year = year,
+              Assessment_Code = assessmentCode,
+              Data_Type = dataType,
+              Grade_Level = gradeLvlDesc,
+              Assessment_Sample = assessSample,
+              filename = filename0)
+  return(res)
 }
 
 # @author Tom Fink and Ahmad Emad

@@ -4,7 +4,7 @@
 \alias{scoreTIMSS}
 \title{EdSurvey Direct Estimation - TIMSS scoring}
 \usage{
-scoreTIMSS(edf, polyParamTab, dichotParamTab, scoreDict)
+scoreTIMSS(edf, polyParamTab, dichotParamTab, scoreCard = NULL)
 }
 \arguments{
 \item{edf}{a TIMSS \code{light.edsurvey.data.frame} or \code{edsurvey.data.frame}}
@@ -13,7 +13,7 @@ scoreTIMSS(edf, polyParamTab, dichotParamTab, scoreDict)
 
 \item{dichotParamTab}{a dataframe containing IRT parameters for all dichotomous items in \code{edf}}
 
-\item{scoreDict}{result of call to \code{defaultTIMSSScoreDict}, or data frame with same column names, see Description}
+\item{scoreCard}{unused}
 }
 \value{
 scored \code{edf}

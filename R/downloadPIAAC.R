@@ -84,7 +84,7 @@ downloadPIAAC <- function(root, cycle=1, cache=FALSE, verbose=TRUE) {
     }
   }
   
-  test <- tryCatch(read_excel(file.path(yroot,fn), sheet = 1),
+  test <- tryCatch(read_excel(file.path(yroot,fn), sheet = 1, progress = FALSE),
                    error = function(cond) {
                      cache <<- FALSE
                      cat(paste0("The downloaded codebook file is corrupt. You need to manually download the codebook at the given link: ",sQuote(codebook)," to the folder ", sQuote(yroot),".\n"))

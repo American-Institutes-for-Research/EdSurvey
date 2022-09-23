@@ -37,7 +37,7 @@ readPISA_YAFS <- function(datPath = file.path(getwd(), "PISA_YAFS2016_Data.dat")
     stop(eout(paste0("Cannot find specified ", sQuote("spsPath"), " file ", sQuote(spsPath), ".")))
   }
   
-  if(is.null(esdf_PISA2012_USA) || is.na(esdf_PISA2012_USA)){
+  if(is.null(esdf_PISA2012_USA)){
     esdf_PISA2012_USA <- NULL
     hasPISA2012_USA <- FALSE
   }else{
