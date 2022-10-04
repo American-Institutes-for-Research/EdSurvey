@@ -47,7 +47,7 @@ edsurvey.data.frame(
 
 \S4method{\%in\%}{edsurvey.data.frame.list,ANY}(x, table)
 
-getAttributes(data, attribute = NULL)
+getAttributes(data, attribute = NULL, errorCheck = TRUE)
 
 setAttributes(data, attribute, value)
 
@@ -124,6 +124,8 @@ Examples include \code{Student}, \code{teacher}, \code{school},
 \item{data}{an \code{edsurvey.data.frame}}
 
 \item{attribute}{a character, name of an attribute to get or set}
+
+\item{errorCheck}{logical; see Details}
 
 \item{weightVar}{a character indicating the full sample weights. Required in \code{getPSUVar} and \code{getStratumVar} when there is no default weight.}
 }
@@ -236,6 +238,9 @@ Users can extract a column from an \code{edsurvey.data.frame} object using \code
 
 Users can use the \code{getAttributes} method to extract any attribute of
 an \code{edsurvey.data.frame} or a \code{light.edsurvey.data.frame}. 
+The \code{errorCheck} parameter has a default value of\code{TRUE}, which throws an error if an attribute is not found.
+Setting \code{errorCheck = FALSE} will suppress error checking, and return \code{NULL} if an attribute can't be found.
+
 A \code{light.edsurvey.data.frame} will not have attributes related to data connection
 because data have already been read in memory.
 

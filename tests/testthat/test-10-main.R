@@ -51,6 +51,7 @@ test_that("$ assign", {
 
 context("showPlausibleValues and showWeights verbose output agrees")
 test_that("showPlausibleValues and showWeights verbose output agrees",{
+  skip_on_cran()
   spv <- c("There are 6 subject scale(s) or subscale(s) in this edsurvey.data.frame:", 
            "'num_oper' subject scale or subscale with 5 plausible values.", 
            "  The plausible value variables are: 'mrps11', 'mrps12', 'mrps13', 'mrps14', and 'mrps15'", 
@@ -674,7 +675,6 @@ test_that("achievementLevel with result of zero", {
 # tests based on sdf
 context("Test correlations on SDF")
 test_that("sdf correlation", {
-
   suppressMessages(expect_is(expect_c1_pear <- cor.sdf("b017451", "b003501", sdf, method="Pearson", weightVar="origwt"), "edsurveyCor"))
   skip_on_cran()
   expect_is(c1_spear <- cor.sdf("b017451", "b003501", sdf, method="Spearman", weightVar="origwt"), "edsurveyCor")
@@ -920,6 +920,7 @@ test_that("edsurvey with $ method",{
 
 context('levelsSDF n')
 test_that("levelsSDF n",{
+  skip_on_cran()
   levelRes <-  levelsSDF(varnames="pared", data=sdf)
   sum2Res <- summary2(sdf, "pared")
   mergeRes <- merge(sum2Res$summary, levelRes$pared, by.x="pared", by.y="labels")
@@ -934,6 +935,7 @@ test_that("levelsSDF n",{
 
 context('levelsSDF with multiple recodes')
 test_that("levelsSDF with multiple recodes",{
+  skip_on_cran()
   # $ method work for existing attributes
   df <- recode.sdf(sdf, recode = list(t088301=list(from=c("Yes, available","Yes, I have access"),
                                                    to=c("Yes")),
@@ -1015,6 +1017,7 @@ test_that("rq.sdf", {
 
 context("mml.sdf")
 test_that("mml.sdf", {
+  skip_on_cran()
   # run subtest 
   invisible(withr::with_options(list(digits=4),
                                 capture.output(
@@ -1028,7 +1031,8 @@ test_that("mml.sdf", {
   coSum <- withr::with_options(list(digits=4),
                                capture.output(summary(mmlNAEP))
   ) 
-  expect_equal(coSum, mmlSumREF)
+  #don't compare the 'iterations = ##' value, remove that from the comparison
+  expect_equal(dropIterations(coSum), dropIterations(mmlSumREF))
   
   #ensure all test names match pvvar names and vis-versa
   testNames <- c(sdf$testData$subtest, sdf$testData$test)
@@ -1063,6 +1067,7 @@ test_that("mml.sdf", {
 
 context("no PSU var error and warnings")
 test_that("no PSU var error and warnings", {
+  skip_on_cran()
   # these warnings relatete to missing PSU so the count of PSUs will not be returned or
   # errors about how Taylor series is not possible without a PSU var
   expect_warning(

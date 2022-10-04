@@ -14,7 +14,8 @@ mvrlm.sdf(
   defaultConditions = TRUE,
   recode = NULL,
   returnVarEstInputs = FALSE,
-  estMethod = "OLS"
+  estMethod = "OLS",
+  verbose = TRUE
 )
 }
 \arguments{
@@ -67,6 +68,8 @@ computation of covariances between estimates.}
 
 \item{estMethod}{a character value indicating which estimation method to use.
 Default is \code{OLS}; other option is \code{GLS}.}
+
+\item{verbose}{logical; indicates whether a detailed printout should display during execution}
 }
 \value{
 An \code{edsurvey.mvrlm} with elements:

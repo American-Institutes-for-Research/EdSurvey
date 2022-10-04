@@ -323,12 +323,13 @@ checkTaylorVars <- function(psuVar, stratumVar, wgt, varMethod="t", returnNumber
 
 iparse <- function(iparseCall, iparseDepth=1, x) {
   # if this is just a character (before substitute was called) return it
+  Xcols <- getXCols(x)
   if(iparseDepth == 1 && length(iparseCall) == 1 ) {
     skip <- tryCatch(inherits(eval(iparseCall), "character"),
                     error=function(e) { FALSE },
                     warning=function(w) { FALSE })
     if(skip) {
-      if(as.character(iparseCall) %in% unlist(colnames(x))) {
+      if(as.character(iparseCall) %in% Xcols) {
         return(iparseCall)
       } else {
         return(eval(iparseCall))
@@ -351,7 +352,7 @@ iparse <- function(iparseCall, iparseDepth=1, x) {
       iparseCall_c <- as.character(iparseCall[[iparseind]])
       # if it is not in the data and is in the parent.frame, then substitue it now.
       # unlist on colnames makes it general to 
-      if(! iparseCall_c %in% unlist(colnames(x))) {
+      if(! iparseCall_c %in% Xcols) {
         if(length(find(iparseCall_c)) > 0) {
           if (iparseCall[[iparseind]] == "%in%" || is.function(iparseCall[[iparseind]]) || is.function(get(iparseCall_c, find(iparseCall_c)))) {
             iparseEval <- eval(substitute(iparseCall[[iparseind]]), parent.frame())
@@ -382,7 +383,7 @@ iparse <- function(iparseCall, iparseDepth=1, x) {
       # if this is a call, recursively parse that
       iparseCall[[iparseind]] <- iparse(iparseCall[[iparseind]], iparseDepth=iparseDepth+1, x=x)
       # if no vars are in colnames(x), evaluate the call right now
-      if( any(!all.vars(iparseCall[[iparseind]]) %in% unlist(colnames(x))) ) {
+      if( any(!all.vars(iparseCall[[iparseind]]) %in% Xcols) ) {
         # unclear if this tryCatch does anything, but it seems wise to keep it
         tryCatch(iparseTryResult <- eval(iparseCall[[iparseind]]),
                  error=function(e) {
@@ -406,6 +407,20 @@ iparse <- function(iparseCall, iparseDepth=1, x) {
   iparseCall
 } # End of fucntion: iparse
 
+getXCols <- function(data) {
+  res <- c()
+  if(inherits(data, "edsurvey.data.frame.list")) {
+    res <- unlist(itterateESDFL(match.call(), data))
+    return(unique(res))
+  }
+  if(inherits(data, "edsurvey.data.frame")) {
+    res <- names(getAttributes(data, "pvvars"))
+  }
+  if(inherits(data, "light.edsurvey.data.frame")) {
+    res <- names(getAttributes(data, "pvvars"))
+  }
+  return(c(res, unlist(colnames(data))))
+}
 
 checkWeightVar <- function(data, weightVar) {
   if(is.null(weightVar)) {

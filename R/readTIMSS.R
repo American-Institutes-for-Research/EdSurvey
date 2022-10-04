@@ -2196,10 +2196,10 @@ appendIRTAttributes_TIMSS <- function(path, esdf) {
     testData <- testData[, c('test', 'subtest', 'location', 'scale')]
     mathSubtests <- with(dichotParamTab[dichotParamTab$test == "mmat", ],
                         unique(c(content_subtest, cognitive_subtest)))
-    mathSubtests <- mathSubtests[!mathSubtests %in% c("", NA)]
+    mathSubtests <- c(NA, mathSubtests[!mathSubtests %in% c("", NA)])
     sceiSubtests <- with(dichotParamTab[dichotParamTab$test ==  "ssci", ],
                         unique(c(content_subtest, cognitive_subtest)))
-    sceiSubtests <- sceiSubtests[!sceiSubtests  %in% c("", NA)]
+    sceiSubtests <- c(NA, sceiSubtests[!sceiSubtests  %in% c("", NA)])
     mathValues <- testData[ testData$test == "Mathematics",c("location", "scale"), drop=FALSE][1,]
     sceiValues <- testData[ testData$test == "Science",c("location", "scale"), drop=FALSE][1,]
     for(i in 1:length(mathSubtests)) {

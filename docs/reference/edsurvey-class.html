@@ -36,7 +36,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">EdSurvey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -131,7 +131,7 @@ $(x, name) &lt;- value
 # S4 method for edsurvey.data.frame.list,ANY
 %in%(x, table)
 
-getAttributes(data, attribute = NULL)
+getAttributes(data, attribute = NULL, errorCheck = TRUE)
 
 setAttributes(data, attribute, value)
 
@@ -269,6 +269,10 @@ Examples include <code>Student</code>, <code>teacher</code>, <code>school</code>
 
 <dt>attribute</dt>
 <dd><p>a character, name of an attribute to get or set</p></dd>
+
+
+<dt>errorCheck</dt>
+<dd><p>logical; see Details</p></dd>
 
 
 <dt>weightVar</dt>
@@ -412,7 +416,9 @@ a <code>light.edsurvey.data.frame</code>, and the
 <p><em>Extracting and updating attributes of an object of class <code>edsurvey.data.frame</code> or <code>light.edsurvey.data.frame</code></em></p>
 <p>Users can use the <code>getAttributes</code> method to extract any attribute of
 an <code>edsurvey.data.frame</code> or a <code>light.edsurvey.data.frame</code>. 
-A <code>light.edsurvey.data.frame</code> will not have attributes related to data connection
+The <code>errorCheck</code> parameter has a default value of<code>TRUE</code>, which throws an error if an attribute is not found.
+Setting <code>errorCheck = FALSE</code> will suppress error checking, and return <code>NULL</code> if an attribute can't be found.</p>
+<p>A <code>light.edsurvey.data.frame</code> will not have attributes related to data connection
 because data have already been read in memory.</p>
 <p>If users want to update an attribute (i.e., <code>omittedLevels</code>), they can
 use the <code>setAttributes</code> method.</p>

@@ -39,6 +39,7 @@ skip_on_cran()
 
 context("LESDF rbind function")
 test_that("LESDF cbind function",{
+  skip_on_cran()
   sm1 <- getData(sdf, c('composite', 'dsex', 'origwt'), dropUnusedLevels=FALSE, defaultConditions=FALSE, omittedLevels=FALSE, addAttributes=TRUE)
   smF <- subset(sm1, dsex %in% "Female")
   dfM <- getData(subset(sm1, dsex %in% "Male"),c('composite', 'dsex', 'origwt'), dropUnusedLevels=FALSE, omittedLevels=FALSE)
@@ -53,6 +54,7 @@ test_that("LESDF cbind function",{
 
 context("LESDF merge function")
 test_that("LESDF merge function",{
+  skip_on_cran()
   sm1 <- getData(data=sdf, varnames=c("dsex", "b017451"), addAttributes = TRUE)
   attr_sm1 <- attributes(sm1)[!names(attributes(sm1)) %in% c("names","row.names")]
   df <- data.frame(dsex = c("Male","Female","extra"), dsex2 = c("Boy","Girl","extra"))
@@ -70,6 +72,7 @@ test_that("LESDF merge function",{
 
 context("getData addAttributesTRUE returns a LESDF")
 test_that("getData addAttributesTRUE returns a LESDF", {
+  skip_on_cran()
   expect_is(sdf, "edsurvey.data.frame")
   expect_is(lsdf, "light.edsurvey.data.frame")
 })
@@ -89,6 +92,7 @@ test_that("getData ignores defaultConditions when applied twice", {
 
 context("LESDF subset")
 test_that("LESDF subset",{
+  skip_on_cran()
   i <- "Male"
   dsex <- "should not be used"
   s1 <- EdSurvey:::subset(lsdf, dsex == i, verbose=FALSE)
@@ -118,6 +122,7 @@ test_that("LESDF subset",{
 
 context("LESDF recode.sdf")
 test_that("LESDF recode.sdf", {
+  skip_on_cran()
   # recode numeric values
   lsdf_recode1 <- recode.sdf(lsdf, recode = list(b017451=list(from=c(1, 2, 3),
                                                               to=c("Infrequently")),
@@ -135,6 +140,7 @@ test_that("LESDF recode.sdf", {
 
 context("LESDF getData warnings")
 test_that("LESDF getData warnings",{
+  skip_on_cran()
   co <-evaluate_promise(getData(sdf, c('composite','dsex', 'b017451', 'origwt'), dropUnusedLevels = FALSE, defaultConditions = FALSE, addAttributes = TRUE, omittedLevels = FALSE))
   expect_equal(unique(co$warnings),character(0))
   expect_warning(co <- getData(sdf,
@@ -148,6 +154,7 @@ test_that("LESDF getData warnings",{
 
 context("LESDF Simple functions")
 test_that("LESDF Simple functions", {
+  skip_on_cran()
   expect_true(hasPlausibleValue("composite", sdf))
   expect_true(hasPlausibleValue("composite", lsdf))
   expect_false(hasPlausibleValue("dsex", sdf))
@@ -292,6 +299,7 @@ test_that("LESDF edsurveyTable",{
 
 context("LESDF lm.sdf correctly returns errors")
 test_that("LESDF lm.sdf correctly returns errors",{
+  skip_on_cran()
   sm1 <- getData(sdf, c(all.vars(composite ~ dsex + b017451), "origwt"), addAttributes=TRUE)
   sm1 <- subset(sm1, dsex == "Male")
   sm1 <- subset(sm1, dsex == "Female")
@@ -314,6 +322,7 @@ test_that("LESDF lm.sdf correctly returns errors",{
 
 context("LESDF updatePlausibleValue")
 test_that("updatePlausibleValue",{
+  skip_on_cran()
   lma <- lm.sdf(~ dsex, lsdf)
   lsdfb <- updatePlausibleValue("composite", "newname", lsdf)
   lmb <- lm.sdf(~ dsex, lsdfb)
@@ -324,6 +333,7 @@ test_that("updatePlausibleValue",{
 
 context("LESDF percentile")
 test_that("LESDF percentile",{
+  skip_on_cran()
   # this is different from the test in main because lsdf has omitted levels of b017451 removed
   expect_known_value(pct2 <- percentile("composite", 50, lsdf), "pct2.rds", update=FALSE)
   pct1 <- readRDS("pct1.rds")
@@ -336,6 +346,7 @@ test_that("LESDF percentile",{
 
 context("LESDF same survey")
 test_that("LESDF same survey",{
+  skip_on_cran()
   expect_true(EdSurvey:::sameSurvey(sdf, lsdf))
   expect_true(EdSurvey:::sameSurvey(sdf, lsdf0))
   expect_true(EdSurvey:::sameSurvey(lsdf, lsdf0))
@@ -343,6 +354,7 @@ test_that("LESDF same survey",{
 
 context('LESDF use returnNumberOfPSU=TRUE') 
 test_that("use returnNumberOfPSU", {
+  skip_on_cran()
   # percentile
   lsdf2 <- getData(sdf, c("composite","dsex","origwt",getAttributes(sdf,'psuVar'), getAttributes(sdf,'stratumVar')), addAttributes = TRUE)
   pctPSU <- percentile("composite", percentiles = c(10,50), data = lsdf2, returnNumberOfPSU = TRUE)

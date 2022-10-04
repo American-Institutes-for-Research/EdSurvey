@@ -70,6 +70,7 @@ skip_on_cran()
 
 context("ESDFL edsurveyTable")
 test_that("ESDFL edsurveyTable",{
+  skip_on_cran()
   et1 <- edsurveyTable(composite ~ b017451 + dsex, sdfl)
   et1c <- withr::with_options(list(digits=7), capture.output(et1))
   expect_equal(et1c, et1REF)
@@ -148,6 +149,7 @@ test_that("ESDFL gap",{
 
 context("ESDFL helper functions")
 test_that("ESDFL helper functions",{
+  skip_on_cran()
   d1 <- dim(sdfl)
   expect_equal(d1$nrow[1], nrow(sdfA))
   expect_equal(d1$ncol[3], ncol(sdfC))
@@ -200,9 +202,10 @@ test_that("ESDFL cor", {
 
 context("ESDFL subset and print")
 test_that("ESDFL subset and print",{
+  skip_on_cran()
   sdfl2 <- subset(sdfl, dsex=="Male")
   expect_equal(capture.output(print(sdfl2)), printREF)
-  d1 <- dim(sdfl2)
+  d1 <- dim(sdfl2) 
   expect_equal(d1$nrow[1], nrow(subset(sdfA, dsex=="Male")))
   expect_equal(d1$ncol[3], ncol(subset(sdfC, dsex=="Female")))
   
@@ -228,6 +231,7 @@ test_that("ESDFL subset and print",{
 
 context("ESDFL lm.sdf")
 test_that("ESDFL lm.sdf",{
+  skip_on_cran()
   # jrrIMax is required to make sure U isn't singular
   et1 <- lm.sdf(composite ~ b017451 + dsex, sdfl, jrrIMax=Inf)
   # lm maps to lm.sdf when data is an edsurvey.data.frame.list
@@ -248,6 +252,7 @@ test_that("ESDFL lm.sdf",{
 
 context("ESDFL percentile")
 test_that("ESDFL percentile",{
+  skip_on_cran()
   expect_known_value(pct3 <- percentile("composite", 50, sdfl, pctMethod = 'unbiased'), "pct3.rds", update=FALSE)
   pct3C <- percentile("composite", 50, sdfC, pctMethod = 'unbiased')
   expect_equal(unlist(pct3C[,,drop=TRUE]), unlist(pct3[3,names(pct3C),drop=TRUE]))
@@ -255,6 +260,7 @@ test_that("ESDFL percentile",{
 
 context("ESDFL same survey")
 test_that("ESDFL same survey",{
+  skip_on_cran()
   expect_true(!EdSurvey:::sameSurvey(sdfA, sdfB))
   expect_true(EdSurvey:::sameSurvey(sdf, sdfA))
   expect_true(EdSurvey:::sameSurvey(sdfl[[1]][[4]], sdfD))
@@ -262,7 +268,7 @@ test_that("ESDFL same survey",{
 
 context("ESDFL append")
 test_that("ESDFL append", {
-  
+  skip_on_cran()
   sdfl1a <- edsurvey.data.frame.list(list(sdfA, sdfB),
                                      labels=c("A locations",
                                               "B locations"))

@@ -69,6 +69,8 @@ primary sampling units (PSUs)}
 \item{standardizeWithSamplingVar}{a logical value indicating if the standardized coefficients
 should have the variance of the regressors and outcome measured
 with sampling variance. Defaults to \code{FALSE}.}
+
+\item{verbose}{logical; indicates whether a detailed printout should display during execution}
 }
 \value{
 An \code{edsurvey.lm} with the following elements:

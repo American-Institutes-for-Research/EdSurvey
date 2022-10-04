@@ -12,7 +12,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">EdSurvey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,8 @@
 <span>  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  recode <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  estMethod <span class="op">=</span> <span class="st">"OLS"</span></span>
+<span>  estMethod <span class="op">=</span> <span class="st">"OLS"</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -141,6 +142,10 @@ computation of covariances between estimates.</p></dd>
 <dt>estMethod</dt>
 <dd><p>a character value indicating which estimation method to use.
 Default is <code>OLS</code>; other option is <code>GLS</code>.</p></dd>
+
+
+<dt>verbose</dt>
+<dd><p>logical; indicates whether a detailed printout should display during execution</p></dd>
 
 </dl></div>
     <div class="section level2">

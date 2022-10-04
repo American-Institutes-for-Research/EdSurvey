@@ -48,6 +48,8 @@
 #' @param standardizeWithSamplingVar a logical value indicating if the standardized coefficients
 #'                                   should have the variance of the regressors and outcome measured
 #'                                   with sampling variance. Defaults to \code{FALSE}.
+#' @param verbose logical; indicates whether a detailed printout should display during execution
+#'
 #' @details 
 #'  
 #' This function implements an estimator that correctly handles left-hand
@@ -201,7 +203,8 @@ lm.sdf <- function(formula,
                    recode=NULL,
                    returnVarEstInputs=FALSE,
                    returnNumberOfPSU=FALSE,
-                   standardizeWithSamplingVar=FALSE) {
+                   standardizeWithSamplingVar=FALSE,
+                   verbose=TRUE) {
   call <- match.call()
   checkDataClass(data, c("edsurvey.data.frame", "light.edsurvey.data.frame", "edsurvey.data.frame.list"))
   weightVar <- iparse(substitute(weightVar), x=data)
@@ -226,7 +229,8 @@ lm.sdf <- function(formula,
                        returnLm0=FALSE,
                        call=call,
                        returnNumberOfPSU=returnNumberOfPSU,
-                       standardizeWithSamplingVar=standardizeWithSamplingVar))
+                       standardizeWithSamplingVar=standardizeWithSamplingVar,
+                       verbose=verbose))
   }
 }
 
@@ -244,7 +248,8 @@ calc.lm.sdf <- function(formula,
                         returnLm0=FALSE,
                         call=NULL,
                         returnNumberOfPSU=FALSE,
-                        standardizeWithSamplingVar=FALSE) {
+                        standardizeWithSamplingVar=FALSE,
+                        verbose=TRUE) {
   if(is.null(call)) {
     call <- match.call()
   }
@@ -267,6 +272,7 @@ calc.lm.sdf <- function(formula,
   if(!varMethod %in% c("j", "t")) {
     stop(paste0("The argument ", sQuote("varMethod"), " must be one of ", dQuote("Taylor"), " or ", dQuote("jackknife"), "."))
   }
+  stopifnot(is.logical(verbose))
   if(standardizeWithSamplingVar & varMethod == "t") { 
     warning(paste0(sQuote("standardizeWithSamplingVar"), " reset to ", dQuote("FALSE"), " because ", sQuote("varMethod"), " is ", dQuote("Taylor"), "."))
     standardizeWithSamplingVar <- FALSE
@@ -343,7 +349,9 @@ calc.lm.sdf <- function(formula,
   relVars <- relVars[!relVars %in% taylorVars]
   incomplete <- !complete.cases(edf[,relVars])
   if(any(incomplete)) {
-    warning("Removing ", sum(incomplete), " rows with NAs from analysis.")
+    if(verbose) {
+      message("Removing ", sum(incomplete), " rows with NAs from analysis.")
+    }
     edf <- edf[!incomplete,]
   }
   # if doing Taylor series, check Taylor vars too
@@ -351,7 +359,9 @@ calc.lm.sdf <- function(formula,
     incomplete <- !complete.cases(edf[,taylorVars])
     if(any(incomplete)) {
       if(any(incomplete[!edf[,wgt] %in% c(NA, 0)])) {
-        warning("Removing ", sum(incomplete[!edf[,wgt] %in% c(NA, 0)]), " rows with NA PSU or stratum variables and positive weights from analysis.")
+        if(verbose) {
+          message("Removing ", sum(incomplete[!edf[,wgt] %in% c(NA, 0)]), " rows with NA PSU or stratum variables and positive weights from analysis.")
+        }
       }
       edf <- edf[!incomplete,]
     }
@@ -364,7 +374,9 @@ calc.lm.sdf <- function(formula,
   # remove non-positive (full sample) weights
   if(any(edf[,wgt] <= 0)) {
     posWeights <- edf[,wgt] > 0
-    warning("Removing ", sum(!posWeights), " rows with nonpositive weight from analysis.")
+    if(verbose) {
+      message("Removing ", sum(!posWeights), " rows with nonpositive weight from analysis.")
+    }
     edf <- edf[posWeights,]
   }
   

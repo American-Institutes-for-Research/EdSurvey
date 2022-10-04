@@ -368,11 +368,11 @@ test_that("mml.sdf", {
   
   lesdf <- suppressWarnings(getData(usa4.15, varnames = c(pv, pvi, psustr, wgt, otherVars), omittedLevels = FALSE, addAttributes = TRUE, returnJKreplicates = TRUE))
   # run mml
-  mml1 <- suppressWarnings(mml.sdf(mmat ~ 1, usa4.15, weightVar='totwgt', verbose=TRUE))
-  mml2 <- suppressWarnings(mml.sdf(mmat ~ 1, lesdf, weightVar='totwgt', verbose=TRUE)) #test with light.edsurvey.data.frame
+  mml1 <- suppressWarnings(mml.sdf(mmat ~ 1, usa4.15, weightVar='totwgt', verbose=FALSE))
+  mml2 <- suppressWarnings(mml.sdf(mmat ~ 1, lesdf, weightVar='totwgt', verbose=FALSE)) #test with light.edsurvey.data.frame
   
-  mml3 <- suppressWarnings(mml.sdf(mmat ~ asbg05a, usa4.15, weightVar='totwgt', omittedLevels = FALSE, verbose=TRUE)) #86 rows removed from analysis message
-  mml4 <- suppressWarnings(mml.sdf(mmat ~ asbg05a, lesdf, weightVar='totwgt', omittedLevels = FALSE, verbose=TRUE))
+  mml3 <- suppressWarnings(mml.sdf(mmat ~ asbg05a, usa4.15, weightVar='totwgt', omittedLevels = FALSE, verbose=FALSE)) #86 rows removed from analysis message
+  mml4 <- suppressWarnings(mml.sdf(mmat ~ asbg05a, lesdf, weightVar='totwgt', omittedLevels = FALSE, verbose=FALSE))
   
   # intercept 
   coInt1 <- withr::with_options(list(digits=4),
@@ -406,6 +406,7 @@ test_that("mml.sdf", {
   coSum2x <- sub(dataRegex, "", coSum2, ignore.case = FALSE)
   coSum2x <- sub(objRegex, "", coSum2x, ignore.case = FALSE)
   
-  expect_equal(coSum1, mmlSumREF)
+  #don't compare the 'iterations = ##' value, remove that from the comparison
+  expect_equal(dropIterations(coSum1), dropIterations(mmlSumREF))
   expect_equal(coSum1x, coSum2x)
 })

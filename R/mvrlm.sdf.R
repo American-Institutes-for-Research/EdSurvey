@@ -43,6 +43,7 @@
 #'                           computation of covariances between estimates.
 #' @param estMethod a character value indicating which estimation method to use.
 #'                  Default is \code{OLS}; other option is \code{GLS}.
+#' @param verbose logical; indicates whether a detailed printout should display during execution
 #' 
 #' @details    
 #'                
@@ -130,7 +131,8 @@ mvrlm.sdf <- function(formula,
                       defaultConditions=TRUE,
                       recode=NULL,
                       returnVarEstInputs=FALSE,
-                      estMethod = 'OLS'
+                      estMethod = 'OLS',
+                      verbose=TRUE
 ){
   call <- match.call()
   checkDataClass(data, c("edsurvey.data.frame", "light.edsurvey.data.frame", "edsurvey.data.frame.list"))
@@ -151,7 +153,8 @@ mvrlm.sdf <- function(formula,
                           missingDefaultConditions=missing(defaultConditions),
                           recode=recode,
                           returnVarEstInputs=returnVarEstInputs,
-                          estMethod=estMethod))
+                          estMethod=estMethod,
+                          verbose=verbose))
   }
 }
 
@@ -167,7 +170,8 @@ calc.mvrlm.sdf <- function(formula,
                            recode=NULL,
                            returnVarEstInputs=FALSE,
                            call=NULL,
-                           estMethod='OLS') {
+                           estMethod='OLS',
+                           verbose=TRUE) {
   if(is.null(call)) {
     call <- match.call()
   }
@@ -209,7 +213,9 @@ calc.mvrlm.sdf <- function(formula,
   # edf is the actual data
   edf <- do.call(getData, getDataArgs)
   if(any(edf[,wgt] <= 0)) {
-    warning("Removing rows with 0 weight from analysis.")
+    if(verbose) {
+      message("Removing rows with 0 weight from analysis.")
+    }
     edf <- edf[edf[,wgt] > 0,]
   }
 
@@ -297,15 +303,19 @@ calc.mvrlm.sdf <- function(formula,
   }
   
   # grabs the appropriate X,Y,and W for a given formula (with the original weights)
-  coefEstInputs <- function(frm){
-    mdf <- model.frame(frm, data = edf)
+  coefEstInputs <- function(frm, wgt, edf){
+    # must tell formula "frm" to use the current environment
+    env <-  list2env(list(edf=edf, wgt=wgt))
+    attr(frm, ".Environment") <- env
+    mdf <- model.frame(frm, data = edf, weights=edf[,wgt])
     X <- model.matrix(object = frm, data = mdf, rhs = NULL)
     coefNames <- colnames(X)
     Y <- as.matrix(model.part(object = frm, data = mdf, lhs = NULL))
-    W <- Diagonal(x = edf[,wgt])
+    W <- Diagonal(x = mdf[,"(weights)"])
     list(X = X, Y = Y, W = W, coefNames = coefNames, mdf = mdf, frm = frm)
   }
-  
+
+
   #######################
   # 5) Multivariate Regression Coefficient Estimation Helper Functions
   
@@ -315,7 +325,7 @@ calc.mvrlm.sdf <- function(formula,
   }
   
   # Coefficient estimation function accounting for weights
-  coefEstWtd <- function(X,Y,W){
+  coefEstWtd <- function(X, Y, W){
     bHat <- try(solve((t(X) %*% W) %*% X) %*% (t(X) %*% W %*% Y), silent = TRUE)
     if(inherits(bHat, "try-error")) {# deals with the case where there's a singularity by using lm.wfit instead
       #print("singularity case hit")
@@ -391,7 +401,7 @@ calc.mvrlm.sdf <- function(formula,
   frm <- pvModelFormula(1)
   
   # Generate and save coefficient estimation inputs
-  inputs <- coefEstInputs(frm = frm)
+  inputs <- coefEstInputs(frm = frm, wgt=wgt, edf=edf)
   estInputs <- inputs
   
   # get coefficient estimates
@@ -424,7 +434,7 @@ calc.mvrlm.sdf <- function(formula,
     jrrIMax <- jrrIMax #min(jrrIMax, length(yvars))
     
     # for the first (PV) formula
-    coefInputs <- coefEstInputs(frm)
+    coefInputs <- coefEstInputs(frm=frm, wgt=wgt, edf=edf)
     
     # OLS estimator used to calculate coefficients
     co0 <- coefEstWtd(coefInputs$X, coefInputs$Y, coefInputs$W)
@@ -469,7 +479,7 @@ calc.mvrlm.sdf <- function(formula,
       # switch formula to the pertinent plausible value
       frm <- pvModelFormula(pvi)
       # get the new inputs
-      coefInputs <- coefEstInputs(frm)
+      coefInputs <- coefEstInputs(frm=frm, wgt=wgt, edf=edf)
       # get the new coefs 
       co0 <- coefEstWtd(coefInputs$X, coefInputs$Y, coefInputs$W)
       
@@ -510,22 +520,22 @@ calc.mvrlm.sdf <- function(formula,
       r2s[pvi,] <- unlist(R2)
       
       for(jki in 1:length(wgtl$jksuffixes)) {
-        coefInputs$W <- Diagonal(x = edf[,paste0(wgtl$jkbase, wgtl$jksuffixes[jki])])
-        coefs <- coefEstWtd(coefInputs$X, coefInputs$Y, coefInputs$W)
+        coefInputs_jk <- coefEstInputs(frm=frm, wgt=paste0(wgtl$jkbase, wgtl$jksuffixes[jki]), edf=edf)
+        coefs <- coefEstWtd(coefInputs_jk$X, coefInputs_jk$Y, coefInputs_jk$W)
         
         if(estMethod == "GLS"){
           # get the omega hat matrix for estimation from the initial OLS run
-          epsilon <- getResiduals(Y = coefInputs$Y, X = coefInputs$X, Beta = coefs)
+          epsilon <- getResiduals(Y = coefInputs_jk$Y, X = coefInputs_jk$X, Beta = coefs)
           sigmaHat <- getResidCov(epsilon)
-          omegaHatInv <- solve(sigmaHat) %x% solve(coefInputs$W)
+          omegaHatInv <- solve(sigmaHat) %x% solve(coefInputs_jk$W)
           
           #calculate and extract the coefficients
-          bHatOmega <- coefEstOmega(coefInputs$X, coefInputs$Y, omegaHatInv, diag(coefInputs$W))
+          bHatOmega <- coefEstOmega(coefInputs_jk$X, coefInputs_jk$Y, omegaHatInv, diag(coefInputs_jk$W))
           coefs <- extractCoefs(bHatOmega)
         }
         
         else {
-          epsilon <- getResiduals(Y = coefInputs$Y, X = coefInputs$X, Beta = co0)
+          epsilon <- getResiduals(Y = coefInputs_jk$Y, X = coefInputs_jk$X, Beta = co0)
           sigmaHat <- getResidCov(epsilon)
         }
         coefa[jki,] <- as.vector(coefs)
@@ -603,7 +613,7 @@ calc.mvrlm.sdf <- function(formula,
       
       frm <- pvModelFormula(pvi)
       # get the new inputs
-      coefInputs <- coefEstInputs(frm)
+      coefInputs <- coefEstInputs(frm=frm, wgt=wgt, edf=edf)
       
       # get the new coefs
       co0 <- coefEstWtd(coefInputs$X, coefInputs$Y, coefInputs$W)
@@ -667,7 +677,7 @@ calc.mvrlm.sdf <- function(formula,
   } else { # end if statement if (pvy)
     
     # jackknife variance estimation
-    coefInputs <- coefEstInputs(frm)
+    coefInputs <- coefEstInputs(frm=frm, wgt=wgt, edf=edf)
     
     co0 <- coefEstWtd(coefInputs$X, coefInputs$Y, coefInputs$W)
     
@@ -684,16 +694,16 @@ calc.mvrlm.sdf <- function(formula,
     coefa <- matrix(NA, nrow=length(wgtl$jksuffixes), ncol=(ncol(co0) * nrow(co0)))
     
     for(jki in 1:length(wgtl$jksuffixes)) {
-      coefInputs$W <- Diagonal(x = edf[,paste0(wgtl$jkbase, wgtl$jksuffixes[jki])])
-      coefs <- coefEstWtd(coefInputs$X, coefInputs$Y, coefInputs$W)
+      coefInputs_jk <- coefEstInputs(frm=frm, wgt=paste0(wgtl$jkbase, wgtl$jksuffixes[jki]), edf=edf)
+      coefs <- coefEstWtd(coefInputs_jk$X, coefInputs_jk$Y, coefInputs_jk$W)
       
       if(estMethod == 'GLS'){
-        epsilon <- getResiduals(Y = coefInputs$Y, X = coefInputs$X, Beta = coefs)
+        epsilon <- getResiduals(Y = coefInputs_jk$Y, X = coefInputs_jk$X, Beta = coefs)
         sigmaHat <- getResidCov(epsilon)
         omegaHatInv <- solve(sigmaHat) %x% solve(coefInputs$W)
         
         #calculate and extract the coefficients
-        bHatOmega <- coefEstOmega(coefInputs$X, coefInputs$Y, omegaHatInv, diag(coefInputs$W))
+        bHatOmega <- coefEstOmega(coefInputs_jk$X, coefInputs_jk$Y, omegaHatInv, diag(coefInputs_jk$W))
         coefs <- extractCoefs(bHatOmega)
       }
       

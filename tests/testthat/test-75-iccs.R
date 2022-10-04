@@ -6,11 +6,7 @@ options(width = 500)
 options(useFancyQuotes=FALSE)
 
 if(!exists("edsurveyHome")) {
-  # if (Sys.info()[['sysname']] == "Windows") {
-  #   edsurveyHome <- "C:/EdSurveyData/"
-  # } else {
-    edsurveyHome <- "~/EdSurveyData/"
-  # }
+  edsurveyHome <- "~/EdSurveyData/"
 }
 
 if (!dir.exists(edsurveyHome)) {

@@ -45,6 +45,27 @@ test_that("ECLS_K getData",{
   expect_equal(co, dat2Summary.Ref)
 })
 
+context("ECLS_K rebindAttributes")
+test_that("ECLS_K rebindAttributes",{
+  
+  mvData <- getData(data = eclsk11, varnames = c("p9hmwork", "p9hlphwk", "x_chsex_r",
+                                                 "x9rscalk5", "x9mscalk5", "w9c29p_9t90"), 
+                    omittedLevels = FALSE, addAttributes = TRUE)
+  mvData$p9hlphwk <- ifelse(mvData$p9hmwork == "1: NEVER" &
+                              mvData$p9hlphwk == "-1: NOT APPLICABLE", 0,
+                            mvData$p9hlphwk)
+  mvData <- rebindAttributes(mvData, eclsk11)
+  
+  withr::with_options(list(digits = 7, useFancyQuotes=FALSE), {
+    res <- suppressWarnings(lm.sdf(formula = x9rscalk5 ~ x_chsex_r + p9hlphwk, data = mvData,
+                                        weightVar = "w9c29p_9t90")) #warnings expected here for dropping 0 weights
+    
+    co <- capture.output(summary(res))
+  })
+  
+  expect_equal(co, ecls_rebind_lmRef)
+})
+
 context("ECLS_K rename.sdf")
 test_that("ECLS_K rename.sdf", {
   eclsk11dat <- rename.sdf(eclsk11, oldnames = "a2exasis",

@@ -157,7 +157,7 @@ mml.sdf <- function(formula,
   edf[[idVar]] <- as.character(edf[[idVar]])
 
   # check completeness
-  edf <- filterOutIncompleteZeroWeight(edf, indepVars, weightVar)
+  edf <- filterOutIncompleteZeroWeight(edf, indepVars, weightVar, verbose)
 
   scoreCall <- getScoreCall(data)
   # make the score call enviornment
@@ -411,17 +411,21 @@ checkParamTabAgainstItems <- function(data, scoreInfo) {
   return(scoreInfo)
 }
 
-filterOutIncompleteZeroWeight <- function(edf, indepVars, weightVar) {
+filterOutIncompleteZeroWeight <- function(edf, indepVars, weightVar, verbose) {
   incomplete <- !complete.cases(edf[ , c(indepVars, weightVar)])
   if(any(incomplete)) {
-    message("Removing ", sum(incomplete), " rows with NAs from analysis.")
+    if(verbose) {
+      message("Removing ", sum(incomplete), " rows with NAs from analysis.")
+    }
     edf <- edf[!incomplete, , drop=FALSE]
   }
   # remove non-positive (full sample) weights
   if(!is.null(weightVar)) {
     if(any(edf[ , weightVar] <= 0)) {
       posWeights <- edf[ , weightVar] > 0
-      message("Removing ", sum(!posWeights), " rows with nonpositive weight from analysis.")
+      if(verbose) {
+        message("Removing ", sum(!posWeights), " rows with nonpositive weight from analysis.")
+      }
       edf <- edf[posWeights, ]
     }
   }
@@ -436,7 +440,7 @@ filterOutIncompleteZeroWeight <- function(edf, indepVars, weightVar) {
 fixIdVar <- function(data, idVar, verbose) {
   # if 1) there is no idVar, 2) ROWID is on the data, 3) ROWID is unique, make it the idVar
   if(is.null(idVar)) {
-    if(missing(idVar) && "ROWID" %in% colnames(data) && length(unique(data[["ROWID"]])) == length(data[["ROWID"]])) {
+    if( is.null(idVar) && "ROWID" %in% colnames(data) && length(unique(data[["ROWID"]])) == length(data[["ROWID"]])) {
       idVar <- "ROWID"
     } else {
       if(verbose > 0) {
@@ -451,85 +455,34 @@ fixIdVar <- function(data, idVar, verbose) {
 #returns TRUE/FALSE if an edsurvey.data.frame or light.edsurvey.data.frame have appropriate IRT attributes set
 #set errorCheck = TRUE to throw warning about what part of the irt attributes are missing
 has_IRTAttributes <- function(esdf, errorCheck = FALSE){
+  #validate inputs
+  checkDataClass(esdf, c("edsurvey.data.frame", "light.edsurvey.data.frame"))
+  stopifnot("errorCheck must be a logical value of length 1" = is.logical(errorCheck) && length(errorCheck) == 1)
   
-  dichotParam <- getAttributes(esdf, "dichotParamTab")
-  polyParam <- getAttributes(esdf, "polyParamTab")
-  testData <- getAttributes(esdf, "testData")
-  scoreCard <- getAttributes(esdf, "scoreCard")
-  scoreDict <- getAttributes(esdf, "scoreDict")
-  scoreFunction <- getAttributes(esdf, "scoreFunction")
+  isNAEP <- grepl("NAEP", getAttributes(esdf, "survey", errorCheck = errorCheck), ignore.case = TRUE)
   
-  isNAEP <- grepl("NAEP", getAttributes(esdf, "survey"), ignore.case = TRUE)
-  
-  baseErr <- paste0("Missing {INSERT} for this edsurvey.data object. IRT attributes required for use with ", dQuote("mml.sdf"), " function.")
-  naepErr <- paste0(" Try setting IRT attributes with the AM .dct file(s) using the ", dQuote("setNAEPScoreCard"), " function.")
+  #these might not be set after rebindAttributes is called, we will throw our own errors here
+  dichotParam <- getAttributes(esdf, "dichotParamTab", errorCheck = FALSE)
+  polyParam <- getAttributes(esdf, "polyParamTab", errorCheck = FALSE)
+  testData <- getAttributes(esdf, "testData", errorCheck = FALSE)
+  scoreCard <- getAttributes(esdf, "scoreCard", errorCheck = FALSE)
+  scoreDict <- getAttributes(esdf, "scoreDict", errorCheck = FALSE)
+  scoreFunction <- getAttributes(esdf, "scoreFunction", errorCheck = FALSE)
 
-  if((is.null(dichotParam) || is.null(polyParam)) || (nrow(dichotParam) == 0 && nrow(polyParam) == 0)){
-    if(errorCheck){
-      eMsg <- gsub("{INSERT}", "dichotParamTab and/or polyParamTab", baseErr, fixed = TRUE)
-      if(isNAEP){
-        eMsg <- paste0(eMsg, naepErr)
-      }
-      stop(eMsg)
-    }
-    
-    return(FALSE) #dichot and poly must be objects
-  }
-  
-  if(is.null(testData) || nrow(testData) == 0){
-    if(errorCheck){
-      eMsg <- gsub("{INSERT}", "testData", baseErr, fixed = TRUE)
-      if(isNAEP){
-        eMsg <- paste0(eMsg, naepErr)
-      }
-      stop(eMsg)
-    }
-    
-    return(FALSE) #testData must be object
+  eMsg <- paste0("Missing IRT Attributes for this edsurvey.data object. IRT attributes required for use with ", dQuote("mml.sdf"), " function. See ?mml.sdf help for details.")
+  if(isNAEP){
+    eMsg <- paste0(eMsg, " Try setting IRT attributes with the AM .dct file(s) using the ", dQuote("setNAEPScoreCard"), " function.")
   }
 
-  if(is.null(scoreCard) && is.null(scoreDict)){
+  hasItems <- (inherits(dichotParam, "data.frame") && inherits(polyParam, "data.frame"))
+  hasTests <- inherits(testData, "data.frame")
+  hasScore <- (inherits(scoreCard, "data.frame") || inherits(scoreDict, "data.frame"))
+  hasFunction <- !is.null(scoreFunction)
+  
+  if(!all(c(hasItems, hasTests, hasScore, hasFunction))){
     if(errorCheck){
-      eMsg <- gsub("{INSERT}", "scoreCard and/or scoreDict", baseErr, fixed = TRUE)
-      if(isNAEP){
-        eMsg <- paste0(eMsg, naepErr)
-      }
       stop(eMsg)
     }
-    
-    return(FALSE) #must have at least scoreCard or scoreDict as objects
-  }
-  if(!is.null(scoreCard) && nrow(scoreCard) == 0){
-    if(errorCheck){
-      eMsg <- gsub("{INSERT}", "scoreCard", baseErr, fixed = TRUE)
-      if(isNAEP){
-        eMsg <- paste0(eMsg, naepErr)
-      }
-      stop(eMsg)
-    }
-    
-    return(FALSE) #if scoreCard is an object, it should have at least 1 record
-  }
-  if(!is.null(scoreDict) && nrow(scoreDict) == 0){
-    if(errorCheck){
-      eMsg <- gsub("{INSERT}", "scoreDict", baseErr, fixed = TRUE)
-      if(isNAEP){
-        eMsg <- paste0(eMsg, naepErr)
-      }
-      stop(eMsg)
-    }
-    
-    return(FALSE) #if scoreDict is an object, it should have at least 1 record
-  }
-  if(is.null(scoreFunction)){
-    if(errorCheck){
-      eMsg <- gsub("{INSERT}", "scoreFunction", baseErr, fixed = TRUE)
-      if(isNAEP){
-        eMsg <- paste0(eMsg, naepErr)
-      }
-      stop(eMsg)
-    }
-    
     return(FALSE)
   }
   

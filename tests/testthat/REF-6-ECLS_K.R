@@ -116,3 +116,12 @@ ecls_sumREF <- c("Estimates are not weighted.",
 ecls_sum_wREF <- c("Estimates are weighted using the weight variable 'c7cpts0'", 
                    "  Variable     N Weighted N  Min.  1st Qu. Median     Mean  3rd Qu.  Max.       SD  NA's Zero weights", 
                    "1 c7r4mscl 21409    3941257 66.26 125.8508  144.3 139.9674 158.9715 172.2 23.62027 12124         5561")
+
+ecls_rebind_lmRef <- c("", "Formula: x9rscalk5 ~ x_chsex_r + p9hlphwk", "", "Weight variable: 'w9c29p_9t90'", 
+                       "Variance method: jackknife", "JK replicates: 80", "full data n: 18174", 
+                       "n used: 7906", "", "Coefficients:", "                        coef        se        t    dof  Pr(>|t|)    ", 
+                       "(Intercept)        142.46410   0.74660 190.8168 67.852 < 2.2e-16 ***", 
+                       "x_chsex_r2: FEMALE   1.44536   0.38854   3.7200 46.223 0.0005384 ***", 
+                       "p9hlphwk            -2.11562   0.21672  -9.7619 54.904 1.338e-13 ***", 
+                       "---", "Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1", 
+                       "", "Multiple R-squared: 0.0284", "")

@@ -54,6 +54,7 @@
 #' @param weightVar a character indicating the full sample weights. Required in \code{getPSUVar} and \code{getStratumVar} when there is no default weight.
 #' @param name a character vector of the column to edit
 #' @param dim0 numeric vector of length two. To speed construction, the dimensions of the data can be provided
+#' @param errorCheck logical; see Details
 #'
 #' @details
 #'
@@ -146,6 +147,9 @@
 #'
 #' Users can use the \code{getAttributes} method to extract any attribute of
 #' an \code{edsurvey.data.frame} or a \code{light.edsurvey.data.frame}. 
+#' The \code{errorCheck} parameter has a default value of\code{TRUE}, which throws an error if an attribute is not found.
+#' Setting \code{errorCheck = FALSE} will suppress error checking, and return \code{NULL} if an attribute can't be found.
+#' 
 #' A \code{light.edsurvey.data.frame} will not have attributes related to data connection
 #' because data have already been read in memory.
 #'
