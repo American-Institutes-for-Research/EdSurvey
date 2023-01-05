@@ -303,7 +303,7 @@ edsurvey.data.frame <- function(userConditions,
     checkPS <- FALSE
   }
   if(checkPS){
-    #unclear why JK1 variable specified here, leaving for possible NAEP file implications (tom 9/3/21)
+    # if the sampling method is not stratified (and so is JK1) then there are not PSU and stratum variables.
     if(any(!c(psuVar, stratumVar) %in% c("JK1", colnames(res)))) {
       warning("Cannot find both PSU and Stratum variables on data. Taylor series variance estimation will not be possible.")
     }

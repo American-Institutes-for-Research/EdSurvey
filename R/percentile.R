@@ -772,10 +772,14 @@ percentile <- function(variable, percentiles, data,
     if (returnNumberOfPSU) {
       stratumVar <- getAttributes(data, "stratumVar")
       psuVar <- getAttributes(data, "psuVar")
-      if(sum(is.na(edf[,c(stratumVar, psuVar)])) == 0) {
-        attr(res, "nPSU") <- nrow(unique(edf[,c(stratumVar,psuVar)]))
+      if(stratumVar %in% "JK1") {
+        attr(res, "nPSU") <- attr(res, "nUsed")
       } else {
-        warning("Cannot return number of PSUs because the stratum or PSU variables contain NA values.")
+        if(sum(is.na(edf[,c(stratumVar, psuVar)])) == 0) {
+          attr(res, "nPSU") <- nrow(unique(edf[,c(stratumVar,psuVar)]))
+        } else {
+          warning("Cannot return number of PSUs because the stratum or PSU variables contain NA values.")
+        }
       }
     }
     attr(res, "call") <- call

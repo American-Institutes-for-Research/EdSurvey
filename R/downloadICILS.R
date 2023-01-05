@@ -9,19 +9,19 @@
 #' @seealso \code{\link{readICILS}}
 #' @importFrom utils browseURL
 #' @export
-downloadICILS <- function(years=c(2013)) {
+downloadICILS <- function(years=c(2013, 2018)) {
   if(is.null(years)){
     stop(paste0("The argument ", sQuote("years"), " must not be null."))
   }
   
-  if(any(!(years %in% c(2013)))){
-    stop(paste0("The argument ", sQuote("years"), " must have a value of ", sQuote("2013"), "."))
+  if(any(!(years %in% c(2013, 2018)))){
+    stop(paste0("The argument ", sQuote("years"), " must have a value of ", sQuote("2013"), ", or ", sQuote("2018"), "."))
   }
   
   linkURL <- "https://www.iea.nl/data-tools/repository"
   
   txt <- c()
-  txt <- c(txt, paste0("Please manually download and extract the SPSS (*.sav) formatted ICILS 2013 study data files from the IEA Data Repository to a folder on your local system or network. ",
+  txt <- c(txt, paste0("Please manually download and extract the SPSS (*.sav) formatted ICILS 2013 or ICILS 2018 study data files from the IEA Data Repository to a folder on your local system or network. ",
                        "After the following steps are completed, the ", dQuote("readICILS"), " function can be used to read in the data. ",
                        "See help page (?readICILS) for more details."))
   txt <- c(txt, "\n")
@@ -34,7 +34,7 @@ downloadICILS <- function(years=c(2013)) {
                        "Follow your web browser's prompts to download the resulting *.zip file to a folder location you can find later."))
   
   txt <- c(txt, paste0("\t", "4) Locate your downloaded zip file (*.zip) container and use an extraction program to extract the folder's file contents. ",
-                       "It is recommended to extract the SPSS (*.sav) files to an easy-to-remember folder path based on the study and year (e.g., for Microsoft Windows OS, ", sQuote("C:/EdSurveyData/ICILS/2013/"), ")."))
+                       "It is recommended to extract the SPSS (*.sav) files to an easy-to-remember folder path based on the study and year (e.g., for Microsoft Windows OS, ", pasteItems(sQuote(c("C:/EdSurveyData/ICILS/2013/", "C:/EdSurveyData/ICILS/2018/"))), ")."))
   
   txt <- c(txt, "\n")
   

@@ -35,7 +35,7 @@ downloadCivEDICCS <- function(years=c(1999, 2009, 2016)) {
                        "Follow your web browser's prompts to download the resulting *.zip file to a folder location you can find later."))
   
   txt <- c(txt, paste0("\t", "4) Locate your downloaded zip file (*.zip) container and use an extraction program to extract the folder's file contents. ",
-                       "It is recommended to extract the SPSS (*.sav) files to an easy-to-remember folder path based on the study and year (e.g., for Microsoft Windows OS, ", pasteItems(sQuote(c("C:/EdSurveyData/CivED/1999/", "C:/EdSurveyData/ICCS/2009/"), "C:/EdSurveyData/ICCS/2016/")), ")."))
+                       "It is recommended to extract the SPSS (*.sav) files to an easy-to-remember folder path based on the study and year (e.g., for Microsoft Windows OS, ", pasteItems(sQuote(c("C:/EdSurveyData/CivED/1999/", "C:/EdSurveyData/ICCS/2009/", "C:/EdSurveyData/ICCS/2016/"))), ")."))
   
   txt <- c(txt, "\n")
 

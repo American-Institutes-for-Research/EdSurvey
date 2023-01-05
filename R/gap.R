@@ -1649,7 +1649,8 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
     callv <- list(varnames=vn,
                   drop=FALSE,
                   omittedLevels=omittedLevels,
-                  recode=NULL) # recode is already done in line 335
+                  recode=NULL,
+                  addAttributes=TRUE) # recode is already done in line 335
     if(!missing(defaultConditions)) {
       callv <- c(callv, list(defaultConditions=defaultConditions))
     }
@@ -1722,7 +1723,11 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
                 percentage=percentage
                 )
     if(returnNumberOfPSU) {
-      lst$labels$nPSUA <- nrow(dA[ , c(getAttributes(dA, "stratumVar"), getAttributes(dA, "psuVar"))])
+      if(getAttributes(dA, "stratumVar") %in% "JK1") {
+        lst$labels$nPSUA <- nrow(dA)
+      } else {
+        lst$labels$nPSUA <- nrow(dA[ , c(getAttributes(dA, "stratumVar"), getAttributes(dA, "psuVar"))])
+      }
       lst$labels$nPSUB <- NA
     }
   }

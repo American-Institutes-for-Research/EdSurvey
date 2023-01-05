@@ -9,7 +9,7 @@
   }
   \subsection{BUG FIXES}{
     \itemize{
-      \item \code{gap} now returns results (and does not give an error) when the standard deviation of a continuous variable (that does not have plausible values) is requested. Thanks to Christian Kjeldsen for identifying and documenting this bug.
+      \item \code{gap} now returns results (and does not give an error) when the standard deviation of a continuous variable (that does not have plausible values) is requested. Thanks to Christian Christrup Kjeldsen for identifying and documenting this bug.
     }
   }
 }
