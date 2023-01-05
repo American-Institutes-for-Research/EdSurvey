@@ -5,6 +5,7 @@
   \subsection{UPDATES}{
     \itemize{
       \item \code{mml.sdf} now returns the scored data.
+      \item \code{readNAEP} now will attempt to read IRT parameters from the AM folder's \code{.dct} file if not found in NAEPirtparams package.  
     }
   }
   \subsection{BUG FIXES}{

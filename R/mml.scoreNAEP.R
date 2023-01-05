@@ -156,12 +156,16 @@ defaultNAEPScoreCard <- function() {
 }
 
 
-#' @title setNAEPScoreCard
-#' @description sets necessary attributes to run \code{mml.sdf} on NAEP data
-#' @param data a NAEP edsurvey.data.frame
-#' @param dctPath a connection that points to the location of a NAEP dct file. A dct file can be used to input custom item response theory (IRT)
+#' @title set NAEP Score Card
+#' @description add item response theory data necessary to use \code{mml.sdf} on NAEP data
+#' @param data a NAEP \code{edsurvey.data.frame}
+#' @param dctPath a file location that points to the location of a NAEP \code{.dct} file (usually in the \code{AM} folder). A \code{.dct} file can be
+#'                used to input custom item response theory (IRT)
 #'                parameters and subscale/subtest weights for NAEP assessments compared with those provided in the \code{NAEPirtparams} package. 
-#' @return a NAEP edsurvey.data.frame with updated attributes
+#'                
+#' @return a NAEP \code{edsurvey.data.frame} with updated attributes
+#' @example \man\examples\setNAEPScoreCard.R
+#' @export
 setNAEPScoreCard <- function(data, dctPath=NULL) {
   
   # check if we can continue

@@ -352,7 +352,8 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
                                     subject = filePathInfo$FileDesc$Subject,
                                     region = filePathInfo$FileDesc$Assessment_Code,
                                     level = filePathInfo$FileDesc$Grade_Level,
-                                    fr2Path = filePathInfo$StudentFR2)
+                                    fr2Path = filePathInfo$StudentFR2,
+                                    filePathInfo = filePathInfo)
   }
   
 
@@ -1139,7 +1140,7 @@ validate_NAEPFilePaths <- function(path, frPath, xmlPath){
   return(retList)
 }
 
-appendIRTAttributes_NAEP <- function(esdf, year, subject, region, level, fr2Path) {
+appendIRTAttributes_NAEP <- function(esdf, year, subject, region, level, fr2Path, filePathInfo) {
   
   #grab only the digits from the level (e.g. Grade 4 ==> 4)
   levelVal <- as.integer(regmatches(level, regexpr("\\d{1,2}", level, ignore.case = TRUE)))
@@ -1150,7 +1151,9 @@ appendIRTAttributes_NAEP <- function(esdf, year, subject, region, level, fr2Path
   
   #filter parameters for our file details
   paramsFilter <- params[params$year == year & tolower(params$subject) == tolower(subject) & params$level == levelVal & tolower(params$levelType) == levelType, ]
-  if (nrow(paramsFilter) > 0) {
+  
+  hasNAEPirtparams <- nrow(paramsFilter) > 0 #eval to T/F
+  if (hasNAEPirtparams) {
     paramsFilter$NAEPid <- tolower(paramsFilter$NAEPid)
     
     if ("accom" %in% paramsFilter$accommodations){
@@ -1349,6 +1352,18 @@ appendIRTAttributes_NAEP <- function(esdf, year, subject, region, level, fr2Path
 
   }#end if (year %in% unique(params$year) & subject %in% unique(params$subject) & level %in% unique(params$level))
   
+  #search for an associated .dct file and apply it if found
+  if(!hasNAEPirtparams){
+    searchDir <- file.path(dirname(filePathInfo$StudentDAT), "../AM") #search AM folder specifically as STATA files have .dct format that's completely different
+    searchFN <- gsub("[.]dat$", "", basename(filePathInfo$StudentDAT), ignore.case = TRUE)
+    
+    dctFP <- list.files(searchDir, paste0("^", searchFN, "[.]dct$"), full.names = TRUE, ignore.case = TRUE, recursive = TRUE)
+    
+    if(length(dctFP) > 0){
+      dctFP <- dctFP[1] #use the first one if multiple found(they should be the same)
+      tryCatch(esdf <- suppressWarnings(setNAEPScoreCard(esdf, dctFP)), error=function(e) {} ) #use this function to set the IRT attributes, check why getNAEPScorecard throwing NA coercion warnings?
+    }
+  }
   return(esdf) #return original if data not found in NAEPirtparams, or the modified esdf if data located
 }
 

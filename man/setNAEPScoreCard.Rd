@@ -2,19 +2,31 @@
 % Please edit documentation in R/mml.scoreNAEP.R
 \name{setNAEPScoreCard}
 \alias{setNAEPScoreCard}
-\title{setNAEPScoreCard}
+\title{set NAEP Score Card}
 \usage{
 setNAEPScoreCard(data, dctPath = NULL)
 }
 \arguments{
-\item{data}{a NAEP edsurvey.data.frame}
+\item{data}{a NAEP \code{edsurvey.data.frame}}
 
-\item{dctPath}{a connection that points to the location of a NAEP dct file. A dct file can be used to input custom item response theory (IRT)
+\item{dctPath}{a file location that points to the location of a NAEP \code{.dct} file (usually in the \code{AM} folder). A \code{.dct} file can be
+used to input custom item response theory (IRT)
 parameters and subscale/subtest weights for NAEP assessments compared with those provided in the \code{NAEPirtparams} package.}
 }
 \value{
-a NAEP edsurvey.data.frame with updated attributes
+a NAEP \code{edsurvey.data.frame} with updated attributes
 }
 \description{
-sets necessary attributes to run \code{mml.sdf} on NAEP data
+add item response theory data necessary to use \code{mml.sdf} on NAEP data
+}
+\examples{
+\dontrun{
+datFP <- "~/NAEP_Folder/Data/M50NT3AT.dat"
+sdf <- readNAEP(datFP)
+
+#how to set NAEP mml attributes
+#if readNAEP does not detect them automatically
+dctFP <- "~/NAEP_Folder/AM/M50NT3AT.dct"
+sdf <- setNAEPScoreCard(sdf, dctFP)
+}
 }
