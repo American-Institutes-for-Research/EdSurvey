@@ -199,18 +199,11 @@ calc.rq.sdf <- function(formula,
   # grab the variables needed for the Taylor series method, if that is the variance estimation method being used
   taylorVars <- c()
   getDataVarNames <- c(all.vars(formula), wgt, taylorVars)
-  if (returnNumberOfPSU){
-    # Get stratum and PSU variable
-    stratumVar <- getStratumVar(data,wgt)
-    psuVar <- getPSUVar(data,wgt)
-    if (all(c(stratumVar, psuVar) %in% colnames(data)) | all(c(stratumVar, psuVar) %in% colnames(data))) {
-      getDataVarNames <- unique(c(getDataVarNames,stratumVar,psuVar))
-    } else {
-      warning("Warning: Stratum and PSU variable are required for this call and are not on the incoming data. Ignoring returnNumberOfPSU=TRUE.")
-      returnNumberOfPSU <- FALSE
-    }
-    
-  }
+  tryCatch(getDataVarNames <- unique(c(getDataVarNames, PSUStratumNeeded(returnNumberOfPSU, data))),
+           error=function(e) {
+             warning(paste0("Stratum and PSU variables are required for this call and are not on the incoming data. Ignoring ", dQuote("returnNumberOfPSU=TRUE"),"."))
+             returnNumberOfPSU <<- FALSE
+           })
   
   # check the length and the value of tau
   if(length(tau) != 1) {
@@ -586,6 +579,8 @@ calc.rq.sdf <- function(formula,
     res <- c(res, list(B=B, U=Ubar, rbar=rbar, Ttilde=Ttilde))
   } 
   if(returnNumberOfPSU) {
+    stratumVar <- getAttributes(data, "stratumVar")
+    psuVar <- getAttributes(data, "psuVar")
     res <- c(res, list(nPSU=nrow(unique(edf[,c(stratumVar, psuVar)]))))
   }
   if(returnVarEstInputs) {

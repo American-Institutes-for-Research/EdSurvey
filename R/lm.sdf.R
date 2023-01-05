@@ -191,7 +191,7 @@
 #'               varMethod = c("jackknife", "Taylor"), jrrIMax = 1,
 #'               omittedLevels = TRUE, defaultConditions = TRUE, recode = NULL,
 #'               returnVarEstInputs = FALSE, returnNumberOfPSU = FALSE,
-#'               standardizeWithSamplingVar = FALSE)
+#'               standardizeWithSamplingVar = FALSE, verbose=TRUE)
 lm.sdf <- function(formula,
                    data,
                    weightVar=NULL,
@@ -314,17 +314,11 @@ calc.lm.sdf <- function(formula,
   }
   formulaVars <- all.vars(formula)
   getDataVarNames <- c(all.vars(formula), wgt, taylorVars)
-  if (returnNumberOfPSU){
-    # Get stratum and PSU variable
-    stratumVar <- getStratumVar(data, wgt)
-    psuVar <- getPSUVar(data, wgt)
-    if (all(c(stratumVar, psuVar) %in% names(data)) | all(c(stratumVar, psuVar) %in% colnames(data))) { #names(data$data) changed to colnames(data)::Tom
-      getDataVarNames <- unique(c(getDataVarNames,stratumVar,psuVar))
-    } else {
-      warning(paste0("Stratum and PSU variable are required for this call and are not on the incoming data. Resetting ", sQuote("returnNumberOfPSU"), " to ", dQuote("FALSE"), "."))
-      returnNumberOfPSU <- FALSE
-    }
-  }
+  tryCatch(getDataVarNames <- unique(c(getDataVarNames, PSUStratumNeeded(returnNumberOfPSU, data))),
+           error=function(e) {
+             warning(paste0("Stratum and PSU variables are required for this call and are not on the incoming data. Ignoring ", dQuote("returnNumberOfPSU=TRUE"),"."))
+             returnNumberOfPSU <<- FALSE
+           })
   # 2) get the data
   # This is most of the arguments
   getDataArgs <- list(data=sdf,
@@ -596,7 +590,6 @@ calc.lm.sdf <- function(formula,
           varM[[pvi]] <- res$Bi
           varEstInputs[["JK"]] <- rbind(varEstInputs[["JK"]], res$veiJK)
           varm[pvi, ] <- res$VsampInp
-          
           if(standardizeWithSamplingVar) {
             stdev <- apply(edf[ , paste0(wgtl$jkbase, wgtl$jksuffixes)], 2, 
                            function (w) getStdev(edf[ , yvars[pvi]], X, w))
@@ -775,9 +768,9 @@ calc.lm.sdf <- function(formula,
   
   # get fitted and resid based on overall coef
   fitted1 <- as.vector(X%*%coef)
-  Y <- sapply(1:length(yvars), function(yi) {
+  Y <- do.call(cbind, lapply(1:length(yvars), function(yi) {
     as.vector(edf[,yvars[yi]])
-  }, simplify=TRUE)
+  }))
   resid1 <- Y - fitted1
   colnames(resid1) <- colnames(Y) <- yvars
   

@@ -9,7 +9,7 @@ lm.sdf(formula, data, weightVar = NULL, relevels = list(),
               varMethod = c("jackknife", "Taylor"), jrrIMax = 1,
               omittedLevels = TRUE, defaultConditions = TRUE, recode = NULL,
               returnVarEstInputs = FALSE, returnNumberOfPSU = FALSE,
-              standardizeWithSamplingVar = FALSE)
+              standardizeWithSamplingVar = FALSE, verbose=TRUE)
 }
 \arguments{
 \item{formula}{a \ifelse{latex}{\code{formula}}{\code{\link[stats]{formula}}} for the

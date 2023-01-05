@@ -1,5 +1,44 @@
 \name{NEWS}
 \title{NEWS for EdSurvey}
+
+\section{Changes in version 3.0.9002}{
+  \subsection{UPDATES}{
+    \itemize{
+      \item \code{mml.sdf} now returns the scored data.
+    }
+  }
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item \code{gap} now returns results (and does not give an error) when the standard deviation of a continuous variable (that does not have plausible values) is requested. Thanks to Christian Kjeldsen for identifying and documenting this bug.
+    }
+  }
+}
+
+\section{Changes in version 3.0.2}{
+  \subsection{UPDATES}{
+    \itemize{
+      \item \code{edsurveyTable} now returns when a line has n=1 respondents on it
+      \item \code{cor.sdf} now works with logical variables.
+    }
+  }
+}
+
+\section{Changes in version 3.0.1}{
+  \subsection{UPDATES}{
+    \itemize{
+      \item \code{lm.sdf} now has a \code{verbose} function, some warnings now just show as messages (when \code{verbose} is \code{TRUE}).
+      \item when an item is used in a call, it does not have omitted levels dropped by default.
+    }
+  }
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item should pass tests on all CRAN configurations
+      \item \code{mvrlm.sdf} had a bug when there was an item as a predictor that is now solved
+      \item it was not possible to use TIMSS overall scores with \code{mml.sdf} without further editing the \code{testData}, this has been fixed
+      \item some unquoted references in calls were not resolving correctly to columns on the data when they should have. This has been fixed.
+    }
+  }
+}
 \section{Changes in version 3.0.0}{
   \subsection{UPDATES}{
     \itemize{

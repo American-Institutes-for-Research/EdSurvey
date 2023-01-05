@@ -165,7 +165,16 @@ mml.sdf <- function(formula,
   assign("edf", edf, envir = scoreCallEnv) # add edf to the environment
   edf <- eval(scoreCall, envir=scoreCallEnv)
   scoreFunction <- scoreCall[[1]]
+
+  # return scored data
+  pvs <- edf[ , c(scoreInfo$itemsUse, idVar)]
+  pvs$id <- pvs[,idVar]
+  pvs[,idVar] <- NULL
+  # robust to light or full data frame
+  data <- mergePVGeneral(data, pvs, idVar)
+
   # make long stuItems from the wide edf
+
   stuItems <- as.data.frame(melt(as.data.table(edf[ , c(scoreInfo$itemsUse, idVar)]),
                                  id.vars=idVar,
                                  measure.vars=c(scoreInfo$itemsUse)))
@@ -233,7 +242,8 @@ mml.sdf <- function(formula,
                         "scoreDict"   = scoreInfo$scoreDict,
                         "idVar"       = idVar,
                         "scoreFunction" = scoreFunction,
-                        "waldDenomBaseDof" = waldDenomBaseDof), 
+                        "waldDenomBaseDof" = waldDenomBaseDof,
+                        "data"        = data), 
                    class=c("mml.sdf"))
   # append composite class 
   obj$scoreDict <- scoreInfo$scoreDict

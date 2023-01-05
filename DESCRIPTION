@@ -1,6 +1,6 @@
 Package: EdSurvey
-Version: 3.0.1.9000
-Date: 2022-10-04
+Version: 3.0.9002
+Date: 2023-01-04
 Title: Analysis of NCES Education Survey and Assessment Data
 Author: Paul Bailey [aut, cre],
         Ahmad Emad [aut],
@@ -37,4 +37,4 @@ Note: This publication was prepared for NCES under Contract No.
         does not imply endorsement by the U.S. Government.
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2022-10-04 20:41:57 UTC; pbailey
+Packaged: 2023-01-04 23:51:55 UTC; pbailey

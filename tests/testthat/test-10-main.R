@@ -416,7 +416,7 @@ test_that("edsurveyTable",{
 context("edsurveyTable with N=0")
 test_that("edsurveyTable with N=0", {
   skip_on_cran()
-  es0 <- edsurveyTable(~b003501 + m815401, data = sdf, omittedLevels = FALSE)
+  expect_warning(es0 <- edsurveyTable(~b003501 + m815401, data = sdf, omittedLevels = FALSE))
   esDF <- getData(sdf,c("b003501","m815401"), omittedLevels = FALSE)
   esDFtable <- as.data.frame(table(esDF))
   esDFtable <- esDFtable[order(esDFtable$b003501),]
@@ -424,7 +424,7 @@ test_that("edsurveyTable with N=0", {
   expect_equal(es0$data$N, esDFtable$Freq)
   expect_equal(capture.output(es0), estwith0REF)
 
-  es1 <- edsurveyTable(~b003501 + m815401, data = sdf, omittedLevels = FALSE, pctAggregationLevel = 0)
+  expect_warning(es1 <- edsurveyTable(~b003501 + m815401, data = sdf, omittedLevels = FALSE, pctAggregationLevel = 0))
   expect_equal(nrow(es1$data), nrow(esDFtable))
 })
 

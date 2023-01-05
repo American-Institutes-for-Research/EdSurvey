@@ -350,17 +350,11 @@ calc.glm.sdf <- function(formula,
     }
   }
   getDataVarNames <- c(all.vars(formula), wgt, taylorVars)
-  if (returnNumberOfPSU){
-    # Get stratum and PSU variable
-    stratumVar <- getAttributes(data, "stratumVar")
-    psuVar <- getAttributes(data, "psuVar")
-    if (all(c(stratumVar, psuVar) %in% names(data)) | all(c(stratumVar, psuVar) %in% colnames(data))) {
-      getDataVarNames <- unique(c(getDataVarNames,stratumVar,psuVar))
-    } else {
-      warning(paste0("Stratum and PSU variable are required for this call and are not on the incoming data. Resetting ", dQuote("returnNumberOfPSU"), " to ", sQuote("FALSE"), "."))
-      returnNumberOfPSU <- FALSE
-    }
-  }
+  tryCatch(getDataVarNames <- unique(c(getDataVarNames, PSUStratumNeeded(returnNumberOfPSU, data))),
+           error=function(e) {
+             warning(paste0("Stratum and PSU variables are required for this call and are not on the incoming data. Ignoring ", dQuote("returnNumberOfPSU=TRUE"),"."))
+             returnNumberOfPSU <<- FALSE
+           })
   # 2) get the data
   # This is most of the arguments
   getDataArgs <- list(data=data,
@@ -846,6 +840,8 @@ calc.glm.sdf <- function(formula,
     res <- c(res, list(B=B, U=Ubar))
   }
   if(returnNumberOfPSU) {
+    stratumVar <- getAttributes(data, "stratumVar")
+    psuVar <- getAttributes(data, "psuVar")
     if(all(c(stratumVar, psuVar) %in% colnames(edf))) {
       if(sum(is.na(edf[,c(stratumVar, psuVar)])) == 0) {
         res <- c(res, list(nPSU=nrow(unique(edf[,c(stratumVar, psuVar)]))))

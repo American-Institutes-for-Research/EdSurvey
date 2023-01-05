@@ -589,7 +589,7 @@ gap <- function(variable, data, groupA = "default", groupB = "default",
           resi <- resilist[[i]]
   
           resi$results <- resi$results[j,]
-          resi$varEstInputs$JK=resi$varEstInputs$JK[tolower(resi$varEstInputs$JK$Level) %in% tolower(c(resi$results$statisticsLevel,"data")),]
+          resi$varEstInputs$JK <- resi$varEstInputs$JK[tolower(resi$varEstInputs$JK$Level) %in% tolower(c(resi$results$statisticsLevel,"data")),]
           if (!is.null(resi$varEstInputs$PV)) {
             resi$varEstInputs$PV <- resi$varEstInputs$PV[tolower(resi$varEstInputs$PV$Level) %in% tolower(c(resi$results$statisticsLevel,"data")),]
           }
@@ -1312,24 +1312,29 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
     }
     
     # make varEstInputs$PV
-    maPV <- meanA$varEstInputs$PV
-    maPV$Level <- maPV$variable
-    maPV$variable <- "A"
-    
-    if (!skipB) {
-      mbPV <- meanB$varEstInputs$PV
-      mbPV$Level <- mbPV$variable
-      mbPV$variable <- "B"
-      # calculate the difference
-      mdPV <- merge(maPV, mbPV, by=c("PV","Level"), suffixes=c(".A", ".B"))
-      mdPV$variable <- "A-B"
-      mdPV$value <- mdPV$value.A - mdPV$value.B
-      mdPV$value.A <- mdPV$value.B <- NULL
-      mdPV$variable.A <- mdPV$variable.B <- NULL
-      varEstPV <- rbind(maPV, mbPV, mdPV)
-    } else {
-      varEstPV <- maPV
-    }
+    if(!is.null(meanA$varEstInput$PV)) {
+      maPV <- meanA$varEstInputs$PV
+      maPV$Level <- maPV$variable
+      maPV$variable <- "A"
+      
+      if (!skipB) {
+        mbPV <- meanB$varEstInputs$PV
+        mbPV$Level <- mbPV$variable
+        mbPV$variable <- "B"
+        # calculate the difference
+        mdPV <- merge(maPV, mbPV, by=c("PV","Level"), suffixes=c(".A", ".B"))
+        mdPV$variable <- "A-B"
+        mdPV$value <- mdPV$value.A - mdPV$value.B
+        mdPV$value.A <- mdPV$value.B <- NULL
+        mdPV$variable.A <- mdPV$variable.B <- NULL
+        varEstPV <- rbind(maPV, mbPV, mdPV)
+      } else {
+        varEstPV <- maPV
+      }
+    } else { # end if(!is.null(meanA$varEstInput$PV))
+      # no PVs, so no error from them
+      varEstPV <- NULL
+    } # end else for if(!is.null(meanA$varEstInput$PV))
     
     # make varEstInputs
     row.names(varEstJK) <- NULL
@@ -1468,17 +1473,11 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
     # add weights and variable itself
     vn <- c(vn, wgt, variable)
     
-    if (returnNumberOfPSU){
-      # Get stratum and PSU variable
-      stratumVar <- getAttributes(data,"stratumVar")
-      psuVar <- getAttributes(data,"psuVar")
-      if (all(c(stratumVar, psuVar) %in% names(data)) | all(c(stratumVar, psuVar) %in% colnames(data))) { #names(data$data) changed to colnames(data)::Tom
-        vn <- unique(c(vn, stratumVar, psuVar))
-      } else {
-        warning("Stratum and PSU variable are required for this call and are not on the incoming data. Ignoring returnNumberOfPSU=TRUE.")
-        returnNumberOfPSU <- FALSE
-      }
-    }
+    tryCatch(vn <- unique(c(vn, PSUStratumNeeded(returnNumberOfPSU, data))),
+             error=function(e) {
+               warning(paste0("Stratum and PSU variables are required for this call and are not on the incoming data. Ignoring ", dQuote("returnNumberOfPSU=TRUE"),"."))
+               returnNumberOfPSU <<- FALSE
+             })
     
     # setup non-data call variables    
     callv <- list(varnames=vn,
@@ -1496,14 +1495,14 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
     dA <- do.call(getData, wgtcallA)
     wgtcallB <- c(callv, list(data=dataB))
     dB <- do.call(getData, wgtcallB)
-    pctA <- sum(dA[,wgt]) / sum(d0[,wgt])
-    pctB <- sum(dB[,wgt]) / sum(d0[,wgt])
+    pctA <- sum(dA[ , wgt]) / sum(d0[ , wgt])
+    pctB <- sum(dB[ , wgt]) / sum(d0[ , wgt])
     # calculate covAB using JK method
     wgtl <- getAttributes(data, "weights")[[wgt]]
     pctJK <- t(sapply(wgtl$jksuffixes, function(suffix) {
-      w0 <- sum(d0[,paste0(wgtl$jkbase, suffix)])
-      wA <- sum(dA[,paste0(wgtl$jkbase, suffix)])
-      wB <- sum(dB[,paste0(wgtl$jkbase, suffix)])
+      w0 <- sum(d0[ , paste0(wgtl$jkbase, suffix)])
+      wA <- sum(dA[ , paste0(wgtl$jkbase, suffix)])
+      wB <- sum(dB[ , paste0(wgtl$jkbase, suffix)])
       c(pctA=wA/w0, pctB=wB/w0)
     }))
     seA <- 100 * sqrt(getAttributes(data, "jkSumMultiplier") * sum( (pctJK[,1] - pctA)^2 ))
@@ -1608,8 +1607,8 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
                            ),
                 percentage=percentage)
     if (returnNumberOfPSU) {
-      lst$labels$nPSUA <- nrow(unique(dA[,c(stratumVar,psuVar)]))
-      lst$labels$nPSUB <- nrow(unique(dB[,c(stratumVar,psuVar)]))
+      lst$labels$nPSUA <- nrow(unique(dA[ , c(getAttributes(dataA, "stratumVar"), getAttributes(dataA, "psuVar"))]))
+      lst$labels$nPSUB <- nrow(unique(dB[ , c(getAttributes(dataB, "stratumVar"), getAttributes(dataB, "psuVar"))]))
     }
   } else { # end if(!skipB)
     wgtl <- getAttributes(data,"weights")[[wgt]]
@@ -1641,17 +1640,11 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
     vn <- c(parseVars(substitute(groupA), data), parseVars(substitute(groupB), data))
     # add weights and variable itself
     vn <- c(vn, wgt, variable)
-    if (returnNumberOfPSU){
-      # Get stratum and PSU variable
-      stratumVar <- getAttributes(data,"stratumVar")
-      psuVar <- getAttributes(data,"psuVar")
-      if (all(c(stratumVar, psuVar) %in% names(data)) | all(c(stratumVar, psuVar) %in% names(data$data))) {
-        vn <- unique(c(vn, stratumVar, psuVar))
-      } else {
-        warning("Stratum and PSU variable are required for this call and are not on the incoming data. Ignoring returnNumberOfPSU=TRUE.")
-        returnNumberOfPSU <- FALSE
-      }
-    }
+    tryCatch(vn <- unique(c(vn, PSUStratumNeeded(returnNumberOfPSU, data))),
+             error=function(e) {
+               warning(paste0("Stratum and PSU variables are required for this call and are not on the incoming data. Ignoring ", dQuote("returnNumberOfPSU=TRUE"),"."))
+               returnNumberOfPSU <<- FALSE
+             })
     # setup non-data call variables    
     callv <- list(varnames=vn,
                   drop=FALSE,
@@ -1729,7 +1722,7 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
                 percentage=percentage
                 )
     if(returnNumberOfPSU) {
-      lst$labels$nPSUA <- nrow(dA[,c(stratumVar,psuVar)])
+      lst$labels$nPSUA <- nrow(dA[ , c(getAttributes(dA, "stratumVar"), getAttributes(dA, "psuVar"))])
       lst$labels$nPSUB <- NA
     }
   }

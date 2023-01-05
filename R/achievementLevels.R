@@ -256,17 +256,11 @@ calAL <- function(achievementVars = NULL,
   jrrIMax <- min(jrrIMax, sapply(pvs, length))
   
   getDataVarNames <- c(vars, wgt)
-  if (returnNumberOfPSU){
-      # Get stratum and PSU variable
-      stratumVar <- getAttributes(data, "stratumVar")
-      psuVar <- getAttributes(data, "psuVar")
-      if (all(c(stratumVar, psuVar) %in% names(data)) | all(c(stratumVar, psuVar) %in% colnames(data))) {
-        getDataVarNames <- c(vars, wgt, stratumVar, psuVar)
-    } else {
-      warning(paste0("Stratum and PSU variables are required for this call and are not on the incoming data. Ignoring ", dQuote("returnNumberOfPSU=TRUE"),"."))
-      returnNumberOfPSU <- FALSE
-    }
-  }
+  tryCatch(getDataVarNames <- c(getDataVarNames, PSUStratumNeeded(returnNumberOfPSU, data)),
+           error=function(e) {
+             warning(paste0("Stratum and PSU variables are required for this call and are not on the incoming data. Ignoring ", dQuote("returnNumberOfPSU=TRUE"),"."))
+             returnNumberOfPSU <<- FALSE
+           })
 
   # get the data. This is most of the arguments
   getDataArgs <- list(data = data,
@@ -301,6 +295,8 @@ calAL <- function(achievementVars = NULL,
 
   stratumAndPSU <- NULL
   if (returnNumberOfPSU) {
+    stratumVar <- getAttributes(data, "stratumVar")
+    psuVar <- getAttributes(data, "psuVar")
     # Combine stratumVar and psuVar
     edfDT <- edfDT[, stratumAndPSU:=paste0(.SD, collapse = "-"), 
                    .SDcols=c(stratumVar, psuVar), 

@@ -126,16 +126,16 @@ extractCovs <- function(dataList, cov, searching) {
     sapply(dataList, function(z) {
       # grab attribute c from edsurvey.data.frame z
       thisAttr <- getAttributes(z, c)
-      # if this attribute is a character
-        if(inherits(thisAttr, "character")) {
-          # if the attribute is a vector with more than one element we need to reduce it to a single element.
-          if(length(thisAttr) > 1) {
-            thisAttr <- paste(thisAttr, collapse="; ")
-          }
-        } else {
-          thisAttr <- "" #return a blank character value in case of a missing cov value otherwise its returned as a list and won't load into the data.frame
+      # if this attribute is a character or numeric
+      if(inherits(thisAttr, "character") | inherits(thisAttr, "numeric")) {
+        # if the attribute is a vector with more than one element we need to reduce it to a single element.
+        if(length(thisAttr) > 1) {
+          thisAttr <- paste(thisAttr, collapse="; ")
         }
-        thisAttr
+      } else {
+        thisAttr <- "" #return a blank character value in case of a missing cov value otherwise its returned as a list and won't load into the data.frame
+      }
+      thisAttr
     }, simplify=TRUE)
   }, simplify=FALSE)
   # make proposed covs

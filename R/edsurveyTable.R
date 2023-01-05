@@ -451,7 +451,7 @@ calcEdsurveyTable <- function(formula,
     res <- data.frame("N" = nrow(edf),
                       "WTD_N" = sumna(edf[,wgt]),
                       "PCT" = 100.00)
-    if (nrow(edf) > 1) {
+    if (nrow(edf) > 0) {
       # fit an lm to get a mean and SE estimate and add those to the res
       # also keep track of var est inputs
       lst <- list(formula = formula,
@@ -480,7 +480,7 @@ calcEdsurveyTable <- function(formula,
         else {
           lmi <- NULL
         }
-      }
+      } #if (!is.null(lmi)) 
       if (is.null(lmi)) {
         res[["MEAN"]] <- NA
         res[["SE(MEAN)"]] <- NA
@@ -496,7 +496,7 @@ calcEdsurveyTable <- function(formula,
         meanVarEstInputsJK <- data.frame(PV = 1, JKreplicate = 1:njk, variable = "label", value = NA)
         meanVarEstInputsPV <- data.frame(PV = 1:npv, variable = "label", value = NA)
       }
-    } # end if (nrow(edf) > 1)
+    } # end if (nrow(edf) > 0)
   } # if (length(rhs_vars) == 0)
   else {
     ## 3) build the output
@@ -738,7 +738,7 @@ calcEdsurveyTable <- function(formula,
             dsdf <- dsdf[dsdf[,rhs_vars[j]] %in% res[i,rhs_vars[j]],] # subset to just those values at level i of the first X variable
           }
         } #ends for(j in 1:length(rhs_vars)) 
-        if (nrow(dsdf) > 1) {
+        if (nrow(dsdf) > 0) {
           # fit an lm to get a mean and SE estimate and add those to the res
           # also keep track of var est inputs
           fi <- formula(paste0(yvar, " ~ 1"))
@@ -800,7 +800,7 @@ calcEdsurveyTable <- function(formula,
             meanVarEstInputsPVi$variable <- label
             meanVarEstInputsPV <- rbind(meanVarEstInputsPV, meanVarEstInputsPVi)
           }
-        } # end if (nrow(dsdf) > 1)
+        } # end if (nrow(dsdf) > 0)
         
       } # end for(i in 1:nrow(res)) {
       if (length(unique(warningsList)) > 0) {

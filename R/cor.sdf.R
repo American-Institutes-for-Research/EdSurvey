@@ -313,6 +313,10 @@ cor.sdf <- function(x,
     for(i in unique(variables)) {
       varn <- c()
       newv <- rep(NA, nrow(lsdf))
+      # convert logical to factor
+      if(inherits(lsdf[[i]], "logical")) {
+        lsdf[[i]] <- factor(0 + lsdf[[i]], 0:1, c("FALSE", "TRUE"))
+      }
       for(z in 1:length(levels(lsdf[[i]]))) {
         # Use llevels if it's a lfactor
         if (inherits(lsdf[[i]], "lfactor") && !condenseLevels) {
