@@ -298,7 +298,6 @@ mixed.sdf <- function(formula,
       edf$pwt1 <- edf[ , weightVars[1]] / edf[ , weightVars[2]]
       edf$pwt2 <- edf[ , weightVars[2]]
     } else { # For other survey data in edsurvey, users need to specify their own weights
-      warning(paste0("EdSurvey currently does not specify weight transformation rules for ",survey,". Raw weights were used for the analysis."))
       edf$pwt1 <- edf[ , weightVars[1]]
       edf$pwt2 <- edf[ , weightVars[2]]
     }

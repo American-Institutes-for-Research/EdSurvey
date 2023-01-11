@@ -80,7 +80,7 @@ Documents that describe the statistical methodology used in the `EdSurvey` packa
 
 ## Software Requirements
 
-Unless you already have R version 3.2.0 or later,  install the latest R version---which is available online at [https://cran.r-project.org/](https://cran.r-project.org/). Users also may want to install RStudio desktop, which has an interface that many find easier to follow. RStudio is available online at [https://www.rstudio.com/products/rstudio/download/](https://www.rstudio.com/products/rstudio/download/).
+Unless you already have R version 3.2.0 or later,  install the latest R version---which is available online at [https://cran.r-project.org/](https://cran.r-project.org/). Users also may want to install RStudio desktop, which has an interface that many find easier to follow. RStudio is available online at [ https://posit.co/download/rstudio-desktop/](https://posit.co/download/rstudio-desktop/).
 
 # Setting Up the Environment for Analyzing NCES Data
 

@@ -1,25 +1,18 @@
 \name{NEWS}
 \title{NEWS for EdSurvey}
 
-\section{Changes in version 3.0.9002}{
+\section{Changes in version 3.0.2}{
   \subsection{UPDATES}{
     \itemize{
-      \item \code{mml.sdf} now returns the scored data.
       \item \code{readNAEP} now will attempt to read IRT parameters from the AM folder's \code{.dct} file if not found in NAEPirtparams package.  
+      \item \code{mml.sdf} now returns the scored data.
+      \item \code{edsurveyTable} now returns when a line has n=1 respondents on it
+      \item \code{cor.sdf} now works with logical variables.
     }
   }
   \subsection{BUG FIXES}{
     \itemize{
       \item \code{gap} now returns results (and does not give an error) when the standard deviation of a continuous variable (that does not have plausible values) is requested. Thanks to Christian Christrup Kjeldsen for identifying and documenting this bug.
-    }
-  }
-}
-
-\section{Changes in version 3.0.2}{
-  \subsection{UPDATES}{
-    \itemize{
-      \item \code{edsurveyTable} now returns when a line has n=1 respondents on it
-      \item \code{cor.sdf} now works with logical variables.
     }
   }
 }
