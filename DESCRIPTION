@@ -22,7 +22,7 @@ Maintainer: Paul Bailey <pbailey@air.org>
 Depends: R (>= 3.5.0), car, lfactors (>= 1.0.3), Dire (>= 2.1.0)
 Imports: data.table (>= 1.11.4), Formula, glm2, haven (>= 2.2.0), LaF
         (>= 0.7), lme4, MASS, Matrix, methods, NAEPprimer, quantreg,
-        readxl, tibble, wCorr (>= 2.0.0), NAEPirtparams, WeMix (>= 3.2.1),
+        readxl, tibble, wCorr (>= 1.9.6), NAEPirtparams, WeMix (>= 3.2.1),
         xtable
 URL: https://www.air.org/project/nces-data-r-project-edsurvey
 BugReports: https://github.com/American-Institutes-for-Research/EdSurvey/issues
