@@ -14,7 +14,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">EdSurvey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,7 +65,8 @@
 <span>  defaultWeight <span class="op">=</span> <span class="st">"origwt"</span>,</span>
 <span>  defaultPvs <span class="op">=</span> <span class="st">"composite"</span>,</span>
 <span>  omittedLevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Multiple"</span>, <span class="cn">NA</span>, <span class="st">"Omitted"</span><span class="op">)</span>,</span>
-<span>  frPath <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  frPath <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  xmlPath <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -98,8 +99,14 @@ the <code>edsurvey.data.frame</code>.</p></dd>
 <dt>frPath</dt>
 <dd><p>a character value indicating the file location of the <code>.fr2</code>
 parameter layout file included with the data companion to
-parse the specified <code>filepath</code> data file.
+parse the specified <code>path</code> data file.
 The default value of <code>NULL</code> will attempt to search the parent directory for the corresponding <code>.fr2</code> file for the specified <code>path</code> data file.</p></dd>
+
+
+<dt>xmlPath</dt>
+<dd><p>a character value indicating the file path of the <code>.xml</code> parameter layout file included as part of the NAEPEX companion. This file provides necessary
+information required to read and parse the (.dat) data file. The default value of <code>NULL</code> will attempt to search
+the parent directory for the corresponding <code>.xml</code> file for the specified <code>path</code> data file.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -110,7 +117,7 @@ The default value of <code>NULL</code> will attempt to search the parent directo
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The <code>xmlPath</code> file will take precedence over the <code>frPath</code> file if both parameters are set and able to be located, or when both parameters are <code>NULL</code> (the default).</p>
+    <p>The <code>frPath</code> file layout information will take precedence over the <code>xmlPath</code> file when the <code>xmlPath</code> is not explicitly set, or when the <code>xmlPath</code> file cannot be located.</p>
 <p>The <code>readNAEP</code> function includes both scaled scores and theta scores, with the latter having names ending in <code>\_theta</code>.</p>
 <p>When a NAEP administration includes a linking error variable those variables are included and end in <code>_linking</code>.
 When present, simply use the <code>_linking</code> version of a variable to get a standard error estimate that includes linking error.</p>

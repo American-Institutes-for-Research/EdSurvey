@@ -4,6 +4,11 @@ sdf <- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprime
 lsdf <- getData(data=sdf, varnames=c("dsex", "b017451"), addAttributes = TRUE)
 df <- data.frame(dsex = c("Male","Female"), dsex2 = c("Boy","Girl"))
 
+#merging an edsurvey.data.frame with a data.frame/light.edsurvey.data.frame
+#returns an edsurvey.data.frame object
+sdf2 <- merge(sdf, df, by = "dsex")
+table(sdf2$dsex2)
+
 # merging a light.edsurvey.data.frame with a data.frame
 # returns a light.edsurvey.data.frame object
 merged_lsdf <- merge(lsdf,df, by = "dsex")

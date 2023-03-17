@@ -16,7 +16,7 @@ if(!exists("edsurveyHome")) {
 }
 
 test_that('mixed.sdf', {
-  usa8 <- readTIMSS(paste0(edsurveyHome, "TIMSS/2003"), countries = c("usa"), gradeLvl = 8, verbose=FALSE)
+  usa8 <- readTIMSS(file.path(edsurveyHome, "TIMSS/2003"), countries = c("usa"), gradeLvl = 8, verbose=FALSE)
   usa8dat <- getData(data=usa8, c("mmat", "idclass", "totwgt", "schwgt","itsex"), returnJKreplicates=FALSE, addAttributes=TRUE)
   usa8dat$wsum <- ave(usa8dat$totwgt, usa8dat$idclass, FUN=mean)
   usa8dat$w1 <- usa8dat$totwgt / usa8dat$wsum * usa8dat$schwgt
@@ -29,7 +29,7 @@ test_that('mixed.sdf', {
 
 context("Interactions in REs")
 test_that("Interactions in REs", {
-  usa8 <- readTIMSS(paste0(edsurveyHome, "TIMSS/2003"), countries = c("usa"), gradeLvl = 8, verbose=FALSE)
+  usa8 <- readTIMSS(file.path(edsurveyHome, "TIMSS/2003"), countries = c("usa"), gradeLvl = 8, verbose=FALSE)
   usa8dat <- getData(data=usa8, c("mmat", "idclass", "totwgt", "schwgt","itsex", "bsbgfbrn"), returnJKreplicates=FALSE, addAttributes=TRUE)
   usa8dat$wsum <- ave(usa8dat$totwgt, usa8dat$idclass, FUN=mean)
   usa8dat$w1 <- usa8dat$totwgt / usa8dat$wsum * usa8dat$schwgt
@@ -42,7 +42,7 @@ test_that("Interactions in REs", {
 
 context('mixed.sdf Wald test')
 test_that('mixed.sdf Wald test', {
-  cntl <- readPISA(paste0(edsurveyHome, "PISA/2012"), countries="USA", verbose=FALSE)
+  cntl <- readPISA(file.path(edsurveyHome, "PISA/2012"), countries="USA", verbose=FALSE)
   # model with one random effect
   m1 <- mixed.sdf(math ~ st29q03 + sc14q02 +st04q01+escs+ (1|schoolid),
                   data=cntl)

@@ -184,9 +184,7 @@
 #' @importFrom stats lm aggregate pt relevel model.matrix lm.wfit as.formula complete.cases
 #' @importFrom Formula Formula
 #' @importFrom MASS ginv
-#' @method lm sdf
 #' @export
-#' @export lm.sdf
 #' @usage lm.sdf(formula, data, weightVar = NULL, relevels = list(),
 #'               varMethod = c("jackknife", "Taylor"), jrrIMax = 1,
 #'               omittedLevels = TRUE, defaultConditions = TRUE, recode = NULL,
@@ -467,7 +465,7 @@ calc.lm.sdf <- function(formula,
     # finally, correctly set yvar0
     edf$yvar0 <- edf[ , yvar0]
   } # end if(any(pvy)), no else
-  
+
   # 5) run the main regression
   # run a regression, starting with the first PV or maybe the only outcome variable
   yvar0 <- yvars[1]
@@ -864,7 +862,9 @@ calc.lm.sdf <- function(formula,
     }
   }
   if(returnNumberOfPSU) {
-    if(sum(is.na(edf[,c(stratumVar, psuVar)])) == 0) {
+    if("JK1" %in% stratumVar) {
+      res <- c(res, list(nPSU=nrow(edf)))
+    } else if(sum(is.na(edf[,c(stratumVar, psuVar)])) == 0) {
       res <- c(res, list(nPSU=nrow(unique(edf[,c(stratumVar, psuVar)]))))
     } else {
       warning("Cannot return number of PSUs because the stratum or PSU variables contain NA values.")

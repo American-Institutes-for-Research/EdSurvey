@@ -36,7 +36,8 @@ edsurvey.data.frame(
   forceLower = TRUE,
   reqDecimalConversion = TRUE,
   fr2Path = NULL,
-  dim0 = NULL
+  dim0 = NULL,
+  cacheDataLevelName = NULL
 )
 
 \method{$}{edsurvey.data.frame}(x, i)
@@ -107,9 +108,11 @@ Examples include \code{Student}, \code{teacher}, \code{school},
 
 \item{reqDecimalConversion}{a Boolean; when set to \code{TRUE}, a \code{getData} call will multiply the raw file value by a decimal multiplier}
 
-\item{fr2Path}{a character file location for NAEP assessments to identify the locaiton of the codebook file in \code{fr2} format}
+\item{fr2Path}{a character file location for NAEP assessments to identify the location of the codebook file in \code{fr2} format}
 
 \item{dim0}{numeric vector of length two. To speed construction, the dimensions of the data can be provided}
+
+\item{cacheDataLevelName}{a character value set to match the named element in the \code{dataList} to utilize the data caching scheme.  See details.}
 
 \item{x}{an \code{edsurvey.data.frame}}
 
@@ -194,6 +197,11 @@ that has plausible values. Each element is a list with a \code{varnames}
 element that indicates the column names of the plausible values and an
 \code{achievementLevel} argument that is a named vector of the 
 achievement-level cutpoints.
+
+An \code{edsurvey.data.frame} implements a unique data caching mechanism that allows users to create and merge data columns for flexibility.
+This \code{cache} object is a single \code{data.frame} that is an element in the \code{edsurvey.data.frame}. To accommodate studies with complex data models
+the cache can only support one data level at this time. The \code{cacheDataLevelName} parameter indicates which named element in the \code{dataList} 
+the cache is indicated. The default value \code{cacheDataLevelName = NULL} will set the first item in the \code{dataList} as the \code{cache} level for an \code{edsurvey.data.frame}.
 }
 \section{EdSurvey Classes}{
 

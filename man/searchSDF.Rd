@@ -16,7 +16,7 @@ variable to be returned.}
 \item{data}{an \code{edsurvey.data.frame}, a \code{light.edsurvey.data.frame}, or
 an \code{edsurvey.data.frame.list}}
 
-\item{fileFormat}{a character string indicating the data source to search for variables.
+\item{fileFormat}{a character vector indicating the data source to search for variables.
 The default \code{NULL} argument searches all codebooks.}
 
 \item{levels}{a logical value; set to \code{TRUE} to return a snapshot of the levels in

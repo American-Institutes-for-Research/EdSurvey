@@ -1,6 +1,21 @@
 \name{NEWS}
 \title{NEWS for EdSurvey}
 
+\section{Changes in version 3.0.9000}{
+  \subsection{UPDATES}{
+    \itemize{
+      \item \code{lm} and \code{glm} are now generic functions, so users can call \code{lm} and \code{glm} instead of \code{lm.sdf} and \code{glm.sdf}---though legacy code will still work with those calls. This slightly complicates the documentation for these functions where \code{lm_sdf} and \code{glm_sdf} are now the version with complete documentation. Note that \code{tidyverse} appears to break this a bit and users must still use \code{lm.sdf} after a \code{\%>\%} pipe.
+    }
+  }
+  \subsection{BUG FIXES}{
+    \itemize{      
+      \item \code{achivementLevels} now returns number of rows on the data as nPSU when there are not PSU/stratum vars (e.g., for Germany in the PIACC data). 
+      \item \code{achivementLevels} now raise an error if any aggregation variable is continuous. 
+      \item fixed multicore in \code{mml.sdf}
+    }
+  }
+}
+
 \section{Changes in version 3.0.2}{
   \subsection{UPDATES}{
     \itemize{
@@ -8,6 +23,7 @@
       \item \code{mml.sdf} now returns the scored data.
       \item \code{edsurveyTable} now returns when a line has n=1 respondents on it
       \item \code{cor.sdf} now works with logical variables.
+      \item \code{readNAEP} can now utilize the NAEPEX .XML layout file as an alternative method to the .FR2 layout file by explicitly specifying the \code{xmlPath} argument.
     }
   }
   \subsection{BUG FIXES}{

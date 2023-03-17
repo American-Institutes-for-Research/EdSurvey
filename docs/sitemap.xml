@@ -142,7 +142,7 @@
     <loc>/reference/lm.sdf.html</loc>
   </url>
   <url>
-    <loc>/reference/merge.html</loc>
+    <loc>/reference/merge.edsurvey.data.html</loc>
   </url>
   <url>
     <loc>/reference/mergev.html</loc>
@@ -161,6 +161,9 @@
   </url>
   <url>
     <loc>/reference/parseNAEPdct.html</loc>
+  </url>
+  <url>
+    <loc>/reference/parseScript_SPSS.html</loc>
   </url>
   <url>
     <loc>/reference/percentile.html</loc>

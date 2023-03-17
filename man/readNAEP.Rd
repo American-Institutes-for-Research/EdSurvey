@@ -9,7 +9,8 @@ readNAEP(
   defaultWeight = "origwt",
   defaultPvs = "composite",
   omittedLevels = c("Multiple", NA, "Omitted"),
-  frPath = NULL
+  frPath = NULL,
+  xmlPath = NULL
 )
 }
 \arguments{
@@ -31,8 +32,12 @@ the \code{edsurvey.data.frame}.}
 
 \item{frPath}{a character value indicating the file location of the \code{.fr2}
 parameter layout file included with the data companion to
-parse the specified \code{filepath} data file.
+parse the specified \code{path} data file.
 The default value of \code{NULL} will attempt to search the parent directory for the corresponding \code{.fr2} file for the specified \code{path} data file.}
+
+\item{xmlPath}{a character value indicating the file path of the \code{.xml} parameter layout file included as part of the NAEPEX companion. This file provides necessary
+information required to read and parse the (.dat) data file. The default value of \code{NULL} will attempt to search
+the parent directory for the corresponding \code{.xml} file for the specified \code{path} data file.}
 }
 \value{
 An \code{edsurvey.data.frame} for a NAEP data file.
@@ -43,7 +48,7 @@ Opens a connection to a Main NAEP, or Long-Term Trend NAEP data file residing
              information about the file and data.
 }
 \details{
-The \code{xmlPath} file will take precedence over the \code{frPath} file if both parameters are set and able to be located, or when both parameters are \code{NULL} (the default).
+The \code{frPath} file layout information will take precedence over the \code{xmlPath} file when the \code{xmlPath} is not explicitly set, or when the \code{xmlPath} file cannot be located.
 
 The \code{readNAEP} function includes both scaled scores and theta scores, with the latter having names ending in \code{\_theta}.
 

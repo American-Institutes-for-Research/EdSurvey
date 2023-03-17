@@ -741,8 +741,11 @@ writeDF_FWF <- function(df, fileFormat, savePath, verbose){
   #this ensures we get the full entire decimal value, otherwise it might round or do something odd
   userOp <- options(digits=15)
   on.exit(options(userOp), add = TRUE)
-
-  suppressWarnings(memory.limit(max(memory.limit(), 128000))) #try to limit any issues caused by not having enough memory allocation here
+  
+  # for newer R, memory.limit() makes a warning and is inf
+  if(suppressWarnings(memory.limit() < 128000)) {
+    memory.limit(128000)
+  }
   omat <- matrix(nrow = nrow(df), ncol = nrow(fileFormat))
 
   #ensure all fields have a dataType at this point for inspection

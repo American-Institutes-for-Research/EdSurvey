@@ -1,3 +1,9 @@
+attachHere <- function(x, e=parent.frame()) {
+  for(i in seq_along(x)) {
+    assign(x=names(x)[i], value=x[[i]], envir=e)
+  } 
+}
+
 # if returNumberOfPSU is TRUE, returns the psu and stratum vars, after checking they're on the data
 PSUStratumNeeded <- function(returnNumberOfPSU, data) {
   if (returnNumberOfPSU){
@@ -73,7 +79,7 @@ startMulticore <- function(multiCoreSetup, verbose=FALSE, ExitDepth=2) {
       if(ExitDepth > 0) {
         pf <- parent.frame(n=ExitDepth)
         assign("cl", cl, envir=pf)
-        do.call( "on.exit", alist( parallel::stopCluster(cl) ), pf)
+        do.call( what="on.exit", args=alist( parallel::stopCluster(cl) ), envir=pf)
       }
     }
   } # end if(multiCore)
@@ -453,3 +459,15 @@ checkWeightVar <- function(data, weightVar) {
   }
   return(weightVar)
 }
+
+getMu <- function(x, w) {
+  sum(x*w) / sum(w)
+}
+
+getS <- function(x, w, mu=NULL) {
+  if(is.null(mu)) {
+    mu <- getMu(x, w)
+  }
+  sqrt(sum( w* ((x-mu)^2)) / sum(w))
+}
+

@@ -18,11 +18,14 @@
 #'                      the \code{edsurvey.data.frame}.
 #' @param frPath a character value indicating the file location of the \code{.fr2}
 #'               parameter layout file included with the data companion to
-#'               parse the specified \code{filepath} data file.
+#'               parse the specified \code{path} data file.
 #'               The default value of \code{NULL} will attempt to search the parent directory for the corresponding \code{.fr2} file for the specified \code{path} data file.
-#'
+#' @param xmlPath a character value indicating the file path of the \code{.xml} parameter layout file included as part of the NAEPEX companion. This file provides necessary
+#'                 information required to read and parse the (.dat) data file. The default value of \code{NULL} will attempt to search
+#'                 the parent directory for the corresponding \code{.xml} file for the specified \code{path} data file.
+#' 
 #' @details
-#' The \code{xmlPath} file will take precedence over the \code{frPath} file if both parameters are set and able to be located, or when both parameters are \code{NULL} (the default).
+#' The \code{frPath} file layout information will take precedence over the \code{xmlPath} file when the \code{xmlPath} is not explicitly set, or when the \code{xmlPath} file cannot be located.
 #'
 #' The \code{readNAEP} function includes both scaled scores and theta scores, with the latter having names ending in \code{\_theta}.
 #'
@@ -37,13 +40,13 @@
 #' @seealso \code{\link{edsurvey.data.frame}} \code{\link{getData}}
 #' @author Tom Fink and Ahmad Emad
 #' @example \man\examples\readNAEP.R
+#' @importFrom xml2 read_xml as_list xml_find_all
 #' @export
-readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", omittedLevels = c('Multiple',NA,'Omitted'), frPath = NULL) {
+readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", omittedLevels = c('Multiple',NA,'Omitted'), frPath = NULL, xmlPath = NULL) {
 
   #temporarily adjust any necessary option settings; revert back when done
   userOp <- options(OutDec = ".")
   on.exit(options(userOp), add = TRUE)
-  xmlPath <- NULL #will be future parameter
   filePathInfo <- validate_NAEPFilePaths(path, frPath, xmlPath)
 
   #check if this is a long-term trend file
@@ -54,7 +57,7 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
   if(isLTT){
     #TEMPORARY HOLD on THE LTT FILES UNTIL QC IS COMPLETE.  Remove this stop when ready.
     stop("The NAEP Long-Term Trend (LTT) data files are currently unsupported for analysis.")
-    
+
     if(filePathInfo$PreferredLayoutMethod == "XML"){
       xmlLayout <- parseNAEP_XML(filePathInfo$StudentXML)
       labelsFile <- xmlLayout$FileFormat #only assign the 'FileFormat", as xml returns a list object with much more data
@@ -82,8 +85,8 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
 
     if(!is.null(filePathInfo$SchoolDAT)) {
       if(filePathInfo$PreferredLayoutMethod == "XML"){
-        xmlLayout <- parseNAEP_XML(filePathInfo$SchoolXML)
-        schLabelsFile <- xmlLayout$FileFormat #only assign the 'FileFormat", as xml returns a list object with much more data
+        xmlLayoutSch <- parseNAEP_XML(filePathInfo$SchoolXML)
+        schLabelsFile <- xmlLayoutSch$FileFormat #only assign the 'FileFormat", as xml returns a list object with much more data
       } else { #FR2
         schLabelsFile <- readMRC(filePathInfo$SchoolFR2) #FR2 FILE
       }
@@ -164,9 +167,9 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
 
   #achievementLevelsHelp located in descriptionOfFile.R
   #each file will only have one achievement level scale associated with the file
-  levels <- achievementLevelsHelp(filePathInfo$FileDesc$Grade_Level, 
-                                  filePathInfo$FileDesc$Year, 
-                                  filePathInfo$FileDesc$Subject, 
+  levels <- achievementLevelsHelp(filePathInfo$FileDesc$Grade_Level,
+                                  filePathInfo$FileDesc$Year,
+                                  filePathInfo$FileDesc$Subject,
                                   filePathInfo$FileDesc$Assessment_Code)
 
   #apply the achievement levels only to the non-theta pvs
@@ -221,6 +224,11 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
     stratumVar <- ps["stratum"]
   }
 
+  #provide more detail as part of the assessment code for users
+  assessCode <- filePathInfo$FileDesc$Assessment_Code
+  if(grepl(".*", filePathInfo$FileDesc$Assessment_Sample)){
+    assessCode <- paste0(assessCode, " - ", filePathInfo$FileDesc$Assessment_Sample)
+  }
   # build the result list and return
   res <- edsurvey.data.frame(userConditions = list(),
                       defaultConditions = list(defaultConditions),
@@ -232,7 +240,7 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
                       pvvars = pvs,
                       subject = filePathInfo$FileDesc$Subject,
                       year = filePathInfo$FileDesc$Year,
-                      assessmentCode = filePathInfo$FileDesc$Assessment_Code,
+                      assessmentCode = assessCode,
                       dataType = filePathInfo$FileDesc$Data_Type,
                       gradeLevel = filePathInfo$FileDesc$Grade_Level,
                       achievementLevels = levels,
@@ -344,18 +352,30 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
       res <- linkVarAugment(res, subscaleWeights=subscaleWeights, subscales=subscales, composite=composite)
     }
   } # end if("dbapba" %in% colnames(res))
-  
+
   #applicable for main NAEP at this point
   if(!isLTT) {
-    res <- appendIRTAttributes_NAEP(esdf = res,
-                                    year = filePathInfo$FileDesc$Year,
-                                    subject = filePathInfo$FileDesc$Subject,
-                                    region = filePathInfo$FileDesc$Assessment_Code,
-                                    level = filePathInfo$FileDesc$Grade_Level,
-                                    fr2Path = filePathInfo$StudentFR2,
-                                    filePathInfo = filePathInfo)
+    
+    if(filePathInfo$PreferredLayoutMethod=="XML"){
+      #XML file already contains the IRT parameters and the XML parser returns the formats as needed for EdSurvey
+      res$scoreCard = xmlLayout$IRTParams$ScoreCard
+      res$dichotParamTab = xmlLayout$IRTParams$DichotParamTab
+      res$polyParamTab = xmlLayout$IRTParams$PolyParamTab
+      res$adjustedData = xmlLayout$IRTParams$AdjsutedData
+      res$testData = xmlLayout$IRTParams$TestData
+      res$scoreDict = xmlLayout$IRTParams$ScoreDict
+      res$scoreFunction = scoreDefault
+    }else{
+      res <- appendIRTAttributes_NAEP(esdf = res,
+                                      year = filePathInfo$FileDesc$Year,
+                                      subject = filePathInfo$FileDesc$Subject,
+                                      region = filePathInfo$FileDesc$Assessment_Code,
+                                      level = filePathInfo$FileDesc$Grade_Level,
+                                      fr2Path = filePathInfo$StudentFR2,
+                                      filePathInfo = filePathInfo)
+    }
   }
-  
+
 
   return(res)
 }
@@ -924,18 +944,6 @@ buildNAEP_dataList <- function(stuLaf, stuFF, schLaf, schFF){
   return(dataList)
 }
 
-getMu <- function(x, w) {
-  sum(x*w) / sum(w)
-}
-
-getS <- function(x, w, mu=NULL) {
-  if(is.null(mu)) {
-    mu <- getMu(x, w)
-  }
-  sqrt(sum( w* ((x-mu)^2)) / sum(w))
-}
-
-
 #1) path: validates and returns the 'path' argument for a valid Data (.dat) fixed-width data file for as well as the 'school' data (.dat) file
 #2) frPath: validates and returns information about the .fr2 layout file, and it's full file path (if available)
 #3) xmlPath: validates and returns information about the .xml layout file, and it's full file path (if available)
@@ -950,14 +958,14 @@ validate_NAEPFilePaths <- function(path, frPath, xmlPath){
   if(!grepl("[.]dat$", path, ignore.case = TRUE)) {
     stop(paste0("The specified ", dQuote("path"), " must have a .dat file extension: ", dQuote(path), "."))
   }
-  
+
   path <- suppressWarnings(normalizePath(unique(path), winslash = "/"))
   origDir <- dirname(path)
   searchDir <- file.path(dirname(path), "..") #search up one directory level from where file specified
-  
+
   fileBN <- basename(path)
   fileBN_NoExt <- toupper(sub("[.]dat$", "", fileBN, ignore.case = TRUE))
-  
+
 
   #==== .fr2 File checking ====
   fr2Specified <- FALSE
@@ -977,7 +985,7 @@ validate_NAEPFilePaths <- function(path, frPath, xmlPath){
     frPath <- suppressWarnings(normalizePath(unique(frPath), winslash = "/"))
     searchDir <- c(searchDir, dirname(frPath)) #expand out searchDir as well
   }
-  
+
   #==== .xml File checking ====
   xmlSpecified <- FALSE
   #check if frPath or xmlPath were passed
@@ -996,19 +1004,19 @@ validate_NAEPFilePaths <- function(path, frPath, xmlPath){
     xmlPath <- suppressWarnings(normalizePath(unique(xmlPath), winslash = "/"))
     searchDir <- c(searchDir, dirname(xmlPath)) #expand out searchDir as well
   }
-  
+
   #this function will throw specific NAEP filename errors if present
   datFileDesc <- descriptionOfFile(fileBN_NoExt) #function in descriptionOfFile.R file, does more error checking of specific filename there
-  
+
   #prep default ooutputs
   studentFileOut <- NULL
   schoolFileOut <- NULL
-  
+
   #if LTT file there is no school level file that we will need to search
   isLTT <- grepl("Long.*Term.*Trend", datFileDesc$Assessment_Code, ignore.case = TRUE)
   searchSchool <- !isLTT #default to check for school file if not LTT file
   searchStudent <- FALSE #assumes
-  
+
   #check if the school file was specified and search for the student file instead
   if(searchSchool && !grepl("student", datFileDesc$Data_Type, ignore.case = TRUE)){
     warning("Input file was a school level file. Attempting to read in student level file instead. EdSurvey will automatically link the school file.")
@@ -1016,16 +1024,16 @@ validate_NAEPFilePaths <- function(path, frPath, xmlPath){
   } else {
     studentFileOut <- path #user passed correct student level file!
   }
-  
+
   #do one single list.files for both student/school .fr2 and .xml files here in case folders are slow or have lots of contents
   dataFileRegex <- paste0("^", substr(fileBN_NoExt, 1, 4), "(C|T)", substr(fileBN_NoExt, 6, 99), "[.]dat$")
   dataFileMatches <- list.files(origDir, dataFileRegex, full.names = TRUE, recursive = FALSE, ignore.case = TRUE)
   dataFileBN <- basename(dataFileMatches)
-  
+
   if(searchSchool){
     fileRegex <- paste0("^", substr(fileBN_NoExt, 1, 4), "C", substr(fileBN_NoExt, 6, 99), "[.]dat$") #the 'C' signifies the school level file in the 5th character index
     foundFiles <- dataFileMatches[grepl(fileRegex, dataFileBN, ignore.case = TRUE)]
-    
+
     if(length(foundFiles)>0){
       schoolFileOut <- foundFiles[1] #default to first if more than one, but should only be one
     } else {
@@ -1035,11 +1043,11 @@ validate_NAEPFilePaths <- function(path, frPath, xmlPath){
       }
     }
   }
-  
+
   if(searchStudent){
     fileRegex <- paste0("^", substr(fileBN_NoExt, 1, 4), "T", substr(fileBN_NoExt, 6, 99), "[.]dat$") #the 'T' signifies the student level file in the 5th character index
     foundFiles <- dataFileMatches[grepl(fileRegex, dataFileBN, ignore.case = TRUE)]
-    
+
     if(length(foundFiles)>0){
       studentFileOut <- foundFiles[1] #default to first if more than one, but should only be one
     } else {
@@ -1047,12 +1055,12 @@ validate_NAEPFilePaths <- function(path, frPath, xmlPath){
                      "Be sure to specify the student level data file." ))
     }
   }
-  
+
   #do one single list.files for both student/school .fr2 and .xml files here in case folders are slow or have lots of contents
   layoutFileRegex <- paste0("^", substr(fileBN_NoExt, 1, 4), "(C|T)", substr(fileBN_NoExt, 6, 99), "[.](fr2|xml)$")
   layoutFileMatches <- list.files(searchDir, layoutFileRegex, full.names = TRUE, recursive = TRUE, ignore.case = TRUE)
   layoutFileBN <- basename(layoutFileMatches)
-  
+
   #==== .fr2 Layout Files ====
   fr2StudentFileOut <- NULL #default
   if(fr2Specified){ #if specified, ensure it's the student level .fr2 file
@@ -1064,17 +1072,17 @@ validate_NAEPFilePaths <- function(path, frPath, xmlPath){
   } else { #do the search
     fileRegex <- paste0("^", substr(fileBN_NoExt, 1, 4), "T", substr(fileBN_NoExt, 6, 99), "[.]fr2$") #the 'T' signifies the student level file in the 5th character index
     foundFiles <- layoutFileMatches[grepl(fileRegex, layoutFileBN, ignore.case = TRUE)]
-    
+
     if(length(foundFiles)>0){
       fr2StudentFileOut <- foundFiles[1] #default to first if more than one, but should only be one
     }
   }
-  
+
   fr2SchoolFileOut <- NULL #default
   if(searchSchool) {
     fileRegex <- paste0("^", substr(fileBN_NoExt, 1, 4), "C", substr(fileBN_NoExt, 6, 99), "[.]fr2$") #the 'C' signifies the school level file in the 5th character index
     foundFiles <- layoutFileMatches[grepl(fileRegex, layoutFileBN, ignore.case = TRUE)]
-    
+
     if(length(foundFiles)>0){
       fr2SchoolFileOut <- foundFiles[1] #default to first if more than one, but should only be one
     }
@@ -1091,17 +1099,17 @@ validate_NAEPFilePaths <- function(path, frPath, xmlPath){
   } else { #do the search
     fileRegex <- paste0("^", substr(fileBN_NoExt, 1, 4), "T", substr(fileBN_NoExt, 6, 99), "[.]xml$") #the 'T' signifies the student level file in the 5th character index
     foundFiles <- layoutFileMatches[grepl(fileRegex, layoutFileBN, ignore.case = TRUE)]
-    
+
     if(length(foundFiles)>0){
       xmlStudentFileOut <- foundFiles[1] #default to first if more than one, but should only be one
     }
   }
-  
+
   xmlSchoolFileOut <- NULL #default
   if(searchSchool) {
     fileRegex <- paste0("^", substr(fileBN_NoExt, 1, 4), "C", substr(fileBN_NoExt, 6, 99), "[.]xml$") #the 'C' signifies the school level file in the 5th character index
     foundFiles <- layoutFileMatches[grepl(fileRegex, layoutFileBN, ignore.case = TRUE)]
-    
+
     if(length(foundFiles)>0){
       xmlSchoolFileOut <- foundFiles[1] #default to first if more than one, but should only be one
     }
@@ -1109,7 +1117,7 @@ validate_NAEPFilePaths <- function(path, frPath, xmlPath){
 
   #recalc the file description with the true student file
   datFileDesc <- descriptionOfFile(toupper(sub("[.]dat$", "", basename(studentFileOut), ignore.case = TRUE)))
-  
+
   #determine what layout method to use based on what was passed, as well as what is available
   if(fr2Specified && !is.null(fr2StudentFileOut)){
     layoutMethod = "FR2"
@@ -1136,45 +1144,46 @@ validate_NAEPFilePaths <- function(path, frPath, xmlPath){
                   FR2Specified = fr2Specified,
                   XMLSpecified = xmlSpecified,
                   PreferredLayoutMethod = layoutMethod)
-  
+
   return(retList)
 }
+
 
 appendIRTAttributes_NAEP <- function(esdf, year, subject, region, level, fr2Path, filePathInfo) {
   
   #grab only the digits from the level (e.g. Grade 4 ==> 4)
   levelVal <- as.integer(regmatches(level, regexpr("\\d{1,2}", level, ignore.case = TRUE)))
   levelType <- tolower(regmatches(level, regexpr("\\w+", level, ignore.case = TRUE)))
-  
+
   # use NAEPirtparams package and filter to needed params
   params <- NAEPirtparams::parameters
-  
+
   #filter parameters for our file details
   paramsFilter <- params[params$year == year & tolower(params$subject) == tolower(subject) & params$level == levelVal & tolower(params$levelType) == levelType, ]
   
   hasNAEPirtparams <- nrow(paramsFilter) > 0 #eval to T/F
   if (hasNAEPirtparams) {
     paramsFilter$NAEPid <- tolower(paramsFilter$NAEPid)
-    
+
     if ("accom" %in% paramsFilter$accommodations){
       # Everything no-accom
       paramsFilter <- paramsFilter[!paramsFilter$accommodations=="accom", ]
     } else {
       paramsFilter <- paramsFilter[!paramsFilter$accommodations=="accom", ]
     }
-    
+
     if (tolower(region) == "state"){
       paramsFilter <- paramsFilter[tolower(paramsFilter$assessmentCode)=="state", ]
     } else {
       # This is National or not indicated
       paramsFilter <- paramsFilter[!tolower(paramsFilter$assessmentCode)=="state", ]
     }
-    
+
     #no parameters exist for thie file, break early
     if(nrow(paramsFilter)==0){
       return(esdf)
     }
-    
+
     # get deleted and/or adjusted items
     adjust <- NAEPirtparams::adjustments
     adjustData <- adjust[adjust$level==levelVal & tolower(adjust$subject) == tolower(subject) & adjust$year==year, ]
@@ -1191,43 +1200,43 @@ appendIRTAttributes_NAEP <- function(esdf, year, subject, region, level, fr2Path
     if (length(deletedItems) > 0) {
       paramsFilter <- paramsFilter[!paramsFilter$NAEPid %in% deletedItems, ]
     }
-    
+
     # get paramTabs
     paramTabs <- naepParamTabs(paramsFilter)
     polyParamTab <- paramTabs$polyParamTab
     dichotParamTab <- paramTabs$dichotParamTab
-    
+
     # building testDat
     # filter transformation constants
     transf <- NAEPirtparams::transformations
     transFilter <- transf[transf$level==levelVal & transf$year==year & tolower(transf$subject) == tolower(subject), ]
-    
+
     if ("accom" %in% transFilter$accommodations){
       # Everything no-accom for now
       transFilter <- transFilter[!transFilter$accommodations=="accom",]
     } else {
       transFilter <- transFilter[!transFilter$accommodations=="accom",]
     }
-    
+
     if ("State" == region){
       transFilter <- transFilter[tolower(transFilter$assessmentCode) == "state", ]
     } else {
       # This is National or not indicated
       transFilter <- transFilter[!tolower(transFilter$assessmentCode) == "state",]
     }
-    
+
     # filter to testDat
     testDat <- transFilter[, c("subtest", "location", "scale", "subtestWeight")]
-    
+
     #more than one test scale
     if (nrow(testDat) > 1 && anyNA(testDat$subtestWeight)) {
       compositeVars <- grepl("(composite|univariate)", testDat$subtest, ignore.case = TRUE)
-      
+
       if(any(compositeVars)){
         testDat <- testDat[!(compositeVars & is.na(testDat$subtestWeight)), ] #drop any composite vars with no subtest weight (ensure ! is evaluated after the & with the quotes!)
       }
     }
-    
+
     #test that if there are subtest weights, that they equal up to 100%
     if(!all(is.na(testDat$subtestWeight))){
       testSum <- sum(testDat$subtestWeight[!is.na(testDat$subtestWeight)])
@@ -1235,15 +1244,15 @@ appendIRTAttributes_NAEP <- function(esdf, year, subject, region, level, fr2Path
         warning(paste0("The IRT Test subscales don't equal 100% when it is expected."))
       }
     }
-    
+
     # default scoreCard
     scoreCard <- defaultNAEPScoreCard()
-    
+
     # check that there are no duplicate items in your paramTabs
     hasPolyDupes <- anyDuplicated(unique(polyParamTab[ , c("ItemID", "subtest")]))
     hasDichotDupes <- anyDuplicated(unique(polyParamTab[ , c("ItemID", "subtest")]))
     hasTestDupes <- anyDuplicated(unique(polyParamTab[ , c("subtest")]))
-    
+
     if (hasPolyDupes > 0 || hasDichotDupes > 0 || hasTestDupes > 0) {
       #THIS SHOULD NEVER HIT SINCE WE ARE ONLY USING NAEPirtparameters package
       warning("You have duplicate data in your NAEP IRT parameters table(s). Use a DCT file with the function setNAEPScoreCard to use mml.sdf.")
@@ -1260,13 +1269,13 @@ appendIRTAttributes_NAEP <- function(esdf, year, subject, region, level, fr2Path
         dichotParamTab$missingValue <- ifelse(is.na(dichotParamTab$answer), dichotParamTab$missingValue, dichotParamTab$answer)
         dichotParamTab$answer <- NULL
       }
-    } #end if (hasPolyDupes > 0 || hasDichotDupes > 0 || hasTestDupes > 0) 
-    
+    } #end if (hasPolyDupes > 0 || hasDichotDupes > 0 || hasTestDupes > 0)
+
     #check if composite/overall and add that in as the "test" for the param tabs
     pvvars <- names(esdf$pvvars)
     pvvars <- pvvars[!grepl("(_theta|_linking|_ap)$", pvvars, ignore.case = TRUE)] #remove thetas, linking, and accomodation pvvars from checks!
     compositePV <- pvvars[grepl("(composite|composite_ap|univariate|overall|scale_compos)", pvvars, ignore.case = TRUE)] #should only have 1 composite record!
-    
+
     if (length(compositePV) > 0 && nrow(testDat) > 0) {
       if(length(compositePV) > 1){
         warning(paste0("Multiple Composite Plausible Values found! Only first one will be used."))
@@ -1286,37 +1295,37 @@ appendIRTAttributes_NAEP <- function(esdf, year, subject, region, level, fr2Path
         testDat$test <- compositePV
       }
     }
-    
+
     #set the scorePoints for the polyParamTab here
     polyScorePoints <- unique(scoreDict[scoreDict$key %in% polyParamTab$ItemID, c("key", "scorePoints")])
     polyParamTab <- merge(polyParamTab, polyScorePoints, by.x = "ItemID", by.y = "key", all.x = TRUE)
-    
+
     #get unique list of the subtest/subscales for validation
     scaleNames <- unique(c(testDat$subtest, testDat$test))
-    
+
     #validate that all of test names match the pvvar names
     if (!all(pvvars %in% scaleNames)) {
-      
+
       badPV <- pvvars[!(pvvars %in% scaleNames)]
       badScales <- scaleNames[!(scaleNames %in% pvvars)]
-      
+
       if(length(badPV) > 0){
-        
-        fixDF <- data.frame(pvName = c("alg_fnctns", "alg_functns", 
+
+        fixDF <- data.frame(pvName = c("alg_fnctns", "alg_functns",
                                        "da_stat_prob",  "data_an_stat", "data_anal_prob", "data_analstat", "data_anal_stat",
-                                       "envsociety", 
-                                       "measurementgeom", 
-                                       "num_oper", 
-                                       "spaceplace", 
-                                       "spatial_dyn", 
+                                       "envsociety",
+                                       "measurementgeom",
+                                       "num_oper",
+                                       "spaceplace",
+                                       "spatial_dyn",
                                        "world_role"),
-                            scaleName = c("algebra", "algebra", 
+                            scaleName = c("algebra", "algebra",
                                           "data", "data", "data", "data", "data",
-                                          "environment", 
-                                          "measurement", 
-                                          "number", 
-                                          "space", 
-                                          "spatial", 
+                                          "environment",
+                                          "measurement",
+                                          "number",
+                                          "space",
+                                          "spatial",
                                           "world")
         )
         fixDF <- fixDF[fixDF$pvName %in% badPV & fixDF$scaleName %in% badScales, ]
@@ -1326,21 +1335,21 @@ appendIRTAttributes_NAEP <- function(esdf, year, subject, region, level, fr2Path
           dichotParamTab$subtest[dichotParamTab$subtest == fixDF[i, "scaleName"]] <- fixDF[i, "pvName"]
           polyParamTab$subtest[polyParamTab$subtest == fixDF[i, "scaleName"]] <- fixDF[i, "pvName"]
         }
-        
-        
+
+
         #recheck again if any issues still present
         scaleNames <- unique(c(testDat$subtest, testDat$test))
         badPV <- pvvars[!(pvvars %in% scaleNames)]
         badScales <- scaleNames[!(scaleNames %in% pvvars)]
-        
+
         if (length(badPV) > 0 && length(badScales) > 0) {
           warning(paste0("Mismatched Plausible Value names (", paste0(sQuote(badPV), collapse = ", "), ") and IRT Scale names (", paste0(sQuote(badScales), collapse = ", "), ")!"))
         }
-        
+
       }# end if(length(badPV) > 0)
-    } #end if (!all(pvvars %in% scaleNames)) 
-    
-    
+    } #end if (!all(pvvars %in% scaleNames))
+
+
     # set mml.sdf related objects as attributes
     esdf <- setAttributes(esdf, "scoreCard", scoreCard)
     esdf <- setAttributes(esdf, "dichotParamTab", dichotParamTab)
@@ -1364,6 +1373,7 @@ appendIRTAttributes_NAEP <- function(esdf, year, subject, region, level, fr2Path
       tryCatch(esdf <- suppressWarnings(setNAEPScoreCard(esdf, dctFP)), error=function(e) {} ) #use this function to set the IRT attributes, check why getNAEPScorecard throwing NA coercion warnings?
     }
   }
+
   return(esdf) #return original if data not found in NAEPirtparams, or the modified esdf if data located
 }
 
@@ -1381,7 +1391,7 @@ appendIRTAttributes_NAEP <- function(esdf, year, subject, region, level, fr2Path
 #' @param edf the data
 #' @param polyParamTab see \code{\link{mml.sdf}}
 #' @param dichotParamTab see \code{\link{mml.sdf}}
-#' @param scoreDict a data frame; see Details.  
+#' @param scoreDict a data frame; see Details.
 #' @details
 #' the \code{scoreDict} is a data frame in long format with columns \code{key}, \code{answer}, and \code{score}.
 #' the function maps, within the item identified by \code{key} from \code{answer} to \code{score}.
@@ -1390,7 +1400,7 @@ appendIRTAttributes_NAEP <- function(esdf, year, subject, region, level, fr2Path
 #'
 #' @seealso \code{\link{mml.sdf}}
 #' @author Paul Bailey and  Tom Fink
-#' 
+#'
 #' @export
 scoreDefault <- function(edf, polyParamTab, dichotParamTab, scoreDict) {
   # for NAEP

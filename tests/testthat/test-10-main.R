@@ -86,6 +86,11 @@ test_that("searchSDF",{
   search2 <- searchSDF(string=c("home|book"), data=sdf)
   search3 <- searchSDF(string="value", data=sdf, levels=TRUE)
 
+  #drop 'fileFormat' var for quick comparison, update the RDS when able
+  search1$fileFormat <- NULL
+  search2$fileFormat <- NULL
+  search3 $fileFormat <- NULL
+  
   searchSDFVector <- readRDS(file="searchSDFVector.rds")
   searchSDFOR <- readRDS(file="searchSDFOr.rds")
   searchSDFLevels <- readRDS(file="searchSDFLevels.rds")
@@ -129,6 +134,9 @@ test_that("getData", {
   attributes(gddat)$scoreFunction <- NULL
   attributes(gddat)$testData <- NULL
   attributes(gddat)$scoreDict <- NULL
+  attributes(gddat)$cacheDataLevelName <- NULL
+  attributes(gddat)$dataList$Student$conflictLevels <- NULL
+  attributes(gddat)$dataList$School$conflictLevels <- NULL
   expect_known_value(gddat, file="gddat.rds", update=FALSE)
 
   expect_known_value(gd7 <- getData(sdf, c("dsex", "b017451")), file="gd7.rds", update=FALSE)
@@ -248,17 +256,18 @@ test_that("subset throws an error", {
 })
 
 context("lm.sdf")
+lm1 <- lm.sdf( ~ dsex + b017451, sdf)
+slm1 <- summary(lm1, src=TRUE)
+slm1$formula <- NULL
+slm1$call <- NULL
+slm1$data <- NULL
+slm1$residuals <- head(lm1$residuals)
+slm1$PV.residuals <- head(lm1$PV.residuals)
+slm1$PV.fitted.values <- head(lm1$PV.fitted.values)
+slm1_read <- readRDS(file="lm1.rds")
+expect_equal(slm1, slm1_read)
+
 test_that("lm.sdf",{
-  lm1 <- lm.sdf( ~ dsex + b017451, sdf)
-  slm1 <- summary(lm1, src=TRUE)
-  slm1$formula <- NULL
-  slm1$call <- NULL
-  slm1$data <- NULL
-  slm1$residuals <- head(lm1$residuals)
-  slm1$PV.residuals <- head(lm1$PV.residuals)
-  slm1$PV.fitted.values <- head(lm1$PV.fitted.values)
-  slm1_read <- readRDS(file="lm1.rds")
-  expect_equal(slm1, slm1_read)
   skip_on_cran()
   lm1S <- lm.sdf( ~ dsex + b017451, sdf, standardizeWithSamplingVar=TRUE)
   withr::with_options(list(digits=4),
@@ -307,39 +316,46 @@ test_that("lm.sdf",{
 })
 
 context("lm.sdf Taylor series")
-test_that("lm.sdf Taylor series",{
-  expect_is(sdf_taylor <- lm.sdf(composite ~ sdracem + dsex + pared,
-                                 subset(sdf, pared == 1 | pared == 2, verbose=FALSE),
-                                 weightVar="origwt",
-                                 varMethod = "Taylor",
-                                 jrrIMax=Inf),
-            "edsurveyLm")
-  sdf_taylorWV <- lm.sdf(composite ~ sdracem + dsex + pared,
-                                 data=subset(sdf, pared == 1 | pared == 2, verbose=FALSE),
-                                 weightVar=origwt,
-                                 varMethod = "Taylor",
-                                 jrrIMax=Inf)
-  sdf_taylorWV$call <- sdf_taylor$call <- NULL
-  expect_equal(sdf_taylor, sdf_taylorWV) 
-  lm1t <- lm.sdf(composite ~ dsex + b017451, sdf, varMethod="Taylor")
-  lm1t$data <- NULL
-  lm1t$residuals <- head(lm1t$residuals)
 
-  lm1t$PV.residuals <- head(lm1t$PV.residuals)
-  lm1t$PV.fitted.values <- head(lm1t$PV.fitted.values)
-  expect_known_value(lm1t, "lm1t.rds", update=FALSE)
-  lm1jk <- lm.sdf(composite ~ dsex + b017451, sdf, varMethod="jackknife")
-  expect_equal(coef(lm1t), coef(lm1jk))
-  lm1jk$data <- NULL
-  lm1jk$residuals <- head(lm1jk$residuals)
-  lm1jk$PV.residuals <- head(lm1jk$PV.residuals)
-  lm1jk$PV.fitted.values <- head(lm1jk$PV.fitted.values)
-  lm1jk <- summary(lm1jk, src=TRUE)
-  lm1jk.ref <- readRDS("lm1.rds")
-  lm1jk$call <- lm1jk.ref$call <- NULL
-  lm1jk$formula <- NULL
-  expect_equal(lm1jk, lm1jk.ref)
-  # estimates should agree too
+expect_is(sdf_taylor <- lm.sdf(composite ~ sdracem + dsex + pared,
+                               subset(sdf, pared == 1 | pared == 2, verbose=FALSE),
+                               weightVar="origwt",
+                               varMethod = "Taylor",
+                               jrrIMax=Inf),
+          "edsurveyLm")
+expect_is(sdf_taylor <- lm.sdf(composite ~ sdracem + dsex + pared,
+                               data=subset(sdf, pared == 1 | pared == 2, verbose=FALSE),
+                               weightVar="origwt",
+                               varMethod = "Taylor",
+                               jrrIMax=Inf),
+          "edsurveyLm")
+sdf_taylorWV <- lm.sdf(composite ~ sdracem + dsex + pared,
+                               subset(sdf, pared == 1 | pared == 2, verbose=FALSE),
+                               weightVar=origwt,
+                               varMethod = "Taylor",
+                               jrrIMax=Inf)
+sdf_taylorWV$call <- sdf_taylor$call <- NULL
+expect_equal(sdf_taylor, sdf_taylorWV) 
+lm1t <- lm.sdf(composite ~ dsex + b017451, sdf, varMethod="Taylor")
+lm1t$data <- NULL
+lm1t$residuals <- head(lm1t$residuals)
+
+lm1t$PV.residuals <- head(lm1t$PV.residuals)
+lm1t$PV.fitted.values <- head(lm1t$PV.fitted.values)
+expect_known_value(lm1t, "lm1t.rds", update=FALSE)
+lm1jk <- lm.sdf(composite ~ dsex + b017451, sdf, varMethod="jackknife")
+expect_equal(coef(lm1t), coef(lm1jk))
+lm1jk$data <- NULL
+lm1jk$residuals <- head(lm1jk$residuals)
+lm1jk$PV.residuals <- head(lm1jk$PV.residuals)
+lm1jk$PV.fitted.values <- head(lm1jk$PV.fitted.values)
+lm1jk <- summary(lm1jk, src=TRUE)
+lm1jk.ref <- readRDS("lm1.rds")
+lm1jk$call <- lm1jk.ref$call <- NULL
+lm1jk$formula <- NULL
+expect_equal(lm1jk, lm1jk.ref)
+# estimates should agree too
+test_that("lm.sdf Taylor series",{
   skip_on_cran()
 
   lm2ta <- lm.sdf(composite ~ dsex + sdracem + yrsmath, sdf, varMethod="Taylor")
@@ -347,7 +363,7 @@ test_that("lm.sdf Taylor series",{
   # check only estimates
   expect_equal(coef(lm2ta), coef(lm2jka))
 
-  lm2t <- lm.sdf(composite ~ dsex + sdracem + yrsmath, sdf, varMethod="Taylor", relevel=list(dsex="Female"))
+  lm2t <- lm.sdf(composite ~ dsex + sdracem + yrsmath, sdf, relevels=list(dsex="Female"), varMethod="Taylor")
   lm2t$data <- NULL
   lm2t$residuals <- head(lm2t$residuals)
   lm2t$PV.residuals <- head(lm2t$PV.residuals)
@@ -543,9 +559,9 @@ test_that("percentile",{
 
 ######################## GAP TESTS FAIL ################
 context("return VarEstInputs")
+lm1 <- lm.sdf( ~ dsex + b017451, sdf, returnVarEstInputs=TRUE)
+expect_known_value(lm1$varEstInputs, "lm_varest.rds", update=FALSE)
 test_that("return VarEstInputs",{
-  lm1 <- lm.sdf( ~ dsex + b017451, sdf, returnVarEstInputs=TRUE)
-  expect_known_value(lm1$varEstInputs, "lm_varest.rds", update=FALSE)
   skip_on_cran()
   es1 <- edsurveyTable(composite ~ dsex + b017451, sdf, jrrIMax=1, returnVarEstInputs=TRUE)
   expect_known_value(list(es1$meanVarEstInputs, es1$pctVarEstInputs), file="est_varest.rds", update=FALSE)
@@ -954,19 +970,6 @@ test_that("levelsSDF with multiple recodes",{
   expect_equal(levelsSDFoutput, colsdf)
 })
 
-context('dplyr integration')
-test_that("dplyr integration",{
-  skip_if_not_installed("dplyr")
-  require(dplyr)
-  x <- sdf %>%
-       getData(varnames=c("composite", "geometry", "dsex", "b017451","c052601", "origwt"), addAttributes=TRUE) %>%
-       mutate(avg_5 = (as.numeric(mrpcm1) + as.numeric(mrpcm2) + as.numeric(mrpcm3) + as.numeric(mrpcm4) + as.numeric(mrpcm5))/5) %>%
-       rebindAttributes(sdf) %>%
-       lm.sdf(composite - geometry ~ avg_5, data=.)
-  co <- capture.output(summary(x))
-  expect_equal(co, dplO)
-})
-
 context('use returnNumberOfPSU')
 test_that("use returnNumberOfPSU", {
   skip_on_cran()
@@ -1102,3 +1105,15 @@ test_that("no PSU var error and warnings", {
   expect_error(res <- lm.sdf(composite ~ dsex, data=sdfNoPSU, varMethod="Taylor"), "jackknife")
   expect_error(res <- lm.sdf(composite ~ dsex, data=sdfNoPSU, varMethod="T", returnNumberOfPSU=T), "jackknife")
 })
+
+
+context('dplyr integration')
+skip_if_not_installed("dplyr")
+require(dplyr)
+x <- sdf %>%
+     getData(varnames=c("composite", "geometry", "dsex", "b017451","c052601", "origwt"), addAttributes=TRUE) %>%
+     mutate(avg_5 = (as.numeric(mrpcm1) + as.numeric(mrpcm2) + as.numeric(mrpcm3) + as.numeric(mrpcm4) + as.numeric(mrpcm5))/5) %>%
+     rebindAttributes(sdf) %>%
+     lm.sdf(composite - geometry ~ avg_5, data=.)
+co <- capture.output(summary(x))
+expect_equal(co, dplO)

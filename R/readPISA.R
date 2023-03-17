@@ -1132,7 +1132,8 @@ processPISA2015 <- function(filepath, verbose, countries, year) {
   on.exit(options(userOp), add=TRUE)
   userOp2 <- options(scipen = 999) #ensure no scientific notation
   on.exit(options(userOp2), add=TRUE)
-  if(memory.limit() < 16000) {
+  if(suppressWarnings(memory.limit()) < 16000) {
+    # only for older R versions
     memory.limit(16000) #COG takes a lot of memory to read in, increase memory limit to allow it to be read in.
   }
   studentSavFileList <- list.files(filepath, pattern = "stu.*\\.sav$", ignore.case=TRUE)
@@ -1551,7 +1552,7 @@ processPISA2018_FIN <- function(filepath, verbose, countries, year) {
   on.exit(options(userOp), add=TRUE)
   userOp2 <- options(scipen = 999) #ensure no scientific notation
   on.exit(options(userOp2), add=TRUE)
-  if(memory.limit() < 16000) {
+  if(suppressWarnings(memory.limit()) < 16000) {
     memory.limit(16000) #COG takes a lot of memory to read in, increase memory limit to allow it to be read in.
   }
   

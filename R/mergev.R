@@ -27,7 +27,7 @@
 #'                    simply returns a data.frame.
 #' @param verbose logical value indicating if output should be reported. Defaults to TRUE. Useful for testing.
 #' @param showWarnings logical value to output warning messages (TRUE) or suppress (FALSE).  Defaults to TRUE.
-#' @param ... additional parameters passed to merge.
+#' @param \dots additional parameters passed to merge.
 #'
 #' @details 
 #' This is a wrapper for the base package merge function that prints out verbose information 

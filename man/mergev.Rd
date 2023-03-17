@@ -62,7 +62,7 @@ simply returns a data.frame.}
 
 \item{showWarnings}{logical value to output warning messages (TRUE) or suppress (FALSE).  Defaults to TRUE.}
 
-\item{...}{additional parameters passed to merge.}
+\item{\dots}{additional parameters passed to merge.}
 }
 \value{
 depends on the value of \code{return.list}.

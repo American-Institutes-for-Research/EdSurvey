@@ -36,7 +36,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">EdSurvey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -116,7 +116,8 @@
   forceLower = TRUE,
   reqDecimalConversion = TRUE,
   fr2Path = NULL,
-  dim0 = NULL
+  dim0 = NULL,
+  cacheDataLevelName = NULL
 )
 
 # S3 method for edsurvey.data.frame
@@ -236,11 +237,15 @@ Examples include <code>Student</code>, <code>teacher</code>, <code>school</code>
 
 
 <dt>fr2Path</dt>
-<dd><p>a character file location for NAEP assessments to identify the locaiton of the codebook file in <code>fr2</code> format</p></dd>
+<dd><p>a character file location for NAEP assessments to identify the location of the codebook file in <code>fr2</code> format</p></dd>
 
 
 <dt>dim0</dt>
 <dd><p>numeric vector of length two. To speed construction, the dimensions of the data can be provided</p></dd>
+
+
+<dt>cacheDataLevelName</dt>
+<dd><p>a character value set to match the named element in the <code>dataList</code> to utilize the data caching scheme.  See details.</p></dd>
 
 
 <dt>x</dt>
@@ -376,6 +381,10 @@ that has plausible values. Each element is a list with a <code>varnames</code>
 element that indicates the column names of the plausible values and an
 <code>achievementLevel</code> argument that is a named vector of the 
 achievement-level cutpoints.</p>
+<p>An <code>edsurvey.data.frame</code> implements a unique data caching mechanism that allows users to create and merge data columns for flexibility.
+This <code>cache</code> object is a single <code>data.frame</code> that is an element in the <code>edsurvey.data.frame</code>. To accommodate studies with complex data models
+the cache can only support one data level at this time. The <code>cacheDataLevelName</code> parameter indicates which named element in the <code>dataList</code> 
+the cache is indicated. The default value <code>cacheDataLevelName = NULL</code> will set the first item in the <code>dataList</code> as the <code>cache</code> level for an <code>edsurvey.data.frame</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="edsurvey-classes">EdSurvey Classes<a class="anchor" aria-label="anchor" href="#edsurvey-classes"></a></h2>

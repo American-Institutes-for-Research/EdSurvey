@@ -34,7 +34,7 @@ test_that("TIMSS data reads in correctly", {
   expect_silent(dnk4.19 <<- readTIMSS(file.path(edsurveyHome, "TIMSS", "2019"), countries="dnk", gradeLvl = 4, forceReread = forceCacheUpdate, verbose=FALSE))
 
   expect_silent(multiESDFL <<- readTIMSS(path=c(file.path(edsurveyHome, "TIMSS", "2007"),
-                                               file.path(edsurveyHome, "TIMSS", "2011")), 
+                                               file.path(edsurveyHome, "TIMSS", "2011")),
                                         countries = c("usa", "fin"), gradeLvl = 8, verbose=FALSE)) #test multipath read
 
   expect_is(sgp8.03, "edsurvey.data.frame")
@@ -51,11 +51,11 @@ test_that("TIMSS data reads in correctly", {
   expect_equal(dim(zaf8.15), c(25029, 2432))
   expect_equal(dim(dnk4.19), c(5131, 3674))
   expect_equal(length(multiESDFL$datalist), 3)
-  
+
   co <- capture.output(multiESDFL$covs)
-  co.ref <- c("  year       country", 
-              "1 2007 United States", 
-              "2 2011 United States", 
+  co.ref <- c("  year       country",
+              "1 2007 United States",
+              "2 2011 United States",
               "3 2011       Finland")
   expect_equal(co, co.ref)
 })
@@ -104,7 +104,7 @@ test_that("TIMSS edsurveyTable",{
               "    GIRL 4020 1712811 50.9237 0.5773892 536.5267 3.226353",
               "     BOY 3866 1650674 49.0763 0.5773892 534.0332 3.377425")
   expect_equal(co, co.ref)
-  
+
   withr::with_options(list(digits=7), co <- capture.output(edsurveyTable(srea ~ bsbg01, zaf8.15)))
   co.ref <- c("",
               "Formula: srea ~ bsbg01 ",
@@ -130,87 +130,100 @@ test_that("TIMSS edsurveyTable",{
 
 context("TIMSS lm.sdf")
 test_that("TIMSS lm.sdf",{
-  lm1t <- lm.sdf(mmat ~ asbg01 + asbgssb, kwt4.15, varMethod="Taylor", returnNumberOfPSU=TRUE)
-  withr::with_options(list(digits=7), co <- capture.output(lm1t))
-  co.ref <- c("(Intercept)   asbg01BOY     asbgssb ", 
+
+  withr::with_options(list(digits=7, scipen=0), {
+      lm1t <- lm.sdf(mmat ~ asbg01 + asbgssb, kwt4.15, varMethod="Taylor", returnNumberOfPSU=TRUE)
+      lm1t$nPSU <- NULL
+      co1 <- capture.output(lm1t)
+
+      lm1j <- lm.sdf(mmat ~ asbg01 + asbgssb, kwt4.15, varMethod="jackknife", returnNumberOfPSU=TRUE)
+      lm2t <- lm.sdf(itsex ~ asbgssb, kwt4.15, varMethod="Taylor", returnNumberOfPSU=TRUE)
+      lm2j <- lm.sdf(itsex ~ asbgssb, kwt4.15, varMethod="jackknife", returnNumberOfPSU=TRUE)
+      lm1jk <- lm.sdf(ssci ~ bsbg01 + bsbg12c, usa8.11, varMethod="jackknife")
+
+      co2 <- capture.output(lm1jk)
+      co3 <- capture.output(summary(lm1t))
+      co4 <- capture.output(summary(lm1jk))
+    })
+
+  co.ref <- c("(Intercept)   asbg01BOY     asbgssb ",
               "364.9699220 -12.4878760  -0.5142928 ")
-  expect_equal(co, co.ref)
-  expect_is(waldTest(lm1t, "asbgssb"), "edsurveyWaldTest") 
+  expect_equal(co1, co.ref)
+  expect_is(waldTest(lm1t, "asbgssb"), "edsurveyWaldTest")
   expect_equal(unname(sqrt(diag(vcov(lm1t)))), lm1t$coefmat$se)
-  lm1j <- lm.sdf(mmat ~ asbg01 + asbgssb, kwt4.15, varMethod="jackknife", returnNumberOfPSU=TRUE)
+
+
+
   expect_equal(unname(sqrt(diag(vcov(lm1j)))), lm1j$coefmat$se)
   expect_is(waldTest(lm1j, "asbgssb"), "edsurveyWaldTest")
-  
-  lm2t <- lm.sdf(itsex ~ asbgssb, kwt4.15, varMethod="Taylor", returnNumberOfPSU=TRUE)
+
+
   expect_equal(unname(sqrt(diag(vcov(lm2t)))), lm2t$coefmat$se)
   expect_is(waldTest(lm2t, "asbgssb"), "edsurveyWaldTest")
 
-  lm2j <- lm.sdf(itsex ~ asbgssb, kwt4.15, varMethod="jackknife", returnNumberOfPSU=TRUE)
+
   expect_equal(unname(sqrt(diag(vcov(lm2j)))), lm2j$coefmat$se)
   expect_is(waldTest(lm2j, "asbgssb"), "edsurveyWaldTest")
 
-  lm1jk <- lm.sdf(ssci ~ bsbg01 + bsbg12c, usa8.11, varMethod="jackknife")
-  withr::with_options(list(digits=7), co <- capture.output(lm1jk))
-  co.ref1 <- c("             (Intercept)                bsbg01BOY    bsbg12cAGREE A LITTLE bsbg12cDISAGREE A LITTLE    bsbg12cDISAGREE A LOT ", 
+
+  co.ref1 <- c("             (Intercept)                bsbg01BOY    bsbg12cAGREE A LITTLE bsbg12cDISAGREE A LITTLE    bsbg12cDISAGREE A LOT ",
                "              530.622228                11.701545                -8.917658               -20.192490               -40.085668 ")
-  expect_equal(co, co.ref1)
-  
-  lm1t$nPSU <- NULL
-  withr::with_options(list(digits=7), co <- capture.output(summary(lm1t)))
+  expect_equal(co2, co.ref1)
+
+
   co.ref2 <- c("",
                "Formula: mmat ~ asbg01 + asbgssb",
                "",
-               "Weight variable: 'totwgt'", 
+               "Weight variable: 'totwgt'",
                "Variance method: Taylor series",
                "Plausible values: 5",
-               "jrrIMax: 5", 
+               "jrrIMax: 5",
                "full data n: 11318",
                "n used: 6704",
                "",
                "Coefficients:",
-               "                 coef        se        t    dof Pr(>|t|)    ", 
-               "(Intercept) 364.96992  15.20664 24.00069 24.170  < 2e-16 ***", 
-               "asbg01BOY   -12.48788   6.00111 -2.08093 17.596  0.05234 .  ", 
-               "asbgssb      -0.51429   1.18887 -0.43259 38.286  0.66774    ", 
+               "                 coef        se        t    dof Pr(>|t|)    ",
+               "(Intercept) 364.96992  15.20664 24.00069 24.170  < 2e-16 ***",
+               "asbg01BOY   -12.48788   6.00111 -2.08093 17.596  0.05234 .  ",
+               "asbgssb      -0.51429   1.18887 -0.43259 38.286  0.66774    ",
                "---",
-               "Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1", 
+               "Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
                "",
                "Multiple R-squared: 0.0036",
                "")
-  expect_equal(co, co.ref2)
-  
-  withr::with_options(list(digits=7), co <- capture.output(summary(lm1jk)))
+  expect_equal(co3, co.ref2)
+
   co.ref3 <- c("",
                "Formula: ssci ~ bsbg01 + bsbg12c",
                "",
-               "Weight variable: 'totwgt'", 
+               "Weight variable: 'totwgt'",
                "Variance method: jackknife",
                "JK replicates: 150",
-               "Plausible values: 5", 
+               "Plausible values: 5",
                "jrrIMax: 1",
                "full data n: 20859",
                "n used: 10319",
                "",
                "Coefficients:",
-               "                             coef       se        t     dof  Pr(>|t|)    ", 
-               "(Intercept)              530.6222   3.1016 171.0782 128.797 < 2.2e-16 ***", 
-               "bsbg01BOY                 11.7015   2.2822   5.1273 118.079 1.163e-06 ***", 
-               "bsbg12cAGREE A LITTLE     -8.9177   2.5260  -3.5303 143.706 0.0005581 ***", 
-               "bsbg12cDISAGREE A LITTLE -20.1925   3.4035  -5.9329  87.353 5.852e-08 ***", 
-               "bsbg12cDISAGREE A LOT    -40.0857   4.3027  -9.3164  89.639 7.815e-15 ***", 
+               "                             coef       se        t     dof  Pr(>|t|)    ",
+               "(Intercept)              530.6222   3.1016 171.0782 128.797 < 2.2e-16 ***",
+               "bsbg01BOY                 11.7015   2.2822   5.1273 118.079 1.163e-06 ***",
+               "bsbg12cAGREE A LITTLE     -8.9177   2.5260  -3.5303 143.706 0.0005581 ***",
+               "bsbg12cDISAGREE A LITTLE -20.1925   3.4035  -5.9329  87.353 5.852e-08 ***",
+               "bsbg12cDISAGREE A LOT    -40.0857   4.3027  -9.3164  89.639 7.815e-15 ***",
                "---",
-               "Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1", 
+               "Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
                "",
                "Multiple R-squared: 0.0302",
                "")
-  expect_equal(co, co.ref3)
+  expect_equal(co4, co.ref3)
 })
 
 context("TIMSS showPlausibleValues and showWeights verbose output agrees")
 test_that("TIMSS showPlausibleValues and showWeights verbose output agrees",{
   co <- capture.output(showPlausibleValues(usa4.07,verbose=TRUE))
   expect_equal(co, spv)
-  
+
   co <- capture.output(showWeights(usa4.07,verbose=TRUE))
   expect_equal(co, swREF)
 })
@@ -219,11 +232,11 @@ context("TIMSS getData")
 test_that("TIMSS getData", {
   expect_known_value(gd1 <- getData(fin4.11, c("asbg01", "mmat")), file="TIMSSgd1.rds", update=FALSE)
   expect_known_value(gd2 <- getData(usa4.07, c("as4gth03", "idschool", "ssci", "totwgt"), defaultConditions=FALSE), file="TIMSSgd2.rds", update=FALSE)
-  
+
   #test a getData call with teacher level variable ensure warning is returned
   tchWrn <- capture_warnings(gd3 <- getData(kwt4.15, c("mgeo", "idstud", "atbg10f"), dropUnusedLevels=FALSE))
   expect_known_value(gd3, file="TIMSSgd3.rds", update=FALSE, check.attributes=FALSE)
-  
+
   kwt4_males <- EdSurvey:::subset(kwt4.15, asbg01 %in% "BOY", verbose=FALSE)
   expect_equal(dim(kwt4_males), c(5252, 2262))
 })
@@ -242,19 +255,19 @@ test_that("TIMSS showCutPoints",{
 context("TIMSS userConditions")
 test_that("TIMSS userConditions", {
   usa4.07.cleaned <- rename.sdf(usa4.07,"as4golan","asbg03")
-  usa4.07.cleaned <- recode.sdf(usa4.07.cleaned, recode = list(asbg03 = list(from = c("ALWAYS","ALMOST ALWAYS"), 
-                                                                             to = "FREQUENTLY"), 
-                                                               asbg03 = list(from = c("SOMETIMES","NEVER"), 
+  usa4.07.cleaned <- recode.sdf(usa4.07.cleaned, recode = list(asbg03 = list(from = c("ALWAYS","ALMOST ALWAYS"),
+                                                                             to = "FREQUENTLY"),
+                                                               asbg03 = list(from = c("SOMETIMES","NEVER"),
                                                                              to = "INFREQUENTLY")))
   # the rename variable has NA but it shouldn't affect getData
   expect_equal(dim(usa4.07), dim(usa4.07.cleaned))
   expect_equal(getData(usa4.07,"itsex"), getData(usa4.07.cleaned,"itsex"))
-  
+
   expect_equal(gap("mmat",usa4.07.cleaned)$results, gap("mmat",usa4.07)$results)
 })
 context("TIMSS percentile")
 test_that("TIMSS percentile",{
-  withr::with_options(list(digits=5),
+  withr::with_options(list(digits=5, scipen=0),
                       co <- suppressWarnings(capture.output(percentile("mmat", c(0,1,25,50,75,99,100), usa4.07, pctMethod = "unbiased")))
                       )
   expect_equal(co, pctREF)
@@ -266,13 +279,13 @@ test_that("TIMSS glm", {
   usa4recode <- getData(usa4.07,varnames=c("as4srbsc", "itsex", "at4gsex", "tchwgt"), addAttributes=TRUE, returnJKreplicates=TRUE)
   usa4recode$readSciOften <- ifelse(usa4recode$as4srbsc %in% c("AT LEAST ONCE A WEEK", "ONCE OR TWICE A MONTH"), 1, 0)
   logit1 <- logit.sdf(readSciOften ~ itsex + at4gsex, data=usa4recode, weight="tchwgt")
-  
-  withr::with_options(list(digits=7), co <- capture.output(summary(logit1)))
+
+  withr::with_options(list(digits=7, scipen=0), co <- capture.output(summary(logit1)))
   expect_equal(co, logit1REF)
-  
+
   probit1 <- probit.sdf(readSciOften ~ itsex + at4gsex, data=usa4recode, weight="tchwgt")
-  
-  withr::with_options(list(digits=7), co <- capture.output(summary(probit1)))
+
+  withr::with_options(list(digits=7, scipen=0), co <- capture.output(summary(probit1)))
   expect_equal(co, probit1REF)
 })
 
@@ -282,37 +295,42 @@ test_that("TIMSS student-teacher merge on recode", {
   ## The bug is that a recode of a teacher level variable triggered
   ## reading the teacher data, which duplicates many student records
   # Recode teacher level variable (variable not included in example analysis)
-  kwt4.15B <- recode.sdf(kwt4.15,
-                         recode = list(atbm07a = list(from = "NO MATHEMATICS HOMEWORK",
-                                                      to   = "NO MATH HOMEWORK"))) 
-  #Run same analysis again, this time with different results and different N
-  es1 <- edsurveyTable(mmat ~ itsex, kwt4.15, weightVar = "totwgt", jrrIMax = 1)
-  es2 <- edsurveyTable(mmat ~ itsex, kwt4.15B, weightVar = "totwgt", jrrIMax = 1)
+
+  withr::with_options(list(digits=7, scipen=0), {
+    kwt4.15B <- recode.sdf(kwt4.15,
+                           recode = list(atbm07a = list(from = "NO MATHEMATICS HOMEWORK",
+                                                        to   = "NO MATH HOMEWORK")))
+    #Run same analysis again, this time with different results and different N
+    es1 <- edsurveyTable(mmat ~ itsex, kwt4.15, weightVar = "totwgt", jrrIMax = 1)
+    es2 <- edsurveyTable(mmat ~ itsex, kwt4.15B, weightVar = "totwgt", jrrIMax = 1)
+  })
+
   expect_equal(es1, es2)
 })
 
 context("TIMSS gap")
 test_that("TIMSS gap", {
-  # varEstInputs
-  g3d <- gap("mmat", fin4.11, asbg01=="BOY", returnVarEstInputs=TRUE, achievementLevel=c("Intermediate International Benchmark"), achievementDiscrete=TRUE)
-  # gap percentile
-  g2p <- gap("mmat", fin4.11, asbg01=="BOY", asbg01=="GIRL", percentile=c(50, 90), pctMethod = "symmetric")
-  # gap achievement levels, discrete
-  g1al <- gap("mmat", fin4.11, asbg01=="BOY", asbg01=="GIRL", achievementLevel="Low International Benchmark", achievementDiscrete=TRUE)
-  # gap percentage with recode
-  g1eq <- gap("asbg07d", fin4.11, asbg01=="BOY", asbg01=="GIRL", targetLevel="ONCE OR TWICE A WEEK")
-  
-  withr::with_options(list(digits=7), co <- capture.output(g3d))
-  expect_equal(co, g3dREF)
-  
-  withr::with_options(list(digits=7), co <- capture.output(g2p))
-  expect_equal(co, g2pREF)
-  
-  withr::with_options(list(digits=7), co <- capture.output(g1al))
-  expect_equal(co, g1alREF)
-  
-  withr::with_options(list(digits=7), co <- capture.output(g1eq))
-  expect_equal(co, g1eqREF)
+
+  withr::with_options(list(digits = 7, scipen=0), {
+    # varEstInputs
+    g3d <- gap("mmat", fin4.11, asbg01=="BOY", returnVarEstInputs=TRUE, achievementLevel=c("Intermediate International Benchmark"), achievementDiscrete=TRUE)
+    # gap percentile
+    g2p <- gap("mmat", fin4.11, asbg01=="BOY", asbg01=="GIRL", percentile=c(50, 90), pctMethod = "symmetric")
+    # gap achievement levels, discrete
+    g1al <- gap("mmat", fin4.11, asbg01=="BOY", asbg01=="GIRL", achievementLevel="Low International Benchmark", achievementDiscrete=TRUE)
+    # gap percentage with recode
+    g1eq <- gap("asbg07d", fin4.11, asbg01=="BOY", asbg01=="GIRL", targetLevel="ONCE OR TWICE A WEEK")
+
+    co1 <- capture.output(g3d)
+    co2 <- capture.output(g2p)
+    co3 <- capture.output(g1al)
+    co4 <- capture.output(g1eq)
+  })
+
+  expect_equal(co1, g3dREF)
+  expect_equal(co2, g2pREF)
+  expect_equal(co3, g1alREF)
+  expect_equal(co4, g1eqREF)
 })
 
 
@@ -344,7 +362,7 @@ test_that("TIMSS gap dynamic subsets", {
   gd2 <- getData(usa4.07, c("totwgt", "itsex", "mmat"), defaultConditions=FALSE, addAttributes=TRUE)
   gapResult <- gap(variable = 'mmat', data = gd2,
                    groupA=itsex %in% "GIRL")
-  
+
   gapResult2 <- gap(variable = 'mmat', data = gd2,
                     groupA=itsex %in% levelLabels[1])
 
@@ -357,47 +375,38 @@ test_that("TIMSS gap dynamic subsets", {
 
 context("mml.sdf")
 test_that("mml.sdf", {
-  # load data 
+  # load data
   usa4.15 <- readTIMSS(file.path(edsurveyHome, "TIMSS", "2015"), countries="usa", grade = c("4"), verbose=FALSE)
-  
+
   pv <- c("mmat")
   wgt <- "totwgt"
   pvi <- getAllItems(usa4.15, pv)
   psustr <- c(getPSUVar(usa4.15, wgt), getStratumVar(usa4.15, wgt))
   otherVars <- c("ROWID", "asbg05a")
-  
-  lesdf <- suppressWarnings(getData(usa4.15, varnames = c(pv, pvi, psustr, wgt, otherVars), omittedLevels = FALSE, addAttributes = TRUE, returnJKreplicates = TRUE))
-  # run mml
-  mml1 <- suppressWarnings(mml.sdf(mmat ~ 1, usa4.15, weightVar='totwgt', verbose=FALSE))
-  mml2 <- suppressWarnings(mml.sdf(mmat ~ 1, lesdf, weightVar='totwgt', verbose=FALSE)) #test with light.edsurvey.data.frame
-  
-  mml3 <- suppressWarnings(mml.sdf(mmat ~ asbg05a, usa4.15, weightVar='totwgt', omittedLevels = FALSE, verbose=FALSE)) #86 rows removed from analysis message
-  mml4 <- suppressWarnings(mml.sdf(mmat ~ asbg05a, lesdf, weightVar='totwgt', omittedLevels = FALSE, verbose=FALSE))
-  
-  # intercept 
-  coInt1 <- withr::with_options(list(digits=4),
-                               capture.output(mml1)
-                               )
-  coInt2 <- withr::with_options(list(digits=4),
-                                capture.output(mml2)
-  )
-  coInt3 <- withr::with_options(list(digits=4),
-                                capture.output(mml3)
-  )
-  coInt4 <- withr::with_options(list(digits=4),
-                                capture.output(mml4)
-  )
+
+  withr::with_options(list(digits=4, scipen=0),{
+    lesdf <- suppressWarnings(getData(usa4.15, varnames = c(pv, pvi, psustr, wgt, otherVars), omittedLevels = FALSE, addAttributes = TRUE, returnJKreplicates = TRUE))
+    # run mml
+    mml1 <- suppressWarnings(mml.sdf(mmat ~ 1, usa4.15, weightVar='totwgt', verbose=TRUE))
+    mml2 <- suppressWarnings(mml.sdf(mmat ~ 1, lesdf, weightVar='totwgt', verbose=TRUE)) #test with light.edsurvey.data.frame
+
+    mml3 <- suppressWarnings(mml.sdf(mmat ~ asbg05a, usa4.15, weightVar='totwgt', omittedLevels = FALSE, verbose=TRUE)) #86 rows removed from analysis message
+    mml4 <- suppressWarnings(mml.sdf(mmat ~ asbg05a, lesdf, weightVar='totwgt', omittedLevels = FALSE, verbose=TRUE))
+
+    # intercept
+    coInt1 <- capture.output(mml1)
+    coInt2 <- capture.output(mml2)
+    coInt3 <- capture.output(mml3)
+    coInt4 <- capture.output(mml4)
+
+    coSum1 <- capture.output(summary(mml1))
+    coSum2 <- capture.output(summary(mml2))
+  })
+
   expect_equal(coInt1, mmlIntREF)
   expect_equal(coInt1, coInt2)
   expect_equal(coInt3, coInt4)
-  # summary 
-  coSum1 <- withr::with_options(list(digits=4),
-                               capture.output(summary(mml1))
-                               )
-  coSum2 <- withr::with_options(list(digits=4),
-                                capture.output(summary(mml2))
-  )
-  
+
   #remove 'data = xxx' and 'object = xxx' from summary output to test for equality between esdf and light esdf
   dataRegex <-  "data = (\\w|[.])+"
   objRegex <- "[(]object = \\w+[)]"
@@ -405,7 +414,7 @@ test_that("mml.sdf", {
   coSum1x <- sub(objRegex, "", coSum1x, ignore.case = FALSE)
   coSum2x <- sub(dataRegex, "", coSum2, ignore.case = FALSE)
   coSum2x <- sub(objRegex, "", coSum2x, ignore.case = FALSE)
-  
+
   #don't compare the 'iterations = ##' value, remove that from the comparison
   expect_equal(dropIterations(coSum1), dropIterations(mmlSumREF))
   expect_equal(coSum1x, coSum2x)

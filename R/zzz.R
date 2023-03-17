@@ -8,4 +8,4 @@ globalVariables(c("variable", "w", "c2", "dofNum", "dofDenom", "lengthY",
                   "Vimp", "Level", "JKreplicate", "PV", "V1", "cnt_index",
                   "w_lmi", "StandardError", "flag1", "wtdN2", "Denom",
                   "DenomGroup", ".GRP", "answer", "Year", "..by.x", "..by.y",
-                  "component", "maxRound"))
+                  "component", "maxRound", "variableName"))

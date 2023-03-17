@@ -16,8 +16,16 @@ print.edsurvey.data.frame <- function(x, printColnames = FALSE, ...) {
     stop(paste0(sQuote("x"), " must be an edsurvey.data.frame"))
   }
   dm <- dim(x)
-  txt <- paste0("edsurvey.data.frame for ", x$year, " ", x$survey, " (",
-                pasteItems(x$subject),") in ", x$country, "\n")
+  parenText <- paste0(pasteItems(x$subject))
+  if("gradeLevel" %in% names(x) && length(x$gradeLevel) > 0) {
+    parenText <- paste0(parenText, "; ", pasteItems(x$gradeLevel))
+  }
+  surveyText <- x$survey
+  if("assessmentCode" %in% names(x) && length(x$assessmentCode) > 0) {
+    surveyText <- paste0(surveyText, " ", pasteItems(x$assessmentCode))
+  }
+  txt <- paste0("edsurvey.data.frame for ", x$year, " ", surveyText, " (",
+                parenText, ") in ", x$country, "\n")
   txt <- paste0(txt, "\n")
   eout(txt)
 

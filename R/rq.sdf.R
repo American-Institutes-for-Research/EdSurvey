@@ -581,7 +581,11 @@ calc.rq.sdf <- function(formula,
   if(returnNumberOfPSU) {
     stratumVar <- getAttributes(data, "stratumVar")
     psuVar <- getAttributes(data, "psuVar")
-    res <- c(res, list(nPSU=nrow(unique(edf[,c(stratumVar, psuVar)]))))
+    if("JK1" %in% stratumVar) {
+      res <- c(res, list(nPSU=nrow(edf)))
+    } else {
+      res <- c(res, list(nPSU=nrow(unique(edf[,c(stratumVar, psuVar)]))))
+    }
   }
   if(returnVarEstInputs) {
     res <- c(res, list(returnVarEstInputs=returnVarEstInputs))

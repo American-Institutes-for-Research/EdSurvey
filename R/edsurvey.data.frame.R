@@ -45,7 +45,8 @@
 #' @param validateFactorLabels a Boolean that indicates whether the \code{getData} function needs to validate factor variables
 #' @param forceLower a Boolean; when set to \code{TRUE}, will automatically lowercase variable names
 #' @param reqDecimalConversion a Boolean; when set to \code{TRUE}, a \code{getData} call will multiply the raw file value by a decimal multiplier
-#' @param fr2Path a character file location for NAEP assessments to identify the locaiton of the codebook file in \code{fr2} format
+#' @param cacheDataLevelName a character value set to match the named element in the \code{dataList} to utilize the data caching scheme.  See details.
+#' @param fr2Path a character file location for NAEP assessments to identify the location of the codebook file in \code{fr2} format
 #' @param x an \code{edsurvey.data.frame}
 #' @param i a character, the column name to extract
 #' @param attribute a character, name of an attribute to get or set
@@ -76,6 +77,11 @@
 #' element that indicates the column names of the plausible values and an
 #' \code{achievementLevel} argument that is a named vector of the 
 #' achievement-level cutpoints.
+#' 
+#' An \code{edsurvey.data.frame} implements a unique data caching mechanism that allows users to create and merge data columns for flexibility.
+#' This \code{cache} object is a single \code{data.frame} that is an element in the \code{edsurvey.data.frame}. To accommodate studies with complex data models
+#' the cache can only support one data level at this time. The \code{cacheDataLevelName} parameter indicates which named element in the \code{dataList} 
+#' the cache is indicated. The default value \code{cacheDataLevelName = NULL} will set the first item in the \code{dataList} as the \code{cache} level for an \code{edsurvey.data.frame}.
 #'
 #'
 #' @return
@@ -185,7 +191,8 @@ edsurvey.data.frame <- function(userConditions,
                                 forceLower=TRUE,
                                 reqDecimalConversion=TRUE,
                                 fr2Path=NULL,
-                                dim0=NULL) {
+                                dim0=NULL,
+                                cacheDataLevelName=NULL) {
   
   if (is.list(achievementLevels)) {
     achievementLevels <- lapply(achievementLevels, function(l) {
@@ -211,6 +218,10 @@ edsurvey.data.frame <- function(userConditions,
   hasDim0 <- all(is.numeric(dim0)) #logical to indicate if dim0 was user provided in constructor
   if(!hasDim0){
     dim0 <- c(0,0) #temporary holder until we create the edsurvey.data.frame, then we will update it
+  }
+  
+  if(is.null(cacheDataLevelName)){
+    cacheDataLevelName <- names(dataList)[1] #use first dataListItem level if not specified as default
   }
   
   if(forceLower) {
@@ -246,6 +257,7 @@ edsurvey.data.frame <- function(userConditions,
               recodes=recodes,
               dim0=dim0, #update after it's reclassed to an edsurvey.data.frame (if not user supplied)
               validateFactorLabels=validateFactorLabels,
+              cacheDataLevelName=cacheDataLevelName,
               reqDecimalConversion=reqDecimalConversion,
               fr2Path=fr2Path,
               dichotParamTab=NULL, #IRT Param
@@ -265,14 +277,16 @@ edsurvey.data.frame <- function(userConditions,
   
   
   if(is.null(defaultConditions) || is.na(defaultConditions)){
-    cache <- data.frame(ROWID=1:(dataList[[1]]$nrow),
+    cache <- data.frame(ROWID=1:(dataList[[cacheDataLevelName]]$nrow),
                         DEFAULT=TRUE)
   } else { #default conditions are supplied, calculate them here
     # use getData on this, as of yet incomplete edsurvey.data.frame
     # to get row IDs
     # supressWarnings because it is just about nrow
-    suppressWarnings(gd0 <- getData(res, varnames=colnames(res)[1], dropUnusedLevels=FALSE, omittedLevels=FALSE, defaultConditions=FALSE))
-    suppressWarnings(gd <- getData(res, varnames=colnames(res)[1], dropUnusedLevels=FALSE, omittedLevels=FALSE))
+    checkDL <- dataList[[cacheDataLevelName]]
+    checkVar <- checkDL$fileFormat$variableName[!(checkDL$fileFormat$variableName %in% checkDL$ignoreVars)][1]
+    suppressWarnings(gd0 <- getData(res, varnames=checkVar, dropUnusedLevels=FALSE, omittedLevels=FALSE, defaultConditions=FALSE))
+    suppressWarnings(gd <- getData(res, varnames=checkVar, dropUnusedLevels=FALSE, omittedLevels=FALSE))
     class(res) <- "list"
     cache <- data.frame(ROWID=1:nrow(gd0),
                         DEFAULT=1:nrow(gd0) %in% rownames(gd))
@@ -342,7 +356,7 @@ edsurvey.data.frame <- function(userConditions,
 # @param levelLabel a character to describe the name of this \code{dataListItem}.  Must be unique from other \code{dataListItem} objects in the same \code{edsurvey.data.frame}.
 # @param forceMerge a logical to determine if a \code{dataListItem} must always be merged in \code{getData}. A value \code{TRUE} causes the \code{dataListItem} to always be merged.
 #                   Default is \code{FALSE}.
-# @param parentMergeLevels a character which is of equal lengths to the \code{parentMergeVars} paremeter specifying the \code{levelLabel} of the matching \code{parentMergeVars} variable.
+# @param parentMergeLevels a character which is of equal lengths to the \code{parentMergeVars} parameter specifying the \code{levelLabel} of the matching \code{parentMergeVars} variable.
 # @param parentMergeVars a character which is of equal lengths to the \code{parentMergeLevels} and \code{mergeVars} parameter specifying the variable name the corresponding \code{parentMergeLevels}'s \code{dataListItem}
 #                        to which will be merged to the \code{mergeVar} variable in this \code{dataListItem}.
 # @param mergeVars a character which is of equal lengths to the \code{parentMergeLevels} and \code{parentMergeVars} parameter specifying this \code{dataListItem} variable name
@@ -350,15 +364,20 @@ edsurvey.data.frame <- function(userConditions,
 # @param ignoreVars a character of variable name(s) to be ignored when testing if a \code{dataListItem} level should be merged or not.  Useful when \code{mergeVars} have matching names across \code{dataListItems}.
 # @param isDimLevel a logical value of the \code{dataListItem} for which should be considered the 'full data N'.  Only one \code{dataListItem} in an \code{edsurvey.data.frame} should have a
 #                   value of \code{TRUE}.  Default value is \code{FALSE}.
+# @param conflictLevels a character vector of \code{levelLabels} that would cause a data merge/join conflict if they were returned alongside this \code{dataListItem} in a \code{getData} call.
+#                         In certain situations data levels will be incompatible to be merged together, yet coexist in the same database and can be queried separately, but not joined together.
+#                         Default value is \code{NULL} to indicate no data level merge/join conflicts.
+#
 dataListItem <- function(lafObject,
                          fileFormat,
-                         levelLabel="",
-                         forceMerge=FALSE,
-                         parentMergeLevels=NULL,
-                         parentMergeVars=NULL,
-                         mergeVars=NULL,
-                         ignoreVars=NULL,
-                         isDimLevel=FALSE) {
+                         levelLabel = "",
+                         forceMerge = FALSE,
+                         parentMergeLevels = NULL,
+                         parentMergeVars = NULL,
+                         mergeVars = NULL,
+                         ignoreVars = NULL,
+                         isDimLevel = FALSE,
+                         conflictLevels = NULL) {
 
   if(!inherits(lafObject,"laf")){
     stop(paste0("The ", dQuote("lafObject"), " must be a LaF object utilizing the LaF Package."))
@@ -371,6 +390,7 @@ dataListItem <- function(lafObject,
   if (length(parentMergeVars)!=length(mergeVars)){
     stop(paste0("The lengths of ", dQuote("parentMergeVars"), " and ", dQuote("mergeVars"), " must be equal."))
   }
+  
   res <- list(lafObject = lafObject,
               fileFormat = fileFormat,
               levelLabel = levelLabel,
@@ -380,6 +400,7 @@ dataListItem <- function(lafObject,
               mergeVars = mergeVars,
               ignoreVars = ignoreVars,
               isDimLevel = isDimLevel,
+              conflictLevels = conflictLevels,
               nrow = nrow(lafObject))
 
   return(res)

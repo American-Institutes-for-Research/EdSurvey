@@ -152,9 +152,7 @@
 #' @importFrom stats binomial predict
 #' @importFrom glm2 glm2 glm.fit2
 #' @importFrom Matrix rankMatrix
-#' @method glm sdf
 #' @export
-#' @export glm.sdf
 #' @usage 
 #' glm.sdf(formula, family = binomial(link = "logit"), data,
 #'   weightVar = NULL, relevels = list(), 
@@ -454,7 +452,7 @@ calc.glm.sdf <- function(formula,
   if(linkingError){
     if(varMethod == "t") {
       stop("Taylor series variance estimation not supported with NAEP linking error.")
-	}
+  }
     if(jrrIMax != 1) {
       warning("The linking error variance estimator only supports ", dQuote("jrrIMax=1"), ". Resetting to 1.")
       jrrIMax <- 1
@@ -464,9 +462,9 @@ calc.glm.sdf <- function(formula,
   lyv <- length(yvars)
   if(any(pvy)) {
     if(linkingError) {
-	  pp <- getPlausibleValue(yvars[max(pvy)], data)
-	  suffix <- ifelse(grepl("_imp_", pp, fixed=TRUE), "_imp_", "_est_")
-	  suffix <- ifelse(grepl("_samp_", pp, fixed=TRUE), "_samp_", suffix)
+    pp <- getPlausibleValue(yvars[max(pvy)], data)
+    suffix <- ifelse(grepl("_imp_", pp, fixed=TRUE), "_imp_", "_est_")
+    suffix <- ifelse(grepl("_samp_", pp, fixed=TRUE), "_samp_", suffix)
       yvars <- paste0("outcome",suffix,1:length(pp))
     } else {
       yvars <- paste0("outcome",1:length(getPlausibleValue(yvars[max(pvy)], data)))
@@ -842,7 +840,9 @@ calc.glm.sdf <- function(formula,
   if(returnNumberOfPSU) {
     stratumVar <- getAttributes(data, "stratumVar")
     psuVar <- getAttributes(data, "psuVar")
-    if(all(c(stratumVar, psuVar) %in% colnames(edf))) {
+    if("JK1" %in% stratumVar) {
+      res <- c(res, list(nPSU=nrow(edf)))
+    } else if(all(c(stratumVar, psuVar) %in% colnames(edf))) {
       if(sum(is.na(edf[,c(stratumVar, psuVar)])) == 0) {
         res <- c(res, list(nPSU=nrow(unique(edf[,c(stratumVar, psuVar)]))))
       } else {
@@ -919,6 +919,9 @@ print.summary.edsurveyGlm <- function(x, ...) {
     cat(paste0("JK replicates: ", x$njk, "\n"))
   }
   cat(paste0("full data n: ", x$n0, "\n"))
+  if (!is.null(x$nPSU)) {
+    cat(paste0("n PSU: ", x$nPSU, "\n"))
+  }
   cat(paste0("n used: ", x$nUsed, "\n\n"))
   cat(paste0("Coefficients:\n"))
   printCoefmat(x$coefmat, P.values=TRUE, has.Pvalue=TRUE)

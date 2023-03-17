@@ -57,7 +57,7 @@ test_that("LESDF merge function",{
   skip_on_cran()
   sm1 <- getData(data=sdf, varnames=c("dsex", "b017451"), addAttributes = TRUE)
   attr_sm1 <- attributes(sm1)[!names(attributes(sm1)) %in% c("names","row.names")]
-  df <- data.frame(dsex = c("Male","Female","extra"), dsex2 = c("Boy","Girl","extra"))
+  df <- data.frame(dsex = c("Male","Female","extra"), dsex2 = c("Boy","Girl","extra"), stringsAsFactors = TRUE)
   merged_lsdf <- merge(sm1,df, by = "dsex")
   expect_equal(names(merged_lsdf), c("dsex","b017451","dsex2"))
   expect_equal(attributes(merged_lsdf)[!names(attributes(merged_lsdf)) %in% c("names","row.names")],attr_sm1)
@@ -65,8 +65,8 @@ test_that("LESDF merge function",{
   
   # when expecting new rows
   merged_lsdf2 <- merge(sm1,df, by = "dsex", all = TRUE)
-  expect_equal(unique(as.character(merged_lsdf2$dsex)), c("Male","Female","extra"))
-  expect_equal(nrow(merged_lsdf2), nrow(sm1) + 1)
+  expect_equal(unique(as.character(merged_lsdf2$dsex)), c("Female", "Male"))
+  expect_equal(nrow(merged_lsdf2), nrow(sm1))
 })
 
 

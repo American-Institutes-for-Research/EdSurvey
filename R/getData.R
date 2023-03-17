@@ -44,10 +44,10 @@
 #'                      other functions that usually would take an
 #'                      \code{edsurvey.data.frame}. This \code{data.frame} also is called a \code{light.edsurvey.data.frame}.
 #'                      See Description section in \code{\link{edsurvey.data.frame}} for
-#'                      more information on \code{light.edsurvey.data.frame}. 
+#'                      more information on \code{light.edsurvey.data.frame}.
 #' @param returnJKreplicates a logical value indicating if JK replicate weights
 #'                           should be returned. Defaults to \code{TRUE}.
-#'                    
+#'
 #'
 #' @details By default, an \code{edsurvey.data.frame} does not have data read
 #' into memory until \code{getData} is called and returns a data frame.
@@ -79,11 +79,12 @@
 #' variables. When \code{addAttributes} is \code{TRUE}, \code{getData} returns a
 #' \code{light.edsurvey.data.frame}.
 #'
-#' @seealso \code{\link{rebindAttributes}}, \code{\link{subset.edsurvey.data.frame}} 
+#' @seealso \code{\link{rebindAttributes}}, \code{\link{subset.edsurvey.data.frame}}
 #'
 #' @author Tom Fink, Paul Bailey, and Ahmad Emad
 #' @example man\examples\getData.R
-#' @importFrom LaF laf_open_fwf laf_open_fwf
+#' @importFrom LaF laf_open_fwf laf_open_csv
+#' @importFrom data.table as.data.table merge.data.table
 #' @export
 getData <- function(data,
                     varnames=NULL,
@@ -108,7 +109,7 @@ getData <- function(data,
   if(!is.logical(defaultConditions)) stop("The ", sQuote("defaultConditions"), " argument must be logical.")
   if(!is.null(recode) & !is.list(recode)) stop(paste0("The ", sQuote("recode"), " argument must be a list."))
   if(is.null(varnames) & is.null(formula)) stop(paste0("At least one of ", sQuote("varnames"), " and ", sQuote("formula"), " must be not NULL."))
-  
+
   # for edsurvey.data.frame.list, just return a list of results
   if (inherits(sdf, c("edsurvey.data.frame.list"))) {
     res <- itterateESDFL(match.call(),sdf)
@@ -118,7 +119,7 @@ getData <- function(data,
     return(res)
   }
   survey <- getAttributes(sdf, "survey")
-  
+
   if(!inherits(sdf, "edsurvey.data.frame")) {
     # if this is a light.edsurvey.data.frame
     if(!missing(defaultConditions)) {
@@ -186,7 +187,7 @@ getData <- function(data,
   iw <- isWeight(varnames, sdf) # Boolean vector that is TRUE when the variable is a weight
   vars <- c(vars, varnames[!(iw | hpv)])
   vars_exclude_omitted <- c()
-  
+
   if(any(hpv) || hasIRTAttr) { #if SDF has IRT attributes, we need to ensure those items are excluded from the 'omittedLevels' checks down the line
     if(any(hpv)){
       pvs <- getPlausibleValue(varnames[hpv], sdf)
@@ -246,6 +247,7 @@ getData <- function(data,
 
   # find cache variables
   cachedVars <- varnamesTotal[varnamesTotal %in% colnames(sdf$cache)]
+  hasCachedVars <- (length(cachedVars)>0)
   uncachedVars <- varnamesTotal[!varnamesTotal %in% cachedVars]
 
   # this section is for retreiving the data from a LaF
@@ -254,6 +256,10 @@ getData <- function(data,
     data <- NULL
     labelsFile <- NULL
 
+    if(hasCachedVars){
+      cacheLevelLabel <- sdf$dataList[[sdf$cacheDataLevelName]]$levelLabel #the name used for the dataList  might be different than the 'levelLabel'
+    }
+    
     #for determining which data levels we did in fact merge for use later in function
     mergeLevels <- rep(FALSE, length=length(sdf$dataList))
     names(mergeLevels) <- sapply(sdf$dataList, function(dl){dl$levelLabel})
@@ -264,8 +270,16 @@ getData <- function(data,
 
     #loop through dataList in reverse order to determine the highest levels that have requested variables.  mark those levels, and their required parent levels as 'TRUE'
     for(dlevel in rev(sdf$dataList)){
-      #check if the level requires to be merged either by: 1) forceMerged Flag is TRUE. 2) Has a variable requested by the user that is not contained in the levels 'ignoreVars' list.
-      if(dlevel$forceMerge || any(dlevel$fileFormat$variableName[!dlevel$fileFormat$variableName %in% dlevel$ignoreVars] %in% uncachedVars)){
+      #check if the level requires to be merged either by: 
+      #1) forceMerged Flag is TRUE.  
+      #2) was previously flagged as being required for merge, ensure it has it's merge variables marked.
+      #3) is the cache data level and cache variables are requested.
+      #4) Has a variable requested by the user that is not contained in the levels 'ignoreVars' list.
+      if(dlevel$forceMerge || 
+          mergeLevels[names(mergeLevels)==dlevel$levelLabel] == TRUE ||
+         (hasCachedVars && dlevel$levelLabel == cacheLevelLabel) ||
+         any(dlevel$fileFormat$variableName[!dlevel$fileFormat$variableName %in% dlevel$ignoreVars] %in% uncachedVars)){
+        
         mergeLevels[names(mergeLevels)==dlevel$levelLabel | names(mergeLevels) %in% dlevel$parentMergeLevels] <- TRUE #specify which levels we need to specifically loop through/merge
 
         #store the specific 'parent' merge variables under the level (by name) based on 'parentMergeLevels' and 'parentMergeVars'
@@ -275,8 +289,25 @@ getData <- function(data,
       }
     }#end for(dlevel in rev(sdf$dataList))
     #loop through each data item and see if any variables are requested and process accordingly to the dataList rules
-    
+
+    #after determining which data levels are requested, check if there are any conflicting data/merge levels set in the 'conflictLevels' of the dataListItems
+    dataConflicts <- list() #if any data conflicts store them for a robust error message
     for(dlevel in sdf$dataList){
+      if(dlevel$forceMerge || mergeLevels[names(mergeLevels)==dlevel$levelLabel]==TRUE){
+        dataConflictCheck <- dlevel$conflictLevels %in% names(mergeLevels[mergeLevels==TRUE])
+        if(any(dataConflictCheck)){
+          #build error message list
+          stop(paste0("Requested variables between data level ",
+                      dQuote(dlevel$levelLabel), " and data level(s): ", paste0(dQuote(dlevel$conflictLevels[dataConflictCheck]), collapse = " & "),
+                      " create a merge conflict and cannot be returned together in a ", dQuote("getData")," call.",
+                      " Use the ", dQuote("showCodebook()"), " function to determine which variables are in which file format."))
+        }
+      }
+    }
+
+    #perform the actual data merging into one result set  after checks are complete
+    for(dlevel in sdf$dataList){
+      
       if(dlevel$forceMerge || mergeLevels[names(mergeLevels)==dlevel$levelLabel]==TRUE){
         laf <- dlevel$lafObject
         ff <- dlevel$fileFormat
@@ -284,34 +315,49 @@ getData <- function(data,
         levelVars <- dlevel$fileFormat$variableName #get all variable names
         levelVars <- levelVars[!levelVars %in% dlevel$ignoreVars] #remove ignored variables
         levelVars <- levelVars[levelVars %in% uncachedVars] #determine which specific variables are requested by user
+
+        parentMergeVars <- mergeVars[[dlevel$levelLabel]][] #grab any parent merge variables required from the initial scan that are stored for this level
+        
         #test here if variables are found as it might be misspelled or missing
-        if(length(levelVars)==0 & !dlevel$forceMerge){
+        if(length(levelVars)==0 && length(parentMergeVars)==0 && !(dlevel$forceMerge || (hasCachedVars && dlevel$levelLabel== cacheLevelLabel))){
           next
         }
-        parentMergeVars <- mergeVars[[dlevel$levelLabel]][] #grab any parent merge variables required from the initial scan that are stored for this level
+        
         varinds <- which(names(laf) %in% c(levelVars, dlevel$mergeVars, parentMergeVars), arr.ind = TRUE)
         if(length(varinds) == 0) {
           varinds <- 1
         }
 
         dataChunk <- laf[,varinds, drop=FALSE] #retrieve the values from the LaF
-        if(is.null(data)){
-          # deal with cache
-          if(length(cachedVars) > 0) {
-            if(ncol(dataChunk) > 0) {
-              data <- cbind(dataChunk, sdf$cache[cachedVars])
-            } else {
-              data <- sdf$cache[cachedVars]
-            }
+        
+        if(hasCachedVars && dlevel$levelLabel== cacheLevelLabel) {
+          if(ncol(dataChunk) > 0) {
+            #the cache data with same column names will have precedence!
+            dataChunk <- dataChunk[ , !(names(dataChunk) %in% cachedVars), drop=FALSE]
+            dataChunk <- cbind(dataChunk, sdf$cache[cachedVars])
           } else {
-            data <- dataChunk
+            dataChunk <- sdf$cache[cachedVars]
           }
-          data$zzz___SORTORDER <- 1:nrow(data)
-          labelsFile <- ff
+        }
+        
+        if(is.null(data)){
+          data <- dataChunk
+          labelsFile <- ff[varinds, ]
         } else {
-          data$zzz___SORTORDER <- 1:nrow(data) #number the datarows to ensure we keep original source, we will reorder after merge
-          data <- merge(data, dataChunk, all.x=TRUE, all.y=FALSE, by.x = dlevel$parentMergeVars, by.y = dlevel$mergeVars, suffixes = c("", ".dupe"))
-          data <- data[,names(data)[!grepl("\\.dupe$",names(data))], drop=FALSE] #remove any duplicate fields::priority data level will take precedent
+          
+          data$zzz___SORTORDER1 <- 1:nrow(data) #number the datarows to ensure we keep original source, we will reorder after merge
+          dataChunk$zzz___SORTORDER2 <- 1:nrow(dataChunk)
+          
+          #prep as data.table objects with key indexes for performance.  setting keys will mess with sort ordering of the data
+          data <- data.table::as.data.table(data, key = dlevel$parentMergeVars)
+          dataChunk <- data.table::as.data.table(dataChunk, key = dlevel$mergeVars)
+
+          #perform the data merge
+          data <- data.table::merge.data.table(data, dataChunk, all.x = TRUE, all.y = FALSE, by.x = dlevel$parentMergeVars, by.y = dlevel$mergeVars, suffixes = c("", ".dupe"))
+
+          #back to base data.frame
+          data <- as.data.frame(data) #back to regular data.frame
+          data <- data[ , names(data)[!grepl("\\.dupe$",names(data))], drop=FALSE]
 
           #check here to see if the variable names differed between the parent and level
           #if there is a mismatch we need to insert
@@ -322,21 +368,26 @@ getData <- function(data,
               data[ , dlevel$mergeVars[i]] <- data[ , dlevel$parentMergeVars[i]]
             }
           } # end if(any(dlevel$parentMergeVars!=dlevel$mergeVars))
-          ff <- ff[!(ff$variableName %in% labelsFile$variableName), ]
+          ff <- ff[varinds, ] #subset just to the grabbed values
+          ff <- ff[!(ff$variableName %in% labelsFile$variableName), ] #filter out values already on data.frame
           labelsFile <- rbind(labelsFile, ff)
+          
+          #reorder to ensure original row ordering intact after merge
+          data <- data[order(data$zzz___SORTORDER1, data$zzz___SORTORDER2), , drop=FALSE]
+          data$zzz___SORTORDER1 <- NULL
+          data$zzz___SORTORDER2 <- NULL
         } #end if(is.null(data))
-        
-        #reorder to ensure original row ordering intact after merge
-        data <- data[order(data$zzz___SORTORDER), , drop=FALSE]
-        data$zzz___SORTORDER <- NULL
+ 
       }# if(dlevel$forceMerge || mergeLevels[names(mergeLevels)==dlevel$levelLabel]==TRUE)
+      
+
     }#end endfor(dlevel in sdf$dataList)
 
     #tidy up and drop any columns not requested by user
     dataChunk <- NULL
 
     data <- data[,(names(data) %in% varnamesTotal), drop=FALSE]
-    
+
     if(!is.null(data)){
       row.names(data) <- 1:nrow(data)
     }
@@ -350,45 +401,6 @@ getData <- function(data,
 
     labelsFile <- labelsFile[order(labelsFile$Start),]
     labelsFile <- labelsFile[labelsFile$variableName %in% uncachedVars, ]
-    decimals <- as.numeric(labelsFile$Decimal)
-    variables <- labelsFile$variableName
-    labels  <- list()
-    # labels file does not contain cached values, so allow no labeling
-    if(nrow(labelsFile) > 0) {
-      for(i in 1:nrow(labelsFile)) {
-        keysTemp <- c()
-        keys <- c()
-        values <- c()
-        variable <- variables[i]
-        keysTemp <- c(keysTemp , strsplit(labelsFile$labelValues[i],'^', fixed = TRUE)[[1]])
-        if(length(keysTemp) != 0) {
-          for (j in c(1:length(keysTemp))) {
-            keys <- c(keys,strsplit(keysTemp[j], '=', fixed=TRUE)[[1]][1])
-            #in case the label has a true '=' symbol, we will then need to re-join all but the first element
-            temp <- paste0(strsplit(keysTemp[j], '=', fixed=TRUE)[[1]][-1], collapse = "=")
-            if(temp == "" | is.na(temp)) {
-              temp <- "label unknown"
-            }
-            values <- c(values, temp)
-          } # end for (j in c(1:length(keysTemp)))
-          labels[[variable]] <- list(keys = keys, values = values)
-        } # end if(length(keysTemp!=0))
-      } # end for (i in c(1:dim(labelsFile)[1]))
-    } # end if(nrow(labelsFile)>0)
-
-    #apply the decimal conversion prior to applying the labels AND the merge in case we have a decimal value used as the key in the key/value label or need to adjust any weights
-    #PISA reads in csv files so no need to convert to decimal values
-    if (sdf$reqDecimalConversion==TRUE) {
-      for(i in seq_along(variables)) {
-        varn <- variables[i] # the variable being considered
-        decLen <- decimals[i]
-        decLen[is.na(decLen)] <- 0 #use a 0 if NA is specified for decimal length (character value)
-        if(decLen!=0 & varn %in% varnamesTotal) {
-          # if it has a decimal conversion and is in the requested data
-          data[,varn] <- data[,varn]/(10^decLen)
-        }
-      }
-    }
 
     #Give warning to user that 'totwgt' (student level weight) may give incorrect results when teacher data is merged::first ensure there is a 'Teacher' level
     if (sdf$survey %in% c("TIMSS", "PIRLS", "TIMSS Advanced", "CivED") && any(names(data)=="totwgt") && any(grepl("teacher", names(mergeLevels), ignore.case = TRUE))) {
@@ -397,102 +409,27 @@ getData <- function(data,
       }
     } #end if (sdf$survey %in% c("TIMSS", "PIRLS", "TIMSS Advanced") && hasTeacherVars)
 
+####ASSIGN THE LABEL VALUES TO THE MERGED/PROCESSED DATA.FRAME####
+    #apply the decimal conversion prior to applying the labels AND the merge in case we have a decimal value used as the key in the key/value label or need to adjust any weights
+    #PISA reads in csv files so no need to convert to decimal values
+    if (sdf$reqDecimalConversion==TRUE) {
+      data <- applyDecimalConversion(dataDF = data, labelsDF = labelsFile)
+    }
 
-    # applying labels to the data file
-    labelsn <- names(labels)
-    
-    if(length(labels)>0){
-      for(i in 1:length(labels)) {
-        vari <- labelsn[i]
-        if(vari %in% names(data)) {
-          if(length(unique(labels[[i]]$keys)) != length(labels[[i]]$keys)) {
-            warning(paste0("Duplicate variable label key ", dQuote(i), " in variable ",vari,"."))
-          }
-          # in TIMSS files there are some variables that are real / integer and there is one omitted/invalid code
-          # in PIAAC, there is variable that has Missing in value labels but it shouldn't be omitted
-          if((sdf$survey != "PIAAC" && all(labels[[i]]$values %in% sdf$omittedLevels))) { #generally these are 99999/999997 etc
-            if(is.numeric(suppressWarnings(as.numeric(labels[[i]]$keys))) && is.numeric(data[,vari])){
-              #fixes any rounding issues comparing source data to the key value (e.g., value of 999998.99999999 need to be compared to key value of 999999)
-              data[round(data[,vari],8) %in% labels[[i]]$keys,vari] <- NA
-            }else{
-              data[data[,vari] %in% labels[[i]]$keys,vari] <- NA
-            }
-          } else if (!is.null(labelsFile$labelled) && !labelsFile$labelled[labelsFile$variableName == vari]) {
-            # fileFormat has missing values and labelled columns
-            data[data[,vari] %in% labels[[i]]$keys,vari] <- NA
-          } else {# this is a truly labeled file
-            if(length(unique(labels[[i]]$values)) != length(labels[[i]]$values)) {
-              tab <- table(labels[[i]]$values)
-              dnames <- names(tab[tab > 1])
-              needNewLabels <- labels[[i]]$values %in% dnames
-              if(vari %in% varnames) {
-                warning(paste0("Updating labels on ",sQuote(vari), " because there are multiples of the label ", sQuote(dnames), "."))
-              }
-              labels[[i]]$values[needNewLabels] <- paste(labels[[i]]$values[needNewLabels],1:(sum(needNewLabels)), sep=":")
-            }
-  
-            lvls <- labels[[i]]$keys
-            lbls <- labels[[i]]$values
-            
-            #determine if the field keys are numeric, but the value labels are saved as character (e.g., 001, 010)
-            #convert those to numeric values if the data is also numeric type
-            if(all(!is.na(suppressWarnings(as.numeric(lvls)))) && is.numeric(data[,vari])){
-              lvls <- as.numeric(lvls)
-            }
-            
-            
-            if(includeNaLabel) {
-              if(sum(is.na(data[,vari])) > 0) {
-                lvls <- c(NA, lvls) #add NA first to the list
-                lbls <- c("(Missing)", lbls)
-              }
-            }
-            # some id variables has missing values or special case labels (i.e. bookid)
-            if(getAttributes(sdf,"survey") == "PISA" && grepl("id",vari,ignore.case = TRUE)) {
-              exception = unique(data[,vari][!data[,vari] %in% lvls])
-              lvls <- c(lvls,exception)
-              lbls <- c(lbls,exception)
-            }
-  
-            #test if there are defined numeric values not in the label
-            if(getAttributes(sdf,"validateFactorLabels")==TRUE){
-              exception <- sort(unique(data[,vari][!data[,vari] %in% lvls]))
-              exception <- exception[!is.na(exception) & trimws(exception, which = "both")!=""]
-              if(length(exception)>0){
-                lvls <- c(lvls,exception)
-                lbls <- c(lbls,exception)
-              }
-            }
-  
-  
-            data[data[ , vari]=="" | is.na(data[ , vari]), vari] <- NA
-            suppressWarnings(lvlsp <- as.numeric(lvls))
-            suppressWarnings(dvi <- as.numeric(data[,vari]))
-            suppressWarnings(lblsp <- as.numeric(lbls))
-            if(vari %in% getAllTaylorVars(sdf) ||sum(is.na(lvlsp)) - sum(is.na(lvls)) > 0 || sum(is.na(unique(dvi))) - sum(is.na(unique(data[,vari]))) >0 || sum(!is.na(lblsp)) >0) {
-              if(anyNA(data[,vari]) && includeNaLabel) {
-                data[ , vari] <- factor(data[ , vari], levels=lvls, labels=lbls, exclude = NULL)
-              } else {
-                data[ , vari] <- factor(data[ , vari], levels=lvls, labels=lbls) #NA values excluded by default
-              }
-            } else {
-              if(anyNA(data[,vari]) && includeNaLabel){
-                data[ , vari] <- lfactor(dvi, levels=lvlsp, labels=lbls, exclude = NULL)
-              }else{
-                data[ , vari] <- lfactor(dvi, levels=lvlsp, labels=lbls) #NA values excluded by default
-              }
-            }
-          } # end else for if(length(labels[[i]]$values) == 1 && labels[[i]]$values == "OMITTED OR INVALID" && nchar(gsub("9","",labels[[i]]$keys)) == 0)
-        } else { # end if(vari %in% names(data))
-          # you get here if there is a variable on the labels file but not in the data.
-          # nothing to do
-        }# end else for if(vari %in% names(data))
-      } # for for(i in 1:length(labels))
-    }# end if(length(labels)>0)
+    labels <- getValueLabelList(labelsFile) #get a named list of the value labels
+    data <- applyValueLabels(data = data, lblList = labels, labelDF = labelsFile, esdf = sdf, includeNaLabel = includeNaLabel)
 
     # check if variable can be converted to numeric. Some "labels" are just numbers.
-    # this fixes that
-    for(var in names(data)) {
+    # first check if any of the 'attributes' from the 'file format' object are set to '(A)', omit those.  The (A) comes from the SPSS file format (if there is one).
+    if(any(tolower(colnames(labelsFile))=="attributes")){
+      attrCol <- colnames(labelsFile)[tolower(colnames(labelsFile))=="attributes"]
+      skipVars <- tolower(labelsFile$variableName[tolower(labelsFile[[attrCol]]) %in% c("(a)")]) #the (A) denotes it's alphanumeric in SPSS formatting and can be skipped
+      convToNumVars <- names(data)[!tolower(names(data)) %in% skipVars]
+    }else{
+      convToNumVars <- names(data)
+    }
+    
+    for(var in convToNumVars) {
       # convToNum converts the variable to a number--if it will not cause data loss
       data[ , var] <- convToNum(data[ , var])
     }
@@ -835,28 +772,260 @@ closeLaFConnections <- function(sdf) {
 
 #returns a vector of all associated PSU variables for an edsurvey.data.frame
 getAllPSUVar <- function(sdf){
-  
+
   psuVar <- getAttributes(sdf, "psuVar")
   wgts <- getAttributes(sdf, "weights")
-  
+
   wgtPSUVars <- sapply(wgts, function(x){
     x$psuVar
   })
-  
+
   retVals <- c(psuVar, wgtPSUVars)
   return(retVals[!is.null(retVals) & !is.na(retVals)])
 }
 
 #returns a vector of all associated stratum variables for an edsurvey.data.frame
 getAllStratumVar <- function(sdf){
-  
+
   stratumVar <- getAttributes(sdf, "stratumVar")
   wgts <- getAttributes(sdf, "weights")
-  
+
   wgtStratumVars <- sapply(wgts, function(x){
     x$stratumVar
   })
-  
+
   retVals <- c(stratumVar, wgtStratumVars)
   return(retVals[!is.null(retVals) & !is.na(retVals)])
+}
+
+#this will return a named list object of the value labels.
+#e.g., list(varA = list(keys = c(1, 2, 3), values = "Item 1", "Item 2", "Item 3"))
+getValueLabelList <- function(labelsDF, varNameColumn = "variableName", valLblColumn = "labelValues"){
+  labels  <- list()
+
+  #filter to only records that have a value label defined
+  labelsDF <- labelsDF[!is.na(labelsDF[[valLblColumn]]) & (nchar(labelsDF[[valLblColumn]]) > 0), ]
+  if(nrow(labelsDF) == 0) {
+    return(labels) #return empty list
+  }
+
+  #get our variable names and the value label strings to parse
+  #value labels will have a '^' as the major separator and the first '=' is the secondary separator
+  #e.g., 0=Item 1^1=Item 2^2=Item 3^99=Missing
+  varNames <- labelsDF[[varNameColumn]]
+  valLbls <-  labelsDF[[valLblColumn]]
+
+  for(iDF in seq_len(nrow(labelsDF))) {
+    keysTemp <- c()
+    keys <- c()
+    values <- c()
+
+    variable <- varNames[iDF]
+    keysTemp <- c(keysTemp , strsplit(valLbls[iDF],'^', fixed = TRUE)[[1]])
+
+    if(length(keysTemp) > 0) {
+      for (j in seq_along(keysTemp)) {
+        tokens <- strsplit(keysTemp[j], '=', fixed=TRUE)
+
+        keys <- c(keys, tokens[[1]][1])
+        #in case the label has a true '=' symbol, we will then need to re-join all but the first element
+        temp <- paste0(tokens[[1]][-1], collapse = "=")
+        if(temp == "" | is.na(temp)) {
+          temp <- "label unknown"
+        }
+        values <- c(values, temp)
+      } #end for (j in seq_along(keysTemp))
+
+      labels[[variable]] <- list(keys = keys, values = values)
+    } #end if(length(keysTemp) > 0)
+  } #end for(i in seq_len(labelsDF))
+
+  return(labels)
+}
+
+#apply the named 'labels' list to the data.frame, this will build the factors and lfactors for the data, then reassign the data to that variable
+applyValueLabels <- function(data, lblList, labelDF, esdf, includeNaLabel = FALSE) {
+  #labelled is TRUE/FALSE for PISA only
+
+  lblNames <- names(lblList)
+
+    for(i in seq_along(lblNames)) {
+      vari <- lblNames[i]
+      if(!vari %in% names(data)){
+        next
+      }
+
+      lvls <- lblList[[i]]$keys
+      lvlsAllNumeric <- isAllNumeric(lvls)
+      lbls <- lblList[[i]]$values
+      
+      dataIsNumeric <- isAllNumeric(data[[vari]])
+
+      if(length(unique(lvls))!= length(lvls)) {
+        warning(paste0("Duplicate variable label key ", dQuote(i), " in variable ",vari,"."))
+      }
+
+      # in TIMSS files there are some variables that are real / integer and there is one omitted/invalid code
+      # in PIAAC, there is variable that has Missing in value labels but it shouldn't be omitted
+      if(esdf$survey != "PIAAC" && all(lbls %in% esdf$omittedLevels)) { #generally these are 99999/999997 etc
+        if(lvlsAllNumeric && dataIsNumeric){
+          data[[vari]] <- as.numeric(data[[vari]])
+          lvls <- as.numeric(lvls)
+          #fixes any rounding issues comparing source data to the key value (e.g., value of 999998.99999999 need to be compared to key value of 999999)
+          #if all of the defined levels are 'omitted', then generally this data is continuous so the omittedLevels need to be set to NA to return the expected (non-omitted) data properly
+          data[round(data[[vari]],8) %in% lvls , vari] <- NA
+        }else{
+          data[data[[vari]] %in% lvls , vari] <- NA
+        }
+      } else if (!is.null(labelDF$labelled) && !labelDF$labelled[labelDF$variableName == vari]) {
+        # fileFormat has missing values and labelled columns
+        data[data[[vari]] %in% lvls , vari] <- NA
+      } else {# this is a truly labeled file
+        if(length(unique(lbls)) != length(lbls)) {
+          tab <- table(lbls)
+          dnames <- names(tab[tab > 1])
+          needNewLabels <- lbls %in% dnames
+          if(any(needNewLabels)) {
+            warning(paste0("Updating labels on ",sQuote(vari), " because there are multiples of the label ", sQuote(dnames), "."))
+          }
+          lbls[needNewLabels] <- paste(lbls[needNewLabels],1:(sum(needNewLabels)), sep=":")
+        }
+
+        #this is legacy for PISA, would like to remove this if possible!
+        isPISA_IDVar <- esdf$survey == "PISA" && grepl("id",vari,ignore.case = TRUE)
+        
+        #determine if the field keys are numeric, but the value labels are saved as character (e.g., 001, 010)
+        #convert those to numeric values if the data is also numeric type
+        if(lvlsAllNumeric && dataIsNumeric && !isPISA_IDVar){
+          lvls <- as.numeric(lvls)
+          data[[vari]] <- as.numeric(data[[vari]]) #ensures data matches the levels as both numeric
+        }
+
+        if(includeNaLabel) {
+          if(sum(is.na(data[[vari]])) > 0) {
+            lvls <- c(NA, lvls) #add NA first to the list
+            lbls <- c("(Missing)", lbls)
+          }
+        }
+        # some id variables has missing values or special case labels (i.e. bookid)
+        if(isPISA_IDVar) {
+          exception = unique(data[[vari]][!data[[vari]] %in% lvls])
+          lvls <- c(lvls,exception)
+          lbls <- c(lbls,exception)
+        }
+
+        #test if there are defined numeric values not in the label
+        if(esdf$validateFactorLabels && !isPISA_IDVar){
+          exception <- sort(unique(data[[vari]][!data[[vari]] %in% lvls]))
+          exception <- exception[!is.na(exception) & trimws(exception, which = "both")!=""]
+          if(length(exception)>0){
+            lvls <- c(lvls,exception)
+            lbls <- c(lbls,exception)
+          }
+        }
+
+        replaceRows <- data[[vari]]=="" | is.na(data[[vari]])
+        data[replaceRows , vari] <- NA
+
+        #put next block into function
+        isTaylorVal <- vari %in% getAllTaylorVars(esdf)
+        data[ , vari] <- getFactorValue(lvls = lvls, lbls = lbls, dataVals = data[[vari]], factorOnly = (isTaylorVal || isPISA_IDVar), includeNaLabel = includeNaLabel)
+
+      } # end else if(esdf$survey != "PIAAC" && all(lblVals %in% omittedLevels))
+    } # end for(i in seq_along(labels)
+
+  return(data)
+}
+
+getFactorValue <- function(lvls, lbls, dataVals, factorOnly = FALSE, includeNaLabel = FALSE){
+
+  #short circuit if we only want to make a factor and not check for making an lfactor
+  if(factorOnly){
+    if(anyNA(dataVals) && includeNaLabel) {
+      return(factor(dataVals, levels=lvls, labels=lbls, exclude = NULL)) #don't exclude NA from the factor
+    }else {
+      return(factor(dataVals, levels=lvls, labels=lbls)) #NA is the default 'exclude' param and will be skipped in the factor
+    }
+  }
+
+  lvlsAllNumeric <- isAllNumeric(lvls)
+  valsAllNumeric <- isAllNumeric(dataVals)
+  lbls <- as.character(lbls)
+  
+  if(!lvlsAllNumeric && !valsAllNumeric) {
+    if(anyNA(dataVals) && includeNaLabel) {
+      return(factor(dataVals, levels=lvls, labels=lbls, exclude = NULL))
+    } else {
+      return(factor(dataVals, levels=lvls, labels=lbls)) #NA values excluded by default
+    }
+  } else {
+    if(anyNA(dataVals) && includeNaLabel){
+      
+      #to match existing functionality!!, if building an lfactor do not have NA - (Missing) retained for lfactors
+      keepIdx <- which(!is.na(lvls))
+      
+      res <- tryCatch({lfactor(dataVals, levels=lvls[keepIdx], labels=lbls[keepIdx], exclude = NULL)},
+                      error = function(e){
+                        if(grepl("must either be identical or the labels must not be numbers", e)){
+                          factor(dataVals, levels=lvls[keepIdx], labels=lbls[keepIdx], exclude = NULL)
+                        }else{
+                          stop(e)
+                        }
+                      })
+      return(res)
+    }else{
+      res <- tryCatch({lfactor(dataVals, levels=lvls, labels=lbls)},
+                      error = function(e){
+                        if(grepl("must either be identical or the labels must not be numbers", e)){
+                          factor(dataVals, levels=lvls, labels=lbls)
+                        }else{
+                          stop(e)
+                        }
+                      })
+      return(res)
+    }
+  }
+
+  #SHOULD NOT GET HERE, but return the dataVals for safety
+  return(dataVals)
+}
+
+#this function applies a decimal conversion step, where it will multiply a large integer by a multiplier to get a decimal value
+applyDecimalConversion <- function(dataDF, labelsDF, varNameColumn = "variableName", decimalColName = "Decimal"){
+  
+  for(i in seq_len(ncol(dataDF))) {
+    varn <- colnames(dataDF)[i] # the variable of the column
+    idx <- which(grepl(paste0("^", varn, "$"), labelsDF[[varNameColumn]], ignore.case = TRUE))
+    decLen <- labelsDF[idx , decimalColName, drop = TRUE]
+
+    if(is.null(decLen) || length(decLen) == 0){ #no match found, this is a 'cached' variable, skip it
+      next
+    }
+
+    decLen[is.na(decLen)] <- 0 #use a 0 if NA is specified for decimal length (character value)
+    decLen <- as.numeric(decLen)
+    if(decLen > 0) {
+      mult <- (10^decLen)
+      xCol <- dataDF[ , varn]/mult
+      # if it has a decimal conversion and is in the requested data
+      dataDF[ , varn] <- xCol
+    }
+  }
+
+  return(dataDF)
+}
+
+#return TRUE/FALSE value based on if all of the vals are numeric (regardless of current type)
+#will return TRUE if all supplied values are numeric or NA
+#will return FALSE if there are any items that cannot be coerced to a numeric
+isAllNumeric <- function(vals){
+
+  if(is.character(vals)){
+    vals[trimws(vals)==""] <- NA
+  }
+
+  naOrig <- sum(is.na(vals)) #original count of na values
+  valsX <- suppressWarnings(as.numeric(vals)) #coerce to numeric
+  naX <- sum(is.na(valsX)) #count how many NA values after coercion
+  return(naOrig == naX) #compare before/after NA counts
 }

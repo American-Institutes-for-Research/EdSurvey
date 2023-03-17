@@ -11,7 +11,7 @@
 #'                   variable to be returned.
 #' @param data       an \code{edsurvey.data.frame}, a \code{light.edsurvey.data.frame}, or
 #'                   an \code{edsurvey.data.frame.list}
-#' @param fileFormat a character string indicating the data source to search for variables.
+#' @param fileFormat a character vector indicating the data source to search for variables.
 #'                   The default \code{NULL} argument searches all codebooks.
 #' @param levels     a logical value; set to \code{TRUE} to return a snapshot of the levels in
 #'                   an \code{edsurvey.data.frame}
@@ -22,6 +22,7 @@
 #' @example \man\examples\searchSDF.R
 #' @export
 searchSDF <- function(string, data, fileFormat = NULL, levels = FALSE) {
+  
   if (inherits(data, c("edsurvey.data.frame.list"))) {
     call0 <- match.call()
     resl <- lapply(data$data, function(li) {
@@ -72,22 +73,28 @@ searchSDF <- function(string, data, fileFormat = NULL, levels = FALSE) {
 
   if(is.null(fileFormat)) {
     # bind and search fileFormats in both student and school if not defined
-    labelsFile <- do.call('rbind', lapply(dataList, function(dl){dl$fileFormat}))
+    labelsFile <- do.call('rbind', lapply(dataList, function(dl){
+                                            ff <- dl$fileFormat
+                                            ff$fileFormat <- dl$levelLabel
+                                            subset(ff, !(variableName %in% dl$ignoreVars))}))
     # remove irrelevant columns from light.edsurvey.data.frame
     if (!inherits(sdf, c("edsurvey.data.frame"))) {
       labelsFile <- labelsFile[(toupper(labelsFile$variableName) %in% toupper(colnames(sdf))), ]
     }
   } else {
-    # fileFormat is defined (must be either student or school) and subset based on a string
-    if(length(fileFormat) != 1) {
-      stop(paste0("The ", sQuote("fileFormat"), " argument must have exactly one level."))
-    }
+    
     fileFormat <- tolower(fileFormat)
-    if(!fileFormat %in% tolower(names(dataList))) {
+    names(dataList) <- tolower(names(dataList))
+    if(!all(fileFormat %in% names(dataList))) {
       stop(paste0("The ", sQuote("fileFormat"), " argument must either be one of ", paste(dQuote(names(dataList)), collapse=" or "),"."))
     }
-    names(dataList) <- tolower(names(dataList))
-    labelsFile <- (dataList[[fileFormat]])$fileFormat
+    
+    dlIdx <- which(names(dataList) %in% fileFormat, arr.ind = TRUE) #get appropriate data levels
+    dataList <- dataList[dlIdx]
+    labelsFile <- do.call('rbind', lapply(dataList, function(dl){
+                                          ff <- dl$fileFormat
+                                          ff$fileFormat <- dl$levelLabel
+                                          subset(ff, !(variableName %in% dl$ignoreVars))}))
   } # end else for if(is.null(fileFormat))
   for(si in string) {
     # apply each string
@@ -111,7 +118,7 @@ searchSDF <- function(string, data, fileFormat = NULL, levels = FALSE) {
       stop(paste0("The argument ", sQuote("string"), " must be nonempty to return variable levels."))
     }
     # create a dataframe with file formatting information for selected variables 
-    varsData <- labelsFile[, c("variableName", "Labels", "labelValues", "Levels")]
+    varsData <- labelsFile[, c("variableName", "Labels", "labelValues", "Levels", "fileFormat")]
     if ("light.edsurvey.data.frame" %in% class(sdf) == TRUE) {
       varsData <- varsData[varsData$variableName %in% colnames(sdf), ]
     }
@@ -134,12 +141,12 @@ searchSDF <- function(string, data, fileFormat = NULL, levels = FALSE) {
         varsData$Levels[[i]] <- paste0(NA)
       }
     } # end for (i in 1:length(varsData$variableName))
-    varsData <- varsData[, c("variableName", "Labels", "Levels")]
+    varsData <- varsData[, c("variableName", "Labels", "Levels", "fileFormat")]
     class(varsData) <- c("searchSDF", "data.frame")
   } else { # end if (levels == TRUE)
     # variable levels aren't returned
     labelsFile$variableName <- tolower(labelsFile$variableName)
-    varsData <- labelsFile[, c("variableName", "Labels")]
+    varsData <- labelsFile[, c("variableName", "Labels", "fileFormat")]
     varsData <- data.frame(varsData, stringsAsFactors = FALSE, row.names = NULL)
     # remove duplicates such as linking variables
     varsData <- varsData[!duplicated(varsData$variableName),]

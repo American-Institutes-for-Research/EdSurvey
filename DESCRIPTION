@@ -1,6 +1,6 @@
 Package: EdSurvey
-Version: 3.0.2
-Date: 2023-01-10
+Version: 3.3.9000
+Date: 2023-03-15
 Title: Analysis of NCES Education Survey and Assessment Data
 Author: Paul Bailey [aut, cre],
         Ahmad Emad [aut],
@@ -22,8 +22,8 @@ Maintainer: Paul Bailey <pbailey@air.org>
 Depends: R (>= 3.5.0), car, lfactors (>= 1.0.3), Dire (>= 2.1.0)
 Imports: data.table (>= 1.11.4), Formula, glm2, haven (>= 2.2.0), LaF
         (>= 0.7), lme4, MASS, Matrix, methods, NAEPprimer, quantreg,
-        readxl, tibble, wCorr (>= 1.9.6), NAEPirtparams, WeMix (>= 3.2.1),
-        xtable
+        readxl, tibble, wCorr, NAEPirtparams, WeMix (>= 3.2.1), xtable,
+        xml2
 URL: https://www.air.org/project/nces-data-r-project-edsurvey
 BugReports: https://github.com/American-Institutes-for-Research/EdSurvey/issues
 Description: Read in and analyze functions for education survey and assessment data from the National Center for Education Statistics (NCES) <https://nces.ed.gov/>, including National Assessment of Educational Progress (NAEP) data <https://nces.ed.gov/nationsreportcard/> and data from the International Assessment Database: Organisation for Economic Co-operation and Development (OECD) <https://www.oecd.org/>, including Programme for International Student Assessment (PISA), Teaching and Learning International Survey (TALIS), Programme for the International Assessment of Adult Competencies (PIAAC), and International Association for the Evaluation of Educational Achievement (IEA) <https://www.iea.nl/>, including Trends in International Mathematics and Science Study (TIMSS), TIMSS Advanced, Progress in International Reading Literacy Study (PIRLS), International Civic and Citizenship Study (ICCS), International Computer and Information Literacy Study (ICILS), and Civic Education Study (CivEd).
@@ -31,11 +31,11 @@ License: GPL-2
 VignetteBuilder: knitr
 Suggests: dplyr, knitr, testthat, withr, rmarkdown, RColorBrewer,
         doParallel, parallel
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Note: This publication was prepared for NCES under Contract No.
         ED-IES-12-D-0002 with the American Institutes for Research.
         Mention of trade names, commercial products, or organizations
         does not imply endorsement by the U.S. Government.
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2023-01-11 04:57:19 UTC; pbailey
+Packaged: 2023-03-16 16:20:47 UTC; pbailey

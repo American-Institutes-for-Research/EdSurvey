@@ -4,8 +4,6 @@
 #' @import lfactors
 #' @import NAEPprimer
 
-setGeneric("glm")
-setGeneric("lm")
 setGeneric("coef")
 setGeneric("subset")
 

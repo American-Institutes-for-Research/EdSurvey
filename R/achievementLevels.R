@@ -131,10 +131,10 @@ achievementLevels <- function(achievementVars = NULL,
   # parse this allowing c("a", "b"), or just a or "a".
   achievementVars <- iparse(substitute(achievementVars), x=data)
   aggregateBy <- iparse(substitute(aggregateBy), x=data)
-
+  
   achievementVars <- if (is.null(achievementVars)) NULL else tolower(achievementVars)
   aggregateBy <- if (is.null(aggregateBy)) NULL else tolower(aggregateBy)
-
+  
   alResultDfList <- list()
   assertArgument(data)
   
@@ -149,11 +149,11 @@ achievementLevels <- function(achievementVars = NULL,
     for(i in 1:ll) {
       sdf <- data$datalist[[i]]
       temp <- tryCatch(suppressWarnings(alResult <- calAL(achievementVars, aggregateBy, sdf, cutpoints, returnDiscrete,
-                                         returnCumulative, weightVar, jrrIMax, omittedLevels, defaultConditions,
-                                         recode,
-                                         defaultConditionsMissing=missing(defaultConditions),
-                                         returnVarEstInputs=returnVarEstInputs,
-                                         returnNumberOfPSU=returnNumberOfPSU)),
+                                                          returnCumulative, weightVar, jrrIMax, omittedLevels, defaultConditions,
+                                                          recode,
+                                                          defaultConditionsMissing=missing(defaultConditions),
+                                                          returnVarEstInputs=returnVarEstInputs,
+                                                          returnNumberOfPSU=returnNumberOfPSU)),
                        error = function(cond) {
                          warns <<- c(warns, labels[i])
                          return(NULL)
@@ -202,7 +202,7 @@ calAL <- function(achievementVars = NULL,
   assertArgument(data)
   als <- getAttributes(data, "achievementLevels")
   assertArgument(als)
-
+  
   # Determine if the user supplied variables for calculating achievementlevels, 
   # otherwise just use the default plausible value
   if(is.null(achievementVars)) {
@@ -238,7 +238,7 @@ calAL <- function(achievementVars = NULL,
   
   # with yvar in hand check for linking error
   linkingError <- "NAEP" %in% getAttributes(data, "survey") & any(grepl("_linking$", c(yvar)))
-
+  
   if (length(aggregateByNoPV) == 0) {
     aggregateByNoPV <- NULL
   }  
@@ -261,7 +261,7 @@ calAL <- function(achievementVars = NULL,
              warning(paste0("Stratum and PSU variables are required for this call and are not on the incoming data. Ignoring ", dQuote("returnNumberOfPSU=TRUE"),"."))
              returnNumberOfPSU <<- FALSE
            })
-
+  
   # get the data. This is most of the arguments
   getDataArgs <- list(data = data,
                       varnames = getDataVarNames,
@@ -292,16 +292,7 @@ calAL <- function(achievementVars = NULL,
     warning("Removing ", edfDTnrow - nrow(edfDT), " rows with nonpositive weight from analysis.")
     edfDTnrow <- nrow(edfDT)
   }
-
-  stratumAndPSU <- NULL
-  if (returnNumberOfPSU) {
-    stratumVar <- getAttributes(data, "stratumVar")
-    psuVar <- getAttributes(data, "psuVar")
-    # Combine stratumVar and psuVar
-    edfDT <- edfDT[, stratumAndPSU:=paste0(.SD, collapse = "-"), 
-                   .SDcols=c(stratumVar, psuVar), 
-                   by = 1:edfDTnrow][, c(stratumVar, psuVar):=NULL]
-  }
+  
   assertArgument(edfDT)
   
   if(length(vars[!vars %in% unlist(yvar)]) == 0) {
@@ -328,7 +319,7 @@ calAL <- function(achievementVars = NULL,
       x <- as.numeric(x)
       names(x) <- xn
       return(x)
-      })
+    })
     if(any(is.na(unlist(cutpoints)))) {
       stop("Cut points must be numeric and non-missing.")
     }
@@ -347,7 +338,7 @@ calAL <- function(achievementVars = NULL,
   names(alsCutpoints) <- unlist(yvar)
   
   jkWeights <- getWeightJkReplicates(wgt, data)
-
+  
   # Gather information about the call.
   npv <- min(sapply(pvs, length))
   callVars <- list(achievementVars=achievementVars,
@@ -374,7 +365,7 @@ calAL <- function(achievementVars = NULL,
   discreteOrder <- lapply(alsCutpoints, function(x) {
     sortALResults(x, returnCumulative = FALSE)
   })
-
+  
   calculateALStatF <- function(achievementVars, data, aggregateBy, cum=FALSE) {
     f <- function(pv, w, short=TRUE) {
       # calculate overall sum of weights
@@ -382,6 +373,11 @@ calAL <- function(achievementVars = NULL,
       aggregateBy2 <- aggregateBy
       for(i in seq_along(aggregateBy2 == "Level")) {
         aggregateBy2[aggregateBy2 == "Level"][i] <- pv[names(aggregateBy2[aggregateBy2 == "Level"])[i] == names(pv)]
+      }
+      for (byVar_i in aggregateBy2) {
+        if (is.null(levels(data[,get(byVar_i)]))) {
+          stop(paste0(sQuote(byVar_i), " is continuous. You must use only factors, or character variables, and scores with plausible values with achievementLevels. Consider recasting ", sQuote(byVar_i), " as a factor and trying again."))
+        }
       }
       byVars <- unique(c(pv, achievementVars, aggregateBy2))
       d1 <- data[,list(N=.N, wtdN = sum(get(w))), by = byVars]
@@ -433,7 +429,7 @@ calAL <- function(achievementVars = NULL,
     }
     return(f)
   }
-
+  
   stat_al <- calculateALStatF(achievementVars=achievementVarsNoPV,
                               data=discreteDT,
                               aggregateBy=aggregateByNoPV,
@@ -446,7 +442,7 @@ calAL <- function(achievementVars = NULL,
   estAL <- lapply(pvs, function(x) { paste0(x, "_lvl") })
   names(estAL) <- unlist(yvar)
   names(pvs) <- unlist(yvar)
-
+  
   if(linkingError) {
     estAL0 <- estAL[[1]]
     impAL <- grepl("_imp_", estAL0)
@@ -669,7 +665,7 @@ calAL <- function(achievementVars = NULL,
     ce$StandardError[ce$StandardError <= .Machine$double.eps] <- NA
     res <- c(res, list(cumulative=ce))
   }
-
+  
   if(returnVarEstInputs) {
     if(returnDiscrete) {
       #assign to 0 if values are close to 0 for correct DOF correction
@@ -693,6 +689,26 @@ calAL <- function(achievementVars = NULL,
     }
   }
   res <- c(res, list(n0=nrow2.edsurvey.data.frame(data), nUsed=edfDTnrow))
+  
+  stratumAndPSU <- NULL
+  if (returnNumberOfPSU) {
+    stratumVar <- getAttributes(data, "stratumVar")
+    psuVar <- getAttributes(data, "psuVar")
+    # Combine stratumVar and psuVar
+    if(stratumVar %in% "JK1") {
+      res$nPSU <- res$nUsed
+    }  else {
+      edfDT <- edfDT[, stratumAndPSU:=paste0(.SD, collapse = "-"), 
+                     .SDcols=c(stratumVar, psuVar), 
+                     by = 1:edfDTnrow][, c(stratumVar, psuVar):=NULL]
+      if(sum(is.na(edfDT$stratumAndPSU)) == 0) {
+        res$nPSU <- length(unique(edfDT$stratumAndPSU))
+      } else {
+        warning("Cannot return number of PSUs because the stratum or PSU variables contain NA values.")
+      }
+    }
+  }
+  
   class(res) <- "achievementLevels"
   return(res)
 }
@@ -819,114 +835,6 @@ recodeEdf <- function(edfDT, pvs, als, returnCumulative, cumulativeLevel = 0){
   }
 }
 
-# Estimation of weighted percentages when plausible values are present
-calculateAL <- function(recodeEdfResults, pvs, jrrIMax, returnVarEstInputs, 
-                        achievementVars, aggregateBy, wgt, jkSumMultiplier, jkWeights, returnNumberOfPSU){
-  # result list
-  # 1. res: discrete or cumulative result by Level and achievementVars/ aggregateBy variables
-  # 2. VarEstImput: JK (jrr) by PV (jrrIMAx), Level, achievementVars, jk
-  # 3. VarEstInput: PV (imp) by PV (M/ npv), Level, achievementVars
-  alList <- list()
-  
-  # Preparation: Construct 2 important data.tables for later calculation
-  M <- length(pvs)
-  suppressWarnings(W <- sum(recodeEdfResults[,get(wgt)])) # total population weight
-  # imp_dt is used for res and VarEstInput$PV
-  
-  suppressWarnings(imp_dt <- lapply(1:M,function(i) {
-    recodeEdfResults[,list(lengthY = .N, sumY = sum(get(wgt))), by = c(paste0(pvs[i],"_lvl"),achievementVars)][,PV:=i]
-  }))
-  imp_dt <- rbindlist(imp_dt, use.names = FALSE)
-  names(imp_dt)[1] <- "Level"
-  # end imp_dt
-
-  #jrr_dt is used for res (SE) and VarEstInput$JK
-  jrr_dt <- lapply(1:jrrIMax, function(i) {
-    recodeEdfResults[,lapply(.SD,sum), by = c(paste0(pvs[i],"_lvl"),achievementVars), .SDcols = jkWeights][,PV:=i]
-  })
-
-  jrr_dt <- rbindlist(jrr_dt, use.names = FALSE)
-  names(jrr_dt)[1] <- "Level"
-  # end jrr_dt
-  
-  # Count unique PSU and stratum combinations
-  if (returnNumberOfPSU){
-    nPSU_dt <- lapply(1:jrrIMax, function(i) {
-      recodeEdfResults[,lapply(.SD, function(x) length(unique(x))), 
-                       by = c(paste0(pvs[i],"_lvl"), achievementVars), 
-                       .SDcols = "stratumAndPSU"][,PV:=i]
-    })
-    nPSU_dt <- rbindlist(nPSU_dt, use.names = FALSE)
-    names(nPSU_dt)[1] <- "Level"
-    names(nPSU_dt)[names(nPSU_dt) == "stratumAndPSU"] <- "nPSU"
-  }
-  # end nPSU_dt
-  
-  # 1. Calculate weighted percentages (N, wtdN, Percent)
-  res <- imp_dt[,list(wtdN=sum(sumY), N = sum(lengthY)), by = c("Level",achievementVars)]
-  res <- res[, Percent:=wtdN * 100 / sum(.SD$wtdN), by = aggregateBy]
-  res <- res[,`:=`(wtdN = wtdN/M, N = N/M)]
-
-  # add 'value' to imp_dt
-  imp_dt <- merge(imp_dt, res[,c("Level", achievementVars, "Percent"), with = FALSE], 
-    by = c("Level", achievementVars), all.x = TRUE, all.y = TRUE)
-  
-  imp_dt <- imp_dt[,pcti:=100*sumY/sum(.SD$sumY), by = c("PV",aggregateBy)][,value:=(Percent - pcti)]
-
-  # add 'value' to jrr_dt
-  jrr_dt <- merge(jrr_dt, imp_dt[,c("PV","Level",achievementVars,"pcti"), with = FALSE], by = c("PV","Level",achievementVars),
-    all.x = TRUE, all.y = FALSE)
-  jrr_dt <- jrr_dt[,(jkWeights):=lapply(.SD, function(jj) 100*jj/sum(jj) - pcti), .SDcols = jkWeights, by = c("PV",aggregateBy)][,pcti:=NULL]
-  jrr_dt <- melt(jrr_dt, id.vars = c("PV","Level", achievementVars),
-                 variable.name = "JKreplicate", value.name = "value")
-
-  # 2. Estimate standard error of weighted percentages when plausible values
-  # are present, using the jackknife method (SE)
-  # a. res$Vjrr
-  res <- merge(res, jrr_dt[,list(Vjrr = jkSumMultiplier * sum(value^2)/jrrIMax), 
-                           by = c("Level",achievementVars)], sort = FALSE, by = c("Level", achievementVars), all.x = TRUE)
-  # b. res$Vimp
-  res <- merge(res, imp_dt[,list(Vimp = sum(value^2)*(M+1)/(M*(M-1))), by = c("Level", achievementVars)], 
-               sort = FALSE, by = c("Level", achievementVars), all.x = TRUE)
-  
-  # c. StandardError
-  res <- res[,StandardError:= sqrt(Vjrr + Vimp)]
-  if (returnNumberOfPSU) {
-    res <- merge(res, nPSU_dt, sort = FALSE, by = c("Level", achievementVars), all.x = TRUE)
-    alList[[1]] <- as.data.frame(res)[,c("Level",achievementVars, "N", "wtdN","Percent","StandardError", "nPSU")]
-  } else {
-    alList[[1]] <- as.data.frame(res)[,c("Level",achievementVars, "N", "wtdN","Percent","StandardError")]
-  }
-
-  
-  # 3. Return VarEstInputs (JK and PV)
-  if (returnVarEstInputs) {
-    # JK
-    jrr_dt <- jrr_dt[Level!="Other"][,JKreplicate := as.integer(gsub("[^0-9]","",JKreplicate))]
-    jrrResultOrder <- c("PV","JKreplicate", achievementVars,"Level","value")
-    jrr_dt <- as.data.frame(jrr_dt)[,jrrResultOrder]
-    names(jrr_dt) <- c("PV","JKreplicate", achievementVars,"variable","value")
-    # rearrange output
-    for (i in c("variable","JKreplicate","PV")) {
-      jrr_dt <- jrr_dt[order(jrr_dt[,i]),]
-    }
-    jrr_dt$variable <- as.character(jrr_dt$variable)
-    alList[[2]] <- jrr_dt
-    # PV
-    imp_dt <- imp_dt[Level!="Other"][,PV := as.integer(gsub("[^0-9]","",PV))]
-    impResultOrder <- c("PV", achievementVars, "Level", "value")
-    imp_dt <- as.data.frame(imp_dt)[,impResultOrder]
-    names(imp_dt) <- c("PV", achievementVars, "variable", "value")
-    # rearrange output
-    for (i in c("variable","PV")){
-      imp_dt <- imp_dt[order(imp_dt[,i]),]
-    }
-    imp_dt$variable <- as.character(imp_dt$variable)
-    alList[[3]] <- imp_dt
-  }
-  return(alList)
-}
-
 #' @title Print AchievementLevels Results
 #'
 #' @description Prints details of discrete and cumulative achievement levels
@@ -1003,6 +911,9 @@ print.achievementLevels <- function(x, printCall=TRUE, printDiscrete=TRUE, print
       }
       cat(paste0("full data n: ", x1$n0, "\n"))
       cat(paste0("n used: ", x1$nUsed, "\n"))
+      if(!is.null(x1$nPSU)) {
+        cat(paste0("n PSU: ", x1$nPSU, "\n"))
+      }
       cat("\n")
     }
     if(printDiscrete & !is.null(x1$discrete)) {

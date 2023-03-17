@@ -79,10 +79,13 @@ descriptionOfFile <- function(filename) {
   #==== Assessment Sample ====
   #don't throw error if match not found
   validAssessSample <- c('Total Sample' = "AT",
-                         'Modified Sample' = "RT")
+                         'Modified Sample' = "RT",
+                         'Primer' = "PM",
+                         'Simulated' = "SM")
+  
   assessSample <- names(validAssessSample[assessSampC == validAssessSample])
   if(length(assessSample)==0){ #match not found, set to NULL for return status.
-    assessSample <- NULL
+    assessSample <- ""
   }
   
   #output list object
