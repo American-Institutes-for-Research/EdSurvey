@@ -1,17 +1,18 @@
 \name{NEWS}
 \title{NEWS for EdSurvey}
 
-\section{Changes in version 3.0.9000}{
+\section{Changes in version 3.1.0}{
   \subsection{UPDATES}{
     \itemize{
-      \item \code{lm} and \code{glm} are now generic functions, so users can call \code{lm} and \code{glm} instead of \code{lm.sdf} and \code{glm.sdf}---though legacy code will still work with those calls. This slightly complicates the documentation for these functions where \code{lm_sdf} and \code{glm_sdf} are now the version with complete documentation. Note that \code{tidyverse} appears to break this a bit and users must still use \code{lm.sdf} after a \code{\%>\%} pipe.
+      \item fix an issue where \code{lm} and \code{glm} were marked as generic functions to fix CRAN checks.
+      \item \code{readNAEP} can now read in the NAEP metadata from an xml file or an fr2 file (the former is new). This change should be transparent to the user, but users wishing to specify the use of the XML file can use the \code{xmlPath} argument (see \code{?readNAEP}). 
     }
   }
   \subsection{BUG FIXES}{
     \itemize{      
-      \item \code{achivementLevels} now returns number of rows on the data as nPSU when there are not PSU/stratum vars (e.g., for Germany in the PIACC data). 
+      \item \code{achivementLevels} now returns number of rows on the data as \code{nPSU} when there are not PSU/stratum vars (e.g., for Germany in the PIACC data). 
       \item \code{achivementLevels} now raise an error if any aggregation variable is continuous. 
-      \item fixed multicore in \code{mml.sdf}
+      \item fixed multicore in \code{mml.sdf}.
     }
   }
 }

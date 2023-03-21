@@ -113,6 +113,7 @@ test_that("showCodebook",{
 context("getData")
 test_that("getData", {
   expect_known_value(gd1 <- getData(sdf, c("dsex", "b017451")), file="gd1.rds", update=FALSE)
+  skip_on_cran()
   expect_known_value(gd2 <- getData(sdf, c("dsex", "b017451"), defaultConditions=FALSE), file="gd2.rds", update=FALSE)
   expect_known_value(gd3 <- getData(sdf, c("dsex", "b017451"), dropUnusedLevels=FALSE), file="gd3.rds", update=FALSE)
   expect_known_value(gd4 <- getData(sdf, c("dsex", "b017451"), omittedLevels=TRUE, includeNaLabel=FALSE), file="gd4.rds", update=FALSE)
@@ -190,7 +191,6 @@ test_that("getData", {
   expect_error(EdSurvey:::subset(sdf, dsex %in% a$bb, verbose=FALSE))
   expect_error(EdSurvey:::subset(sdf, dsex %in% bb$a, verbose=FALSE))
 
-  skip_on_cran()
   # test subset using an element from the parent frame
   # does not work in testthat with test()
   if(FALSE) {
@@ -220,6 +220,7 @@ test_that("getData order of userConditions", {
 
 context("rename.sdf")
 test_that("rename.sdf", {
+  skip_on_cran()
   # check rename only
   sdf_rename <- rename.sdf(sdf, c("dsex","composite","origwt"), c("gender","composite0","totwgt"))
   expect_equal(attr(getAttributes(sdf_rename, "pvvars"),"default"),"composite0")
@@ -646,7 +647,7 @@ test_that("achievementLevel basic", {
 
 context("achievementLevel, aggregated")
 test_that("achievementLevel, aggregated", {
-
+  skip_on_cran()
   expect_known_value(test2 <- achievementLevels(aggregateBy = "dsex", returnCumulative = TRUE, data=sdf), file="aLevels_test2.rds", update=FALSE)
   # test dynamic vars
   expect_known_value(test2 <- achievementLevels(aggregateBy = dsex, returnCumulative = TRUE, data=sdf), file="aLevels_test2.rds", update=FALSE)

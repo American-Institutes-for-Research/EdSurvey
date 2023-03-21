@@ -54,6 +54,7 @@ test_that("ESDFL achievementLevels", {
 
 context("ESDFL cor")
 test_that("ESDFL cor", {
+  skip_on_cran()
   c1 <- cor.sdf("b017451", "b003501", sdfA,
                 method="Pearson",
                 weightVar="origwt")

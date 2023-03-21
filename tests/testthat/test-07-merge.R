@@ -1,3 +1,4 @@
+skip_on_cran()
 require(testthat)
 require(EdSurvey)
 options(width = 500)
@@ -24,7 +25,6 @@ test_that("merge with NAEPprimer",{
   res <- merge(sdf, tmpDF, by = "pseudoID")
   expect_equal(res$knownVar1, res$dsex)
   expect_equal(res$knownVar2, res$origwt)
-  skip_on_cran()
   
   #shuffle the dataframe by rows for testing
   tmpDF <- tmpDF[sample(1:nrow(tmpDF)), ]

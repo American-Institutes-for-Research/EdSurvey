@@ -1,6 +1,6 @@
 Package: EdSurvey
-Version: 3.3.9000
-Date: 2023-03-15
+Version: 3.1.0
+Date: 2023-03-21
 Title: Analysis of NCES Education Survey and Assessment Data
 Author: Paul Bailey [aut, cre],
         Ahmad Emad [aut],
@@ -22,7 +22,7 @@ Maintainer: Paul Bailey <pbailey@air.org>
 Depends: R (>= 3.5.0), car, lfactors (>= 1.0.3), Dire (>= 2.1.0)
 Imports: data.table (>= 1.11.4), Formula, glm2, haven (>= 2.2.0), LaF
         (>= 0.7), lme4, MASS, Matrix, methods, NAEPprimer, quantreg,
-        readxl, tibble, wCorr, NAEPirtparams, WeMix (>= 3.2.1), xtable,
+        readxl, tibble, wCorr, NAEPirtparams, WeMix (>= 4.0.0), xtable,
         xml2
 URL: https://www.air.org/project/nces-data-r-project-edsurvey
 BugReports: https://github.com/American-Institutes-for-Research/EdSurvey/issues
@@ -38,4 +38,4 @@ Note: This publication was prepared for NCES under Contract No.
         does not imply endorsement by the U.S. Government.
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2023-03-16 16:20:47 UTC; pbailey
+Packaged: 2023-03-21 14:16:22 UTC; pbailey

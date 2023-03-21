@@ -1,3 +1,5 @@
+skip_if_not_installed("data.table")
+skip_if_not_installed("tibble")
 require(data.table)
 require(tibble)
 
