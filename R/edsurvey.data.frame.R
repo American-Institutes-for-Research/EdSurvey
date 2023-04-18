@@ -453,6 +453,9 @@ subset.edsurvey.data.frame <- function(x, subset, ..., inside=FALSE) {
   # variable is updated.
   # add it to the user conditions
   if(inside) {
+    if(inherits(subset, "name")) {
+      subset <- eval(subset)
+    }
     if(inherits(subset, "character")) {
       subset <- parse(text=subset)[[1]]
     }
