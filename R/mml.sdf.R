@@ -180,17 +180,25 @@ mml.sdf <- function(formula,
                                  measure.vars=c(scoreInfo$itemsUse)))
   # creat stuItems
   colnames(stuItems) <- c(idVar, 'key', 'score')
+  stuItems <- subset(stuItems, !is.na(score))
+  if(nrow(stuItems) == 0) {
+    stop("No students on this data have valid test data.")
+  }
   # create stuDat 
   stuDat <- edf[edf[ , idVar] %in% unique(stuItems[ , idVar]), c(idVar, indepVars, weightVar, strataVar, psuVar)]
-
+  if(nrow(stuDat) == 0) {
+    stop("No students with valid test data also have valid covariates.")
+  }
   # no composite in TIMSS
   if(composite && survey %in% "TIMSS") {
     mc <- missing(composite)
     # the next line sets missing(composite) to FALSE, so that must be tested above it
-    composite <- FALSE
-    if(!mc) {
-      stop('Composite is not supported in TIMSS.')
+    testDat <- getAttributes(data, "testData")
+    subTestDat <- subset(testDat, test %in% theSubject)
+    if(nrow(subTestDat) == 0 || any(is.na(subTestDat$weights))) {
+      stop('Composite is not recomended for TIMSS.')
     }
+    # the user seems to know what they are doing, they added weights. So allow it
   }
 
   

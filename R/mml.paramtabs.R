@@ -373,12 +373,12 @@ timssParam <- function(timssDir, theYear, theLevel) {
     df2s <- suppressMessages(read_excel(df2File[1], sheet = 'SCI', progress = FALSE))
     df3s <- suppressMessages(read_excel(df3File[1], sheet = 'SCI', progress = FALSE))
   } else if (theYear == 2019) {
-    df1Name <- paste0("^eT19_G", theLevel, "_Item Parameters Adj[.]xlsx$")
-    df2Name <- paste0("^eT19_G", theLevel, "_Item Information[.]xlsx$")
+    df1Name <- paste0("^eT19_G", theLevel, "_Item Parameters Adj[.]xlsx$|^T19_G", theLevel, "_Item Parameters[.]xlsx$")
+    df2Name <- paste0("^e?T19_G", theLevel, "_Item Information[.]xlsx$")
     df3Name <- paste0("^T19_G", theLevel, "_Transform Constants[.]xlsx$")
-    df1File <- list.files(timssDir, df1Name, full.names = TRUE, ignore.case = TRUE) #if multiple files found, assume they are the same file but in different dirs
-    df2File <- list.files(timssDir, df2Name, full.names = TRUE, ignore.case = TRUE)
-    df3File <- list.files(timssDir, df3Name, full.names = TRUE, ignore.case = TRUE)
+    df1File <- unique(list.files(timssDir, df1Name, full.names = TRUE, ignore.case = TRUE)) #if multiple files found, assume they are the same file but in different dirs
+    df2File <- unique(list.files(timssDir, df2Name, full.names = TRUE, ignore.case = TRUE))
+    df3File <- unique(list.files(timssDir, df3Name, full.names = TRUE, ignore.case = TRUE))
     if (length(df1File) == 0 || length(df2File) == 0 || length(df3File) == 0) {
       if (theLevel == 4) {
         zips <- paste0(". Download them here: ", 
@@ -398,13 +398,19 @@ timssParam <- function(timssDir, theYear, theLevel) {
       }
       stop(paste0("Make sure ", df1Name, ", ", df2Name, ", and ", df3Name, " are downloaded in ", timssDir, zips,". ", "Try running: downloadTIMSS('",timssDirout, "', '",theYear,"')"))
     }
-    df1m <- suppressMessages(read_excel(df1File[1], sheet = 'MAT', progress = FALSE))
-    df2m <- suppressMessages(read_excel(df2File[1], sheet = 'MAT', progress = FALSE))
+    fixDF1 <- function(z, subject) {
+      res <- unname(suppressMessages(read_excel(z, sheet = subject, progress = FALSE)))
+      if(theYear == 2019 & "2015" %in% res[2,4] & "RMSD" %in% res[1,4]) {
+        res <- res[,-4]
+      }
+      return(res)
+    }
+    df1m <- do.call(rbind, lapply(df1File, fixDF1, subject="MAT"))
+    df2m <- do.call(rbind, lapply(df2File, function(z) { (suppressMessages(read_excel(z, sheet = 'MAT', progress = FALSE)))}))
     df3m <- suppressMessages(read_excel(df3File[1], sheet = 'MAT', progress = FALSE))
-    df1s <- suppressMessages(read_excel(df1File[1], sheet = 'SCI', progress = FALSE))
-    df2s <- suppressMessages(read_excel(df2File[1], sheet = 'SCI', progress = FALSE))
+    df1s <- do.call(rbind, lapply(df1File, fixDF1, subject="SCI"))
+    df2s <- do.call(rbind, lapply(df2File, function(z) { (suppressMessages(read_excel(z, sheet = 'SCI', progress = FALSE)))}))
     df3s <- suppressMessages(read_excel(df3File[1], sheet = 'SCI', progress = FALSE))
-    
   } else {
     stop(paste0("Item parameters are currently not available for ", theYear,"."))
   }
@@ -412,7 +418,6 @@ timssParam <- function(timssDir, theYear, theLevel) {
   allParamsS <- timssParamForm(df1s, df2s, df3s, theYear, theLevel, 'SCI')
   allParams <- list(params=rbind(allParamsM$params, allParamsS$params),
                     transformations = rbind(allParamsM$transformations, allParamsS$transformations))
-
   return(allParams)
 } 
 

@@ -413,7 +413,7 @@ buildECLSK2011WeightList <- function(fileFormat){
 }
 
 
-#builds the TIMSS dataList object
+#builds the ECLSK:2011 dataList object
 buildECLS_K2011_dataList <- function(LaF, FF){
 
   dataList <- list()
