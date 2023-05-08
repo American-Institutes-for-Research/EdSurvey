@@ -12,19 +12,18 @@ authors:
     corresponding: true # (This is how to denote the corresponding author)
     equal-contrib: true
     affiliation: 1 # (Multiple affiliations must be quoted)
-  - name: Author Without ORCID
+  - name: Ting Zhang
+    orcid: 0000-0000-0000-0000
     equal-contrib: true # (This is how you can denote equal contributions between multiple authors)
+    affiliation: 1
+  - name: Emmanuel Sikali
     affiliation: 2
-  - name: Author with no affiliation
-    corresponding: true # (This is how to denote the corresponding author)
-    affiliation: 3
 affiliations:
  - name: American Institutes for Research, USA
    index: 1
- - name: Institution Name, Country
+ - name: National Center for Education Statistics, USA
    index: 2
- - name: Independent Researcher, Country
-   index: 3
+
 date: 1 May 2023
 bibliography: paper.bib
 
@@ -54,7 +53,7 @@ The `EdSurvey` package was conceived and developed to group in one place all the
 # Workflow
 Recognizing that researchers using R statistical software come with varying levels of experience, the `EdSurvey` package has provided multiple workflows to aid in this process of conducting survey analysis. The following graphic details the recommended workflows with corresponding `EdSurvey` functions.
 
-![EdSurvey workflow](./edsurveyWorkflow.png){ width=50% }
+![EdSurvey workflow](./edsurveyWorkflow.png){ width=70% }
 
 The workflow has three components:
 
