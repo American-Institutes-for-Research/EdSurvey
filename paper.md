@@ -41,7 +41,7 @@ There is a significant demand for accessible and user-friendly software to proce
 To access these data with ease, perform data analysis, and test their hypotheses, various free tools have been supplied by assessment institutes, or government agencies, including the International Database IDB Analyzer, NCES Electronic Code Books, NAEP Data Explorer, International Data Explorer, WesVar, and the AM software. 
 Most of these free tools are menu-driven software that do not create a shareable code. They were created with the average statistical user in mind and are limited in the types of the statistical analyses that they can support. There are also commercially available software packages (e.g., SPSS, SAS, or STATA) for data merging, cleaning, and manipulation but most of them still require the analyst to import the data into tools such as WesVar or AM to account for complex sample designs and use the plausible values.
 
-`EdSurvey` runs in R, a programming language licensed under the GNU General Public License, and is widely used by academia and the research communities. The package is tailored to the processing and analysis of large-scale assessment data with appropriate procedures. It is built as a one-stop shop for downloading, processing, manipulation and analysis of survey data.  Other packages in R will analyze large-scale assessment data, including survey [@Lumley], lavaan.survey [@Oberski], svyPVpack [@svyPVpack], BIFIE [@BIFIE], intsvy [@intsvy] and RALSA [@RALSA]. Among these packages, some have limited data coverage (e.g., tailored to international large-scale assessments only), and some require user input about the survey design and plausible values before they can be used. `EdSurvey` was developed to analyze all the large-scale assessments that the United States participates in under NCES, with the complex sampling design and plausible value methodology incorporated seamlessly. The advantages of `EdSurvey` include:
+The `EdSurvey` package was conceived and developed to group in one place all the methodologies and techniques that a researcher needs to access, process, manipulate, and analyze these educational databases. `EdSurvey` can handle most complex samples, plausible value estimations, and longitudinal data methodologies. `EdSurvey` runs in R, a programming language licensed under the GNU General Public License, and is widely used by academia and the research communities. The package is tailored to the processing and analysis of large-scale assessment data with appropriate procedures. It is built as a one-stop shop for downloading, processing, manipulation and analysis of survey data. Other packages in R will analyze large-scale assessment data, including survey [@Lumley], lavaan.survey [@Oberski], svyPVpack [@svyPVpack], BIFIE [@BIFIE], intsvy [@intsvy] and RALSA [@RALSA]. Among these packages, some have limited data coverage (e.g., tailored to international large-scale assessments only), and some require user input about the survey design and plausible values before they can be used. `EdSurvey` was developed to analyze all the large-scale assessments that the United States participates in under NCES, with the complex sampling design and plausible value methodology incorporated seamlessly. The advantages of `EdSurvey` include:
 
 - allowing for data manipulation inside and outside the package;
 - minimizing memory footprint by only reading in required data;
@@ -54,12 +54,13 @@ Most of these free tools are menu-driven software that do not create a shareable
 # Workflow
 Recognizing that researchers using R statistical software come with varying levels of experience, the `EdSurvey` package has provided multiple workflows to aid in this process of conducting survey analysis. The following graphic details the recommended workflows with corresponding `EdSurvey` functions.
 
+![EdSurvey workflow]("edsurveyWorkflow.png")
+
 The workflow has three components:
+
 1.	Understanding the data
 2.	Preparing the data for analysis
 3.	Running the analysis
-
-![EdSurvey workflow](edsurveyWorkflow.png)
 
 Note that when preparing data for analysis, the `EdSurvey` package provides functions for users to manipulate their data. Experienced R programmers might prefer to extract and manipulate their data using other R methods or supplementary packages. Each method is supported.
 
