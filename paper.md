@@ -54,7 +54,7 @@ The `EdSurvey` package was conceived and developed to group in one place all the
 # Workflow
 Recognizing that researchers using R statistical software come with varying levels of experience, the `EdSurvey` package has provided multiple workflows to aid in this process of conducting survey analysis. The following graphic details the recommended workflows with corresponding `EdSurvey` functions.
 
-![EdSurvey workflow](./edsurveyWorkflow.png){width: 60%}
+![EdSurvey workflow](./edsurveyWorkflow.png){ width=50% }
 
 The workflow has three components:
 
