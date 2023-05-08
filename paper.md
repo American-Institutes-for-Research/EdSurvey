@@ -59,7 +59,7 @@ The workflow has three components:
 2.	Preparing the data for analysis
 3.	Running the analysis
 
-![EdSurvey workflow](edsurveyWorkflow.png){ width=60% }
+![EdSurvey workflow](edsurveyWorkflow.png)
 
 Note that when preparing data for analysis, the `EdSurvey` package provides functions for users to manipulate their data. Experienced R programmers might prefer to extract and manipulate their data using other R methods or supplementary packages. Each method is supported.
 
@@ -70,7 +70,6 @@ The `EdSurvey` package provides accessible and user-friendly functions to analyz
 
 # Acknowledgements
 
-We acknowledge contributions from Brigitta Sipocz, Syrtis Major, and Semyeong
-Oh, and support from Kathryn Johnston during the genesis of this project.
+This project has been funded at least in part with Federal funds from the U.S. Department of Education under contract numbers ED-IES-12-D-0002/0004 and 91990022C0053. The content of this publication does not necessarily reflect the views or policies of the U.S. Department of Education nor does mention of trade names, commercial products, or organizations imply endorsement by the U.S. Government.
 
 # References
