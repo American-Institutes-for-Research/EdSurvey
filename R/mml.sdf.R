@@ -180,7 +180,7 @@ mml.sdf <- function(formula,
                                  measure.vars=c(scoreInfo$itemsUse)))
   # creat stuItems
   colnames(stuItems) <- c(idVar, 'key', 'score')
-  stuItems <- subset(stuItems, !is.na(score))
+  stuItems <- stuItems[!is.na(stuItems$score), ]
   if(nrow(stuItems) == 0) {
     stop("No students on this data have valid test data.")
   }
@@ -192,11 +192,15 @@ mml.sdf <- function(formula,
   # no composite in TIMSS
   if(composite && survey %in% "TIMSS") {
     mc <- missing(composite)
-    # the next line sets missing(composite) to FALSE, so that must be tested above it
-    testDat <- getAttributes(data, "testData")
-    subTestDat <- subset(testDat, test %in% theSubject)
-    if(nrow(subTestDat) == 0 || any(is.na(subTestDat$weights))) {
-      stop('Composite is not recomended for TIMSS.')
+    if(mc) {
+      composite <- FALSE
+    } else {
+      # the next line sets missing(composite) to FALSE, so that must be tested above it
+      testDat <- getAttributes(data, "testData", errorCheck=FALSE)
+      subTestDat <- testDat[testDat$test %in% theSubject,]
+      if(nrow(subTestDat) == 0 || any(is.na(subTestDat$weights))) {
+        stop('Composite is not recomended for TIMSS.')
+      }
     }
     # the user seems to know what they are doing, they added weights. So allow it
   }
@@ -372,12 +376,12 @@ getScoreCall <- function(data) {
 }
 
 getScoreInfo <- function(data, survey, theSubject) {
-  polyParamTab <- getAttributes(data, "polyParamTab") 
+  polyParamTab <- getAttributes(data, "polyParamTab", errorCheck=FALSE) 
   polyParamTab <- filterParamTabToSubject(polyParamTab, survey, theSubject)
-  dichotParamTab <- getAttributes(data, "dichotParamTab")
+  dichotParamTab <- getAttributes(data, "dichotParamTab", errorCheck=FALSE)
   dichotParamTab <- filterParamTabToSubject(dichotParamTab, survey, theSubject)
-  testDat <- getAttributes(data, "testData")
-  scoreDict <- getAttributes(data, "scoreDict")
+  testDat <- getAttributes(data, "testData", errorCheck=FALSE)
+  scoreDict <- getAttributes(data, "scoreDict", errorCheck=FALSE)
 
   if(!theSubject %in% c(testDat$subtest, testDat$test)) {
     stop(paste0("Cannot find ", dQuote(theSubject), " in the testData columns ", dQuote("subtest"), " or ", dQuote("test")))

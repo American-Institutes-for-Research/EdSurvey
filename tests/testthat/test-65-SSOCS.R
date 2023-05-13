@@ -19,13 +19,18 @@ if (!dir.exists(edsurveyHome)) {
   dir.create(edsurveyHome)
 }
 
+#able to toggle 'forceReread' for recaching the data if necessary
+if(!exists("forceCacheUpdate")){
+  forceCacheUpdate <- FALSE
+}
+
 test_that("SSOCS data reads in correctly",{
   #expect_silent(downloadSSOCS(root = edsurveyHome, years = c(2000, 2004, 2006, 2008, 2010, 2016, 2018), cache = FALSE, verbose = FALSE))
   expect_silent(ssocs16 <<- readSSOCS(sasDataFiles = file.path(edsurveyHome, "SSOCS", "2016", "pu_ssocs16.sas7bdat"), 
-                                      years = 2016, verbose = FALSE))
+                                      years = 2016, verbose = FALSE, forceReread = forceCacheUpdate))
   expect_equal(dim(ssocs16), c(2092, 477))
   expect_silent(ssocs18 <<- readSSOCS(sasDataFiles = file.path(edsurveyHome, "SSOCS", "2018", "pu_ssocs18.sas7bdat"), 
-                                      years = 2016, verbose = FALSE))
+                                      years = 2016, verbose = FALSE, forceReread = forceCacheUpdate))
   expect_equal(dim(ssocs18), c(2762, 425))
 })
 

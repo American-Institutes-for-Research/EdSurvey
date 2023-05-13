@@ -796,14 +796,14 @@ test_that("glm", {
   # run just coef
   logitDat0 <- getData(data=logitDat, varnames=c("iep", "dsex", "b013801", "origwt"), omittedLevels=TRUE)
   logitDat0$iepY <- ifelse(logitDat0$iep %in% "Yes", 1, 0)
-  suppressWarnings(ccoef <- coef(glm(iepY ~ dsex + b013801, data=logitDat0, weights=logitDat0$origwt, family=binomial(link="logit"))))
+  suppressWarnings(ccoef <- coef(glm.sdf(iepY ~ dsex + b013801, data=logitDat0, weightVar="origwt", family=binomial(link="logit"))))
   expect_equal(coef(logit0), ccoef)
 
   logit1 <- logit.sdf(I(composite > 300) ~ dsex + b013801, data=sdf)
   logitDat1 <- getData(data=logitDat, varnames=c("composite", "dsex", "b013801", "origwt"), omittedLevels=TRUE)
   ccoef <- sapply(getPlausibleValue("composite", sdf), function(ci) {
     logitDat1$outcome <- ifelse(logitDat1[,ci] > 300, 1, 0)
-    suppressWarnings(coef(glm(outcome ~ dsex + b013801, data=logitDat1, weights=logitDat1$origwt, family=binomial(link="logit"))))
+    suppressWarnings(coef(glm.sdf(outcome ~ dsex + b013801, data=logitDat1, weightVar="origwt", family=binomial(link="logit"))))
   })
   ccoef <- apply(ccoef,1,mean)
   expect_equal(coef(logit1), ccoef, tolerance=1E-6)
@@ -812,7 +812,7 @@ test_that("glm", {
   logit1b <- logit.sdf(I(composite > 300 & composite < 350) ~ dsex + b013801, data=sdf)
   ccoef <- sapply(getPlausibleValue("composite", sdf), function(ci) {
     logitDat1$outcome <- ifelse(logitDat1[,ci] > 300 & logitDat1[,ci] < 350, 1, 0)
-    suppressWarnings(coef(glm(outcome ~ dsex + b013801, data=logitDat1, weights=logitDat1$origwt, family=binomial(link="logit"))))
+    suppressWarnings(coef(glm.sdf(outcome ~ dsex + b013801, data=logitDat1, weightVar="origwt", family=binomial(link="logit"))))
   })
   ccoef <- apply(ccoef,1,mean)
   expect_equal(coef(logit1b), ccoef, tolerance=1E-6)
@@ -821,7 +821,7 @@ test_that("glm", {
   logit2 <- logit.sdf(I(iep %in% "Yes" & b017451 %in% "Every day") ~ dsex + b013801, data=sdf)
   logitDat2 <- getData(data=logitDat, varnames=c("iep", "b017451", "dsex", "b013801", "origwt"), omittedLevels=TRUE)
   logitDat2$outcome = ifelse(logitDat2$iep %in% "Yes" & logitDat2$b017451 %in% "Every day", 1, 0)
-  suppressWarnings(ccoef <- coef(glm(outcome ~ dsex + b013801, data=logitDat2, weights=logitDat2$origwt, family=binomial(link="logit"))))
+  suppressWarnings(ccoef <- coef(glm.sdf(outcome ~ dsex + b013801, data=logitDat2, weightVar="origwt", family=binomial(link="logit"))))
   expect_equal(coef(logit2), ccoef, tolerance=1E-6)
 
   # a PV with a relation and a survey item
@@ -829,7 +829,7 @@ test_that("glm", {
   logitDat3 <- getData(data=logitDat, varnames=c("composite", "dsex", "b017451", "b013801", "origwt"), omittedLevels=TRUE)
   ccoef <- sapply(getPlausibleValue("composite", sdf), function(ci) {
     logitDat3$outcome <- ifelse(logitDat3[,ci] > 300 & logitDat3$b017451 %in% "Every day", 1, 0)
-    suppressWarnings(coef(glm(outcome ~ dsex + b013801, data=logitDat3, weights=logitDat3$origwt, family=binomial(link="logit"))))
+    suppressWarnings(coef(glm.sdf(outcome ~ dsex + b013801, data=logitDat3, weightVar="origwt", family=binomial(link="logit"))))
   })
   ccoef <- apply(ccoef,1,mean)
   expect_equal(coef(logit3), ccoef, tolerance=1E-6)
@@ -841,7 +841,7 @@ test_that("glm", {
     ci <- getPlausibleValue("composite", sdf)[ii]
     gi <- getPlausibleValue("geometry", sdf)[ii]
     logitDat4$outcome <- ifelse(logitDat4[,ci] > logitDat4[,gi], 1, 0)
-    suppressWarnings(coef(glm(outcome ~ dsex + b013801, data=logitDat4, weights=logitDat4$origwt, family=binomial(link="logit"))))
+    suppressWarnings(coef(glm.sdf(outcome ~ dsex + b013801, data=logitDat4, weightVar="origwt", family=binomial(link="logit"))))
   })
   ccoef <- apply(ccoef,1,mean)
   expect_equal(coef(logit4), ccoef, tolerance=1E-6)
@@ -852,7 +852,7 @@ test_that("glm", {
     ci <- getPlausibleValue("composite", sdf)[ii]
     gi <- getPlausibleValue("geometry", sdf)[ii]
     logitDat4$outcome <- ifelse(logitDat4[,ci] > 300 & logitDat4[,gi] < 350, 1, 0)
-    suppressWarnings(coef(glm(outcome ~ dsex + b013801, data=logitDat4, weights=logitDat4$origwt, family=binomial(link="logit"))))
+    suppressWarnings(coef(glm.sdf(outcome ~ dsex + b013801, data=logitDat4, weightVar="origwt", family=binomial(link="logit"))))
   })
   ccoef <- apply(ccoef,1,mean)
   expect_equal(coef(logit4b), ccoef, tolerance=1E-6)
@@ -1098,14 +1098,28 @@ test_that("no PSU var error and warnings", {
                                   reqDecimalConversion = sdf$reqDecimalConversion,
                                   fr2Path = sdf$fr2Path,
                                   dim0 = sdf$dim0), "Taylor series")
-  expect_warning(rq1 <- rq.sdf(composite ~ dsex + b017451, data=sdfNoPSU, tau = 0.8, returnNumberOfPSU=T), "returnNumberOfPSU")
+  expect_warning(rq1 <- rq.sdf(composite ~ dsex + b017451, data=sdfNoPSU, tau = 0.8, returnNumberOfPSU=TRUE), "returnNumberOfPSU")
   expect_error(res <- edsurveyTable(composite ~ dsex, data=sdfNoPSU, varMethod = "Taylor"), "jackknife")
   expect_error(res <- glm.sdf(composite ~ dsex, data=sdfNoPSU, varMethod = "Taylor", family=binomial()), "primary sampling unit")
-  expect_warning(res <- glm.sdf(composite ~ dsex, data=sdfNoPSU, family=binomial(), returnNumberOfPSU=T), "FALSE")
-  expect_warning(res <- lm.sdf(composite ~ dsex, data=sdfNoPSU, returnNumberOfPSU=T), "FALSE")
+  expect_warning(res <- glm.sdf(composite ~ dsex, data=sdfNoPSU, family=binomial(), returnNumberOfPSU=TRUE), "FALSE")
+  expect_warning(res <- lm.sdf(composite ~ dsex, data=sdfNoPSU, returnNumberOfPSU=TRUE), "FALSE")
   expect_error(res <- lm.sdf(composite ~ dsex, data=sdfNoPSU, varMethod="Taylor"), "jackknife")
-  expect_error(res <- lm.sdf(composite ~ dsex, data=sdfNoPSU, varMethod="T", returnNumberOfPSU=T), "jackknife")
+  expect_error(res <- lm.sdf(composite ~ dsex, data=sdfNoPSU, varMethod="T", returnNumberOfPSU=TRUE), "jackknife")
 })
+
+sdf <- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
+
+context('attach and detach')
+attach(sdf)
+expect_true("sdf" %in% search())
+t1 <- table(b017451)
+detach(sdf)
+expect_false("sdf" %in% search())
+expect_error(t2 <- table(b017451))
+
+context('with')
+t2 <- with(sdf,table(b017451))
+expect_equal(t1,t2)
 
 
 context('dplyr integration')
@@ -1113,8 +1127,46 @@ skip_if_not_installed("dplyr")
 require(dplyr)
 x <- sdf %>%
      getData(varnames=c("composite", "geometry", "dsex", "b017451","c052601", "origwt"), addAttributes=TRUE) %>%
-     mutate(avg_5 = (as.numeric(mrpcm1) + as.numeric(mrpcm2) + as.numeric(mrpcm3) + as.numeric(mrpcm4) + as.numeric(mrpcm5))/5) %>%
+     mutate(avg_5 = (as.numeric(mrpcm1) + as.numeric(mrpcm2) + as.numeric(mrpcm3) + 
+                       as.numeric(mrpcm4) + as.numeric(mrpcm5))/5) %>%
      rebindAttributes(sdf) %>%
      lm.sdf(composite - geometry ~ avg_5, data=.)
 co <- capture.output(summary(x))
+
+dplO <- c("",                                                                
+"Formula: composite - geometry ~ avg_5",                           
+"",                                                                
+"Weight variable: 'origwt'",                                       
+"Variance method: jackknife",                                      
+"JK replicates: 62",                                               
+"Plausible values: 5",                                             
+"jrrIMax: 1",                                                      
+"full data n: 17606",                                              
+"n used: 15144",                                                   
+"",                                                                
+"Coefficients:",                                                   
+"                   coef          se       t    dof  Pr(>|t|)    ",
+"(Intercept) -32.1895692   1.7984639 -17.898 58.289 < 2.2e-16 ***",
+"avg_5         0.1264752   0.0063834  19.813 53.390 < 2.2e-16 ***",
+"---",                                                             
+"Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",  
+"",                                                                
+"Multiple R-squared: 0.113",                                       
+"")                           
 expect_equal(co, dplO)
+
+
+
+context('ggplot2 integration')
+skip_if_not_installed("ggplot2")
+require(ggplot2)
+g <- ggplot(data=sdf,aes(x=mrpcm1,y=mrps31)) + geom_point() + facet_wrap(~.itsex)
+expect_equal(class(g),c("gg","ggplot"))
+
+
+
+
+
+
+
+

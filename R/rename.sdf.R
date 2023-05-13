@@ -36,11 +36,11 @@ rename.sdf <- function(x,
   
   if(inherits(x,"edsurvey.data.frame") || inherits(x,"light.edsurvey.data.frame")) {
     # list of elements that is involved in the rename process
-    userConditions <- getAttributes(x, "userConditions")
-    pvvars <- getAttributes(x, "pvvars")
+    userConditions <- getAttributes(x, "userConditions", errorCheck=FALSE)
+    pvvars <- getAttributes(x, "pvvars", errorCheck=FALSE)
     weights <- getAttributes(x, "weights")
-    psuVarList <- getAttributes(x, "psuVar")
-    stratumVarList <- getAttributes(x, "stratumVar")
+    psuVarList <- getAttributes(x, "psuVar", errorCheck=FALSE)
+    stratumVarList <- getAttributes(x, "stratumVar", errorCheck=FALSE)
     defaultTaylorVar <- TRUE
     if (is.null(psuVarList) || psuVarList == "") {
       psuVarList <- sapply(weights, function(w) w$psuVar)

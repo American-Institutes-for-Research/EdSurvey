@@ -318,7 +318,7 @@ SD <- function(data,
   }
   gg <- getData(varnames=c(variable, weightVar), data=data, omittedLevels=omittedLevels,
                 recode=recode, defaultConditions=defaultConditions)
-  repw <- getWeightJkReplicates(var=weightVar, data=data)
+  repw <- unique(getWeightJkReplicates(var=weightVar, data=data))
   if(hasPlausibleValue(data=data, variable)) {
     var <- gg[,getPlausibleValue(data=data, variable)]
   } else {

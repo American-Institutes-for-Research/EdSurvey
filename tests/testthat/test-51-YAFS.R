@@ -17,10 +17,14 @@ if (!dir.exists(edsurveyHome)) {
   dir.create(edsurveyHome)
 }
 
+#able to toggle 'forceReread' for recaching the data if necessary
+if(!exists("forceCacheUpdate")){
+  forceCacheUpdate <- FALSE
+}
 
 test_that("PISA YAFS data reads in correctly", {
   #read in PISA USA 2012
-  expect_silent(pisa <<- readPISA(path = file.path(edsurveyHome, "PISA", "2012"), database = "INT", countries = "usa", verbose = FALSE))
+  expect_silent(pisa <<- readPISA(path = file.path(edsurveyHome, "PISA", "2012"), database = "INT", countries = "usa", verbose = FALSE, forceReread = forceCacheUpdate))
   #read PISA YAFS natively
   expect_silent(pisa_yafs <<- readPISA_YAFS(datPath = file.path(edsurveyHome, "PISA YAFS", "2016", "PISA_YAFS2016_Data.dat"), 
                                       spsPath = file.path(edsurveyHome, "PISA YAFS", "2016", "PISA_YAFS2016_SPSS.sps"),

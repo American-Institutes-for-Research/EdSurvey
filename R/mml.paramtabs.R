@@ -399,10 +399,11 @@ timssParam <- function(timssDir, theYear, theLevel) {
       stop(paste0("Make sure ", df1Name, ", ", df2Name, ", and ", df3Name, " are downloaded in ", timssDir, zips,". ", "Try running: downloadTIMSS('",timssDirout, "', '",theYear,"')"))
     }
     fixDF1 <- function(z, subject) {
-      res <- unname(suppressMessages(read_excel(z, sheet = subject, progress = FALSE)))
+      res <- suppressMessages(read_excel(z, sheet = subject, progress = FALSE))
       if(theYear == 2019 & "2015" %in% res[2,4] & "RMSD" %in% res[1,4]) {
         res <- res[,-4]
       }
+      colnames(res) <- NA
       return(res)
     }
     df1m <- do.call(rbind, lapply(df1File, fixDF1, subject="MAT"))

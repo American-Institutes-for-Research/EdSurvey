@@ -528,7 +528,10 @@ readDict <- function(filename) {
                      "weights" = character(0),
                      stringsAsFactors = FALSE)
   # Read in spss control files
-  controlFile <- readLines(filename)
+  fCon <- file(filename, encoding = "cp1252") #must supply encoding here as of R v4.3.0 or else grep operators will throw errors!
+  on.exit(close(fCon))
+  controlFile <- readLines(fCon)
+  
   controlFile <- gsub("\t"," \t", controlFile)
   controlFile <- gsub("[^[:print:]]", "", controlFile) #remove unprintable characters
   controlFile <- trimws(controlFile, which = "both") #remove leading or ending whitespace
@@ -1358,7 +1361,7 @@ readDict2015 <- function(l, year) {
   })
   
   colInfo$Decimal <- as.numeric(ifelse(substr(colInfo$format,1,1) == "F", sapply(strsplit(colInfo$format,"\\."), function(x) { tail(x,1) } ), rep(NA, nrow(colInfo)) ))
-  colInfo$Decimal[is.na(colInfo$Decimal) && !(tolower(colInfo$class) %in% "date")] <- 0 #dates are omitted based on SPSS class type so they are characters
+  colInfo$Decimal[is.na(colInfo$Decimal) & !(tolower(colInfo$class) %in% "date")] <- 0 #dates are omitted based on SPSS class type so they are characters
   colInfo$multiplier <- as.integer(ifelse(is.na(colInfo$Decimal), 1, 10^colInfo$Decimal))
   colInfo$Width <- gsub("[a-zA-Z]","",sapply(strsplit(colInfo$format,"\\."), function(x) { head(x,1) } ))
   colInfo$Width <- as.numeric(colInfo$Width)
@@ -1504,7 +1507,9 @@ validateFileFormat_PISA <- function(dataFilePath, fileFormat){
   
   #test that the ending position matches the number of characters in the first row
   #special case for 2000 reading FWF data file as it's specified out of bounds
-  testLen <- nchar(readLines(dataFilePath, n=1))
+  fCon <- file(dataFilePath, encoding = "cp1252")
+  on.exit(close(fCon))
+  testLen <- nchar(readLines(fCon, n=1))
   
   if(fileFormat[nrow(fileFormat), "End"]>testLen){
     #calc the diff of the offage and adjust the End position and the Width positions

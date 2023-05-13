@@ -102,6 +102,7 @@ A \code{mixedSdfResults} object with the following elements:
    \item{ngroups}{a \code{data.frame} that includes the number of observations for each group}
    \item{n0}{the number of observations in the original data}
    \item{nused}{the number of observations used in the analysis}
+   \item{model.frame}{the data used in the model}
 If the formula does not involve plausible values, the function will return the following additional elements:
    \item{lnlf}{the likelihood function } 
    \item{lnl}{the log-likelihood of the model }

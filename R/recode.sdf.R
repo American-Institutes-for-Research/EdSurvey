@@ -18,7 +18,7 @@ recode.sdf <- function(x, recode) {
 
   if (inherits(x, "edsurvey.data.frame.list")) {
     for (i in 1:length(x$data)) {
-      newUserConditions <- getAttributes(x$datalist[[i]],"userConditions")
+      newUserConditions <- getAttributes(x$datalist[[i]], "userConditions", errorCheck=FALSE)
       if (is.null(newUserConditions)) { 
         newUserConditions <- list()
       }
@@ -27,7 +27,7 @@ recode.sdf <- function(x, recode) {
       x$datalist[[i]] <- setAttributes(x$datalist[[i]], "userConditions", newUserConditions)
     }
   } else if (inherits(x, "edsurvey.data.frame")) {
-    newUserConditions <- getAttributes(x,"userConditions")
+    newUserConditions <- getAttributes(x,"userConditions", errorCheck=FALSE)
     if (is.null(newUserConditions)) { 
       newUserConditions <- list()
     }

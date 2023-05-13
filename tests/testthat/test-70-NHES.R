@@ -19,13 +19,18 @@ if (!dir.exists(edsurveyHome)) {
   dir.create(edsurveyHome)
 }
 
+#able to toggle 'forceReread' for recaching the data if necessary
+if(!exists("forceCacheUpdate")){
+  forceCacheUpdate <- FALSE
+}
+
 test_that("NHES data reads in correctly",{
   #converted to provide instructions for user.
   #user should have the 2012, 2016, and 2019 year datafiles downloaded
   #expect_silent(downloadNHES(root = edsurveyHome, years=c(2012, 2016, 2019), verbose=FALSE))
   #test both auto and specifying a survey code
-  expect_silent(pfi2012 <<- readNHES(file.path(edsurveyHome, "NHES", "2012", "NHES_12_PFI_v1_0.sav"), surveyCode = "auto", verbose = FALSE))
-  expect_silent(pfi2012x <<- readNHES(file.path(edsurveyHome, "NHES", "2012", "NHES_12_PFI_v1_0.sav"), surveyCode = "PFI_2012", verbose = FALSE))
+  expect_silent(pfi2012 <<- readNHES(file.path(edsurveyHome, "NHES", "2012", "NHES_12_PFI_v1_0.sav"), surveyCode = "auto", verbose = FALSE, forceReread = forceCacheUpdate))
+  expect_silent(pfi2012x <<- readNHES(file.path(edsurveyHome, "NHES", "2012", "NHES_12_PFI_v1_0.sav"), surveyCode = "PFI_2012", verbose = FALSE, forceReread = forceCacheUpdate))
   
   expect_is(pfi2012, "edsurvey.data.frame")
   expect_equal(dim(pfi2012), c(17563, 718))
@@ -34,7 +39,7 @@ test_that("NHES data reads in correctly",{
   
   #test reading multiple files
   inFiles <- list.files(file.path(edsurveyHome, "NHES", "2016"), "[.]sav$", full.names = TRUE, ignore.case = TRUE)
-  expect_silent(nhes2016 <<- readNHES(savFiles = inFiles, surveyCode = "auto", verbose = FALSE))
+  expect_silent(nhes2016 <<- readNHES(savFiles = inFiles, surveyCode = "auto", verbose = FALSE, forceReread = forceCacheUpdate))
   expect_is(nhes2016, "edsurvey.data.frame.list")
   
   #split into their own objects for ease of use later
@@ -47,7 +52,7 @@ test_that("NHES data reads in correctly",{
   expect_equal(dim(ecpp2016), c(5844, 643))
   expect_equal(dim(pfi2016), c(14075, 823))
   
-  expect_silent(ecpp2019 <<- readNHES(savFiles = file.path(edsurveyHome, "NHES", "2019", "nhes_19_ecpp_v1_0.sav"), surveyCode = "auto", verbose = FALSE)) 
+  expect_silent(ecpp2019 <<- readNHES(savFiles = file.path(edsurveyHome, "NHES", "2019", "nhes_19_ecpp_v1_0.sav"), surveyCode = "auto", verbose = FALSE, forceReread = forceCacheUpdate)) 
 })
 
 context("NHES getData")

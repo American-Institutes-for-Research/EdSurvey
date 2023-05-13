@@ -268,7 +268,9 @@ edsurvey.data.frame <- function(userConditions,
               scoreDict=NULL, #IRT Param
               scoreFunction=NULL #IRT scoring
               )
-  
+  if(is.null(res$year)) {
+    res$year <- NA
+  }
   # form cache, first grab dim
   ROWID <- 1
   # make cache
@@ -483,6 +485,44 @@ subset.edsurvey.data.frame <- function(x, subset, ..., inside=FALSE) {
   x$cache$DEFAULT <- ifelse( x$cache$ROWID %in% gg$ROWID, TRUE, FALSE)
   x
 } # end of fuction subset.edsurvey.data.frame
+
+#' @importFrom ggplot2 fortify
+#' @method fortify edsurvey.data.frame
+#' @export
+fortify.edsurvey.data.frame <- function(model,data,...){
+  vars <- model$dataList$Student$lafObject@column_names
+  vars <- vars[vars!="version"]
+  # if the edsurvey.data.frame has been attached, we'll just bind 
+  # everything together
+  try(z <- data.frame(sapply(vars,FUN=function(v){as.name(eval(v))},
+                             simplify = TRUE,USE.NAMES = TRUE)),
+      silent=TRUE)
+  
+  if(exists("z")){
+    ggplot2::fortify(z,data,...)
+  }else{ # otherwise, we need to call getdata
+    suppressWarnings(
+      z <- getData(model, varnames=vars,
+                   dropUnusedLevels=FALSE, omittedLevels=FALSE,
+                   addAttributes=TRUE, returnJKreplicates=FALSE)
+    )
+    ggplot2::fortify(z,data,...)
+  }
+}
+
+#' @method with edsurvey.data.frame
+#' @export
+with.edsurvey.data.frame <- function(data,expr,...){
+  vars <- all.vars(substitute(expr))
+  data_envr <- new.env()
+  for(v in vars){
+    tmp <- paste0("data$",v)
+    data_envr[[v]] <- eval(parse(text = tmp))
+  }
+  data_envr <- as.data.frame(as.list(data_envr))
+  eval(substitute(expr), data_envr, enclos=parent.frame())
+  
+}
 
 #' @method [[ edsurvey.data.frame
 #' @export
@@ -737,3 +777,40 @@ matchESDFL <- function(x, table, nomatch = NA_integer_, uncomparables=NULL) {
   }
   return(res)
 }
+
+buildDF <- function(x,cols=NULL){
+  if(!is.null(cols)){
+    vars <- cols
+  }else{
+    vars <- colnames(x)
+    vars <- vars[vars!="version"]
+  }
+
+  vars2 <- vector(mode="character")
+  for(v in vars){
+    if(hasPlausibleValue(v,x)){
+      vars2 <- c(vars2,getPlausibleValue(v,x))
+    }else{
+      vars2 <- c(vars2,v)
+    }
+  }
+  # if the edsurvey.data.frame has been attached, we'll just bind 
+  # everything together
+  try(z <- data.frame(sapply(vars2,FUN=function(v){as.name(eval(v))},
+                             simplify = TRUE,USE.NAMES = TRUE)),
+      silent=TRUE)
+  
+  if(exists("z")){
+    return(z)
+  }else{ # otherwise, we need to call getdata
+    suppressWarnings(
+      z <- getData(x, varnames=vars2,
+                   dropUnusedLevels=TRUE, omittedLevels=FALSE,
+                   addAttributes=TRUE, returnJKreplicates=TRUE
+      )
+    )
+    return(z)
+  } 
+}
+
+

@@ -437,7 +437,7 @@ buildECLS_K2011_dataList <- function(LaF, FF){
 #reads an SPSS (.sps) snytax file and prepares the fileformat from the SPSS syntax file
 #expects a very specific format of SPSS file and will only be applicable for the format found with ECLS_K, BTLS, and HSTS data sets
 #going foward looking into possible packages to use for parsing SPSS/SAS scripts that would be more reliable/handle other formats
-parseSPSSFileFormat2 <- function (inSPSSyntax){
+parseSPSSFileFormat2 <- function (inSPSSyntax, encoding = "cp1252"){
   
   dict <- list("variableName" = character(0),
                "Start" = integer(0),
@@ -453,7 +453,7 @@ parseSPSSFileFormat2 <- function (inSPSSyntax){
                "RecordIndex" = character(0))
   
   # Read in spss control files
-  con <- file(inSPSSyntax, open="r")
+  con <- file(inSPSSyntax, open="r", encoding = encoding)
   controlFile <- readLines(con)
   close.connection(con)
   

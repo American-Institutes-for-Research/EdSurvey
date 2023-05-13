@@ -2,7 +2,6 @@
 % Please edit documentation in R/lm.sdf.R
 \name{lm.sdf}
 \alias{lm.sdf}
-\alias{lm}
 \title{EdSurvey Linear Models}
 \usage{
 lm.sdf(formula, data, weightVar = NULL, relevels = list(),

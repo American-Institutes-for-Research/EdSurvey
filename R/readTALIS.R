@@ -380,7 +380,7 @@ returnFF <- function(spssDF) {
     attributes(spssDF[[z]])$format.spss
   })
   colInfo$decimal <- as.numeric(ifelse(substr(colInfo$format,1,1) == "F", sapply(strsplit(colInfo$format,"\\."), function(x) { tail(x,1) } ), rep(NA, nrow(colInfo)) ))
-  colInfo$decimal[is.na(colInfo$decimal) && !(tolower(colInfo$class) %in% "date")] <- 0 #dates are omitted based on SPSS class type so they are characters
+  colInfo$decimal[is.na(colInfo$decimal) & !(tolower(colInfo$class) %in% "date")] <- 0 #dates are omitted based on SPSS class type so they are characters
   colInfo$multiplier <- as.integer(ifelse(is.na(colInfo$decimal), 1, 10^colInfo$decimal))
   colInfo$size <- gsub("[a-zA-Z]","",sapply(strsplit(colInfo$format,"\\."), function(x) { head(x,1) } ))
   colInfo$size <- as.numeric(colInfo$size)

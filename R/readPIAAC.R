@@ -118,8 +118,8 @@ readPIAAC <- function(path,
   sdf <- list()
   for (cntry in countries) {
     
-    # check usaOption if star is used 
-    if(cntry == "usa" &  all){
+    # check usaOption 
+    if(cntry == "usa"){
       if(usaOption == "17"){
         cntry <- paste0(cntry,"17")
       } 
@@ -192,8 +192,26 @@ readPIAAC <- function(path,
 # 1. dataList
 # 2. cacheFile: jkSumMultiplier, reps, and jk method
 processCountryPIAAC <- function(filepath, countryCode, ff, forceRead, verbose) {
-  txtCacheFile <- list.files(filepath, pattern = paste0(countryCode,".*\\.txt$"), full.names = FALSE, ignore.case = TRUE)
-  metaCacheFile <- list.files(filepath, pattern = paste0(countryCode,"\\.meta$"), full.names = FALSE, ignore.case = TRUE)
+  
+  # If Country code is USA, special processing, else regular
+  if(grepl("usa",countryCode)) {
+    origCC <- countryCode
+    date <- gsub("usa(.*)","\\1", countryCode)
+    if(date=="12_14") {
+      txtCacheFile <- list.files(filepath, pattern = paste0("prgusap1", ".*\\.txt$"), full.names = FALSE, ignore.case = FALSE)
+      metaCacheFile <- list.files(filepath, pattern = paste0(origCC, "\\.meta$"), full.names = FALSE, ignore.case = TRUE)
+    } 
+    if(date=="17") {
+      txtCacheFile <- list.files(filepath, pattern = paste0("Prgusap1_2017", ".*\\.txt$"), full.names = FALSE, ignore.case = FALSE)
+      metaCacheFile <- list.files(filepath, pattern = paste0(origCC, "\\.meta$"), full.names = FALSE, ignore.case = TRUE)
+    }
+    countryCode <- "usa"
+  } else {
+    origCC <- "none"
+    txtCacheFile <- list.files(filepath, pattern = paste0(countryCode, ".*\\.txt$"), full.names = FALSE, ignore.case = TRUE)
+    metaCacheFile <- list.files(filepath, pattern = paste0(countryCode, "\\.meta$"), full.names = FALSE, ignore.case = TRUE)
+  }
+  
   if (length(txtCacheFile) == 0 || length(metaCacheFile) == 0) {
     forceRead <- TRUE
   } else {
@@ -224,10 +242,7 @@ processCountryPIAAC <- function(filepath, countryCode, ff, forceRead, verbose) {
   # Reading country csv file 
   # If Country code is USA, special processing, else regular 
   if(grepl("usa",countryCode)) {
-    origCC <- countryCode
-    date <- gsub("usa(.*)","\\1", countryCode)
-    countryCode <- "usa"
-    # Is it US 17 or 2012 
+    # Is the date for the US 17 or 12_14; note that 'date' and 'origCC' were defined earlier
     if(grepl("17", date)) {
       # usa 17
       fname = list.files(filepath,pattern = paste0(countryCode,".*2017\\.csv"), full.names = FALSE, ignore.case = TRUE)
@@ -319,7 +334,13 @@ processCountryPIAAC <- function(filepath, countryCode, ff, forceRead, verbose) {
   cacheFile <- list(jkSumMultiplier = jkSumMultiplier,
                    method = vemethodn,
                    reps = 80)
-  saveRDS(cacheFile,file.path(filepath,paste0("jk",tolower(countryCode),".meta")))
+  #special process usa12_14 and usa17 cases
+  if(origCC != "none"){
+    saveRDS(cacheFile,file.path(filepath,paste0("jk",tolower(origCC),".meta")))
+  } else {
+    saveRDS(cacheFile,file.path(filepath,paste0("jk",tolower(countryCode),".meta")))
+  }
+  
   return(list(dataList = dataList,
               cacheFile = cacheFile))
 }

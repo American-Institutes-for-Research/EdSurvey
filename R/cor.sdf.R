@@ -123,7 +123,7 @@ cor.sdf <- function(x,
   # test input
   checkDataClass(data, c("edsurvey.data.frame", "light.edsurvey.data.frame", "edsurvey.data.frame.list"))
 
-  pvvars <- names(getAttributes(data, "pvvars"))
+  pvvars <- names(getAttributes(data, "pvvars", errorCheck=FALSE))
   cn <- colnames(data)
   if(!x %in% c(pvvars, cn)) {
     stop(paste0("Could not find x column ", dQuote(x), " in data."))

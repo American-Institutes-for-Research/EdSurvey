@@ -19,14 +19,19 @@ if (!dir.exists(edsurveyHome)) {
   dir.create(edsurveyHome)
 }
 
+#able to toggle 'forceReread' for recaching the data if necessary
+if(!exists("forceCacheUpdate")){
+  forceCacheUpdate <- FALSE
+}
+
 test_that("HSLS data reads in correctly",{
   expect_silent(downloadHSLS(years=2009, root=edsurveyHome, verbose=FALSE))
-  expect_silent(hsls <<- readHSLS(file.path(edsurveyHome, "HSLS", "2009"), filename = "hsls_16_student_v1_0.sav", verbose = FALSE))
+  expect_silent(hsls <<- readHSLS(file.path(edsurveyHome, "HSLS", "2009"), filename = "hsls_16_student_v1_0.sav", verbose = FALSE, forceReread = forceCacheUpdate))
   
   expect_is(hsls, "edsurvey.data.frame")
   expect_equal(dim(hsls), c(23503, 8510))
   
-  expect_silent(hslsSchl <<- readHSLS(file.path(edsurveyHome, "HSLS", "2009"), filename = "hsls_09_school_v1_0.sav", wgtFilename = NULL, verbose = FALSE))
+  expect_silent(hslsSchl <<- readHSLS(file.path(edsurveyHome, "HSLS", "2009"), filename = "hsls_09_school_v1_0.sav", wgtFilename = NULL, verbose = FALSE, forceReread = forceCacheUpdate))
   expect_is(hslsSchl, "edsurvey.data.frame")
   expect_equal(dim(hslsSchl), c(944, 688))
 })

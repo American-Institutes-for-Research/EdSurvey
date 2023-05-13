@@ -1,5 +1,4 @@
 #' @title EdSurvey Linear Models
-#' @aliases lm
 #' @description Fits a linear model that uses weights and variance estimates appropriate for the data.
 #'
 #' @param formula    a \ifelse{latex}{\code{formula}}{\code{\link[stats]{formula}}} for the
@@ -1022,16 +1021,6 @@ vcov.edsurveyLm <- function(object, ...) {
   vc <- mapply(varEstToCov, varA = varnames$Var1, varB = varnames$Var2, MoreArgs = list(varEstA = object$varEstInputs, jkSumMultiplier = object$data$jkSumMultiplier))
   matrix(vc, nrow = length(coef(object)), ncol = length(coef(object)))
 }
-
-# @export
-setMethod("lm",
-          c(data="edsurvey.data.frame"),
-          lm.sdf)
-
-# @export
-setMethod("lm",
-          c(data="edsurvey.data.frame.list"),
-          lm.sdf)
 
 # @export
 setMethod("coef",

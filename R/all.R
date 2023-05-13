@@ -6,6 +6,7 @@
 
 setGeneric("coef")
 setGeneric("subset")
+setGeneric("with")
 
 setOldClass("edsurvey.data.frame")
 setOldClass("light.edsurvey.data.frame")

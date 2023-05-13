@@ -163,7 +163,7 @@ getStratumVar <- function(data, weightVar = attributes(getAttributes(data, "weig
   # retrieve all the attributes we need to determine warnings
   defaultWeight <- attributes(getAttributes(data, "weights"))[["default"]]
   allWeights <- getAttributes(data, "weights")
-  stratumVar <- getAttributes(data,"stratumVar")
+  stratumVar <- getAttributes(data, "stratumVar", errorCheck=FALSE)
 
   if(is.null(allWeights)) {
     return(NULL)
@@ -440,11 +440,8 @@ getXCols <- function(data) {
     res <- unlist(itterateESDFL(match.call(), data))
     return(unique(res))
   }
-  if(inherits(data, "edsurvey.data.frame")) {
-    res <- names(getAttributes(data, "pvvars"))
-  }
-  if(inherits(data, "light.edsurvey.data.frame")) {
-    res <- names(getAttributes(data, "pvvars"))
+  if(inherits(data, "edsurvey.data.frame") | inherits(data, "light.edsurvey.data.frame")) {
+    res <- names(getAttributes(data, "pvvars", errorCheck=FALSE))
   }
   return(c(res, unlist(colnames(data))))
 }

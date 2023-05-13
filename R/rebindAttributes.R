@@ -41,7 +41,7 @@ rebindAttributes <- function(data, attributeData) {
       attr(data, a) <- attributeData[[a]]
     }
     # reset userConditions to remove recode (because its already applied)
-    userConditions <- getAttributes(data, "userConditions")
+    userConditions <- getAttributes(data, "userConditions", errorCheck=FALSE)
     data <- setAttributes(data, "userConditions", userConditions[which(!names(userConditions) %in% "recode")])
   }
   return(data)

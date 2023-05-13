@@ -14,7 +14,7 @@ if(!exists("edsurveyHome")) {
   }
 }
 
-#able to toggle 'forceReread' for the TIMSS data if necessary
+#able to toggle 'forceReread' for recaching the data if necessary
 if(!exists("forceCacheUpdate")){
   forceCacheUpdate <- FALSE
 }

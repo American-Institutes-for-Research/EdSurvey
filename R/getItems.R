@@ -40,9 +40,9 @@ getAllItems <- function(sdf, construct = NULL) {
 #for TIMSS data
 getAllItems_TIMSS <- function(sdf, construct){
 
-  scalesDF <- getAttributes(sdf, "testData") #not currently in use, but holds the test data
-  dichotDF <- getAttributes(sdf, "dichotParamTab")
-  polyDF <- getAttributes(sdf, "polyParamTab")
+  scalesDF <- getAttributes(sdf, "testData", errorCheck=FALSE) #not currently in use, but holds the test data
+  dichotDF <- getAttributes(sdf, "dichotParamTab", errorCheck=FALSE)
+  polyDF <- getAttributes(sdf, "polyParamTab", errorCheck=FALSE)
   
   resultFields <- c()
   if(is.null(construct)) {
@@ -71,11 +71,10 @@ getAllItems_TIMSS <- function(sdf, construct){
 #for NAEP data
 getAllItems_NAEP <- function(sdf, construct){
 
-  scalesDF <- getAttributes(sdf, "testData") #not currently in use, but holds the test data
-  dichotDF <- getAttributes(sdf, "dichotParamTab")
-  polyDF <- getAttributes(sdf, "polyParamTab")
+  scalesDF <- getAttributes(sdf, "testData", errorCheck=FALSE) #not currently in use, but holds the test data
+  dichotDF <- getAttributes(sdf, "dichotParamTab", errorCheck=FALSE)
+  polyDF <- getAttributes(sdf, "polyParamTab", errorCheck=FALSE)
   
-  #NEEDS TO FILTER BY CONSTRUCT, BUT DOES NOT!
   resultFields <- c(dichotDF$ItemID, polyDF$ItemID)
 
   #filter for the specific fields in the data.frame

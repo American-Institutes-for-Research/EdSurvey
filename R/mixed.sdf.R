@@ -90,6 +90,7 @@
 #'    \item{ngroups}{a \code{data.frame} that includes the number of observations for each group}
 #'    \item{n0}{the number of observations in the original data}
 #'    \item{nused}{the number of observations used in the analysis}
+#'    \item{model.frame}{the data used in the model}
 #' If the formula does not involve plausible values, the function will return the following additional elements:
 #'    \item{lnlf}{the likelihood function } 
 #'    \item{lnl}{the log-likelihood of the model }
@@ -304,7 +305,7 @@ mixed.sdf <- function(formula,
   } # end if (!weightTransformation)
   
   # Remove omittedLevels from the data.frame edf
-  lev <- unlist(getAttributes(data, "omittedLevels")) # here we already know it is an edsurvey.data.frame or light.edsurvey.data.fram
+  lev <- unlist(getAttributes(data, "omittedLevels", errorCheck=FALSE)) # here we already know it is an edsurvey.data.frame or light.edsurvey.data.fram
   keep <- rep(0, nrow(edf))
   for (i in 1:ncol(edf)) {
     vari <- names(edf)[i]
@@ -522,6 +523,7 @@ mixed.sdf <- function(formula,
   res$npv <- length(yvars)
   res$n0 <- rawN
   res$nUsed <- nrow(edf)
+  res$model.frame <- edf 
   
   #get group numbers, which is burried in the covariance matrix constructor (cConstructor)
   ngrp <- res$varDF
@@ -529,12 +531,14 @@ mixed.sdf <- function(formula,
   ngrp <- ngrp[!duplicated(ngrp$level), ]
   names(ngrp) <- c("Group Var","Observations","Level")
   res$ngroups <- ngrp
+
   # zero out things not needed
   nullOut <- c("ranefs", "theta", "invHessian", "is_adaptive", "sigma", "cov_mat",
-               "varDF", "varVC", "var_theta", "PVresults", "SE")
+              "varDF", "varVC", "var_theta", "PVresults", "SE")
   for(ni in 1:length(nullOut)) {
     res[[nullOut[ni]]] <- NULL
   }
+
   class(res) <- "mixedSdfResults"
   return(res)
 }

@@ -76,7 +76,7 @@ print.edsurvey.data.frame <- function(x, printColnames = FALSE, ...) {
     eout(paste0("  ", description, "\n"))
   }
 
-  al <- getAttributes(x, "achievementLevels")
+  al <- getAttributes(x, "achievementLevels", errorCheck=FALSE)
   ### Handle more than 1 achievement level scales
   if(is.list(al)) { 
     for (ali in 1:length(al)) {

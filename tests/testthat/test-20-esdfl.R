@@ -236,7 +236,7 @@ test_that("ESDFL lm.sdf",{
   # jrrIMax is required to make sure U isn't singular
   et1 <- lm.sdf(composite ~ b017451 + dsex, sdfl, jrrIMax=Inf)
   # lm maps to lm.sdf when data is an edsurvey.data.frame.list
-  #et1b <- lm(composite ~ b017451 + dsex, sdfl)
+  #et1b <- lm.sdf(composite ~ b017451 + dsex, sdfl)
   #expect_equal(et1, et1b)
   et1D <- lm.sdf(composite ~ b017451 + dsex, sdfD, jrrIMax=Inf)
   # summary output should be the same

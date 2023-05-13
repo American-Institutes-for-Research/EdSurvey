@@ -22,6 +22,12 @@
     <loc>/reference/as.data.frame.html</loc>
   </url>
   <url>
+    <loc>/reference/attach.html</loc>
+  </url>
+  <url>
+    <loc>/reference/augment.html</loc>
+  </url>
+  <url>
     <loc>/reference/bind-methods.html</loc>
   </url>
   <url>
@@ -115,10 +121,25 @@
     <loc>/reference/getData.html</loc>
   </url>
   <url>
+    <loc>/reference/getEstIV.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getIV0.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getIVa.html</loc>
+  </url>
+  <url>
     <loc>/reference/getNHES_SurveyInfo.html</loc>
   </url>
   <url>
     <loc>/reference/getPlausibleValue.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getSV.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getSVa.html</loc>
   </url>
   <url>
     <loc>/reference/getWeightJkReplicates.html</loc>

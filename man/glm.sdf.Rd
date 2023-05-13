@@ -4,7 +4,6 @@
 \alias{glm.sdf}
 \alias{logit.sdf}
 \alias{probit.sdf}
-\alias{glm}
 \title{EdSurvey Generalized Linear Models}
 \usage{
 glm.sdf(formula, family = binomial(link = "logit"), data,

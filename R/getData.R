@@ -164,7 +164,7 @@ getData <- function(data,
   }
 
   #Retrieve user conditions
-  userConditions <- getAttributes(sdf, "userConditions")
+  userConditions <- getAttributes(sdf, "userConditions", errorCheck=FALSE)
   varNamesConditions <- c()
   for (i in seq_along(userConditions)) {
     if (!is.null(names(userConditions)[i]) && names(userConditions)[i] %in% "recode") {
@@ -773,7 +773,7 @@ closeLaFConnections <- function(sdf) {
 #returns a vector of all associated PSU variables for an edsurvey.data.frame
 getAllPSUVar <- function(sdf){
 
-  psuVar <- getAttributes(sdf, "psuVar")
+  psuVar <- getAttributes(sdf, "psuVar", errorCheck=FALSE)
   wgts <- getAttributes(sdf, "weights")
 
   wgtPSUVars <- sapply(wgts, function(x){

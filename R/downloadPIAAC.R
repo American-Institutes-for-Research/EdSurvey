@@ -58,7 +58,7 @@ downloadPIAAC <- function(root, cycle=1, cache=FALSE, verbose=TRUE) {
   }
   
   url0 <- "https://webfs.oecd.org"
-  codebook <- 'https://www.oecd.org/skills/piaac/International%20Codebook_PIAAC%20Public-use%20File%20(PUF)%20Variables%20and%20Values.xlsx' 
+  codebook <- 'https://www.oecd.org/skills/piaac/data/International%20Codebook_PIAAC%20Public-use%20File%20(PUF)%20Variables%20and%20Values_Feb2023.xlsx' 
   for (f in data_files) {
     fn <- basename(f)
     if(!file.exists(file.path(yroot,fn))) {

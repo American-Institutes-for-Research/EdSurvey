@@ -18,11 +18,17 @@ if (!dir.exists(edsurveyHome)) {
   dir.create(edsurveyHome)
 }
 
+#able to toggle 'forceReread' for recaching the data if necessary
+if(!exists("forceCacheUpdate")){
+  forceCacheUpdate <- FALSE
+}
+
 test_that("PIAAC data reads in correctly", {
   expect_silent(downloadPIAAC(root=edsurveyHome, verbose = FALSE))
-  usa <<- readPIAAC(file.path(edsurveyHome, "PIAAC", "Cycle 1"), countries = c("usa12_14"), verbose=FALSE)
-  nor <<- readPIAAC(file.path(edsurveyHome, "PIAAC", "Cycle 1"), countries = c("nor"), verbose=FALSE)
-  deu <<- readPIAAC(file.path(edsurveyHome, "PIAAC", "Cycle 1"), countries = c("deu"), verbose=FALSE)
+  usa <<- readPIAAC(file.path(edsurveyHome, "PIAAC", "Cycle 1"), countries = c("usa12_14"), verbose=FALSE, forceReread = forceCacheUpdate)
+  usa17 <<- readPIAAC(file.path(edsurveyHome, "PIAAC", "Cycle 1"), countries = c("usa17"), verbose=FALSE, forceReread = forceCacheUpdate)
+  nor <<- readPIAAC(file.path(edsurveyHome, "PIAAC", "Cycle 1"), countries = c("nor"), verbose=FALSE, forceReread = forceCacheUpdate)
+  deu <<- readPIAAC(file.path(edsurveyHome, "PIAAC", "Cycle 1"), countries = c("deu"), verbose=FALSE, forceReread = forceCacheUpdate)
 })
 
 context("PIAAC $ assign")

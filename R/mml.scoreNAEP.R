@@ -18,7 +18,7 @@
 # "Multiple" is assigned 8 (the omitted code); and "Not Reached" and "Missing" are assigned NA (missing).
 getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, scoreDict = defaultNAEPScoreCard()) {
   # all items
-  itemColsClean <- c(polyItems, dichotItems)
+  itemColsClean <- tolower(c(polyItems, dichotItems))
   # fr2 file structure
   t <- try(mrcFile <- readLines(filename), silent=TRUE)
 
@@ -26,16 +26,15 @@ getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, sco
   mrcFile <- strsplit(mrcFile , "\n", fixed=T)
   mrcFile <- unlist(mrcFile)
 
+  specs <- getNAEP_FR2Specs(mrcFile) #in readNAEP.R file to get FR2 info
   # read in the variables from the file, this is based on the information ETS
   # shared with us
-  variableName <- trimws(substring(mrcFile, 1, 8)) # name of the variable
-  variableName <- unlist(lapply(variableName, tolower))
+  variableName <- tolower(specs$variableName) # name of the variable
 
   # indices/lines of question item variables
   indices <-  match(itemColsClean, variableName)
   indices <- indices[!is.na(indices)]
   itemLines <- mrcFile[indices]
-  itemLines <- itemLines[!is.na(itemLines)]
 
   # initialize empty dataframe to build
   scoreCard <- data.frame(matrix(ncol = 3, nrow = 0))
@@ -47,16 +46,18 @@ getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, sco
   adjustedItems <- adjustedData$NAEPid
 
   # get item key, answers, and points per item
-  for (line in itemLines) {
+  for (i in indices) {
+    
+    line <- mrcFile[i]
     # initialize portion of scorecard for item
     subScoreCard <- data.frame(matrix(ncol = 4, nrow = 12))
     colnames(subScoreCard) <- c("key", "answer", "score", "scorePoints")
 
     # get key (question id)
-    itemId <- tolower(substring(line, 1,7))
+    itemId <- variableName[i]
 
     # get points awarded by splitting string (like 0010)
-    points <- unlist(strsplit(substring(line, 71,90), ' '))[1]
+    points <- specs$scoreKey[i]
 
     # switch to new score points if item scoring has been adjusted
     if (itemId %in% adjustedItems) {
@@ -79,18 +80,18 @@ getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, sco
     } else {
       points <- NA * c(1:12)
     }
-
-    # get answers (like A, B *, C)
-    labels <- c()
-    start <- 93
-    end <- 119
-    for (i in 1:12) {
-      the_label <- getLabel(line, start, end)
-      labels <- c(labels, the_label)
-      start <- start+28
-      end <- end+28
+    
+    #parse the value labels from the .FR2 specification
+    tokens <- strsplit(specs$labelValues[i], "^", fixed = TRUE)[[1]]
+    
+    vals <- as.numeric(NA * c(1:12)) #create numeric vector of length 12, (not ideal, but to be consistent)
+    labels <- as.character(NA * c(1:12))
+    
+    for(ii in seq_along(tokens)){#use 1:12 here to keep consistent with sizing (yes, a bit strange)
+      vals[ii] <- as.numeric(strsplit(tokens[ii], "=", fixed = TRUE)[[1]][1])
+      labels[ii] <- paste0(strsplit(tokens[ii], "=", fixed = TRUE)[[1]][-1], collapse = "=")
     }
-
+    
     # set points for other types of answers (like omitted, illegible, etc.)
     if (itemId %in% dichotItems) {
       # this is a multiple choice question

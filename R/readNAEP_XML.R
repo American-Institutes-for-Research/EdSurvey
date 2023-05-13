@@ -72,7 +72,7 @@ parseNAEP_XML_ToEdSurveyFileFormat <- function(fileContents){
                    End = cumsum(fileContents$DataFields$DataFields$width),
                    Width = fileContents$DataFields$DataFields$width,
                    Decimal = fileContents$DataFields$DataFields$decimal,
-                   Labels =  trimws(substr(fileContents$DataFields$DataFields$fieldLabel, 1, 50)),
+                   Labels =  trimws(fileContents$DataFields$DataFields$fieldLabel),
                    labelValues = rep("", times = nfields),
                    pvWt = rep("", times = nfields),
                    Type = rep("", times = nfields),

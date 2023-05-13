@@ -13,14 +13,19 @@ if (!dir.exists(edsurveyHome)) {
   dir.create(edsurveyHome)
 }
 
+#able to toggle 'forceReread' for recaching the data if necessary
+if(!exists("forceCacheUpdate")){
+  forceCacheUpdate <- FALSE
+}
+
 # Test =================
  
 # 1. Check data read-in
 test_that("ICCS data reads in correctly", {
   # download manually
   # downloadCivEDICCS(years=c(1999, 2009, 2016))
-  expect_silent(dnk8 <<- readCivEDICCS(path=file.path(edsurveyHome, "ICCS2016_IDB_SPSS", "Data"), countries="dnk", gradeLvl=8, verbose=FALSE))
-  expect_silent(mex8 <<- readCivEDICCS(path=file.path(edsurveyHome, "ICCS2016_IDB_SPSS", "Data"), countries="mex", gradeLvl=8, verbose=FALSE))
+  expect_silent(dnk8 <<- readCivEDICCS(path=file.path(edsurveyHome, "ICCS", "2016"), countries="dnk", gradeLvl=8, verbose=FALSE, forceReread = forceCacheUpdate))
+  expect_silent(mex8 <<- readCivEDICCS(path=file.path(edsurveyHome, "ICCS", "2016"), countries="mex", gradeLvl=8, verbose=FALSE, forceReread = forceCacheUpdate))
    # 2000 complains about the PSU variable not being present
 
   expect_is(dnk8, "edsurvey.data.frame")

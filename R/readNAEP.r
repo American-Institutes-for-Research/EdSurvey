@@ -55,8 +55,6 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
   schLabelsFile <- NULL
 
   if(isLTT){
-    #TEMPORARY HOLD on THE LTT FILES UNTIL QC IS COMPLETE.  Remove this stop when ready.
-    stop("The NAEP Long-Term Trend (LTT) data files are currently unsupported for analysis.")
 
     if(filePathInfo$PreferredLayoutMethod == "XML"){
       xmlLayout <- parseNAEP_XML(filePathInfo$StudentXML)
@@ -576,40 +574,24 @@ readMRC <- function(filename) {
   if( any(nchar(mrcFile) < 90) ) {
     stop(paste0("Malformed fr2 file: some lines have fewer than the required 90 characters. Lines ", pasteItems(which(nchar(mrcFile)<90)), "."))
   }
-  variableName <- trimws(substring(mrcFile, 1, 8)) # name of the variable
-  Start <- as.numeric(trimws(substring(mrcFile, 9, 12))) # start column in file
-  Width <- as.numeric(trimws(substring(mrcFile, 13, 14))) # number of characters in variable
-  End <- Start + Width -1 # end column in file
-  Decimal <- as.numeric(trimws(substring(mrcFile, 15, 15))) # digits (from the right) to be considered decimals
-  Labels <- trimws(substring(mrcFile, 21, 70)) # variable label
-  NumValue <- as.numeric(trimws(substring(mrcFile, 89, 90))) # number of numeric codes (e.g. one could would be 1="Yes")
+  
+  specs <- getNAEP_FR2Specs(mrcFile)
+  variableName <- specs$variableName # name of the variable
+  Start <- specs$Start # start column in file
+  Width <- specs$Width # number of characters in variable
+  End <- specs$End # end column in file
+  Decimal <- specs$Decimal # digits (from the right) to be considered decimals
+  Labels <- specs$Labels # variable label
+  NumValue <- specs$NumValue # number of numeric codes (e.g. one could would be 1="Yes")
+  
   zeroLenVars <- nchar(variableName) == 0
   if(any(zeroLenVars)) {
     warning(paste0("Unnamed variables in .fr2 file on row(s) ", pasteItems( (1:length(variableName))[zeroLenVars]), ". File located at ", filename, ". These variables renamed sequentially, starting with V1."))
     variableName[zeroLenVars] <- paste0("v", 1:sum(zeroLenVars))
   }
 
-  zeroLenVars <- nchar(variableName) == 0
-  if(any(zeroLenVars)) {
-    warning(paste0("Unnamed variables in .fr2 file on row(s) ", pasteItems( (1:length(variableName))[zeroLenVars]), ". File located at ", filename, ". These variables renamed sequentially, starting with V1."))
-    variableName[zeroLenVars] <- paste0("v", 1:sum(zeroLenVars))
-  }
   # parse the numeric codes
-  labelValues <- character(length(mrcFile))
-  for (j in 1:length(mrcFile)) {
-    #be cautious here!  the Ncodes is zero indexed for the formula, but we need to account for only 1 value label as well!
-    #if 0 value labels are specified, then a -1 is calculated for 'Ncodes'
-    Ncodes <- NumValue[j]-1
-    if (Ncodes >= 0) {
-      # if it has numeric codes
-      # read in up to 26 character per code, plus 2 characters for the number
-      codeValSeq <- seq(91, (91+Ncodes*28), by = 28)
-      codeLabelSeq <- seq(93, (93+Ncodes*28), by = 28)
-      values <- as.numeric(trimws(substring(mrcFile[j], codeValSeq, codeValSeq+1)))
-      labels <- trimws(substring(mrcFile[j], codeLabelSeq, codeLabelSeq+19))
-      labelValues[j] <- paste(values, labels, collapse ="^", sep="=")
-    }
-  }
+  labelValues <- specs$labelValues
 
   # keep the original labels
   oLabels <- Labels
@@ -691,41 +673,24 @@ readMRC_LTT <- function(filename, subject) {
   if( any(nchar(mrcFile) < 90) ) {
     stop(paste0("Malformed fr2 file: some lines have fewer than the required 90 characters. Lines ", pasteItems(which(nchar(mrcFile)<90)), "."))
   }
-  variableName <- trimws(substring(mrcFile, 1, 8)) # name of the variable
-  Start <- as.numeric(trimws(substring(mrcFile, 9, 12))) # start column in file
-  Width <- as.numeric(trimws(substring(mrcFile, 13, 14))) # number of characters in variable
-  End <- Start + Width -1 # end column in file
-  Decimal <- as.numeric(trimws(substring(mrcFile, 15, 15))) # digits (from the right) to be considered decimals
-  Labels <- trimws(substring(mrcFile, 21, 70)) # variable label
-  NumValue <- as.numeric(trimws(substring(mrcFile, 89, 90))) # number of numeric codes (e.g. one could would be 1="Yes")
+  
+  specs <- getNAEP_FR2Specs(mrcFile)
+  variableName <- specs$variableName # name of the variable
+  Start <- specs$Start # start column in file
+  Width <- specs$Width # number of characters in variable
+  End <- specs$End # end column in file
+  Decimal <- specs$Decimal # digits (from the right) to be considered decimals
+  Labels <- specs$Labels # variable label
+  NumValue <- specs$NumValue # number of numeric codes (e.g. one could would be 1="Yes")
+  
   zeroLenVars <- nchar(variableName) == 0
   if(any(zeroLenVars)) {
     warning(paste0("Unnamed variables in .fr2 file on row(s) ", pasteItems( (1:length(variableName))[zeroLenVars]), ". File located at ", filename, ". These variables renamed sequentially, starting with V1."))
     variableName[zeroLenVars] <- paste0("v", 1:sum(zeroLenVars))
   }
-
-  zeroLenVars <- nchar(variableName) == 0
-  if(any(zeroLenVars)) {
-    warning(paste0("Unnamed variables in .fr2 file on row(s) ", pasteItems( (1:length(variableName))[zeroLenVars]), ". File located at ", filename, ". These variables renamed sequentially, starting with V1."))
-    variableName[zeroLenVars] <- paste0("v", 1:sum(zeroLenVars))
-  }
+  
   # parse the numeric codes
-  labelValues <- character(length(mrcFile))
-
-  for (j in 1:length(mrcFile)) {
-    #be cautious here!  the Ncodes is zero indexed for the formula, but we need to account for only 1 value label as well!
-    #if 0 value labels are specified, then a -1 is calculated for 'Ncodes'
-    Ncodes <- NumValue[j]-1
-    if (Ncodes >= 0) {
-      # if it has numeric codes
-      # read in up to 26 character per code, plus 2 characters for the number
-      codeValSeq <- seq(91, (91+Ncodes*28), by = 28)
-      codeLabelSeq <- seq(93, (93+Ncodes*28), by = 28)
-      values <- as.numeric(trimws(substring(mrcFile[j], codeValSeq, codeValSeq+1)))
-      labels <- trimws(substring(mrcFile[j], codeLabelSeq, codeLabelSeq+19))
-      labelValues[j] <- paste(values, labels, collapse ="^", sep="=")
-    }
-  }
+  labelValues <- specs$labelValues
 
   labels <- tolower(Labels)
   weights <- rep(FALSE, times = length(variableName)) #default to all false, to be calculated later
@@ -1117,20 +1082,26 @@ validate_NAEPFilePaths <- function(path, frPath, xmlPath){
 
   #recalc the file description with the true student file
   datFileDesc <- descriptionOfFile(toupper(sub("[.]dat$", "", basename(studentFileOut), ignore.case = TRUE)))
-
+  yr <- datFileDesc$Year
+  
   #determine what layout method to use based on what was passed, as well as what is available
   if(fr2Specified && !is.null(fr2StudentFileOut)){
-    layoutMethod = "FR2"
+    layoutMethod <- "FR2"
   } else if (xmlSpecified && !is.null(xmlStudentFileOut)){
-    layoutMethod = "XML"
+    layoutMethod <- "XML"
   } else {
-    if (!is.null(fr2StudentFileOut)){ #FR2 is still preferred method if neither is specified for now, can be swapped later if designed to have XML as default
-      layoutMethod = "FR2"
+    #determine default if not specified based on the file year, starting NAEP 2022 the XML file will be the default method as the .FR2 file is phased out
+    if (!is.null(fr2StudentFileOut) && (yr < 2022)){ #FR2 is still preferred method if neither is specified for now, can be swapped later if designed to have XML as default
+      layoutMethod <- "FR2"
+    } else if (!is.null(xmlStudentFileOut) && (yr >= 2022)){
+      layoutMethod <- "XML"
+    } else if (!is.null(fr2StudentFileOut)){
+      layoutMethod <- "FR2"
     } else if (!is.null(xmlStudentFileOut)){
-      layoutMethod = "XML"
+      layoutMethod <- "XML"
     } else {
       stop(paste0("Unable to locate a matching .fr2 or .xml layout file for: ", dQuote(path), "\n",
-                  "Try setting the ", dQuote("frPath"), " or ", dQuote("xmlPath"), " parameter if location is known."))
+                  "Try setting the ", dQuote("frPath"), " or ", dQuote("xmlPath"), " parameter to the known layout file location."))
     }
   }
   #output list
@@ -1147,7 +1118,6 @@ validate_NAEPFilePaths <- function(path, frPath, xmlPath){
 
   return(retList)
 }
-
 
 appendIRTAttributes_NAEP <- function(esdf, year, subject, region, level, fr2Path, filePathInfo) {
   
@@ -1360,7 +1330,7 @@ appendIRTAttributes_NAEP <- function(esdf, year, subject, region, level, fr2Path
     esdf <- setAttributes(esdf, "scoreFunction", scoreDefault)
 
   }#end if (year %in% unique(params$year) & subject %in% unique(params$subject) & level %in% unique(params$level))
-  
+
   #search for an associated .dct file and apply it if found
   if(!hasNAEPirtparams){
     searchDir <- file.path(dirname(filePathInfo$StudentDAT), "../AM") #search AM folder specifically as STATA files have .dct format that's completely different
@@ -1417,3 +1387,103 @@ scoreDefault <- function(edf, polyParamTab, dichotParamTab, scoreDict) {
   }
   return(edf)
 }
+
+#determines the .FR2 file layout and returns a list of vectors with the .fr2 file details (e.g., Variable Names, Start Position, Width, End Position, Decimal, Labels, Num Values)
+getNAEP_FR2Specs <- function(txt){
+  
+  #original fr2 file column specifications
+  variableName <- trimws(substring(txt, 1, 8)) # name of the variable
+  Start <- trimws(substring(txt, 9, 12)) # start column in file
+  Width <- trimws(substring(txt, 13, 14)) # number of characters in variable
+  Decimal <- trimws(substring(txt, 15, 15)) # digits (from the right) to be considered decimals
+  Labels <- trimws(substring(txt, 21, 70)) # variable label
+  scoreKey <- trimws(substring(txt, 71, 80)) # score key (e.g. 00010, 0100, 1000)
+  NumValue <- trimws(substring(txt, 89, 90)) # number of numeric codes (e.g. one could would be 1="Yes")
+  
+  startOK <- all(grepl("\\d+", Start))
+  widthOK <- all(grepl("\\d+", Width[nchar(Width)>0]))
+  decimalOK <- all(grepl("(\\d+|[*])", Decimal[nchar(Decimal)>0])) #sometimes a '*' character is used, be sure to allow for that
+  numValueOK <- all(grepl("\\d+", NumValue))
+  
+  if(startOK && widthOK && decimalOK && numValueOK){
+    
+    #get the value labels from the foils
+    labelValues <- rep("", times = length(variableName))
+    valLblIndex <- which(NumValue > 0, arr.ind = TRUE) #only process items with defined value labels
+    NumValue = as.numeric(NumValue)
+    Decimal[!grepl("\\d+", Decimal)] <- NA #convert non-numeric values to NA
+    
+    for (i in valLblIndex) {
+        # if it has numeric codes
+        # read in up to 26 character per code, plus 2 characters for the number
+        Ncodes <- NumValue[i]-1 #be cautious here, for the seq call to work properly, a 0 value indicates 1 value label item
+        codeValSeq <- seq(91, (91+Ncodes*28), by = 28)
+        codeLabelSeq <- seq(93, (93+Ncodes*28), by = 28)
+        values <- as.numeric(trimws(substring(txt[i], codeValSeq, codeValSeq+1)))
+        labels <- trimws(substring(txt[i], codeLabelSeq, codeLabelSeq+19))
+        labelValues[i] <- paste(values, labels, collapse ="^", sep="=")
+    }
+    
+    return(list(variableName = variableName,
+                Start = as.numeric(Start),
+                Width = as.numeric(Width),
+                End = (as.numeric(Start) + as.numeric(Width) - 1),
+                Decimal = as.numeric(Decimal),
+                Labels = Labels,
+                NumValue = NumValue, #converted to numeric earlier
+                labelValues = labelValues,
+                scoreKey = scoreKey,
+                fr2Version = 1)
+           )
+  }
+  
+  #the 'updated .fr2 file column specifications as of NAEP 2022 files
+  variableName <- trimws(substring(txt, 1, 32)) # name of the variable
+  Start <- trimws(substring(txt, 33, 36)) # start column in file
+  Width <- trimws(substring(txt, 37, 38)) # number of characters in variable
+  Decimal <- trimws(substring(txt, 39, 39)) # digits (from the right) to be considered decimals
+  Labels <- trimws(substring(txt, 45, 94)) # variable label
+  scoreKey <- trimws(substring(txt, 95, 104)) # score key (e.g. 00010, 0100, 1000)
+  NumValue <- trimws(substring(txt, 113, 114)) # number of numeric codes (e.g. one could would be 1="Yes")
+  
+  startOK <- all(grepl("\\d+", Start))
+  widthOK <- all(grepl("\\d+", Width[nchar(Width)>0]))
+  decimalOK <- all(grepl("(\\d+|[*])", Decimal[nchar(Decimal)>0])) #sometimes a '*' character is used, be sure to allow for that
+  numValueOK <- all(grepl("\\d+", NumValue))
+  
+  if(startOK && widthOK && decimalOK && numValueOK){
+    
+    #get the value labels from the foils
+    labelValues <- rep("", times = length(variableName))
+    valLblIndex <- which(NumValue > 0, arr.ind = TRUE) #only process items with defined value labels
+    NumValue = as.numeric(NumValue)
+    Decimal[!grepl("\\d+", Decimal)] <- NA #convert non-numeric values to NA
+    
+    for (i in valLblIndex) {
+      # if it has numeric codes
+      # read in up to 26 character per code, plus 2 characters for the number
+      Ncodes <- NumValue[i]-1 #be cautious here, for the seq call to work properly, a 0 value indicates 1 value label item
+      codeValSeq <- seq(115, (115+Ncodes*28), by = 28)
+      codeLabelSeq <- seq(117, (117+Ncodes*28), by = 28)
+      values <- as.numeric(trimws(substring(txt[i], codeValSeq, codeValSeq+1)))
+      labels <- trimws(substring(txt[i], codeLabelSeq, codeLabelSeq+19))
+      labelValues[i] <- paste(values, labels, collapse ="^", sep="=")
+    }
+    
+    return(list(variableName = variableName,
+                Start = as.numeric(Start),
+                Width = as.numeric(Width),
+                End = (as.numeric(Start) + as.numeric(Width) - 1),
+                Decimal = as.numeric(Decimal),
+                Labels = Labels,
+                NumValue = NumValue, #converted to numeric earlier
+                labelValues = labelValues,
+                scoreKey = scoreKey,
+                fr2Version = 2)
+    )
+  }
+  
+  #throw error if .FR2 is not expected format
+  stop(paste0("The NAEP .FR2 layout is corrupt and unable to be parsed. Consider trying the NAEP .XML layout version if available."))
+}
+

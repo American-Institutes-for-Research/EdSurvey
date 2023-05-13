@@ -121,7 +121,7 @@
 #' the vignette titled
 #' \href{https://www.air.org/sites/default/files/EdSurvey-WaldTest.pdf}{\emph{Methods and Overview of Using EdSurvey for Running Wald Tests}}.
 #'
-#' @aliases logit.sdf probit.sdf glm
+#' @aliases logit.sdf probit.sdf
 #'
 #' @return
 #' An \code{edsurveyGlm} with the following elements:
@@ -992,16 +992,6 @@ oddsRatio <- function(model, alpha=0.05){
   class(r) <- c("oddsRatio.edsurveyGlm", "data.frame")
   r
 }
-
-# @export
-setMethod("glm",
-          c(data="edsurvey.data.frame"),
-          glm.sdf)
-
-# @export
-setMethod("glm",
-          c(data="edsurvey.data.frame.list"),
-          glm.sdf)
 
 # @export
 setMethod("coef",

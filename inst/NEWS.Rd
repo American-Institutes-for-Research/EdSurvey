@@ -1,14 +1,14 @@
 \name{NEWS}
 \title{NEWS for EdSurvey}
 
-\section{Changes in version 3.99}{
+\section{Changes in version 3.1.9001}{
   \subsection{UPDATES}{
     \itemize{
+      \item added \code{attach}, \code{fortify}, \code{with}. this allows users to use, for example, \code{ggplot2} calls with an \code{edsurvey.data.frame}.
       \item \code{mml.sdf} now allows users to select \code{composite=TRUE} for TIMSS after recoding the \code{testData} to indicate the test.
       \item \code{mml.sdf} now gives clearer warnings when there are no records with assessment data or no students with valid covariate data.
       \item when 2019 TIMSS data was used with \code{mml.sdf} only the digital items were included. EdSurvey reads in the eTIMSS data for eTIMSS countries and the paper data for countries that took only paper TIMSS. With this fix \code{mml.sdf} can be used in countries that used paper TIMSS in 2019.
-      \item \code{subset} now allows dynamic variables when \code{inside=TRUE}.
-      \item \code{gap} allows \code{groupA} and \code{groupB} to be character variables (dynamic).
+      \item fixed a bug which made it impossible to do analysis on a \code{light.edsurvey.data.frame} after calling \code{rebindAttributes} when using TALIS (and any other data with no plausible values) thanks to Anders Astrup Christensen for documenting the bug.
     }
   }
 }

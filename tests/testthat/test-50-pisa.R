@@ -18,20 +18,24 @@ if (!dir.exists(edsurveyHome)) {
   dir.create(edsurveyHome)
 }
 
+#able to toggle 'forceReread' for recaching the data if necessary
+if(!exists("forceCacheUpdate")){
+  forceCacheUpdate <- FALSE
+}
+
 # Test =================
  
 # 1. Check data read-in
 test_that("PISA data reads in correctly", {
   expect_silent(downloadPISA(root=edsurveyHome, year=c(2000, 2003, 2006, 2009, 2012, 2015, 2018), cache=FALSE, verbose = FALSE))
   expect_silent(downloadPISA(root=edsurveyHome, year=2012, database="CBA", cache=FALSE, verbose = FALSE))
-  expect_silent(usaINT2018 <<- readPISA(paste0(edsurveyHome, "PISA/2018"), countries = "usa", verbose = FALSE))
-  expect_silent(usaINT2015 <<- readPISA(paste0(edsurveyHome, "PISA/2015"), countries = "usa", verbose = FALSE))
-  expect_silent(usaINT2012 <<- readPISA(paste0(edsurveyHome, "PISA/2012"), countries = "usa", verbose = FALSE))
-  expect_silent(qcnCBA2012 <<- readPISA(paste0(edsurveyHome, "PISA/2012"), database = "CBA", countries = "qcn", verbose = FALSE)) # Shanghai
-  expect_silent(jpn2009 <<- readPISA(paste0(edsurveyHome, "PISA/2009"), countries = "jpn", verbose = FALSE))
-  expect_silent(aus2006 <<- readPISA(paste0(edsurveyHome, "PISA/2006"), countries = "aus", verbose = FALSE))
-  expect_silent(aus2003 <<- readPISA(paste0(edsurveyHome, "PISA/2003"), countries = "aus", verbose = FALSE))
-  expect_warning(usa2000 <<- readPISA(paste0(edsurveyHome, "PISA/2000"), countries = "usa", verbose = FALSE),
+  expect_silent(usaINT2015 <<- readPISA(file.path(edsurveyHome, "PISA/2015"), countries = "usa", verbose = FALSE, forceReread = forceCacheUpdate))
+  expect_silent(usaINT2012 <<- readPISA(file.path(edsurveyHome, "PISA/2012"), countries = "usa", verbose = FALSE, forceReread = forceCacheUpdate))
+  expect_silent(qcnCBA2012 <<- readPISA(file.path(edsurveyHome, "PISA/2012"), database = "CBA", countries = "qcn", verbose = FALSE, forceReread = forceCacheUpdate)) # Shanghai
+  expect_silent(jpn2009 <<- readPISA(file.path(edsurveyHome, "PISA/2009"), countries = "jpn", verbose = FALSE, forceReread = forceCacheUpdate))
+  expect_silent(aus2006 <<- readPISA(file.path(edsurveyHome, "PISA/2006"), countries = "aus", verbose = FALSE, forceReread = forceCacheUpdate))
+  expect_silent(aus2003 <<- readPISA(file.path(edsurveyHome, "PISA/2003"), countries = "aus", verbose = FALSE, forceReread = forceCacheUpdate))
+  expect_warning(usa2000 <<- readPISA(file.path(edsurveyHome, "PISA/2000"), countries = "usa", verbose = FALSE, forceReread = forceCacheUpdate),
                   "Cannot find both PSU and Stratum variables on data.")
   # 2000 complains about the PSU variable not being present
 

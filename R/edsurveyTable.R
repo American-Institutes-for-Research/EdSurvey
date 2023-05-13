@@ -931,7 +931,7 @@ typeOfVariable <- function(var, data) {
       return(NA)
     }
     # get the cache, if it exists
-    tryCatch(cache <- getAttributes(data=data, "cache"), error=function(e) {})
+    cache <- getAttributes(data=data, "cache", errorCheck=FALSE)
     if(tolower(v) %in% tolower(colnames(cache))) {
       if(is.numeric(cache[[v]])) {
         return("continuous")
