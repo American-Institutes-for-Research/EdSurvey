@@ -11,6 +11,9 @@ authors:
     orcid: 0000-0000-0000-0000
     corresponding: true # (This is how to denote the corresponding author)
     affiliation: 1 # (Multiple affiliations must be quoted)
+  - name: Charles Blankenship
+    orcid: 0000-0000-0000-0000
+    affiliation: 1
   - name: Eric Buehler
   - name: Ahmad Emad
   - name: Tom Fink
