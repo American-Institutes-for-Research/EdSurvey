@@ -10,14 +10,40 @@ authors:
   - name: Paul Bailey
     orcid: 0000-0000-0000-0000
     corresponding: true # (This is how to denote the corresponding author)
-    equal-contrib: true
     affiliation: 1 # (Multiple affiliations must be quoted)
-  - name: Ting Zhang
+  - name: Eric Buehler
+  - name: Ahmad Emad
+  - name: Tom Fink
     orcid: 0000-0000-0000-0000
-    equal-contrib: true # (This is how you can denote equal contributions between multiple authors)
     affiliation: 1
+  - name: Huade Huo
+    orcid: 0000-0000-0000-0000
+    affiliation: 1
+  - name: Michael Lee
+    affiliation: 1
+  - name: Sun-joo Lee
+    affiliation: 1
+  - name: Yuqi Liao
+    orcid: 0000-0001-9359-6015
+    affiliation: 1
+  - name: Alex Lishinski
+  - name: Trang Nguyen
   - name: Emmanuel Sikali
     affiliation: 2
+  - name: Blue Webb
+    orcid: 0000-0000-0000-0000
+    affiliation: 1
+  - name: Qingshu Xie
+    orcid: 0000-0000-0000-0000
+    affiliation: 1
+  - name: Sinan Yavuz
+    orcid: 0000-0000-0000-0000
+    affiliation: 1
+  - name: Jiao Yu
+  - name: Ting Zhang
+    orcid: 0000-0000-0000-0000
+    affiliation: 1
+
 affiliations:
  - name: American Institutes for Research, USA
    index: 1
