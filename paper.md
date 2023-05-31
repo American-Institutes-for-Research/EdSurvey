@@ -8,7 +8,7 @@ tags:
   - NCES
 authors:
   - name: Paul Bailey
-    orcid: 0000-0000-0000-0000
+    orcid: 0000-0003-0989-8729
     corresponding: true # (This is how to denote the corresponding author)
     affiliation: 1 # (Multiple affiliations must be quoted)
   - name: Charles Blankenship
@@ -17,10 +17,10 @@ authors:
   - name: Eric Buehler
   - name: Ahmad Emad
   - name: Tom Fink
-    orcid: 0000-0000-0000-0000
+    orcid: 0009-0003-9308-2833
     affiliation: 1
   - name: Huade Huo
-    orcid: 0000-0000-0000-0000
+    orcid: 0009-0004-5014-646X
     affiliation: 1
   - name: Michael Lee
     affiliation: 1
@@ -34,7 +34,7 @@ authors:
   - name: Emmanuel Sikali
     affiliation: 2
   - name: Blue Webb
-    orcid: 0000-0000-0000-0000
+    orcid: 0009-0004-4080-9864
     affiliation: 1
   - name: Qingshu Xie
     orcid: 0000-0000-0000-0000
