@@ -12,10 +12,13 @@ authors:
     corresponding: true # (This is how to denote the corresponding author)
     affiliation: 1 # (Multiple affiliations must be quoted)
   - name: Charles Blankenship
-    orcid: 0000-0000-0000-0000
+    orcid: 0009-0004-5279-9376
     affiliation: 1
   - name: Eric Buehler
+    orcid: 0009-0004-6354-2015
+    affiliation: 5
   - name: Ahmad Emad
+    affiliation: 7
   - name: Tom Fink
     orcid: 0009-0003-9308-2833
     affiliation: 1
@@ -23,13 +26,16 @@ authors:
     orcid: 0009-0004-5014-646X
     affiliation: 1
   - name: Michael Lee
-    affiliation: 1
+    affiliation: 8
+    orcid: 0009-0006-0959-787X
   - name: Sun-joo Lee
-    affiliation: 1
+    affiliation: 3
   - name: Yuqi Liao
     orcid: 0000-0001-9359-6015
     affiliation: 1
   - name: Alex Lishinski
+    orcid: 0000-0003-4506-1600
+    affiliation: 4
   - name: Trang Nguyen
   - name: Emmanuel Sikali
     affiliation: 2
@@ -37,21 +43,33 @@ authors:
     orcid: 0009-0004-4080-9864
     affiliation: 1
   - name: Qingshu Xie
-    orcid: 0000-0000-0000-0000
     affiliation: 1
   - name: Sinan Yavuz
-    orcid: 0000-0000-0000-0000
+    orcid: 0000-0003-3131-7820
     affiliation: 1
   - name: Jiao Yu
+    affiliation: 6
   - name: Ting Zhang
-    orcid: 0000-0000-0000-0000
+    orcid: 0009-0001-1724-6141
     affiliation: 1
 
 affiliations:
- - name: American Institutes for Research, USA
+ - name: American Institutes for Research
    index: 1
  - name: National Center for Education Statistics, USA
    index: 2
+ - name: United Nations Development Programme
+   index: 3
+ - name: University of Tennessee Knoxville
+   index: 4
+ - name: Memorial Sloan Kettering Cancer Center
+   index: 5
+ - name: JPMorgan Chase & Co.
+   index: 6
+ - name: Google LLC
+   index: 7
+ - name: Independent researcher
+   index: 8
 
 date: 1 May 2023
 bibliography: paper.bib
@@ -60,7 +78,7 @@ bibliography: paper.bib
 
 # Summary
 
-Data from large-scale educational assessment programs, such as the National Assessment of Educational Progress (NAEP) and Progress in International Reading Literacy Study (PIRLS), require special statistical methods to analyze because of their scope and complexity. The `EdSurvey` package gives users functions to perform analyses that account for both the complex sample survey design and the use of plausible values. The `EdSurvey` package also seamlessly takes advantage of the `LaF` package to read in data only when required for an analysis. Users with computers that have insufficient memory to read in entire datasets can still do analyses without having to write special code to read in just the appropriate variables. This is all addressed directly in the `EdSurvey` package — behind the scenes and without any special tuning by the user.
+Data from large-scale educational assessment programs, such as the National Assessment of Educational Progress (NAEP) and Progress in International Reading Literacy Study (PIRLS), require special methods to conduct statistical analyses because of their scope and complexity. The `EdSurvey` package gives users functions to perform analyses that account for both the complex sample survey design and the use of plausible values. The `EdSurvey` package also seamlessly takes advantage of the `LaF` package to read in data only when required for an analysis. Users with computers that have insufficient memory to read in entire datasets can still do analyses without having to write special code to read in just the appropriate variables. This is all addressed directly in the `EdSurvey` package — behind the scenes and without any special tuning by the user.
 
 # Statement of need
 
@@ -69,7 +87,7 @@ There is a significant demand for accessible and user-friendly software to proce
 To access these data with ease, perform data analysis, and test their hypotheses, various free tools have been supplied by assessment institutes, or government agencies, including the International Database IDB Analyzer, NCES Electronic Code Books, NAEP Data Explorer, International Data Explorer, WesVar, and the AM software. 
 Most of these free tools are menu-driven software that do not create a shareable code. They were created with the average statistical user in mind and are limited in the types of the statistical analyses that they can support. There are also commercially available software packages (e.g., SPSS, SAS, or STATA) for data merging, cleaning, and manipulation but most of them still require the analyst to import the data into tools such as WesVar or AM to account for complex sample designs and use the plausible values.
 
-The `EdSurvey` package was conceived and developed to group in one place all the methodologies and techniques that a researcher needs to access, process, manipulate, and analyze these educational databases. `EdSurvey` can handle most complex samples, plausible value estimations, and longitudinal data methodologies. `EdSurvey` runs in R, a programming language licensed under the GNU General Public License, and is widely used by academia and the research communities. The package is tailored to the processing and analysis of large-scale assessment data with appropriate procedures. It is built as a one-stop shop for downloading, processing, manipulation and analysis of survey data. Other packages in R will analyze large-scale assessment data, including survey [@Lumley], lavaan.survey [@Oberski], svyPVpack [@svyPVpack], BIFIE [@BIFIE], intsvy [@intsvy] and RALSA [@RALSA]. Among these packages, some have limited data coverage (e.g., tailored to international large-scale assessments only), and some require user input about the survey design and plausible values before they can be used. `EdSurvey` was developed to analyze all the large-scale assessments that the United States participates in under NCES, with the complex sampling design and plausible value methodology incorporated seamlessly. The advantages of `EdSurvey` include:
+The `EdSurvey` package was conceived and developed to group in one place all the methodologies and techniques that a researcher needs to access, process, manipulate, and analyze these educational databases. `EdSurvey` can handle most complex samples, plausible value estimations, and longitudinal data methodologies. `EdSurvey` runs in R, a programming language licensed under the GNU General Public License, and is widely used by academia and the research communities. The package is tailored to the processing and analysis of large-scale assessment data with appropriate procedures. It is built as a one-stop shop for downloading, processing, manipulation and analysis of survey data. Other packages in R will analyze large-scale assessment data, including survey [@Lumley], lavaan.survey [@Oberski], svyPVpack [@svyPVpack], BIFIE [@BIFIE], intsvy [@intsvy] and RALSA [@RALSA]. Among these packages, some have limited data coverage (e.g., tailored to international large-scale assessments only), and some require user input about the survey design and plausible values before they can be used. `EdSurvey` was developed to analyze all the large-scale assessments that the United States participates in under NCES, and it incorporates a complex sampling design and plausible value methodology properly and smoothly. The advantages of `EdSurvey` include:
 
 - allowing for data manipulation inside and outside the package;
 - minimizing memory footprint by only reading in required data;
