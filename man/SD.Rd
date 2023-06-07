@@ -10,12 +10,13 @@ SD(
   weightVar = NULL,
   jrrIMax = 1,
   varMethod = "jackknife",
-  omittedLevels = TRUE,
+  dropOmittedLevels = TRUE,
   defaultConditions = TRUE,
   recode = NULL,
   targetLevel = NULL,
   jkSumMultiplier = getAttributes(data, "jkSumMultiplier"),
-  returnVarEstInputs = FALSE
+  returnVarEstInputs = FALSE,
+  omittedLevels = deprecated()
 )
 }
 \arguments{
@@ -25,20 +26,20 @@ SD(
 
 \item{weightVar}{character weight variable name. Default is the default weight of \code{data} if it exists.
 If the given survey data do not have a default weight,
-the function will produce unweighted statistics instead. 
+the function will produce unweighted statistics instead.
 Can be set to \code{NULL} to return unweighted statistics.}
 
-\item{jrrIMax}{a numeric value; when using the jackknife variance estimation method, the default estimation option, \code{jrrIMax=1}, uses the 
-                  sampling variance from the first plausible value as the component for sampling variance estimation. The \code{Vjrr} 
-                  term (see 
+\item{jrrIMax}{a numeric value; when using the jackknife variance estimation method, the default estimation option, \code{jrrIMax=1}, uses the
+                  sampling variance from the first plausible value as the component for sampling variance estimation. The \code{Vjrr}
+                  term (see
 \href{https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf}{\emph{Statistical Methods Used in EdSurvey}})
-                  can be estimated with any number of plausible values, and values larger than the number of 
-                  plausible values on the survey (including \code{Inf}) will result in all plausible values being used. 
+                  can be estimated with any number of plausible values, and values larger than the number of
+                  plausible values on the survey (including \code{Inf}) will result in all plausible values being used.
                   Higher values of \code{jrrIMax} lead to longer computing times and more accurate variance estimates.}
 
 \item{varMethod}{deprecated parameter; \code{gap} always uses the jackknife variance estimation}
 
-\item{omittedLevels}{a logical value. When set to \code{TRUE}, drops those levels of the specified \code{variable}.
+\item{dropOmittedLevels}{a logical value. When set to \code{TRUE}, drops those levels of the specified \code{variable}.
 Use print on an \code{edsurvey.data.frame} to see the omitted levels. Defaults to \code{FALSE}.}
 
 \item{defaultConditions}{a logical value. When set to the default value of
@@ -59,8 +60,8 @@ comparing the gap in the percentage of students at a
 survey response level.}
 
 \item{jkSumMultiplier}{when the jackknife variance estimation method---or
-balanced repeated replication (BRR) 
-method---multiplies the final jackknife variance estimate by a value, 
+balanced repeated replication (BRR)
+method---multiplies the final jackknife variance estimate by a value,
 set \code{jkSumMultiplier} to that value.
 For an \code{edsurvey.data.frame}, or
 a \code{light.edsurvey.data.frame},
@@ -72,10 +73,12 @@ inputs to the jackknife and imputation variance
 estimates, which allows for
 the computation
 of covariances between estimates.}
+
+\item{omittedLevels}{this argument is deprecated. Use \code{dropOmittedLevels}}
 }
 \value{
 a list object with elements:
- \item{mean}{the mean assessment score for \code{variable}, calculated according to the vignette titled 
+ \item{mean}{the mean assessment score for \code{variable}, calculated according to the vignette titled
             \href{https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf}{Statistical Methods Used in EdSurvey}}
  \item{std}{the standard deviation of the \code{mean}}
  \item{stdSE}{the standard error of the \code{std}}

@@ -16,8 +16,8 @@
 #' @author Paul Bailey and Trang Nguyen
 #' @export
 rebindAttributes <- function(data, attributeData) {
-  checkDataClass(attributeData, c("edsurvey.data.frame", "light.edsurvey.data.frame"), argument="attributeData")
-  if(inherits(attributeData, "light.edsurvey.data.frame")) {
+  checkDataClass(attributeData, c("edsurvey.data.frame", "light.edsurvey.data.frame"), argument = "attributeData")
+  if (inherits(attributeData, "light.edsurvey.data.frame")) {
     attrList <- attributes(attributeData)
     attrN <- names(attrList)
     attrN <- attrN[!attrN %in% c("names", "row.names", "class")]
@@ -32,16 +32,16 @@ rebindAttributes <- function(data, attributeData) {
     # get the names of the attributes
     attrN <- names(attributeData)
     # exclude the "data" attribute
-    attrN <- attrN[attrN!="data"]
+    attrN <- attrN[attrN != "data"]
     # add every other attribute to "data"
     data <- as.data.frame(data)
     data <- lightUnclassCols(data)
     class(data) <- c("light.edsurvey.data.frame", "data.frame")
-    for(a in attrN) {
+    for (a in attrN) {
       attr(data, a) <- attributeData[[a]]
     }
     # reset userConditions to remove recode (because its already applied)
-    userConditions <- getAttributes(data, "userConditions", errorCheck=FALSE)
+    userConditions <- getAttributes(data, "userConditions", errorCheck = FALSE)
     data <- setAttributes(data, "userConditions", userConditions[which(!names(userConditions) %in% "recode")])
   }
   return(data)

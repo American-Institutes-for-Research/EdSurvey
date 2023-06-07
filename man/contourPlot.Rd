@@ -50,7 +50,7 @@ scatter plot and the contour plot}
 }
 \description{
 Diagnostic plots for regressions can become too dense to interpret.
-             This function helps by adding a contour plot over the points to 
+             This function helps by adding a contour plot over the points to
              allow the density of points to be seen, even when an area is entirely covered in points.
 }
 \examples{

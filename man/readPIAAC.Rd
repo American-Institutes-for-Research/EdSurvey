@@ -16,14 +16,14 @@ readPIAAC(
 \item{path}{a character value to the full directory path to the PIAAC .csv
 files and Microsoft Excel codebook}
 
-\item{countries}{a character vector of the country/countries to include 
+\item{countries}{a character vector of the country/countries to include
 using the three-digit ISO country code. A list of country
 codes can be found in the PIAAC codebook or
 \url{https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes}.
 If files are downloaded using \code{\link{downloadPIAAC}},
 a country dictionary text file can be
 found in the filepath. You can use \code{*} to indicate
-all countries available. For the \code{usa}, the year must 
+all countries available. For the \code{usa}, the year must
 be specified using: \code{usa12_14} or  \code{usa17}.}
 
 \item{forceReread}{a logical value to force rereading of all processed data.
@@ -35,18 +35,18 @@ PIAAC data to be reread and increase the processing time.}
 output while the function is running to indicate the progress.
 Defaults to \code{TRUE}.}
 
-\item{usaOption}{a character value of \code{12_14} or \code{17} that specifies 
-what year of the USA survey should be used when loading all countries by 
-using \code{*} in the \code{countries} argument. This will only make a difference 
+\item{usaOption}{a character value of \code{12_14} or \code{17} that specifies
+what year of the USA survey should be used when loading all countries by
+using \code{*} in the \code{countries} argument. This will only make a difference
 when loading all countries. Defaults to \code{12_14}.}
 }
 \value{
-an \code{edsurvey.data.frame} for a single specified country or 
+an \code{edsurvey.data.frame} for a single specified country or
 an \code{edsurvey.data.frame.list} if multiple countries specified
 }
 \description{
 Opens a connection to a PIAAC data file and
-             returns an \code{edsurvey.data.frame} with 
+             returns an \code{edsurvey.data.frame} with
              information about the file and data.
 }
 \details{

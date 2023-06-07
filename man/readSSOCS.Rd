@@ -7,12 +7,12 @@
 readSSOCS(sasDataFiles, years, forceReread = FALSE, verbose = TRUE)
 }
 \arguments{
-\item{sasDataFiles}{a character vector to the full SAS (*.sas7bdat) data file path(s) you wish to read. 
+\item{sasDataFiles}{a character vector to the full SAS (*.sas7bdat) data file path(s) you wish to read.
 If multiple paths are specified as a vector, it will return an \code{edsurvey.data.frame.list}.}
 
 \item{years}{an integer vector of the year associated with the index position of the \code{sasDataFile} data file vector.
 The year is required to correctly determine required metadata about the file.
-Valid year values are as follows: 2000 (1999--2000), 2004 (2003--2004), 2006 (2005--2006), 2008 (2007--2008), 
+Valid year values are as follows: 2000 (1999--2000), 2004 (2003--2004), 2006 (2005--2006), 2008 (2007--2008),
 2010 (2009--2010), 2016 (2015--2016), 2018 (2017--2018).}
 
 \item{forceReread}{a logical value to force rereading of all processed data.
@@ -34,7 +34,7 @@ Reads in the unzipped files downloaded from the SSOCS Data Products website in S
 restricted-use data or other websites, may require additional conversion steps to generate the required SAS format.
 }
 \note{
-For the \code{readSSOCS} function, value label information is stored and retrieved automatically within the \code{EdSurvey} package (based on the year parameter), 
+For the \code{readSSOCS} function, value label information is stored and retrieved automatically within the \code{EdSurvey} package (based on the year parameter),
       as the SAS files contain only raw data values.
 }
 \examples{

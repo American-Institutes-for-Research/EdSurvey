@@ -14,7 +14,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">EdSurvey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +80,7 @@ See Examples.</p></dd>
 
 <dt>varEstB</dt>
 <dd><p>similar to the <code>varEstA</code> argument.
-If left blank, both are assumed to come 
+If left blank, both are assumed to come
 from <code>varEstA</code>. When set, the degrees of freedom
 are for a contrast between <code>varA</code> and <code>varB</code>,
 and the <code>varB</code> values are taken from <code>varEstB</code>.</p></dd>
@@ -93,14 +93,14 @@ argument for which the degrees of freedom calculation is required.</p></dd>
 
 <dt>varB</dt>
 <dd><p>a character that names the statistic in the <code>varEstB</code>
-argument for which a covariance is required. When <code>varB</code> 
+argument for which a covariance is required. When <code>varB</code>
 is specified, returns the degrees of freedom for
 the contrast between <code>varA</code> and <code>varB</code>.</p></dd>
 
 
 <dt>method</dt>
 <dd><p>a character that is either <code>WS</code> for the Welch-Satterthwaite
-formula or 
+formula or
 <code>JR</code> for the Johnson-Rust correction to the
 Welch-Satterthwaite formula</p></dd>
 
@@ -116,7 +116,7 @@ Welch-Satterthwaite formula</p></dd>
     <p>This calculation happens under the notion that statistics
 have little variance within strata, and
 some strata will contribute fewer than a full degree of freedom.</p>
-<p>The functions are not vectorized, so both <code>varA</code> and 
+<p>The functions are not vectorized, so both <code>varA</code> and
 <code>varB</code> must contain exactly one variable name.</p>
 <p>The method used to compute the degrees of freedom is in the vignette titled
 <a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link"><em>Statistical Methods Used in EdSurvey</em></a>
@@ -168,7 +168,7 @@ section “Estimation of Degrees of Freedom.”</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Paul Bailey.</p>
+  <p></p><p>Developed by Paul Bailey, Ahmad Emad, Huade Huo, Michael Lee, Yuqi Liao, Alex Lishinsku, Trang Nguyen, Qingshu Xie, Jiao Yu, Ting Zhang, Eric Buehler, Sun-joo Lee, Blue Webb.</p>
 </div>
 
 <div class="pkgdown-footer-right">

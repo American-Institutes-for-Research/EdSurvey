@@ -12,7 +12,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">EdSurvey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,7 +70,7 @@
 <span>  weightVar <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  jrrIMax <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  varMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"jackknife"</span><span class="op">)</span>,</span>
-<span>  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  dropOmittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  recode <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  referenceDataIndex <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -80,7 +80,8 @@
 <span>  returnNumberOfPSU <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  noCov <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  pctMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"unbiased"</span>, <span class="st">"symmetric"</span>, <span class="st">"simple"</span><span class="op">)</span>,</span>
-<span>  includeLinkingError <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  includeLinkingError <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  omittedLevels <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -104,7 +105,7 @@ a whole sample as in <code>data</code>.</p></dd>
 <dt>groupB</dt>
 <dd><p>an expression or character expression that defines a condition for the subset.
 This subset will be compared to <code>groupA</code>. If not specified, it will define
-a whole sample as in <code>data</code>. If set to <code>NULL</code>, estimates for the second group 
+a whole sample as in <code>data</code>. If set to <code>NULL</code>, estimates for the second group
 will be dropped.</p></dd>
 
 
@@ -152,10 +153,10 @@ See Details.</p></dd>
 
 
 <dt>jrrIMax</dt>
-<dd><p>a numeric value; when using the jackknife variance estimation method, the default estimation option, <code>jrrIMax=1</code>, uses the 
-sampling variance from the first plausible value as the component for sampling variance estimation. The <code>Vjrr</code> 
-term, or sampeling variance term, can be estimated with any number of plausible values, and values larger than the number of 
-plausible values on the survey (including <code>Inf</code>) will result in all plausible values being used. 
+<dd><p>a numeric value; when using the jackknife variance estimation method, the default estimation option, <code>jrrIMax=1</code>, uses the
+sampling variance from the first plausible value as the component for sampling variance estimation. The <code>Vjrr</code>
+term, or sampling variance term, can be estimated with any number of plausible values, and values larger than the number of
+plausible values on the survey (including <code>Inf</code>) will result in all plausible values being used.
 Higher values of <code>jrrIMax</code> lead to longer computing times and more accurate variance estimates.</p></dd>
 
 
@@ -163,9 +164,9 @@ Higher values of <code>jrrIMax</code> lead to longer computing times and more ac
 <dd><p>deprecated parameter, <code>gap</code> always uses the jackknife variance estimation</p></dd>
 
 
-<dt>omittedLevels</dt>
+<dt>dropOmittedLevels</dt>
 <dd><p>a logical value. When set to the default value of
-<code>TRUE</code>, drops those levels of 
+<code>TRUE</code>, drops those levels of
 all factor variables.
 Use <code>print</code> on an <code>edsurvey.data.frame</code>
 to see the omitted levels.</p></dd>
@@ -173,9 +174,9 @@ to see the omitted levels.</p></dd>
 
 <dt>defaultConditions</dt>
 <dd><p>a logical value. When set to the default value
-of <code>TRUE</code>, uses the default 
+of <code>TRUE</code>, uses the default
 conditions stored in <code>edsurvey.data.frame</code>
-to subset the data. 
+to subset the data.
 Use <code>print</code> on an <code>edsurvey.data.frame</code>
 to see the default conditions.</p></dd>
 
@@ -192,7 +193,7 @@ Can be set as
 <dd><p>a numeric used only when the <code>data</code> argument is an
 <code>edsurvey.data.frame.list</code>,
 indicating which dataset is the reference
-dataset that other datasets are compared with. 
+dataset that other datasets are compared with.
 Defaults to 1.</p></dd>
 
 
@@ -218,7 +219,7 @@ in the percentage object</p></dd>
 
 
 <dt>returnNumberOfPSU</dt>
-<dd><p>a logical value set to <code>TRUE</code> to return the number of 
+<dd><p>a logical value set to <code>TRUE</code> to return the number of
 PSUs used in the calculation</p></dd>
 
 
@@ -234,12 +235,16 @@ See the help for <code><a href="percentile.html">percentile</a></code> for more 
 <dt>includeLinkingError</dt>
 <dd><p>a logical value set to <code>TRUE</code> to include the
 linking error in variance estimation.
-Standard errors (e.g., <code>diffAAse</code>, <code>diffBBse</code>, 
-and <code>diffABABse</code>) and <em>p</em>-values (e.g., <code>diffAApValue</code>, 
-<code>diffBBpValue</code>, and <code>diffABABpValue</code>) would be adjusted for 
-comparisons between digitally based assessments (DBA) and 
+Standard errors (e.g., <code>diffAAse</code>, <code>diffBBse</code>,
+and <code>diffABABse</code>) and <em>p</em>-values (e.g., <code>diffAApValue</code>,
+<code>diffBBpValue</code>, and <code>diffABABpValue</code>) would be adjusted for
+comparisons between digitally based assessments (DBA) and
 paper-based assessments (PBA) data.
 This option is supported only for NAEP data.</p></dd>
+
+
+<dt>omittedLevels</dt>
+<dd><p>this argument is deprecated. Use <code>dropOmittedLevels</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -248,7 +253,7 @@ This option is supported only for NAEP data.</p></dd>
 
 <p>The return type depends on if the class of the <code>data</code> argument is an
 <code>edsurvey.data.frame</code> or an <code>edsurvey.data.frame.list</code>. Both
-include the call (called <code>call</code>), a list called <code>labels</code>, 
+include the call (called <code>call</code>), a list called <code>labels</code>,
 an object named <code>percentage</code></p>
 
 
@@ -268,7 +273,7 @@ that shows the gap called <code>results</code>.</p>
                restrictions (such as omitted values) are applied</p></dd>
 
   <dt>nPSU</dt>
-<dd><p>the number of PSUs used in calculation--only returned when 
+<dd><p>the number of PSUs used in calculation--only returned when
               <code>returnNumberOfPSU</code> <code>=</code> <code>TRUE</code></p></dd>
 
 
@@ -317,7 +322,7 @@ are always set to the number of jackknife replicates in the data.</p>
 
     <dt>dofA</dt>
 <dd><p>degrees of freedom appropriate for a <em>t</em>-test involving <code>pctA</code>.
-                This value is returned only if 
+                This value is returned only if
                 <code>returnSimpleDoF</code><code>=</code><code>TRUE</code>.</p></dd>
 
     <dt>pctB</dt>
@@ -329,7 +334,7 @@ are always set to the number of jackknife replicates in the data.</p>
 
     <dt>dofB</dt>
 <dd><p>degrees of freedom appropriate for a <em>t</em>-test involving <code>pctA</code>.
-                This value is returned only if 
+                This value is returned only if
                 <code>returnSimpleDoF</code><code>=</code><code>TRUE</code>.</p></dd>
 
     <dt>diffAB</dt>
@@ -363,7 +368,7 @@ are always set to the number of jackknife replicates in the data.</p>
 
     <dt>dofA</dt>
 <dd><p>degrees of freedom appropriate for a <em>t</em>-test involving <code>meanA</code>.
-                This value is returned only if 
+                This value is returned only if
                 <code>returnSimpleDoF</code><code>=</code><code>TRUE</code>.</p></dd>
 
     <dt>estimateB</dt>
@@ -375,7 +380,7 @@ are always set to the number of jackknife replicates in the data.</p>
 
     <dt>dofB</dt>
 <dd><p>degrees of freedom appropriate for a <em>t</em>-test involving <code>meanB</code>.
-                This value is returned only if 
+                This value is returned only if
                 <code>returnSimpleDoF</code><code>=</code><code>TRUE</code>.</p></dd>
 
     <dt>diffAB</dt>
@@ -396,7 +401,7 @@ are always set to the number of jackknife replicates in the data.</p>
     <dt>dofAB</dt>
 <dd><p>degrees of freedom used for the <em>t</em>-test on <code>diffAB</code></p></dd>
 
-  
+
 </dl><p>If the gap was in  achievement levels or percentiles and more
   than one percentile or achievement level is requested,
   then an additional column
@@ -419,14 +424,14 @@ are always set to the number of jackknife replicates in the data.</p>
 <p>When the <code>data</code> argument is an <code>edsurvey.data.frame.list</code>,</p>
 <p></p>
 <p><code>gap</code> returns an S3 object of class <code>gapList</code>.</p>
-  
+
 
 <p>The <code>results</code> object in the <code>edsurveyResultList</code> is
   a <code>data.frame</code>. Each row regards a particular dataset from the</p>
 <p></p>
 <p><code>edsurvey.data.frame</code>, and a reference dataset is dictated by
   the <code>referenceDataIndex</code> argument.</p>
-  
+
 
 <p>The <code>percentage</code> object is a <code>data.frame</code> with the following elements:</p>
 <dl><dt>covs</dt>
@@ -560,7 +565,7 @@ are always set to the number of jackknife replicates in the data.</p>
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This function calculates the gap between <code>groupA</code> and <code>groupB</code> (which 
+    <p>This function calculates the gap between <code>groupA</code> and <code>groupB</code> (which
 may be omitted to indicate the full sample). The gap is
 calculated for one of four statistics:</p><dl><dt>the gap in means</dt>
 <dd><p>The mean score gap (in the score
@@ -573,21 +578,21 @@ calculated for one of four statistics:</p><dl><dt>the gap in means</dt>
 <dd><p>The gap between respondents at
      the percentiles specified in the <code>percentiles</code> argument.
      This is returned when the <code>percentiles</code> argument is
-     defined. The mean and standard error are computed as described in the 
+     defined. The mean and standard error are computed as described in the
      <code><a href="percentile.html">percentile</a></code> function documentation.</p></dd>
 
   <dt>the gap in achievement levels</dt>
-<dd><p>The gap in the percentage of 
+<dd><p>The gap in the percentage of
      students at (when <code>achievementDiscrete</code> is <code>TRUE</code>) or at
      or above (when <code>achievementDiscrete</code> is <code>FALSE</code>) a
-     particular achievement level. This is used when the 
+     particular achievement level. This is used when the
      <code>achievementLevel</code> argument is defined. The mean and standard error
      are calculated as described in the <code><a href="achievementLevels.html">achievementLevels</a></code>
      function documentation.</p></dd>
 
   <dt>the gap in a survey response</dt>
 <dd><p>The gap in the percentage of
-     respondents responding at <code>targetLevel</code> to 
+     respondents responding at <code>targetLevel</code> to
      <code>variable</code>. This is used when <code>targetLevel</code> is
      defined. The mean and standard deviation are calculated as described in
      the <code><a href="edsurveyTable.html">edsurveyTable</a></code> function documentation.</p></dd>
@@ -672,7 +677,7 @@ calculated for one of four statistics:</p><dl><dt>the gap in means</dt>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Paul Bailey.</p>
+  <p></p><p>Developed by Paul Bailey, Ahmad Emad, Huade Huo, Michael Lee, Yuqi Liao, Alex Lishinsku, Trang Nguyen, Qingshu Xie, Jiao Yu, Ting Zhang, Eric Buehler, Sun-joo Lee, Blue Webb.</p>
 </div>
 
 <div class="pkgdown-footer-right">

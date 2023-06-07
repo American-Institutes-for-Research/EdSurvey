@@ -9,13 +9,13 @@
 \arguments{
 \item{x}{an \code{achievementLevels} object}
 
-\item{printCall}{a logical value; by default (\code{TRUE}), prints details about plausible 
+\item{printCall}{a logical value; by default (\code{TRUE}), prints details about plausible
 values and weights used for calculating achievement levels}
 
-\item{printDiscrete}{a logical value; by default (\code{TRUE}), prints discrete achievement 
+\item{printDiscrete}{a logical value; by default (\code{TRUE}), prints discrete achievement
 levels if they are present in \code{x}}
 
-\item{printCumulative}{a logical value; by default (\code{TRUE}), prints cumulative achievement 
+\item{printCumulative}{a logical value; by default (\code{TRUE}), prints cumulative achievement
 levels if they are present in \code{x}}
 
 \item{...}{these arguments are not passed anywhere and are included only for compatibility}

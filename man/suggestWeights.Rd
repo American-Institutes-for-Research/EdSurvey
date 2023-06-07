@@ -17,9 +17,9 @@ suggestWeights(
 \item{data}{an \code{edsurvey.data.frame}, a \code{light.edsurvey.data.frame},
 or an \code{edsurvey.data.frame.list}}
 
-\item{showAllWeightSuggestions}{a logical value. When set to \code{TRUE}, all applicable weights that covers 
-more components, which typically are more conservative with 
-smaller sample size, will be returned. By default (i.e., \code{FALSE}), only the most approperate 
+\item{showAllWeightSuggestions}{a logical value. When set to \code{TRUE}, all applicable weights that covers
+more components, which typically are more conservative with
+smaller sample size, will be returned. By default (i.e., \code{FALSE}), only the most appropriate
 weight is displayed.}
 
 \item{verbose}{a logical value to either print or suppress status message output.}
@@ -33,16 +33,16 @@ Suggest Weights for ECLS-K:2011 data based on inputting variables.
 \details{
 \code{suggestWeights} provides one additional way to assist researchers in deciding which weight to use for analyses.
          This function find the intersect of possible weights given variables provided, and rank this intersect
-         based on the number of components a weight can adjust. 
-         
-         The best weight would adjust for each and every source used and only those sources. 
-         However, for many analyses, there will be no weight that adjusts for nonresponse 
-         to all the sources of data that are included and for only those source. 
-         When no weight corresponds exactly to the combination of components included in the desired analysis, 
-         researchers might prefer to use a weight that includes nonresponse adjustments for more components 
-         than they are using in their analysis if that weight also includes 
+         based on the number of components a weight can adjust.
+
+         The best weight would adjust for each and every source used and only those sources.
+         However, for many analyses, there will be no weight that adjusts for nonresponse
+         to all the sources of data that are included and for only those source.
+         When no weight corresponds exactly to the combination of components included in the desired analysis,
+         researchers might prefer to use a weight that includes nonresponse adjustments for more components
+         than they are using in their analysis if that weight also includes
          nonresponse adjustments for the components they are using.
-         
+
          Researchers should always consult their research questions for optimal weight choice.
 }
 \examples{
@@ -59,7 +59,7 @@ suggestWeights(c("x8mscalk5", "x_chsex_r", "x12sesl"), eclsk11)
 }
 }
 \references{
-Tourangeau, K., Nord, C., Le, T., Sorongon, A.G., Hagedorn, M.C., Daly, P., and Najarian, M. (2015). \emph{Early Childhood Longitudinal Study, Kindergarten Class of 2010-11 (ECLS-K:2011), User's Manual for the ECLS-K:2011 Kindergarten Data File and Electronic Codebook, Public Version} (NCES 2015-074). U.S. Department of Education. Washington, DC: National Center for Education Statistics. 
+Tourangeau, K., Nord, C., Le, T., Sorongon, A.G., Hagedorn, M.C., Daly, P., and Najarian, M. (2015). \emph{Early Childhood Longitudinal Study, Kindergarten Class of 2010-11 (ECLS-K:2011), User's Manual for the ECLS-K:2011 Kindergarten Data File and Electronic Codebook, Public Version} (NCES 2015-074). U.S. Department of Education. Washington, DC: National Center for Education Statistics.
 
 Tourangeau, K., Nord, C., Le, T., Wallner-Allen, K., Hagedorn, M.C., Leggitt, J., and Najarian, M. (2015). \emph{Early Childhood Longitudinal Study, Kindergarten Class of 2010-11 (ECLS-K:2011), User's Manual for the ECLS-K:2011 Kindergarten-First Grade Data File and Electronic Codebook, Public Version} (NCES 2015-078). U.S. Department of Education. Washington, DC: National Center for Education Statistics.
 

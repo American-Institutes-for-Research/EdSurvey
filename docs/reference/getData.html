@@ -14,7 +14,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">EdSurvey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,13 +65,14 @@
 <span>  varnames <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  drop <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  dropUnusedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  dropOmittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  formula <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  recode <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  includeNaLabel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  addAttributes <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  returnJKreplicates <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  returnJKreplicates <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  omittedLevels <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -101,7 +102,7 @@ when a single column is returned, it is still represented as a
 variables.</p></dd>
 
 
-<dt>omittedLevels</dt>
+<dt>dropOmittedLevels</dt>
 <dd><p>a logical value. When set to the default value of
 <code>TRUE</code>, drops those levels of all factor variables
 that are specified in an <code>edsurvey.data.frame</code>. Use
@@ -151,6 +152,10 @@ more information on <code>light.edsurvey.data.frame</code>.</p></dd>
 <dt>returnJKreplicates</dt>
 <dd><p>a logical value indicating if JK replicate weights
 should be returned. Defaults to <code>TRUE</code>.</p></dd>
+
+
+<dt>omittedLevels</dt>
+<dd><p>this argument is deprecated. Use <code>dropOmittedLevels</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -261,7 +266,7 @@ for long-form documentation on this function.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Paul Bailey.</p>
+  <p></p><p>Developed by Paul Bailey, Ahmad Emad, Huade Huo, Michael Lee, Yuqi Liao, Alex Lishinsku, Trang Nguyen, Qingshu Xie, Jiao Yu, Ting Zhang, Eric Buehler, Sun-joo Lee, Blue Webb.</p>
 </div>
 
 <div class="pkgdown-footer-right">

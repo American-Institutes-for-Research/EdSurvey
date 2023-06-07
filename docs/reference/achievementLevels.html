@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">EdSurvey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,28 +63,29 @@
 <span>  returnCumulative <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  weightVar <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  jrrIMax <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  dropOmittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  recode <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  returnNumberOfPSU <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  omittedLevels <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>achievementVars</dt>
-<dd><p>character vector indicating variables to be included in the achievement 
-levels table, potentially with a subject scale or subscale. When the subject 
-scale or subscale is omitted, the default subject scale or subscale is 
-used. You can find the default composite scale and all subscales using the 
+<dd><p>character vector indicating variables to be included in the achievement
+levels table, potentially with a subject scale or subscale. When the subject
+scale or subscale is omitted, the default subject scale or subscale is
+used. You can find the default composite scale and all subscales using the
 function <code><a href="showPlausibleValues.html">showPlausibleValues</a></code>.</p></dd>
 
 
 <dt>aggregateBy</dt>
 <dd><p>character vector specifying variables by which to aggregate achievement levels. The percentage
-column sums up to 100 for all levels of all variables specified here. When set to the 
-default of <code>NULL</code>, the percentage column sums up to 100 for all 
+column sums up to 100 for all levels of all variables specified here. When set to the
+default of <code>NULL</code>, the percentage column sums up to 100 for all
 levels of all variables specified in <code>achievementVars</code>.</p></dd>
 
 
@@ -93,12 +94,12 @@ levels of all variables specified in <code>achievementVars</code>.</p></dd>
 
 
 <dt>cutpoints</dt>
-<dd><p>numeric vector indicating cutpoints. Set to standard NAEP cutpoints for 
+<dd><p>numeric vector indicating cutpoints. Set to standard NAEP cutpoints for
 Basic, Proficient, and Advanced by default.</p></dd>
 
 
 <dt>returnDiscrete</dt>
-<dd><p>logical indicating if discrete achievement levels should be returned. Defaults 
+<dd><p>logical indicating if discrete achievement levels should be returned. Defaults
 to <code>TRUE</code>.</p></dd>
 
 
@@ -117,24 +118,23 @@ Use <code><a href="showWeights.html">showWeights</a></code> to find the default.
 
 
 <dt>jrrIMax</dt>
-<dd><p>a numeric value. When using the jackknife variance estimation method, the default estimation option, <code>jrrIMax=1</code>, uses the 
-sampling variance from the first plausible value as the component for sampling variance estimation. The \(V_{jrr}\) 
+<dd><p>a numeric value. When using the jackknife variance estimation method, the default estimation option, <code>jrrIMax=1</code>, uses the
+sampling variance from the first plausible value as the component for sampling variance estimation. The \(V_{jrr}\)
 term (see <a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link"><em>Statistical Methods Used in EdSurvey</em></a> for the definition of \(V_{jrr}\))
-can be estimated with any number of plausible values, and values larger than the number of 
-plausible values on the survey (including <code>Inf</code>) will result in all plausible values being used. 
+can be estimated with any number of plausible values, and values larger than the number of
+plausible values on the survey (including <code>Inf</code>) will result in all plausible values being used.
 Higher values of <code>jrrIMax</code> lead to longer computing times and more accurate variance estimates.</p></dd>
 
 
-<dt>omittedLevels</dt>
-<dd><p>a logical value. When set to the default value (<code>TRUE</code>), 
-it drops those levels in all factor variables that are specified in <code>achievementVars</code> 
-and <code>aggregateBy</code>. Use <code>print</code> on an <code>edsurvey.data.frame</code> 
-to see the omitted levels.</p></dd>
+<dt>dropOmittedLevels</dt>
+<dd><p>a logical value. When set to the default value (<code>TRUE</code>), it drops those levels in all factor variables
+that are specified in <code>achievementVars</code> and <code>aggregateBy</code>.
+Use <code>print</code> on an <code>edsurvey.data.frame</code> to see the omitted levels.</p></dd>
 
 
 <dt>defaultConditions</dt>
-<dd><p>a logical value. When set to the default value of <code>TRUE</code>, uses the default 
-conditions stored in an <code>edsurvey.data.frame</code> to subset the data. 
+<dd><p>a logical value. When set to the default value of <code>TRUE</code>, uses the default
+conditions stored in an <code>edsurvey.data.frame</code> to subset the data.
 Use <code>print</code> on an <code>edsurvey.data.frame</code> to see the default
 conditions.</p></dd>
 
@@ -145,7 +145,7 @@ conditions.</p></dd>
 
 
 <dt>returnNumberOfPSU</dt>
-<dd><p>a logical value set to <code>TRUE</code> to return the number of 
+<dd><p>a logical value set to <code>TRUE</code> to return the number of
 primary sampling units (PSUs)</p></dd>
 
 
@@ -154,6 +154,10 @@ primary sampling units (PSUs)</p></dd>
 inputs to the jackknife and imputation variance
 estimates, which allows for the computation
 of covariances between estimates.</p></dd>
+
+
+<dt>omittedLevels</dt>
+<dd><p>this argument is deprecated. Use <code>dropOmittedLevels</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -166,14 +170,14 @@ and one for cumulative achievement levels (when <code>returnCumulative</code> is
 <dd><p>one row for each level of the specified achievement cutpoints</p></dd>
 
 <dt>Variables in achievementVars</dt>
-<dd><p>one column for each variable in <code>achievementVars</code> 
+<dd><p>one column for each variable in <code>achievementVars</code>
 and one row for each level of each variable in <code>achievementVars</code></p></dd>
 
 <dt>Percent</dt>
 <dd><p>the percentage of students at or above each achievement level aggregated as specified by <code>aggregateBy</code></p></dd>
 
 <dt>StandardError</dt>
-<dd><p>the standard error of the percentage, accounting for the survey sampling methodology. 
+<dd><p>the standard error of the percentage, accounting for the survey sampling methodology.
                             See the vignette titled <a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link">Statistical Methods Used in EdSurvey</a>.</p></dd>
 
 <dt>N</dt>
@@ -193,43 +197,43 @@ and one row for each level of each variable in <code>achievementVars</code></p><
     <p>The <code>achievementLevels</code> function applies appropriate weights
          and the variance estimation method for each
          <code>edsurvey.data.frame</code>, with several arguments for customizing
-         the aggregation and output of the analysis 
+         the aggregation and output of the analysis
          results. Namely, by using these optional arguments, users can choose
-         to generate the percentage of students 
+         to generate the percentage of students
          performing at each achievement level (discrete), generate the
          percentage of students performing at or above each achievement level
-         (cumulative), 
+         (cumulative),
          calculate the percentage distribution of students by achievement
-         level (discrete or cumulative) and 
+         level (discrete or cumulative) and
          selected characteristics (specified in <code>aggregateBy</code>), and
-         compute the percentage distribution of students 
+         compute the percentage distribution of students
          by selected characteristics within a specific achievement level.</p>
 <div class="section">
 <h3 id="calculation-of-percentages">Calculation of percentages<a class="anchor" aria-label="anchor" href="#calculation-of-percentages"></a></h3>
 <p>The details of the methods are shown in the vignette titled
-<a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link">Statistical Methods Used in EdSurvey</a> in 
-         “Estimation of Weighted Percentages When Plausible Values Are Present” and are used to calculate 
+<a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link">Statistical Methods Used in EdSurvey</a> in
+         “Estimation of Weighted Percentages When Plausible Values Are Present” and are used to calculate
          all cumulative and discrete probabilities.</p>
 <p>When the requested achievement levels are discrete (<code>returnDiscrete = TRUE</code>),
-         the percentage \(\mathcal{A}\) is the percentage of students (within the categories specified in <code>aggregateBy</code>) 
+         the percentage \(\mathcal{A}\) is the percentage of students (within the categories specified in <code>aggregateBy</code>)
          whose scores lie in the range  \([cutPoints_i, cutPoints_{i+1}), i = 0,1,...,n\).
          <code>cutPoints</code> is the score thresholds provided by the user with \(cutPoints_0\) taken
          to be 0. <code>cutPoints</code> are set to NAEP standard cutpoints for achievement levels by default.
          To aggregate by a specific variable, for example, <code>dsex</code>, specify <code>dsex</code> in <code>aggregateBy</code>
-         and all other variables in <code>achievementVars</code>. To aggregate by subscale, specify 
-         the name of the subscale (e.g., <code>num_oper</code>) in <code>aggregateBy</code> and all other variables in 
-         <code>achievementVars</code>.</p>         
+         and all other variables in <code>achievementVars</code>. To aggregate by subscale, specify
+         the name of the subscale (e.g., <code>num_oper</code>) in <code>aggregateBy</code> and all other variables in
+         <code>achievementVars</code>.</p>
 <p>When the requested achievement levels are cumulative (<code>returnCumulative = TRUE</code>),
-         the percentage \(\mathcal{A}\) is the percentage of students (within the categories specified in <code>aggregateBy</code>) 
-         whose scores lie in the range  [\(cutPoints_i\), \(\infty\)), \(i = 1, 2, ..., n-1\). The 
+         the percentage \(\mathcal{A}\) is the percentage of students (within the categories specified in <code>aggregateBy</code>)
+         whose scores lie in the range  [\(cutPoints_i\), \(\infty\)), \(i = 1, 2, ..., n-1\). The
          first and last categories are the same as defined for discrete levels.</p>
-</div> 
-        
+</div>
+
 <div class="section">
 <h3 id="calculation-of-standard-error-of-percentages">Calculation of standard error of percentages<a class="anchor" aria-label="anchor" href="#calculation-of-standard-error-of-percentages"></a></h3>
 <p>The method used to calculate the standard error of the percentages is described in the vignette titled
-         <a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link">Statistical Methods Used in EdSurvey</a> 
-         in the sections “Estimation of the Standard Error of Weighted Percentages When Plausible Values Are Present, Using the Jackknife Method” 
+         <a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link">Statistical Methods Used in EdSurvey</a>
+         in the sections “Estimation of the Standard Error of Weighted Percentages When Plausible Values Are Present, Using the Jackknife Method”
          and “Estimation of the Standard Error of Weighted Percentages When Plausible Values Are Not Present, Using the Taylor Series Method.”
          For “Estimation of the Standard Error of Weighted Percentages When Plausible Values Are Present, Using the Jackknife Method,”
         the value of <code>jrrIMax</code> sets the value of \(m^*\).</p>
@@ -301,7 +305,7 @@ and one row for each level of each variable in <code>achievementVars</code></p><
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Paul Bailey.</p>
+  <p></p><p>Developed by Paul Bailey, Ahmad Emad, Huade Huo, Michael Lee, Yuqi Liao, Alex Lishinsku, Trang Nguyen, Qingshu Xie, Jiao Yu, Ting Zhang, Eric Buehler, Sun-joo Lee, Blue Webb.</p>
 </div>
 
 <div class="pkgdown-footer-right">

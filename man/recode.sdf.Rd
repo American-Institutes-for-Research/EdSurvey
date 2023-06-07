@@ -7,7 +7,7 @@
 recode.sdf(x, recode)
 }
 \arguments{
-\item{x}{an \code{edsurvey.data.frame}, a \code{light.edsurvey.data.frame}, 
+\item{x}{an \code{edsurvey.data.frame}, a \code{light.edsurvey.data.frame},
 or an \code{edsurvey.data.frame.list}}
 
 \item{recode}{a list of recoding rules. See Examples for the format of recoding rules.}
@@ -16,7 +16,7 @@ or an \code{edsurvey.data.frame.list}}
 an object of the same class as \code{x} with the \code{recode} added to it
 }
 \description{
-Recodes variables in an \code{edsurvey.data.frame}, 
+Recodes variables in an \code{edsurvey.data.frame},
              a \code{light.edsurvey.data.frame}, or an \code{edsurvey.data.frame.list}.
 }
 \examples{

@@ -11,7 +11,7 @@ cor.sdf(
   method = c("Pearson", "Spearman", "Polychoric", "Polyserial"),
   weightVar = "default",
   reorder = NULL,
-  omittedLevels = TRUE,
+  dropOmittedLevels = TRUE,
   defaultConditions = TRUE,
   recode = NULL,
   condenseLevels = TRUE,
@@ -21,7 +21,8 @@ cor.sdf(
      FALSE
  },
   jrrIMax = Inf,
-  verbose = TRUE
+  verbose = TRUE,
+  omittedLevels = deprecated()
 )
 }
 \arguments{
@@ -36,10 +37,10 @@ One of \code{Pearson} (default), \code{Spearman}, \code{Polychoric}, or \code{Po
 
 \item{weightVar}{character indicating the weight variable to use. See Details section in \code{\link{lm.sdf}}.}
 
-\item{reorder}{a list of variables to reorder. Defaults to \code{NULL} (no variables are reordered). Can be set as 
+\item{reorder}{a list of variables to reorder. Defaults to \code{NULL} (no variables are reordered). Can be set as
 \code{reorder} \code{=} \code{list(var1} \code{=} \code{c("a","b","c"),} \code{var2} \code{=} \code{c("4", "3", "2", "1"))}. See Examples.}
 
-\item{omittedLevels}{a logical value. When set to the default value of \code{TRUE}, drops those levels of all factor variables that are specified
+\item{dropOmittedLevels}{a logical value. When set to the default value of \code{TRUE}, drops those levels of all factor variables that are specified
 in an \code{edsurvey.data.frame}. Use \code{print} on an \code{edsurvey.data.frame} to see the omitted levels.}
 
 \item{defaultConditions}{a logical value. When set to the default value of \code{TRUE}, uses the default conditions stored in an \code{edsurvey.data.frame}
@@ -59,18 +60,20 @@ in the codebook. See Examples.}
 \item{fisherZ}{for standard error and mean calculations, set to \code{TRUE} to use
 the Fisher Z-transformation (see details), or \code{FALSE}
 to use no transformation of the data. The \code{fisherZ} argument defaults
-to Fisher Z-transformation for Pearson and no transformation  
+to Fisher Z-transformation for Pearson and no transformation
 for other correlation types.}
 
-\item{jrrIMax}{a numeric value; when using the jackknife variance estimation method, the default estimation option, \code{jrrIMax=Inf}, uses the 
-                  sampling variance from all plausible values as the component for sampling variance estimation. The \code{Vjrr} 
-                  term (see 
+\item{jrrIMax}{a numeric value; when using the jackknife variance estimation method, the default estimation option, \code{jrrIMax=Inf}, uses the
+                  sampling variance from all plausible values as the component for sampling variance estimation. The \code{Vjrr}
+                  term (see
 \href{https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf}{\emph{Statistical Methods Used in EdSurvey}})
-                  can be estimated with any number of plausible values, and values larger than the number of 
-                  plausible values on the survey (including \code{Inf}) will result in all plausible values being used. 
+                  can be estimated with any number of plausible values, and values larger than the number of
+                  plausible values on the survey (including \code{Inf}) will result in all plausible values being used.
                   Higher values of \code{jrrIMax} lead to longer computing times and more accurate variance estimates.}
 
 \item{verbose}{a logical value. Set to \code{FALSE} to avoid messages about variable conversion.}
+
+\item{omittedLevels}{this argument is deprecated. Use \code{dropOmittedLevels}.}
 }
 \value{
 An \code{edsurvey.cor} that has print and summary methods.
@@ -108,7 +111,7 @@ be mindful of variable selection as this may result in calculations taking a ver
 
 The Fisher Z-transformation is both a variance stabilizing  and normalizing transformation
 for the Pearson correlation coefficient (Fisher, 1915).
-The transformation takes the inverse hybarbolic tangent of the correlation coefficients and then calculates all variances and confidence intervals.
+The transformation takes the inverse hyberbolic tangent of the correlation coefficients and then calculates all variances and confidence intervals.
 These are then transformed back to the correlation space (values between -1 and 1, inclusive) using the hyperbolic tangent function.
 The Taylor series approximation (or delta method) is applied for the standard errors.
 }

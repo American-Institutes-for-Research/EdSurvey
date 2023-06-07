@@ -10,7 +10,7 @@ searchSDF(string, data, fileFormat = NULL, levels = FALSE)
 \item{string}{a vector of character strings to search for in the database connection object (\code{data}).
 The function will search the codebook
 for a matching character string using regular expressions. When a
-string has several elements, all must be present for a 
+string has several elements, all must be present for a
 variable to be returned.}
 
 \item{data}{an \code{edsurvey.data.frame}, a \code{light.edsurvey.data.frame}, or
@@ -27,7 +27,7 @@ a \ifelse{latex}{\code{data.frame}}{\code{\link[base]{data.frame}}} that shows t
                   and levels (if applicable) from an \code{edsurvey.data.frame} or a \code{light.edsurvey.data.frame} based on a matching character string
 }
 \description{
-Retrieves variable names and labels for an \code{edsurvey.data.frame}, 
+Retrieves variable names and labels for an \code{edsurvey.data.frame},
 a \code{light.edsurvey.data.frame}, or an \code{edsurvey.data.frame.list}
 using character string matching.
 }

@@ -1,31 +1,42 @@
 Package: EdSurvey
-Version: 3.1.9002
-Date: 2023-05-17
+Version: 4.0.0
+Date: 2023-06-07
 Title: Analysis of NCES Education Survey and Assessment Data
-Author: Paul Bailey [aut, cre],
-        Ahmad Emad [aut],
-        Huade Huo [aut],
-        Michael Lee [aut],
-        Yuqi Liao [aut],
-        Alex Lishinski [aut],
-        Trang Nguyen [aut],
-        Qingshu Xie [aut],
-        Jiao Yu [aut],
-        Ting Zhang [aut],
-        Eric Buehler [aut],
+Authors@R: c(
+        person("Paul","Bailey",,"pbailey@air.org",role=c("aut","cre"), 
+               comment = c(ORCID = "0000-0003-0989-8729")),
+        person("Ahmad","Emad",role="aut"),
+        person("Huade","Huo",role="aut",
+               comment=c(ORCID = "0009-0004-5014-646X")),
+        person("Michael","Lee",role="aut",
+               comment=c(ORCID="0009-0006-0959-787X")),
+        person("Yuqi","Liao",role="aut", 
+               comment=c(ORCID="0000-0001-9359-6015")),
+        person("Alex","Lishinsku",role="aut", 
+               comment=c(ORCID="0000-0003-4506-1600")),
+        person("Trang","Nguyen",role="aut", 
+               comment=c(ORCID="0009-0001-0167-8775")),
+        person("Qingshu","Xie",role="aut"),
+        person("Jiao","Yu",role="aut"),
+        person("Ting","Zhang",role="aut", 
+               comment=c(ORCID="0009-0001-1724-6141")),
+        person("Eric","Buehler",role="aut", 
+               comment=c(ORCID="0009-0004-6354-2015")),
         person("Sun-joo", "Lee", role="aut"),
-        Blue Webb [aut],
-        person("Emmanuel", "Sikali", role="pdr", email = "Emmanuel.Sikali@ed.gov")),
-        Jeppe Bundsgaard [ctb],
-        Ren C'deBaca [ctb],
-        Anders Astrup Christensen [ctb]
+        person("Blue","Webb",role="aut", 
+               comment=c(ORCID="0009-0004-4080-9864")),
+        person("Emmanuel", "Sikali", role="pdr", email = "Emmanuel.Sikali@ed.gov"),
+        person("Claire","Kelley",role="ctb"),
+        person("Jeppe","Bundsgaard",role="ctb"),
+        person("Ren","C'deBaca",role="ctb"),
+        person("Anders","Christensen",role="ctb")
+      )
 Maintainer: Paul Bailey <pbailey@air.org>
 Depends: R (>= 3.5.0), car, lfactors (>= 1.0.3), Dire (>= 2.1.0)
-Imports: data.table (>= 1.11.4), dplyr (>= 1.1.2), Formula, ggplot2 (>=
-        3.4.0), glm2, haven (>= 2.2.0), LaF (>= 0.7), lifecycle, lme4,
-        MASS, Matrix, methods, NAEPprimer, quantreg, readxl, tibble,
-        tidyselect, wCorr, NAEPirtparams, WeMix (>= 4.0.0), xtable,
-        xml2
+Imports: data.table (>= 1.11.4), Formula, glm2, haven (>= 2.2.0), LaF
+        (>= 0.7), lifecycle, lme4, MASS, Matrix, methods, NAEPprimer,
+        quantreg, readxl, tibble, wCorr, NAEPirtparams, WeMix (>=
+        4.0.0), xtable, xml2
 URL: https://www.air.org/project/nces-data-r-project-edsurvey
 BugReports: https://github.com/American-Institutes-for-Research/EdSurvey/issues
 Description: Read in and analyze functions for education survey and assessment data from the National Center for Education Statistics (NCES) <https://nces.ed.gov/>, including National Assessment of Educational Progress (NAEP) data <https://nces.ed.gov/nationsreportcard/> and data from the International Assessment Database: Organisation for Economic Co-operation and Development (OECD) <https://www.oecd.org/>, including Programme for International Student Assessment (PISA), Teaching and Learning International Survey (TALIS), Programme for the International Assessment of Adult Competencies (PIAAC), and International Association for the Evaluation of Educational Achievement (IEA) <https://www.iea.nl/>, including Trends in International Mathematics and Science Study (TIMSS), TIMSS Advanced, Progress in International Reading Literacy Study (PIRLS), International Civic and Citizenship Study (ICCS), International Computer and Information Literacy Study (ICILS), and Civic Education Study (CivEd).
@@ -40,4 +51,22 @@ Note: This publication was prepared for NCES under Contract No.
         does not imply endorsement by the U.S. Government.
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2023-05-18 03:36:05 UTC; pbailey
+Packaged: 2023-06-07 22:52:04 UTC; pbailey
+Author: Paul Bailey [aut, cre] (<https://orcid.org/0000-0003-0989-8729>),
+  Ahmad Emad [aut],
+  Huade Huo [aut] (<https://orcid.org/0009-0004-5014-646X>),
+  Michael Lee [aut] (<https://orcid.org/0009-0006-0959-787X>),
+  Yuqi Liao [aut] (<https://orcid.org/0000-0001-9359-6015>),
+  Alex Lishinsku [aut] (<https://orcid.org/0000-0003-4506-1600>),
+  Trang Nguyen [aut] (<https://orcid.org/0009-0001-0167-8775>),
+  Qingshu Xie [aut],
+  Jiao Yu [aut],
+  Ting Zhang [aut] (<https://orcid.org/0009-0001-1724-6141>),
+  Eric Buehler [aut] (<https://orcid.org/0009-0004-6354-2015>),
+  Sun-joo Lee [aut],
+  Blue Webb [aut] (<https://orcid.org/0009-0004-4080-9864>),
+  Emmanuel Sikali [pdr],
+  Claire Kelley [ctb],
+  Jeppe Bundsgaard [ctb],
+  Ren C'deBaca [ctb],
+  Anders Christensen [ctb]

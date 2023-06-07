@@ -12,7 +12,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">EdSurvey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,12 +63,13 @@
 <span>  weightVar <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  relevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  jrrIMax <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  dropOmittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  recode <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  estMethod <span class="op">=</span> <span class="st">"OLS"</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  omittedLevels <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -77,7 +78,7 @@
     <dl><dt>formula</dt>
 <dd><p>a <code><a href="https://rdrr.io/pkg/Formula/man/Formula.html" class="external-link">Formula</a></code> for the
 linear model. See <code><a href="https://rdrr.io/pkg/Formula/man/Formula.html" class="external-link">Formula</a></code>;
-left-hand side variables are separated with 
+left-hand side variables are separated with
 vertical pipes (<code>|</code>). See Examples.</p></dd>
 
 
@@ -104,16 +105,16 @@ be the omitted group (the reference group).</p></dd>
 
 
 <dt>jrrIMax</dt>
-<dd><p>a numeric value; when using the jackknife variance estimation method, the default estimation option, <code>jrrIMax=1</code>, uses the 
-                  sampling variance from the first plausible value as the component for sampling variance estimation. The \(V_{jrr}\) 
+<dd><p>a numeric value; when using the jackknife variance estimation method, the default estimation option, <code>jrrIMax=1</code>, uses the
+                  sampling variance from the first plausible value as the component for sampling variance estimation. The \(V_{jrr}\)
                   term (see
 <a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link"><em>Statistical Methods Used in EdSurvey</em></a>)
-                  can be estimated with any number of plausible values, and values larger than the number of 
-                  plausible values on the survey (including <code>Inf</code>) will result in all plausible values being used. 
+                  can be estimated with any number of plausible values, and values larger than the number of
+                  plausible values on the survey (including <code>Inf</code>) will result in all plausible values being used.
                   Higher values of <code>jrrIMax</code> lead to longer computing times and more accurate variance estimates.</p></dd>
 
 
-<dt>omittedLevels</dt>
+<dt>dropOmittedLevels</dt>
 <dd><p>a logical value. When set to the default value of <code>TRUE</code>, drops
 those levels of all factor variables that are specified
 in <code>edsurvey.data.frame</code>. Use <code>print</code> on an
@@ -146,6 +147,10 @@ Default is <code>OLS</code>; other option is <code>GLS</code>.</p></dd>
 
 <dt>verbose</dt>
 <dd><p>logical; indicates whether a detailed printout should display during execution</p></dd>
+
+
+<dt>omittedLevels</dt>
+<dd><p>this argument is deprecated. Use <code>dropOmittedLevels</code></p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -232,14 +237,14 @@ Default is <code>OLS</code>; other option is <code>GLS</code>.</p></dd>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This function implements an estimator that correctly handles multiple left-hand
-side variables that are either numeric or plausible values, allows for survey 
+side variables that are either numeric or plausible values, allows for survey
 sampling weights, and estimates variances using the jackknife replication method.
 The vignette titled
 <a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link"><em>Statistical Methods Used in EdSurvey</em></a>
 describes estimation of the reported statistics.</p>
-<p>The <b>coefficients</b> are estimated using the sample weights according to the section 
+<p>The <b>coefficients</b> are estimated using the sample weights according to the section
 “Estimation of Weighted Means When Plausible Values Are Not Present”
-or the section 
+or the section
 “Estimation of Weighted Means When Plausible Values Are Present,”
 depending on if there are assessment variables or variables with plausible values in them.</p>
 <p>The <b>coefficient of determination (R-squared value)</b> is similarly estimated by finding
@@ -329,7 +334,7 @@ the average R-squared using the sample weights for each set of plausible values.
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Paul Bailey.</p>
+  <p></p><p>Developed by Paul Bailey, Ahmad Emad, Huade Huo, Michael Lee, Yuqi Liao, Alex Lishinsku, Trang Nguyen, Qingshu Xie, Jiao Yu, Ting Zhang, Eric Buehler, Sun-joo Lee, Blue Webb.</p>
 </div>
 
 <div class="pkgdown-footer-right">

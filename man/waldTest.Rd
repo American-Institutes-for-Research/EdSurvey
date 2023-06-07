@@ -83,7 +83,7 @@ waldTest(model = myLogit, coefficients = c("b017451Every day", "b017451About onc
 }
 }
 \references{
-Diggle, P. J., Liang, K.-Y., & Zeger, S. L. (1994). \emph{Analysis of longitudinal data}. Oxford, UK: Clarendon Press. 
+Diggle, P. J., Liang, K.-Y., & Zeger, S. L. (1994). \emph{Analysis of longitudinal data}. Oxford, UK: Clarendon Press.
 
 Draper, N. R., & Smith, H. (1998). \emph{Applied regression analysis}. New York, NY: Wiley.
 

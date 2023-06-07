@@ -1,16 +1,16 @@
 require(testthat)
 context("read ESDFL")
 options(width = 500)
-options(useFancyQuotes=FALSE)
+options(useFancyQuotes = FALSE)
 source("REF-2-esdfl.R") # has REF output in it
 
 # ideally this wouldn't trip up any of the scope fixes below
 dsex <- "should not be used"
 
-test_that("read ESDFL",{
+test_that("read ESDFL", {
   sdf <<- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
-  sdfA <<- subset(sdf, scrpsu %in% c(5,45,56))
-  sdfB <- subset(sdf, scrpsu %in% c(75,76,78))
+  sdfA <<- subset(sdf, scrpsu %in% c(5, 45, 56))
+  sdfB <- subset(sdf, scrpsu %in% c(75, 76, 78))
   sdfC <- subset(sdf, scrpsu %in% 100:200)
   sdfD <<- subset(sdf, scrpsu %in% 201:300)
 
@@ -21,10 +21,13 @@ test_that("read ESDFL",{
   sdfC <<- sdfC
   # construct an edsurvey.data.frame.list from these four data sets
   sdfl <<- edsurvey.data.frame.list(list(sdfA, sdfB, sdfC, sdfD),
-                                    labels=c("A locations",
-                                             "B locations",
-                                             "C locations",
-                                             "D locations"))
+    labels = c(
+      "A locations",
+      "B locations",
+      "C locations",
+      "D locations"
+    )
+  )
   expect_is(sdfl, "edsurvey.data.frame.list")
 })
 
@@ -49,107 +52,126 @@ test_that("ESDFL subset and scope", {
 
 context("ESDFL achievementLevels")
 test_that("ESDFL achievementLevels", {
-  expect_known_value(test8 <- achievementLevels(data=sdfl), file="aLevels_test8.rds", update=FALSE)
+  expect_known_value(test8 <- achievementLevels(data = sdfl), file = "aLevels_test8.rds", update = FALSE)
 })
 
 context("ESDFL cor")
 test_that("ESDFL cor", {
   skip_on_cran()
   c1 <- cor.sdf("b017451", "b003501", sdfA,
-                method="Pearson",
-                weightVar="origwt")
+    method = "Pearson",
+    weightVar = "origwt"
+  )
   c3 <- cor.sdf("b017451", "b003501", sdfC,
-                method="Pearson",
-                weightVar="origwt")
+    method = "Pearson",
+    weightVar = "origwt"
+  )
   c1234 <- cor.sdf("b017451", "b003501", sdfl,
-                   method="Pearson",
-                   weightVar="origwt")
-  expect_equal(c1,c1234[[1]])
-  expect_equal(c3,c1234[[3]])
+    method = "Pearson",
+    weightVar = "origwt"
+  )
+  expect_equal(c1, c1234[[1]])
+  expect_equal(c3, c1234[[3]])
 })
 skip_on_cran()
 
 context("ESDFL edsurveyTable")
-test_that("ESDFL edsurveyTable",{
+test_that("ESDFL edsurveyTable", {
   skip_on_cran()
   et1 <- edsurveyTable(composite ~ b017451 + dsex, sdfl)
-  et1c <- withr::with_options(list(digits=7), capture.output(et1))
+  et1c <- withr::with_options(list(digits = 7), capture.output(et1))
   expect_equal(et1c, et1REF)
 
-  etB <- edsurveyTable(composite ~ b017451+ dsex, sdfB)
+  etB <- edsurveyTable(composite ~ b017451 + dsex, sdfB)
   # row names will not agree, homogenize them
-  row.names(et1$data) <- paste(rep(LETTERS[1:4], each=nrow(etB$data)), rep(1:nrow(etB$data), 4))
+  row.names(et1$data) <- paste(rep(LETTERS[1:4], each = nrow(etB$data)), rep(1:nrow(etB$data), 4))
   row.names(etB$data) <- paste("B", 1:nrow(etB$data))
   # remove "labels" because it is only on the edsurveyTableList
-  ss <- subset(et1$data, labels=="B locations")[,2:ncol(et1$data)]
-  for(i in 1:ncol(ss)) {
-    mostattributes(ss[,i]) <- attributes(et1$data[,i+1])
+  ss <- subset(et1$data, labels == "B locations")[, 2:ncol(et1$data)]
+  for (i in 1:ncol(ss)) {
+    mostattributes(ss[, i]) <- attributes(et1$data[, i + 1])
   }
-  coetB <- withr::with_options(list(digits=7), capture.output(etB$data))
-  coss <- withr::with_options(list(digits=7), capture.output(ss))
+  coetB <- withr::with_options(list(digits = 7), capture.output(etB$data))
+  coss <- withr::with_options(list(digits = 7), capture.output(ss))
   expect_equal(coetB, coss)
 })
 
 context("ESDFL edsurveyTable error handling")
-test_that("ESDFL error handling",{
+test_that("ESDFL error handling", {
   skip_on_cran()
-  expect_warning(edsurveyTable(composite ~ b017451, sdfl, 
-                               returnMeans=TRUE, returnSepct=FALSE,
-                               pctAggregationLevel=6), 
-                 paste0("Warnings from datasets \"A locations\""))
+  expect_warning(
+    edsurveyTable(composite ~ b017451, sdfl,
+      returnMeans = TRUE, returnSepct = FALSE,
+      pctAggregationLevel = 6
+    ),
+    paste0("Warnings from datasets \"A locations\"")
+  )
   sdfE <- "String"
   sdfl_error <- edsurvey.data.frame.list(list(sdfE, sdfB, sdfC, sdfE),
-                                         labels=c("first E locations",
-                                                  "B locations",
-                                                  "C locations",
-                                                  "second E locations"))
-  expect_warning(edsurveyTable(composite ~ b017451, 
-                               sdfl_error, returnMeans=FALSE, 
-                               returnSepct=FALSE), 
-                 "E locations")
-  
-  suppressWarnings(et2 <- edsurveyTable(composite ~ b017451, sdfl_error, returnMeans=FALSE, returnSepct=FALSE))
-  withr::with_options(list(digits=1),
-                        et2c <- capture.output(et2)
-                     )
+    labels = c(
+      "first E locations",
+      "B locations",
+      "C locations",
+      "second E locations"
+    )
+  )
+  expect_warning(
+    edsurveyTable(composite ~ b017451,
+      sdfl_error,
+      returnMeans = FALSE,
+      returnSepct = FALSE
+    ),
+    "E locations"
+  )
 
-  expect_message(expect_error(g1 <- gap("composite", sdfl_error, groupA= dsex=="Male"), "reference"), "E locations")
+  suppressWarnings(et2 <- edsurveyTable(composite ~ b017451, sdfl_error, returnMeans = FALSE, returnSepct = FALSE))
+  withr::with_options(
+    list(digits = 1),
+    et2c <- capture.output(et2)
+  )
+
+  expect_message(expect_error(g1 <- gap("composite", sdfl_error, groupA = dsex == "Male"), "reference"), "E locations")
   sdfl_errorB <- edsurvey.data.frame.list(list(sdfA, sdfB, sdfE, sdfC),
-                                          labels=c("A locations",
-                                                   "B locations",
-                                                   "E locations",
-                                                   "C locations"))
-  expect_message(g2 <- gap("composite", sdfl_errorB, groupA= dsex=="Male"),
-                 "An error occurred while working on a dataset \"E locations\". The results from that dataset will be excluded. Error message:")
-  g3 <- gap("composite", sdfl, groupA= dsex=="Male")
-  expect_equivalent(g2$results[2,], g3$results[2,])  
+    labels = c(
+      "A locations",
+      "B locations",
+      "E locations",
+      "C locations"
+    )
+  )
+  expect_message(
+    g2 <- gap("composite", sdfl_errorB, groupA = dsex == "Male"),
+    "An error occurred while working on a dataset \"E locations\". The results from that dataset will be excluded. Error message:"
+  )
+  g3 <- gap("composite", sdfl, groupA = dsex == "Male")
+  expect_equivalent(g2$results[2, ], g3$results[2, ])
   expect_equal(et2c, et2REF)
 })
 
 context("ESDFL gap")
-test_that("ESDFL gap",{
+test_that("ESDFL gap", {
   skip_on_cran()
-  g1 <- gap("composite", sdfl, dsex=="Male", dsex=="Female", returnSimpleDoF=TRUE)
+  g1 <- gap("composite", sdfl, dsex == "Male", dsex == "Female", returnSimpleDoF = TRUE)
   mle <- "Male"
-  g1p <- gap("composite", sdfl, dsex==mle, dsex=="Female", returnSimpleDoF=TRUE)
+  g1p <- gap("composite", sdfl, dsex == mle, dsex == "Female", returnSimpleDoF = TRUE)
   expect_equal(g1$results, g1p$results)
   # check that the columns output for just one agree between esdfl and sdf
-  g2 <- gap("composite", sdfC, dsex=="Male", dsex=="Female", returnSimpleDoF=TRUE)
+  g2 <- gap("composite", sdfC, dsex == "Male", dsex == "Female", returnSimpleDoF = TRUE)
   mnames <- names(g2$results)
   mnames <- mnames[mnames %in% names(g1$results)]
-  expect_equal(unlist(g2$results[mnames]), unlist(g1$results[3,mnames]))
+  expect_equal(unlist(g2$results[mnames]), unlist(g1$results[3, mnames]))
   # also check that the overall output has not changed.targetLevel="Male"
-  expect_known_value(g1, "gap_esdfl_mean.rds", update=FALSE)
+  expect_known_value(g1, "gap_esdfl_mean.rds", update = FALSE)
   # percentile
-  expect_known_value(g_pct <- gap("composite", sdfl, dsex=="Male", percentiles=c(2,50), pctMethod="symmetric"), "gap_esdfl_pct.rds", update=FALSE)
+  expect_known_value(g_pct <- gap("composite", sdfl, dsex == "Male", percentiles = c(2, 50), pctMethod = "symmetric"), "gap_esdfl_pct.rds", update = FALSE)
   # achievement level
-  expect_known_value(g_al <- gap("composite", sdfl, dsex=="Male", achievementLevel="Proficient"), "gap_esdfl_al.rds", update=FALSE)
+  expect_known_value(g_al <- gap("composite", sdfl, dsex == "Male", achievementLevel = "Proficient"), "gap_esdfl_al.rds", update = FALSE)
   # percent
-  expect_known_value(g_per <- gap("dsex", sdfl, dsex=="Male", targetLevel="Male"), "gap_esdfl_perct.rds", update=FALSE)
+  expect_known_value(g_per <- gap("dsex", sdfl, dsex == "Male", targetLevel = "Male"), "gap_esdfl_perct.rds", update = FALSE)
 })
 
 context("ESDFL helper functions")
-test_that("ESDFL helper functions",{
+test_that("ESDFL helper functions", {
   skip_on_cran()
   d1 <- dim(sdfl)
   expect_equal(d1$nrow[1], nrow(sdfA))
@@ -175,11 +197,11 @@ test_that("ESDFL helper functions",{
   spvo1 <- capture.output(showPlausibleValues(sdfl))
   spvoD <- capture.output(showPlausibleValues(sdfD))
   expect_equal(rev(spvo1)[1:length(spvoD)], rev(spvoD))
-  sw1 <- capture.output(showWeights(sdfl, verbose=TRUE))
-  swA <- capture.output(showWeights(sdfA, verbose=TRUE))
-  swB <- capture.output(showWeights(sdfB, verbose=TRUE))
-  swC <- capture.output(showWeights(sdfC, verbose=TRUE))
-  swD <- capture.output(showWeights(sdfD, verbose=TRUE))
+  sw1 <- capture.output(showWeights(sdfl, verbose = TRUE))
+  swA <- capture.output(showWeights(sdfA, verbose = TRUE))
+  swB <- capture.output(showWeights(sdfB, verbose = TRUE))
+  swC <- capture.output(showWeights(sdfC, verbose = TRUE))
+  swD <- capture.output(showWeights(sdfD, verbose = TRUE))
   expect_equal(sw1, c(swA, swB, swC, swD))
 })
 
@@ -188,63 +210,69 @@ context("ESDFL cor")
 test_that("ESDFL cor", {
   skip_on_cran()
   c1 <- cor.sdf("b017451", "b003501", sdfA,
-                method="Pearson",
-                weightVar="origwt")
+    method = "Pearson",
+    weightVar = "origwt"
+  )
   c3 <- cor.sdf("b017451", "b003501", sdfC,
-                method="Pearson",
-                weightVar="origwt")
+    method = "Pearson",
+    weightVar = "origwt"
+  )
   c1234 <- cor.sdf("b017451", "b003501", sdfl,
-                   method="Pearson",
-                   weightVar="origwt")
-  expect_equal(c1,c1234[[1]])
-  expect_equal(c3,c1234[[3]])
+    method = "Pearson",
+    weightVar = "origwt"
+  )
+  expect_equal(c1, c1234[[1]])
+  expect_equal(c3, c1234[[3]])
 })
 
 
 context("ESDFL subset and print")
-test_that("ESDFL subset and print",{
+test_that("ESDFL subset and print", {
   skip_on_cran()
-  sdfl2 <- subset(sdfl, dsex=="Male")
+  sdfl2 <- subset(sdfl, dsex == "Male")
   expect_equal(capture.output(print(sdfl2)), printREF)
-  d1 <- dim(sdfl2) 
-  expect_equal(d1$nrow[1], nrow(subset(sdfA, dsex=="Male")))
-  expect_equal(d1$ncol[3], ncol(subset(sdfC, dsex=="Female")))
-  
-  # inside = TRUE 
+  d1 <- dim(sdfl2)
+  expect_equal(d1$nrow[1], nrow(subset(sdfA, dsex == "Male")))
+  expect_equal(d1$ncol[3], ncol(subset(sdfC, dsex == "Female")))
+
+  # inside = TRUE
   expect_equal(d1, dim(subset(sdfl, eval("dsex == \"Male\""), inside = TRUE)))
-  
+
   # expected message and error
   expect_warning(sdfl_e <- subset(sdfl, dsex1 == "Male"))
   expect_equal(sdfl_e, NULL)
-  
+
   sdfE <- "String"
   sdfl_error <- edsurvey.data.frame.list(list(sdfE, sdfB, sdfC, sdfE),
-                                         labels=c("first E locations",
-                                                  "B locations",
-                                                  "C locations",
-                                                  "second E locations"))
-  sdfl_ref <- subset(edsurvey.data.frame.list(list(sdfB,sdfC), labels = c("B locations","C locations")), dsex == "Male")
-  expect_warning(sdfl_error_subset <- subset(sdfl_error, dsex == 'Male'))
+    labels = c(
+      "first E locations",
+      "B locations",
+      "C locations",
+      "second E locations"
+    )
+  )
+  sdfl_ref <- subset(edsurvey.data.frame.list(list(sdfB, sdfC), labels = c("B locations", "C locations")), dsex == "Male")
+  expect_warning(sdfl_error_subset <- subset(sdfl_error, dsex == "Male"))
   expect_equal(dim(sdfl_error_subset), dim(sdfl_ref))
   expect_equal(sdfl_error_subset$covs, sdfl_ref$covs)
 })
 
 
 context("ESDFL lm.sdf")
-test_that("ESDFL lm.sdf",{
+test_that("ESDFL lm.sdf", {
   skip_on_cran()
   # jrrIMax is required to make sure U isn't singular
-  et1 <- lm.sdf(composite ~ b017451 + dsex, sdfl, jrrIMax=Inf)
+  et1 <- lm.sdf(composite ~ b017451 + dsex, sdfl, jrrIMax = Inf)
   # lm maps to lm.sdf when data is an edsurvey.data.frame.list
-  #et1b <- lm.sdf(composite ~ b017451 + dsex, sdfl)
-  #expect_equal(et1, et1b)
-  et1D <- lm.sdf(composite ~ b017451 + dsex, sdfD, jrrIMax=Inf)
+  # et1b <- lm.sdf(composite ~ b017451 + dsex, sdfl)
+  # expect_equal(et1, et1b)
+  et1D <- lm.sdf(composite ~ b017451 + dsex, sdfD, jrrIMax = Inf)
   # summary output should be the same
   et1s <- capture.output(summary(et1))
   et1Ds <- capture.output(summary(et1D))
   expect_equal(rev(et1s)[1:length(et1Ds)], rev(et1Ds))
   # check coefs are equal
-  expect_equal(coef(et1)[,4], coef(et1D))
+  expect_equal(coef(et1)[, 4], coef(et1D))
   # check print results
   et1p <- capture.output(print(et1))
   et1Dp <- capture.output(print(et1D))
@@ -252,15 +280,15 @@ test_that("ESDFL lm.sdf",{
 })
 
 context("ESDFL percentile")
-test_that("ESDFL percentile",{
+test_that("ESDFL percentile", {
   skip_on_cran()
-  expect_known_value(pct3 <- percentile("composite", 50, sdfl, pctMethod = 'unbiased'), "pct3.rds", update=FALSE)
-  pct3C <- percentile("composite", 50, sdfC, pctMethod = 'unbiased')
-  expect_equal(unlist(pct3C[,,drop=TRUE]), unlist(pct3[3,names(pct3C),drop=TRUE]))
+  expect_known_value(pct3 <- percentile("composite", 50, sdfl, pctMethod = "unbiased"), "pct3.rds", update = FALSE)
+  pct3C <- percentile("composite", 50, sdfC, pctMethod = "unbiased")
+  expect_equal(unlist(pct3C[, , drop = TRUE]), unlist(pct3[3, names(pct3C), drop = TRUE]))
 })
 
 context("ESDFL same survey")
-test_that("ESDFL same survey",{
+test_that("ESDFL same survey", {
   skip_on_cran()
   expect_true(!EdSurvey:::sameSurvey(sdfA, sdfB))
   expect_true(EdSurvey:::sameSurvey(sdf, sdfA))
@@ -271,41 +299,60 @@ context("ESDFL append")
 test_that("ESDFL append", {
   skip_on_cran()
   sdfl1a <- edsurvey.data.frame.list(list(sdfA, sdfB),
-                                     labels=c("A locations",
-                                              "B locations"))
-  
+    labels = c(
+      "A locations",
+      "B locations"
+    )
+  )
+
   sdfl1b <- edsurvey.data.frame.list(list(sdfC, sdfD),
-                                     labels=c("C locations",
-                                              "D locations"))
-  
-  sdfl1a_rev<- edsurvey.data.frame.list(list(sdfB, sdfA),
-                                        labels=c("B locations",
-                                                 "A locations"))
-  
+    labels = c(
+      "C locations",
+      "D locations"
+    )
+  )
+
+  sdfl1a_rev <- edsurvey.data.frame.list(list(sdfB, sdfA),
+    labels = c(
+      "B locations",
+      "A locations"
+    )
+  )
+
   sdfl1b_rev <- edsurvey.data.frame.list(list(sdfD, sdfC),
-                                         labels=c("D locations",
-                                                  "C locations"))
-  
+    labels = c(
+      "D locations",
+      "C locations"
+    )
+  )
+
   sdfl2 <- edsurvey.data.frame.list(list(sdfA, sdfB, sdfC, sdfD),
-                                    labels=c("A locations",
-                                             "B locations",
-                                             "C locations",
-                                             "D locations"))
+    labels = c(
+      "A locations",
+      "B locations",
+      "C locations",
+      "D locations"
+    )
+  )
 
   sdfl2_rev <- edsurvey.data.frame.list(list(sdfD, sdfC, sdfB, sdfA),
-                                        labels=c("D locations",
-                                                 "C locations",
-                                                 "B locations",
-                                                 "A locations"))
+    labels = c(
+      "D locations",
+      "C locations",
+      "B locations",
+      "A locations"
+    )
+  )
   sdfl3 <- append.edsurvey.data.frame.list(
     append.edsurvey.data.frame.list(sdfl1a, sdfC, labelsB = "C locations"),
     sdfD,
-    labelsB = "D locations")
-  
+    labelsB = "D locations"
+  )
+
   sdfl4 <- append.edsurvey.data.frame.list(sdfl1a, sdfl1b)
-  
+
   sdfl5 <- append.edsurvey.data.frame.list(sdfl1b_rev, sdfl1a_rev)
-  
+
   expect_true(identical(sdfl2, sdfl3))
   expect_true(identical(sdfl2, sdfl4))
   expect_true(identical(sdfl2_rev, sdfl5))

@@ -16,7 +16,7 @@ predictor (or right-hand side) variable(s)."><!-- mathjax --><script src="https:
     
     <a class="navbar-brand me-2" href="../index.html">EdSurvey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,10 +73,11 @@ predictor (or right-hand side) variable(s).</p>
 <span>  returnSepct <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  varMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"jackknife"</span>, <span class="st">"Taylor"</span><span class="op">)</span>,</span>
 <span>  drop <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  dropOmittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  recode <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  omittedLevels <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -112,11 +113,11 @@ Use <code><a href="showWeights.html">showWeights</a></code> to find the default.
 
 
 <dt>jrrIMax</dt>
-<dd><p>a numeric value; when using the jackknife variance estimation method, the default estimation option, <code>jrrIMax=1</code>, uses the 
-  sampling variance from the first plausible value as the component for sampling variance estimation. The \(V_{jrr}\) 
+<dd><p>a numeric value; when using the jackknife variance estimation method, the default estimation option, <code>jrrIMax=1</code>, uses the
+  sampling variance from the first plausible value as the component for sampling variance estimation. The \(V_{jrr}\)
   term (see the Details section of
-<code><a href="lm.sdf.html">lm.sdf</a></code> to see the definition of \(V_{jrr}\)) can be estimated with any number of plausible values, and values larger than the number of 
-  plausible values on the survey (including <code>Inf</code>) will result in all of the plausible values being used. 
+<code><a href="lm.sdf.html">lm.sdf</a></code> to see the definition of \(V_{jrr}\)) can be estimated with any number of plausible values, and values larger than the number of
+  plausible values on the survey (including <code>Inf</code>) will result in all of the plausible values being used.
   Higher values of <code>jrrIMax</code> lead to longer computing times and more accurate variance estimates.</p></dd>
 
 
@@ -132,7 +133,7 @@ then the percentage
 adds up to 100 within the interaction of the
 first and second variable, and so on.
 Default is <code>NULL</code>, which will result in the
-lowest feasible aggregation level. 
+lowest feasible aggregation level.
 See Examples section.</p></dd>
 
 
@@ -155,7 +156,7 @@ to be used.</p></dd>
 not converted to a vector.</p></dd>
 
 
-<dt>omittedLevels</dt>
+<dt>dropOmittedLevels</dt>
 <dd><p>a logical value. When set to the default value of <code>TRUE</code>, drops those levels of all factor variables that are specified
 in an <code>edsurvey.data.frame</code>. Use <code>print</code> on an <code>edsurvey.data.frame</code> to see the omitted levels.</p></dd>
 
@@ -176,6 +177,10 @@ inputs to the jackknife and imputation variance
 estimates, which allows for
 the computation
 of covariances between estimates.</p></dd>
+
+
+<dt>omittedLevels</dt>
+<dd><p>this argument is deprecated. Use <code>dropOmittedLevels</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -220,17 +225,17 @@ in the section
 
    <dt>SE(MEAN)</dt>
 <dd><p>the standard error of the <code>MEAN</code> column (the mean assessment score for units in the <code>RHS levels</code>), calculated according to the vignette titled
-<a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link"><em>Statistical Methods Used in EdSurvey</em></a>                      
+<a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link"><em>Statistical Methods Used in EdSurvey</em></a>
 in the sections
 “Estimation of Standard Errors of Weighted Means When Plausible Values Are Present, Using the Jackknife Method”
-or 
+or
 “Estimation of Standard Errors of Weighted Means When Plausible Values Are Present, Using the Taylor Series Method,”
 depending on the value of <code>varMethod</code>.</p></dd>
 
 
 </dl><p>When <code>returnVarEstInputs</code> is <code>TRUE</code>, two additional elements are
  returned. These are <code>meanVarEstInputs</code> and <code>pctVarEstInputs</code> and
- regard the <code>MEAN</code> and <code>PCT</code> columns, respectively. These two 
+ regard the <code>MEAN</code> and <code>PCT</code> columns, respectively. These two
  objects can be used for calculating covariances with</p>
 <p></p>
 <p><code><a href="varEstToCov.html">varEstToCov</a></code>.</p>
@@ -241,7 +246,7 @@ depending on the value of <code>varMethod</code>.</p></dd>
 <em>n</em>-way
 table with unweighted and weighted <em>n</em> values and percentages. It also
 can calculate the average of the subject scale or subscale for students at
-each level of the cross-tabulation table.</p>      
+each level of the cross-tabulation table.</p>
 <p>A detailed description of all statistics is given in the vignette titled
 <a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link"><em>Statistical Methods Used in EdSurvey</em></a>.</p>
     </div>
@@ -294,7 +299,7 @@ each level of the cross-tabulation table.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Paul Bailey.</p>
+  <p></p><p>Developed by Paul Bailey, Ahmad Emad, Huade Huo, Michael Lee, Yuqi Liao, Alex Lishinsku, Trang Nguyen, Qingshu Xie, Jiao Yu, Ting Zhang, Eric Buehler, Sun-joo Lee, Blue Webb.</p>
 </div>
 
 <div class="pkgdown-footer-right">

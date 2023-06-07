@@ -18,43 +18,43 @@ edsurveyTable2pdf(
 \arguments{
 \item{data}{the result of a call to \code{\link{edsurveyTable}}}
 
-\item{formula}{a formula of the form \code{LHS ~ RHS} to cast the \code{edsurveyTable} 
-results from long format to wide format. This formula takes the form 
-\code{LHS ~ RHS} (e.g., \code{var1 + var2 ~ var3}). 
+\item{formula}{a formula of the form \code{LHS ~ RHS} to cast the \code{edsurveyTable}
+results from long format to wide format. This formula takes the form
+\code{LHS ~ RHS} (e.g., \code{var1 + var2 ~ var3}).
 The order of the entries in the formula is essential.}
 
-\item{caption}{character vector of length one or two containing the table's caption or title. 
-If the length is two, the second item is the \dQuote{short caption} used when LaTeX generates 
-a \code{List of Tables}. 
+\item{caption}{character vector of length one or two containing the table's caption or title.
+If the length is two, the second item is the \dQuote{short caption} used when LaTeX generates
+a \code{List of Tables}.
 Set to \code{NULL} to suppress the caption. Default value is \code{NULL}.}
 
 \item{filename}{a character string containing filenames and paths. By default (\code{filename = ""}),
-table will be saved in the working directory (\code{getwd()}). 
-Use \code{filename = "CONSOLE"} to 
+table will be saved in the working directory (\code{getwd()}).
+Use \code{filename = "CONSOLE"} to
 print LaTeX code in R console without generating a PDF file.}
 
 \item{toCSV}{a character string containing filenames and paths of .csv table output.
-\code{""} indicates no .csv output. \code{toCSV} is 
+\code{""} indicates no .csv output. \code{toCSV} is
 independent to \code{filename}, so both
-a csv file and PDF file would be generated if both \code{filename} 
+a csv file and PDF file would be generated if both \code{filename}
 and \code{toCSV} were specified.}
 
-\item{returnMeans}{a logical value set to \code{TRUE} (the default) to generate a PDF with 
-the \code{MEAN} and \code{SE(MEAN)}. It is set to \code{FALSE} to generate a PDF with 
-the \code{PCT} and \code{SE(PCT)}. See Value 
+\item{returnMeans}{a logical value set to \code{TRUE} (the default) to generate a PDF with
+the \code{MEAN} and \code{SE(MEAN)}. It is set to \code{FALSE} to generate a PDF with
+the \code{PCT} and \code{SE(PCT)}. See Value
 in \code{\link[EdSurvey]{edsurveyTable}}.}
 
-\item{estDigits}{an integer indicating the number of decimal places to be used for estimates. 
+\item{estDigits}{an integer indicating the number of decimal places to be used for estimates.
 Negative values are allowed. See Details.}
 
-\item{seDigits}{an integer indicating the number of decimal places to be used for standard errors. 
+\item{seDigits}{an integer indicating the number of decimal places to be used for standard errors.
 Negative values are allowed.}
 }
 \description{
 Produces the LaTeX code and compiles to a PDF file from the \code{edsurveyTable} results.
 }
 \details{
-Rounding to a negative number of digits means rounding to a power of 10, 
+Rounding to a negative number of digits means rounding to a power of 10,
 so, for example, \code{estDigits = -2} rounds estimates to the nearest hundred.
 }
 \note{

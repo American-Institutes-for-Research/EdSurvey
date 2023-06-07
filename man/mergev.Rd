@@ -31,7 +31,7 @@ mergev(
 must be the same in \code{x} and \code{y}. Silently overrides \code{by.x}
 and \code{by.y}}
 
-\item{by.x}{character vector of column names on \code{x} to merge by. The resulting file will have 
+\item{by.x}{character vector of column names on \code{x} to merge by. The resulting file will have
 these names.}
 
 \item{by.y}{character vector of column names on \code{y} to merge by.}
@@ -67,7 +67,7 @@ simply returns a data.frame.}
 \value{
 depends on the value of \code{return.list}.
 
-When \code{return.list} is \code{FALSE}, returns a \code{data.frame}. 
+When \code{return.list} is \code{FALSE}, returns a \code{data.frame}.
 
 When \code{return.list} is \code{TRUE}, returns a list with two elements. The first is the same \code{data.frame} result. The second
 is a list with the values that were printed out. Elements include merge.type with two elements, each "one" or "many" indicating the
@@ -78,10 +78,10 @@ the matrix printed out by this function.
 More verbose merge function
 }
 \details{
-This is a wrapper for the base package merge function that prints out verbose information 
+This is a wrapper for the base package merge function that prints out verbose information
 about the merge, including the merge type (one/many to one/many), the overlapping column
 names that will have suffixes applied, the number of rows and the number of unique
-keys that are in each dataset and in the resulting dataset. 
+keys that are in each dataset and in the resulting dataset.
 
 Also gives more detailed errors when, e.g. the columns named in the \code{by} argument are
 not on the \code{x} or \code{y} data.frames.

@@ -11,7 +11,7 @@ This function returns a \code{data.frame} object that defines NHES Survey Codes 
              The resulting \code{data.frame} object is useful for user reference or other advanced techniques.
 }
 \note{
-Any changes or modifications to the \code{data.frame} object will not change the behavior of \code{readNHES}.  
+Any changes or modifications to the \code{data.frame} object will not change the behavior of \code{readNHES}.
       This function should be treated only as a read-only source of information.
 }
 \examples{

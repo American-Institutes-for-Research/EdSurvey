@@ -17,10 +17,10 @@ readECLS_B(
 
 \item{filename}{a character value of the name of the fixed-width-file (.dat) data file in the specificed \code{path} to be read.}
 
-\item{layoutFilename}{a character value of the filename of either the ASCII text (.txt) layout file of the \code{filename} within the specified \code{path}, 
+\item{layoutFilename}{a character value of the filename of either the ASCII text (.txt) layout file of the \code{filename} within the specified \code{path},
 OR a character value of the  filename of the SPSS syntax (.sps) layout file of the \code{filename} within the specified \code{path}}
 
-\item{forceReread}{a logical value to force rereading of all processed data. 
+\item{forceReread}{a logical value to force rereading of all processed data.
 The default value of \code{FALSE} will speed up the read function by using existing read-in data already processed.}
 
 \item{verbose}{a logical value that will determine if you want verbose output while the \code{readECLS-K2011} function is running to indicate processing progress.
@@ -31,7 +31,7 @@ An \code{edsurvey.data.frame} for the ECLS-B longitudinal dataset.
 }
 \description{
 Opens a connection to an ECLS-B data file and
-             returns an \code{edsurvey.data.frame} with 
+             returns an \code{edsurvey.data.frame} with
              information about the file and data.
 }
 \details{

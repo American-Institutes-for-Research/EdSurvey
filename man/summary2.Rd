@@ -8,7 +8,8 @@ summary2(
   data,
   variable,
   weightVar = attr(getAttributes(data, "weights"), "default"),
-  omittedLevels = FALSE
+  dropOmittedLevels = FALSE,
+  omittedLevels = deprecated()
 )
 }
 \arguments{
@@ -18,21 +19,23 @@ summary2(
 
 \item{weightVar}{character weight variable name. Default is the default weight of \code{data} if it exists.
 If the given survey data do not have a default weight,
-the function will produce unweighted statistics instead. 
+the function will produce unweighted statistics instead.
 Can be set to \code{NULL} to return unweighted statistics.}
 
-\item{omittedLevels}{a logical value. When set to \code{TRUE}, drops those levels of the specified \code{variable}.
+\item{dropOmittedLevels}{a logical value. When set to \code{TRUE}, drops those levels of the specified \code{variable}.
 Use print on an \code{edsurvey.data.frame} to see the omitted levels. Defaults to \code{FALSE}.}
+
+\item{omittedLevels}{this argument is deprecated. Use \code{dropOmittedLevels}}
 }
 \value{
-summary of weighted or unweighted statistics of a given variable in an \code{edsurvey.data.frame}  
+summary of weighted or unweighted statistics of a given variable in an \code{edsurvey.data.frame}
 
 For categorical variables, the summary results are a crosstab of all variables and include the following:
   \item{[variable name]}{level of the variable in the column name that the row regards. There is one column per element of \code{variable}.}
   \item{N}{number of cases for each category. Weighted N also is produced if users choose to produce weighted statistics.}
   \item{Percent}{percentage of each category. Weighted percent also is produced if users choose to produce weighted statistics.}
   \item{SE}{standard error of the percentage statistics}
- 
+
 For continuous variables, the summary results are by variable and include the following:
   \item{Variable}{name of the variable the row regards}
   \item{N}{total number of cases (both valid and invalid cases)}
@@ -46,7 +49,7 @@ For continuous variables, the summary results are by variable and include the fo
   \item{NA's}{number of \code{NA} in variable and in weight variables}
   \item{Zero weights}{number of zero weight cases if users choose to produce weighted statistics}
 
-If the weight option is chosen, the function produces weighted percentile and standard deviation. Refer to the vignette titled 
+If the weight option is chosen, the function produces weighted percentile and standard deviation. Refer to the vignette titled
 \emph{\href{https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf}{Statistical Methods Used in EdSurvey}} and
 the vignette titled
 \emph{\href{https://www.air.org/sites/default/files/EdSurvey-Percentiles.pdf}{Methods Used for Estimating Percentiles in EdSurvey}}

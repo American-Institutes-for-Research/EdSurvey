@@ -14,7 +14,7 @@ be stored. Files are placed in a folder named PIAAC/cycle [cycle number].}
 Valid cycle is 1 only.}
 
 \item{cache}{a logical value set to process and cache the text (.txt) version of files.
-This takes a very long time but saves time for future uses of 
+This takes a very long time but saves time for future uses of
 the data. Default value is \code{FALSE}.}
 
 \item{verbose}{a logical value to either print or suppress status message output.

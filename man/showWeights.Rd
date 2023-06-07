@@ -7,7 +7,7 @@
 showWeights(data, verbose = FALSE)
 }
 \arguments{
-\item{data}{an \code{edsurvey.data.frame}, a \code{light.edsurvey.data.frame}, or 
+\item{data}{an \code{edsurvey.data.frame}, a \code{light.edsurvey.data.frame}, or
 an \code{edsurvey.data.frame.list}}
 
 \item{verbose}{a logical value; set to TRUE to print the complete list of jackknife

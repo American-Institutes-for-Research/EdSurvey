@@ -19,7 +19,7 @@ The variable \code{varA} must be on this dataset.
 See Examples.}
 
 \item{varEstB}{similar to the \code{varEstA} argument.
-If left blank, both are assumed to come 
+If left blank, both are assumed to come
 from \code{varEstA}. When set, the degrees of freedom
 are for a contrast between \code{varA} and \code{varB},
 and the \code{varB} values are taken from \code{varEstB}.}
@@ -28,12 +28,12 @@ and the \code{varB} values are taken from \code{varEstB}.}
 argument for which the degrees of freedom calculation is required.}
 
 \item{varB}{a character that names the statistic in the \code{varEstB}
-argument for which a covariance is required. When \code{varB} 
+argument for which a covariance is required. When \code{varB}
 is specified, returns the degrees of freedom for
 the contrast between \code{varA} and \code{varB}.}
 
 \item{method}{a character that is either \code{WS} for the Welch-Satterthwaite
-formula or 
+formula or
 \code{JR} for the Johnson-Rust correction to the
 Welch-Satterthwaite formula}
 }
@@ -50,7 +50,7 @@ This calculation happens under the notion that statistics
 have little variance within strata, and
 some strata will contribute fewer than a full degree of freedom.
 
-The functions are not vectorized, so both \code{varA} and 
+The functions are not vectorized, so both \code{varA} and
 \code{varB} must contain exactly one variable name.
 
 The method used to compute the degrees of freedom is in the vignette titled

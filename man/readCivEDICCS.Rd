@@ -17,11 +17,11 @@ readCivEDICCS(
 \item{path}{a character value of the full directory to the ICCS/CivED extracted SPSS (.sav) set of data}
 
 \item{countries}{a character vector of the country/countries to include using
-the three-digit International Organization for Standardization (ISO) country code.  
+the three-digit International Organization for Standardization (ISO) country code.
 A list of country codes can be found on Wikipedia at
 \url{https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes}
 or other online sources. Consult the \emph{ICCS/CivED User Guide} to help determine what countries
-are included within a specific testing year of ICCS/CivED. 
+are included within a specific testing year of ICCS/CivED.
 To select all countries, use a wildcard value of \strong{\code{*}}.}
 
 \item{dataSet}{a character value of either \code{student} or \code{teacher} to indicate which set of data is returned.
@@ -32,7 +32,7 @@ will include both the \code{student} and \code{teacher} data in the resulting \c
 \item{gradeLvl}{a character value of the grade level to return
 \itemize{
      \item{\strong{8} = eighth grade (the default if not specified)}
-     \item{\strong{9} = ninth grade} 
+     \item{\strong{9} = ninth grade}
      \item{\strong{12} = 12th grade (for CivED 1999 only)}
 }}
 
@@ -47,7 +47,7 @@ an \code{edsurvey.data.frame} for a single specified country or an \code{edsurve
 }
 \description{
 Opens a connection to an ICCS (2009, 2016) or CivEd (1999) data file and
-             returns an \code{edsurvey.data.frame} with 
+             returns an \code{edsurvey.data.frame} with
              information about the file and data.
 }
 \details{
@@ -55,16 +55,16 @@ Reads in the unzipped files downloaded from the international database(s) using 
          Data files require the SPSS data file (.sav) format using the default filenames.
 
 When using the \code{getData} function with a CivED or ICCS study \code{edsurvey.data.frame},
-         the requested data variables are inspected, and it handles any necessary data merges automatically. 
+         the requested data variables are inspected, and it handles any necessary data merges automatically.
          The \code{school} data always will be returned merged to the \code{student}
          data, even if only \code{school} variables are requested.
-         If a 1999 CivED Grade 8 \code{edsurvey.data.frame} with \code{teacher} data variables is requested by the \code{getData} call, 
+         If a 1999 CivED Grade 8 \code{edsurvey.data.frame} with \code{teacher} data variables is requested by the \code{getData} call,
          it will cause \code{teacher} data to be merged.
-         Many \code{students} can be linked to many \code{teachers}, which varies widely between countries, 
+         Many \code{students} can be linked to many \code{teachers}, which varies widely between countries,
          and not all countries contain \code{teacher} data.
 
 Calling the \code{dim} function for a CivED 1999 Grade 8 \code{edsurvey.data.frame} will result in the row count as if the \code{teacher} dataset was merged.
-         This row count will be considered the \code{full data N} of the \code{edsurvey.data.frame}, even if no \code{teacher} data were included in an analysis.  
+         This row count will be considered the \code{full data N} of the \code{edsurvey.data.frame}, even if no \code{teacher} data were included in an analysis.
          The column count returned by \code{dim} will be the count of unique column variables across all data levels.
 }
 \examples{

@@ -14,7 +14,7 @@
 
 \item{...}{these arguments are not passed anywhere and are included only for compatibility}
 
-\item{printPercentage}{a logical value set to \code{TRUE} to request printing 
+\item{printPercentage}{a logical value set to \code{TRUE} to request printing
 of the percentage in the groups. Defaults to \code{TRUE}.}
 }
 \description{

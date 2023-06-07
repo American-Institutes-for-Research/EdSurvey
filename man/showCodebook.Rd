@@ -32,7 +32,7 @@ a \ifelse{latex}{\code{data.frame}}{\code{\link[base]{data.frame}}} that shows t
                        or an \code{edsurvey.data.frame.list}
 }
 \description{
-Retrieves variable names, variable labels, and value labels for an 
+Retrieves variable names, variable labels, and value labels for an
              \code{edsurvey.data.frame}, a \code{light.edsurvey.data.frame}, or an \code{edsurvey.data.frame.list}.
 }
 \examples{

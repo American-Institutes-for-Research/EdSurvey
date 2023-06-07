@@ -19,7 +19,7 @@ subdirectory named TIMSSAdv/[year].}
 \item{years}{an integer vector of the assessment years to download. Valid years are 1995, 2008, and 2015.}
 
 \item{cache}{a logical value set to process and cache the text (.txt) version of files.
-This takes a very long time but saves time for future uses of 
+This takes a very long time but saves time for future uses of
 the data. Default value is \code{FALSE}.}
 
 \item{verbose}{a logical value to either print or suppress status message output.

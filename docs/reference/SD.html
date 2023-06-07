@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">EdSurvey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,12 +60,13 @@
 <span>  weightVar <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  jrrIMax <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  varMethod <span class="op">=</span> <span class="st">"jackknife"</span>,</span>
-<span>  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  dropOmittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  recode <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  targetLevel <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  jkSumMultiplier <span class="op">=</span> <span class="fu"><a href="edsurvey-class.html">getAttributes</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"jkSumMultiplier"</span><span class="op">)</span>,</span>
-<span>  returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  omittedLevels <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -82,17 +83,17 @@
 <dt>weightVar</dt>
 <dd><p>character weight variable name. Default is the default weight of <code>data</code> if it exists.
 If the given survey data do not have a default weight,
-the function will produce unweighted statistics instead. 
+the function will produce unweighted statistics instead.
 Can be set to <code>NULL</code> to return unweighted statistics.</p></dd>
 
 
 <dt>jrrIMax</dt>
-<dd><p>a numeric value; when using the jackknife variance estimation method, the default estimation option, <code>jrrIMax=1</code>, uses the 
-                  sampling variance from the first plausible value as the component for sampling variance estimation. The <code>Vjrr</code> 
-                  term (see 
+<dd><p>a numeric value; when using the jackknife variance estimation method, the default estimation option, <code>jrrIMax=1</code>, uses the
+                  sampling variance from the first plausible value as the component for sampling variance estimation. The <code>Vjrr</code>
+                  term (see
 <a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link"><em>Statistical Methods Used in EdSurvey</em></a>)
-                  can be estimated with any number of plausible values, and values larger than the number of 
-                  plausible values on the survey (including <code>Inf</code>) will result in all plausible values being used. 
+                  can be estimated with any number of plausible values, and values larger than the number of
+                  plausible values on the survey (including <code>Inf</code>) will result in all plausible values being used.
                   Higher values of <code>jrrIMax</code> lead to longer computing times and more accurate variance estimates.</p></dd>
 
 
@@ -100,7 +101,7 @@ Can be set to <code>NULL</code> to return unweighted statistics.</p></dd>
 <dd><p>deprecated parameter; <code>gap</code> always uses the jackknife variance estimation</p></dd>
 
 
-<dt>omittedLevels</dt>
+<dt>dropOmittedLevels</dt>
 <dd><p>a logical value. When set to <code>TRUE</code>, drops those levels of the specified <code>variable</code>.
 Use print on an <code>edsurvey.data.frame</code> to see the omitted levels. Defaults to <code>FALSE</code>.</p></dd>
 
@@ -130,8 +131,8 @@ survey response level.</p></dd>
 
 <dt>jkSumMultiplier</dt>
 <dd><p>when the jackknife variance estimation method---or
-balanced repeated replication (BRR) 
-method---multiplies the final jackknife variance estimate by a value, 
+balanced repeated replication (BRR)
+method---multiplies the final jackknife variance estimate by a value,
 set <code>jkSumMultiplier</code> to that value.
 For an <code>edsurvey.data.frame</code>, or
 a <code>light.edsurvey.data.frame</code>,
@@ -146,6 +147,10 @@ estimates, which allows for
 the computation
 of covariances between estimates.</p></dd>
 
+
+<dt>omittedLevels</dt>
+<dd><p>this argument is deprecated. Use <code>dropOmittedLevels</code></p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -153,7 +158,7 @@ of covariances between estimates.</p></dd>
 
 <p>a list object with elements:</p>
 <dl><dt>mean</dt>
-<dd><p>the mean assessment score for <code>variable</code>, calculated according to the vignette titled 
+<dd><p>the mean assessment score for <code>variable</code>, calculated according to the vignette titled
             <a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link">Statistical Methods Used in EdSurvey</a></p></dd>
 
  <dt>std</dt>
@@ -212,7 +217,7 @@ of covariances between estimates.</p></dd>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Paul Bailey.</p>
+  <p></p><p>Developed by Paul Bailey, Ahmad Emad, Huade Huo, Michael Lee, Yuqi Liao, Alex Lishinsku, Trang Nguyen, Qingshu Xie, Jiao Yu, Ting Zhang, Eric Buehler, Sun-joo Lee, Blue Webb.</p>
 </div>
 
 <div class="pkgdown-footer-right">

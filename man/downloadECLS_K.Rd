@@ -14,14 +14,14 @@ subdirectory named ECLS_K/[year].}
 \item{years}{an integer vector of the assessment years to download. Valid years are 1998 and 2011.}
 
 \item{cache}{a logical value set to process and cache the text (.txt) version of files.
-This takes a very long time but saves time for future uses of 
+This takes a very long time but saves time for future uses of
 the data. Default value is \code{FALSE}.}
 
 \item{verbose}{a logical value to either print or suppress status message output.
 The default value is \code{TRUE}.}
 }
 \description{
-Uses an Internet connection to download ECLS_K data. 
+Uses an Internet connection to download ECLS_K data.
              Data come from \href{https://nces.ed.gov/edat/}{nces.ed.gov} zip files. This
              function works for 1998 and 2011 data.
 }

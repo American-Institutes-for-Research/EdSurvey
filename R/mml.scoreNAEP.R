@@ -20,25 +20,25 @@ getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, sco
   # all items
   itemColsClean <- tolower(c(polyItems, dichotItems))
   # fr2 file structure
-  t <- try(mrcFile <- readLines(filename), silent=TRUE)
+  t <- try(mrcFile <- readLines(filename), silent = TRUE)
 
   # Split mrcFile by "\n"
-  mrcFile <- strsplit(mrcFile , "\n", fixed=T)
+  mrcFile <- strsplit(mrcFile, "\n", fixed = T)
   mrcFile <- unlist(mrcFile)
 
-  specs <- getNAEP_FR2Specs(mrcFile) #in readNAEP.R file to get FR2 info
+  specs <- getNAEP_FR2Specs(mrcFile) # in readNAEP.R file to get FR2 info
   # read in the variables from the file, this is based on the information ETS
   # shared with us
   variableName <- tolower(specs$variableName) # name of the variable
 
   # indices/lines of question item variables
-  indices <-  match(itemColsClean, variableName)
+  indices <- match(itemColsClean, variableName)
   indices <- indices[!is.na(indices)]
   itemLines <- mrcFile[indices]
 
   # initialize empty dataframe to build
   scoreCard <- data.frame(matrix(ncol = 3, nrow = 0))
-  colnames(scoreCard) <- c('key', 'answer', 'score')
+  colnames(scoreCard) <- c("key", "answer", "score")
 
   # codes in EdSurvey NAEP data
 
@@ -47,7 +47,6 @@ getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, sco
 
   # get item key, answers, and points per item
   for (i in indices) {
-    
     line <- mrcFile[i]
     # initialize portion of scorecard for item
     subScoreCard <- data.frame(matrix(ncol = 4, nrow = 12))
@@ -61,11 +60,11 @@ getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, sco
 
     # switch to new score points if item scoring has been adjusted
     if (itemId %in% adjustedItems) {
-      pointsNew <- trimws(gsub(',','', adjustedData[adjustedData$NAEPid==itemId, 'to']))
-      pointsNew <- gsub(' ','', pointsNew)
+      pointsNew <- trimws(gsub(",", "", adjustedData[adjustedData$NAEPid == itemId, "to"]))
+      pointsNew <- gsub(" ", "", pointsNew)
       # check that number of points match old numbers
       if (nchar(points) != nchar(pointsNew)) {
-        stop(paste0('Number of adjusted scores for item ', itemId, ' is different from original.'))
+        stop(paste0("Number of adjusted scores for item ", itemId, " is different from original."))
       } else {
         points <- pointsNew
       }
@@ -73,32 +72,32 @@ getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, sco
 
     # split and process points
     if (nchar(points) != 0) {
-      points <- unlist(strsplit(points,''))
-      #scorePoints will be the maxium value as defined by the 'scoring key'
+      points <- unlist(strsplit(points, ""))
+      # scorePoints will be the maxium value as defined by the 'scoring key'
       scorePoints <- max(as.numeric(points))
-      points <- replace(NA * c(1:12), c(1:length(points)), points) #make it length 12 filled with NAs where applicable
+      points <- replace(NA * c(1:12), c(1:length(points)), points) # make it length 12 filled with NAs where applicable
     } else {
       points <- NA * c(1:12)
     }
-    
-    #parse the value labels from the .FR2 specification
+
+    # parse the value labels from the .FR2 specification
     tokens <- strsplit(specs$labelValues[i], "^", fixed = TRUE)[[1]]
-    
-    vals <- as.numeric(NA * c(1:12)) #create numeric vector of length 12, (not ideal, but to be consistent)
+
+    vals <- as.numeric(NA * c(1:12)) # create numeric vector of length 12, (not ideal, but to be consistent)
     labels <- as.character(NA * c(1:12))
-    
-    for(ii in seq_along(tokens)){#use 1:12 here to keep consistent with sizing (yes, a bit strange)
+
+    for (ii in seq_along(tokens)) { # use 1:12 here to keep consistent with sizing (yes, a bit strange)
       vals[ii] <- as.numeric(strsplit(tokens[ii], "=", fixed = TRUE)[[1]][1])
       labels[ii] <- paste0(strsplit(tokens[ii], "=", fixed = TRUE)[[1]][-1], collapse = "=")
     }
-    
+
     # set points for other types of answers (like omitted, illegible, etc.)
     if (itemId %in% dichotItems) {
       # this is a multiple choice question
       for (l in 1:length(labels)) {
         # find the corresponding point score in dict
         newScore <- scoreDict$pointMult[match(tolower(labels[l]), tolower(scoreDict$resCat))]
-        if (! is.na(newScore)) {
+        if (!is.na(newScore)) {
           points[l] <- newScore
         }
       }
@@ -106,7 +105,7 @@ getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, sco
       # this is a constructed answer question
       for (l in 1:length(labels)) {
         newScore <- scoreDict$pointConst[match(tolower(labels[l]), tolower(scoreDict$resCat))]
-        if (! is.na(newScore)) {
+        if (!is.na(newScore)) {
           points[l] <- newScore
         }
       }
@@ -116,7 +115,7 @@ getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, sco
     subScoreCard$answer <- labels
     subScoreCard$score <- points
     subScoreCard$key <- itemId
-    #set the score points, exclude NAs and
+    # set the score points, exclude NAs and
     subScoreCard$scorePoints <- scorePoints
 
     scoreCard <- rbind(scoreCard, subScoreCard)
@@ -124,35 +123,37 @@ getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, sco
 
   # reconfigure
   scoreCard$score <- as.numeric(scoreCard$score)
-  scoreCard <- scoreCard[complete.cases(scoreCard),] # take out rows with NA ScorePoints
+  scoreCard <- scoreCard[complete.cases(scoreCard), ] # take out rows with NA ScorePoints
   colnames(scoreCard) <- c("key", "answer", "score", "scorePoints")
 
   # extra configuration for partial scores (make labeling uniform)
-  partialKeys <- scoreCard[scoreCard$answer=='Partial','key']
+  partialKeys <- scoreCard[scoreCard$answer == "Partial", "key"]
   partialNums <- table(partialKeys)
-  twoPartials <- names(partialNums[partialNums==2]) #items with 2 partial scores
+  twoPartials <- names(partialNums[partialNums == 2]) # items with 2 partial scores
   for (item in twoPartials) {
-    scoreCard[scoreCard$key==item & scoreCard$answer=='Partial', 'answer'] <- c('Partial1','Partial2')
+    scoreCard[scoreCard$key == item & scoreCard$answer == "Partial", "answer"] <- c("Partial1", "Partial2")
   }
-  threePartials <-names(partialNums[partialNums==3]) #items with 3 partial scores
+  threePartials <- names(partialNums[partialNums == 3]) # items with 3 partial scores
   for (item in threePartials) {
-    scoreCard[scoreCard$key==item & scoreCard$answer=='Partial', 'answer'] <- c('Partial1','Partial2','Partial3')
+    scoreCard[scoreCard$key == item & scoreCard$answer == "Partial", "answer"] <- c("Partial1", "Partial2", "Partial3")
   }
 
   return(scoreCard)
 }
 
 getLabel <- function(line, first, last) {
-  #get answer labels (A, B *, C, Correct, Omitted, etc.)
-  part <- trimws(substr(line, first, last)) #get the part of string needed with first and last index
-  return (trimws(gsub(" \\d+$", "", part))) #grab label (everything before digits) and trim white space
+  # get answer labels (A, B *, C, Correct, Omitted, etc.)
+  part <- trimws(substr(line, first, last)) # get the part of string needed with first and last index
+  return(trimws(gsub(" \\d+$", "", part))) # grab label (everything before digits) and trim white space
 }
 
 #' @export
 defaultNAEPScoreCard <- function() {
-  scoreDict <- data.frame(resCat=c("Multiple", "Not Reached", "Missing", "Omitted", "Illegible", "Non-Rateable", "Off Task"),
-                           pointMult=c(8, NA, NA, 8, 0, 0, 0),
-                           pointConst=c(0, NA, NA, 0, 0, 0, 0))
+  scoreDict <- data.frame(
+    resCat = c("Multiple", "Not Reached", "Missing", "Omitted", "Illegible", "Non-Rateable", "Off Task"),
+    pointMult = c(8, NA, NA, 8, 0, 0, 0),
+    pointConst = c(0, NA, NA, 0, 0, 0, 0)
+  )
   return(scoreDict)
 }
 
@@ -163,13 +164,12 @@ defaultNAEPScoreCard <- function() {
 #' @param data a NAEP \code{edsurvey.data.frame}
 #' @param dctPath a file location that points to the location of a NAEP \code{.dct} file (usually in the \code{AM} folder). A \code{.dct} file can be
 #'                used to input custom item response theory (IRT)
-#'                parameters and subscale/subtest weights for NAEP assessments compared with those provided in the \code{NAEPirtparams} package. 
-#'                
+#'                parameters and subscale/subtest weights for NAEP assessments compared with those provided in the \code{NAEPirtparams} package.
+#'
 #' @return a NAEP \code{edsurvey.data.frame} with updated attributes
 #' @example \man\examples\setNAEPScoreCard.R
 #' @export
-setNAEPScoreCard <- function(data, dctPath=NULL) {
-
+setNAEPScoreCard <- function(data, dctPath = NULL) {
   # check if we can continue
   if (is.null(dctPath)) {
     stop("You must provide dctPath.")
@@ -182,17 +182,19 @@ setNAEPScoreCard <- function(data, dctPath=NULL) {
   testDat <- allTables$testDat
   adjustments <- data.frame()
   # get the scoreCard
-  scoreCard <- getNAEPScoreCard(getAttributes(data, "fr2Path"),
-                                polyParamTab$ItemID,
-                                dichotParamTab$ItemID,
-                                adjustments)
+  scoreCard <- getNAEPScoreCard(
+    getAttributes(data, "fr2Path"),
+    polyParamTab$ItemID,
+    dichotParamTab$ItemID,
+    adjustments
+  )
   # update dichotparamtab: 1/k for missing value
 
-  dscoreCard <- scoreCard[scoreCard$score %in% c(0,1) &
-                          nchar(trimws(gsub("[*]", "", gsub("^[A-G]", "", scoreCard$answer)))) == 0, ]
+  dscoreCard <- scoreCard[scoreCard$score %in% c(0, 1) &
+    nchar(trimws(gsub("[*]", "", gsub("^[A-G]", "", scoreCard$answer)))) == 0, ]
   Ks <- aggregate(answer ~ key, dscoreCard, length)
   Ks$answer <- 1 / Ks$answer
-  dichotParamTab <- merge(dichotParamTab, Ks, by.x = 'ItemID', by.y = 'key', all.x = TRUE, all.y=FALSE)
+  dichotParamTab <- merge(dichotParamTab, Ks, by.x = "ItemID", by.y = "key", all.x = TRUE, all.y = FALSE)
   # if it is not in this lookup table, it is constructed response and so the missing value should be zero
   dichotParamTab$missingValue <- ifelse(is.na(dichotParamTab$answer), 0, dichotParamTab$answer)
   dichotParamTab$answer <- NULL

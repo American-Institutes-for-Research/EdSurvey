@@ -10,18 +10,19 @@ mvrlm.sdf(
   weightVar = NULL,
   relevels = list(),
   jrrIMax = 1,
-  omittedLevels = TRUE,
+  dropOmittedLevels = TRUE,
   defaultConditions = TRUE,
   recode = NULL,
   returnVarEstInputs = FALSE,
   estMethod = "OLS",
-  verbose = TRUE
+  verbose = TRUE,
+  omittedLevels = deprecated()
 )
 }
 \arguments{
 \item{formula}{a \ifelse{latex}{\code{Formula} package \code{Formula}}{\code{\link[Formula]{Formula}}} for the
 linear model. See \ifelse{latex}{\code{Formula}}{\code{\link[Formula]{Formula}}};
-left-hand side variables are separated with 
+left-hand side variables are separated with
 vertical pipes (\code{|}). See Examples.}
 
 \item{data}{an \code{edsurvey.data.frame} or an \code{edsurvey.data.frame.list}}
@@ -40,15 +41,15 @@ and then make the value for that list element equal to the value
 that should
 be the omitted group (the reference group).}
 
-\item{jrrIMax}{a numeric value; when using the jackknife variance estimation method, the default estimation option, \code{jrrIMax=1}, uses the 
-                  sampling variance from the first plausible value as the component for sampling variance estimation. The \eqn{V_{jrr}} 
+\item{jrrIMax}{a numeric value; when using the jackknife variance estimation method, the default estimation option, \code{jrrIMax=1}, uses the
+                  sampling variance from the first plausible value as the component for sampling variance estimation. The \eqn{V_{jrr}}
                   term (see
 \href{https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf}{\emph{Statistical Methods Used in EdSurvey}})
-                  can be estimated with any number of plausible values, and values larger than the number of 
-                  plausible values on the survey (including \code{Inf}) will result in all plausible values being used. 
+                  can be estimated with any number of plausible values, and values larger than the number of
+                  plausible values on the survey (including \code{Inf}) will result in all plausible values being used.
                   Higher values of \code{jrrIMax} lead to longer computing times and more accurate variance estimates.}
 
-\item{omittedLevels}{a logical value. When set to the default value of \code{TRUE}, drops
+\item{dropOmittedLevels}{a logical value. When set to the default value of \code{TRUE}, drops
 those levels of all factor variables that are specified
 in \code{edsurvey.data.frame}. Use \code{print} on an
 \code{edsurvey.data.frame} to see the omitted levels.}
@@ -70,6 +71,8 @@ computation of covariances between estimates.}
 Default is \code{OLS}; other option is \code{GLS}.}
 
 \item{verbose}{logical; indicates whether a detailed printout should display during execution}
+
+\item{omittedLevels}{this argument is deprecated. Use \code{dropOmittedLevels}}
 }
 \value{
 An \code{edsurvey.mvrlm} with elements:
@@ -107,15 +110,15 @@ Fits a multivariate linear model that uses weights and variance
 }
 \details{
 This function implements an estimator that correctly handles multiple left-hand
-side variables that are either numeric or plausible values, allows for survey 
+side variables that are either numeric or plausible values, allows for survey
 sampling weights, and estimates variances using the jackknife replication method.
 The vignette titled
 \href{https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf}{\emph{Statistical Methods Used in EdSurvey}}
-describes estimation of the reported statistics. 
+describes estimation of the reported statistics.
 
-The \bold{coefficients} are estimated using the sample weights according to the section 
+The \bold{coefficients} are estimated using the sample weights according to the section
 \dQuote{Estimation of Weighted Means When Plausible Values Are Not Present}
-or the section 
+or the section
 \dQuote{Estimation of Weighted Means When Plausible Values Are Present,}
 depending on if there are assessment variables or variables with plausible values in them.
 
@@ -124,7 +127,7 @@ the average R-squared using the sample weights for each set of plausible values.
 
 \subsection{Variance estimation of coefficients}{
   All variance estimation methods are shown in the vignette titled
-  \href{https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf}{\emph{Statistical Methods Used in EdSurvey}}.  
+  \href{https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf}{\emph{Statistical Methods Used in EdSurvey}}.
 
   When the predicted value does not have plausible values, the variance of the coefficients
   is estimated according to the section \dQuote{Estimation of Standard Errors

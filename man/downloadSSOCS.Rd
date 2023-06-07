@@ -7,14 +7,14 @@
 downloadSSOCS(years = c(2000, 2004, 2006, 2008, 2010, 2016, 2018))
 }
 \arguments{
-\item{years}{an integer vector of the study years to download. Valid years are as follows: 
+\item{years}{an integer vector of the study years to download. Valid years are as follows:
 2000, 2004, 2006, 2008, 2010, 2016, 2018 (see description).  The instructions are the same for each year, this is for reference only.}
 }
 \description{
 Provides instructions to download School Survey on Crime and Safety (SSOCS) data in SAS (*.sas7bdat) format
              for use with the \code{readSSOCS} function.
              The data originates from the SSOCS Data Products website at \href{https://nces.ed.gov/surveys/ssocs/data_products.asp}{nces.ed.gov}.
-             This function works for the following school year datasets: 2000 (1999--2000), 2004 (2003--2004), 2006 (2005--2006), 
+             This function works for the following school year datasets: 2000 (1999--2000), 2004 (2003--2004), 2006 (2005--2006),
              2008 (2007--2008), 2010 (2009--2010), 2016 (2015--2016), and 2018 (2017--2018).
 }
 \note{

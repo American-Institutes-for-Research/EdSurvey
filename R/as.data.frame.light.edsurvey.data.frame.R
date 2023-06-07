@@ -13,7 +13,7 @@ as.data.frame.light.edsurvey.data.frame <- function(x, ...) {
   atrs <- names(attributes(x))
   atrs <- atrs[!atrs %in% c("names", "row.names", "class")]
   # remove edsurvey-related attributes
-  for(z in atrs) {
+  for (z in atrs) {
     attr(res, z) <- NULL
   }
   class(res) <- "data.frame"

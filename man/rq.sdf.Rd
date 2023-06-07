@@ -12,10 +12,11 @@ rq.sdf(
   weightVar = NULL,
   relevels = list(),
   jrrIMax = 1,
-  omittedLevels = TRUE,
+  dropOmittedLevels = TRUE,
   defaultConditions = TRUE,
   recode = NULL,
   returnNumberOfPSU = FALSE,
+  omittedLevels = deprecated(),
   ...
 )
 }
@@ -41,16 +42,16 @@ for the \code{edsurvey.data.frame}.}
 
 \item{relevels}{a list. Used to change the contrasts from the
 default treatment contrasts to the treatment contrasts with a chosen omitted
-group (the reference group). The name of each element should be the variable name, and the value 
+group (the reference group). The name of each element should be the variable name, and the value
 should be the group to be omitted (the reference group).}
 
-\item{jrrIMax}{when using the jackknife variance estimation method, the default estimation option, \code{jrrIMax=1}, uses the 
-sampling variance from the first plausible value as the component for sampling variance estimation. The \eqn{V_{jrr}} 
-term can be estimated with any number of plausible values, and values larger than the number of 
-plausible values on the survey (including \code{Inf}) will result in all plausible values being used. 
+\item{jrrIMax}{when using the jackknife variance estimation method, the default estimation option, \code{jrrIMax=1}, uses the
+sampling variance from the first plausible value as the component for sampling variance estimation. The \eqn{V_{jrr}}
+term can be estimated with any number of plausible values, and values larger than the number of
+plausible values on the survey (including \code{Inf}) will result in all plausible values being used.
 Higher values of \code{jrrIMax} lead to longer computing times and more accurate variance estimates.}
 
-\item{omittedLevels}{a logical value. When set to the default value of \code{TRUE}, drops
+\item{dropOmittedLevels}{a logical value. When set to the default value of \code{TRUE}, drops
 those levels of all factor variables that are specified
 in an \code{edsurvey.data.frame}. Use \code{print} on an
 \code{edsurvey.data.frame} to see the omitted levels.}
@@ -61,11 +62,13 @@ to subset the data. Use \code{print} on an
 \code{edsurvey.data.frame} to see the default conditions.}
 
 \item{recode}{a list of lists to recode variables. Defaults to \code{NULL}. Can be set as
-\code{recode=}\code{list(}\code{var1} \code{=} \code{list(}\code{from=} 
+\code{recode=}\code{list(}\code{var1} \code{=} \code{list(}\code{from=}
 \code{c("a",} \code{"b",} \code{"c"),} \code{to=} \code{"d"))}.}
 
-\item{returnNumberOfPSU}{a logical value set to \code{TRUE} to return the number of 
+\item{returnNumberOfPSU}{a logical value set to \code{TRUE} to return the number of
 primary sampling units (PSUs)}
+
+\item{omittedLevels}{this argument is deprecated. Use \code{dropOmittedLevels}}
 
 \item{...}{additional parameters passed from \ifelse{latex}{\code{rq}}{\code{\link[quantreg]{rq}}}}
 }
@@ -92,18 +95,18 @@ An \code{edsurvey.rq} with the following elements:
 Fits a quantile regression model that uses weights and variance estimates appropriate for the data.
 }
 \details{
-The function computes an estimate on the \code{tau}-th conditional quantile function of the response, 
-given the covariates, as specified by the formula argument. Like \code{lm.sdf()}, the  
-function presumes a linear specification for the quantile regression model (i.e., that the 
+The function computes an estimate on the \code{tau}-th conditional quantile function of the response,
+given the covariates, as specified by the formula argument. Like \code{lm.sdf()}, the
+function presumes a linear specification for the quantile regression model (i.e., that the
 formula defines a model that is linear in parameters). Unlike \code{lm.sdf()}, the jackknife is the
 only applicable variance estimation method used by the function.
 
 For further details on quantile regression models and how they are implemented in R, see Koenker
 and Bassett (1978), Koenker (2005), and the vignette from the \code{quantreg} package---
-accessible by \code{vignette("rq",package="quantreg")}---on which this function is 
+accessible by \code{vignette("rq",package="quantreg")}---on which this function is
 built.
 
-For further details on how left-hand side variables, survey sampling weights, and estimated 
+For further details on how left-hand side variables, survey sampling weights, and estimated
 variances are correctly handled, see \code{\link{lm.sdf}} or the vignette titled
 \emph{\href{https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf}{Statistical Methods Used in EdSurvey}}.
 }
@@ -118,10 +121,10 @@ summary(rq1)
 }
 }
 \references{
-Binder, D. A. (1983). On the variances of asymptotically normal estimators from complex surveys. 
-\emph{International Statistical Review}, \emph{51}(3), 279--292. 
+Binder, D. A. (1983). On the variances of asymptotically normal estimators from complex surveys.
+\emph{International Statistical Review}, \emph{51}(3), 279--292.
 
-Johnson, E. G., & Rust, K. F. (1992). Population inferences and variance estimation for NAEP 
+Johnson, E. G., & Rust, K. F. (1992). Population inferences and variance estimation for NAEP
 data. \emph{Journal of Education Statistics}, \emph{17}(2), 175--190.
 
 Koenker, R. W., & Bassett, G. W. (1978). Regression quantiles, \emph{Econometrica, 46,} 33--50.

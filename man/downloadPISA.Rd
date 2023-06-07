@@ -21,12 +21,12 @@ be stored. Files are placed in a folder named PISA/[year].}
 
 \item{database}{a character vector to indicate which database to download from. For 2012,
 three databases are available (\code{INT} = International, \code{CBA} = Computer-Based Assessment, and
-\code{FIN} = Financial Literacy). For other years, only \code{INT} is available (for example, if PISA 
+\code{FIN} = Financial Literacy). For other years, only \code{INT} is available (for example, if PISA
 2015 financial literacy is to be downloaded, the database argument should be set to \code{INT}).
 Defaults to \code{INT}.}
 
 \item{cache}{a logical value set to process and cache the text (.txt) version of files.
-This takes a very long time but saves time for future uses of 
+This takes a very long time but saves time for future uses of
 the data. Default value is \code{FALSE}.}
 
 \item{verbose}{a logical value to either print or suppress status message output.
@@ -43,7 +43,7 @@ to download files from provided URLs. Some machines might require a different
 user agent in HTTP(S) requests. If the downloading gives an error or behaves
 unexpectedly (e.g., a zip file cannot be unzipped or a data file is
 significantly smaller than expected), users can toggle \code{HTTPUserAgent}
-options to find one that works for their machines. One common alternative option is 
+options to find one that works for their machines. One common alternative option is
 
 \code{options(HTTPUserAgent="Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0")}
 

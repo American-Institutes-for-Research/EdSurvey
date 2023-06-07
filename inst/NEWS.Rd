@@ -1,10 +1,10 @@
 \name{NEWS}
 \title{NEWS for EdSurvey}
 
-\section{Changes in version 3.1.9001}{
+\section{Changes in version 4.0.0}{
   \subsection{UPDATES}{
     \itemize{
-      \item added \code{attach}, \code{fortify}, \code{with}. this allows users to use, for example, \code{ggplot2} calls with an \code{edsurvey.data.frame}.
+      \item the argument \code{omittedLevels} has been deprecated and replaced with \code{dropOmittedLevels} for clarity.
       \item \code{mml.sdf} now allows users to select \code{composite=TRUE} for TIMSS after recoding the \code{testData} to indicate the test.
       \item \code{mml.sdf} now gives clearer warnings when there are no records with assessment data or no students with valid covariate data.
       \item when 2019 TIMSS data was used with \code{mml.sdf} only the digital items were included. EdSurvey reads in the eTIMSS data for eTIMSS countries and the paper data for countries that took only paper TIMSS. With this fix \code{mml.sdf} can be used in countries that used paper TIMSS in 2019.

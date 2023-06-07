@@ -7,10 +7,11 @@
 \title{EdSurvey Generalized Linear Models}
 \usage{
 glm.sdf(formula, family = binomial(link = "logit"), data,
-  weightVar = NULL, relevels = list(), 
+  weightVar = NULL, relevels = list(),
   varMethod=c("jackknife", "Taylor"), jrrIMax = 1,
-  omittedLevels = TRUE, defaultConditions = TRUE, recode = NULL,
-  returnNumberOfPSU=FALSE, returnVarEstInputs = FALSE)
+  dropOmittedLevels = TRUE, defaultConditions = TRUE, recode = NULL,
+  returnNumberOfPSU=FALSE, returnVarEstInputs = FALSE,
+  omittedLevels = deprecated())
 
 logit.sdf(
   formula,
@@ -42,13 +43,13 @@ probit.sdf(
 \arguments{
 \item{formula}{a \ifelse{latex}{\code{formula}}{\code{\link[stats]{formula}}} for the
 linear model. See \ifelse{latex}{\code{glm}}{\code{\link[stats]{glm}}}.
-For logit and probit, we recommend using the \code{I()} function 
+For logit and probit, we recommend using the \code{I()} function
 to define the level used for success. (See Examples.)}
 
 \item{family}{the \code{glm.sdf} function currently fits only the binomial
 outcome models, such as logit and probit, although other link
 functions are available for binomial models. See the \code{link}
-argument in the help for 
+argument in the help for
 \ifelse{latex}{\code{family}}{\code{\link[stats]{family}}}.}
 
 \item{data}{an \code{edsurvey.data.frame}}
@@ -60,23 +61,23 @@ for the \code{edsurvey.data.frame}.}
 
 \item{relevels}{a list; used to change the contrasts from the
 default treatment contrasts to the treatment contrasts with a chosen omitted
-group. The name of each element should be the variable name, and the value 
+group. The name of each element should be the variable name, and the value
 should be the group to be omitted.}
 
 \item{varMethod}{a character set to \dQuote{jackknife} or \dQuote{Taylor} that indicates the variance
 estimation method to be used. See Details.}
 
-\item{jrrIMax}{the \code{Vjrr} sampling variance term (see 
+\item{jrrIMax}{the \code{Vjrr} sampling variance term (see
 \href{https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf}{\emph{Statistical Methods Used in EdSurvey}})
                   can be estimated with
-                  any positive number of plausible values and is estimated on 
+                  any positive number of plausible values and is estimated on
                   the lower
                   of the number of available plausible values and \code{jrrIMax}. When
                   \code{jrrIMax} is set to \code{Inf}, all plausible values will be used.
                   Higher values of \code{jrrIMax} lead to longer computing times and more
                   accurate variance estimates.}
 
-\item{omittedLevels}{a logical value. When set to the default value of \code{TRUE}, drops
+\item{dropOmittedLevels}{a logical value. When set to the default value of \code{TRUE}, drops
 those levels of all factor variables that are specified
 in \code{edsurvey.data.frame}. Use \code{print} on an
 \code{edsurvey.data.frame} to see the omitted levels.}
@@ -89,7 +90,7 @@ to subset the data. Use \code{print} on an
 \item{recode}{a list of lists to recode variables. Defaults to \code{NULL}. Can be set as
 \code{recode=} \code{list(}\code{var1=} \code{list(from=} \code{c("a",} \code{"b",} \code{"c"),} \code{to=}\code{"d"))}.}
 
-\item{returnNumberOfPSU}{a logical value set to \code{TRUE} to return the number of 
+\item{returnNumberOfPSU}{a logical value set to \code{TRUE} to return the number of
 primary sampling units (PSUs)}
 
 \item{returnVarEstInputs}{a logical value set to \code{TRUE} to return the
@@ -97,6 +98,8 @@ inputs to the jackknife and imputation variance
 estimates, which allow for
 the computation
 of covariances between estimates.}
+
+\item{omittedLevels}{this argument is deprecated. Use \code{dropOmittedLevels}}
 }
 \value{
 An \code{edsurveyGlm} with the following elements:
@@ -132,12 +135,12 @@ variables that are logical, allows for survey sampling weights, and estimates
 variances using the jackknife replication or Taylor series.
 The vignette titled
 \href{https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf}{\emph{Statistical Methods Used in EdSurvey}}
-describes estimation of the reported statistics and how it depends on \code{varMethod}. 
+describes estimation of the reported statistics and how it depends on \code{varMethod}.
 
 The coefficients are estimated
 using the sample weights according to the section
 \dQuote{Estimation of Weighted Means When Plausible Values Are Not Present}
-or the section 
+or the section
 \dQuote{Estimation of Weighted Means When Plausible Values Are Present,}
 depending on if there are assessment variables or variables with plausible values
 in them.
@@ -152,7 +155,7 @@ its variance of that estimate.
 \code{logit.sdf} and \code{probit.sdf} are included for convenience only;
 they give the same results as a call to \code{glm.sdf} with the binomial family
 and the link function named in the function call (logit or probit).
-By default, \code{glm} fits a logistic regression when \code{family} is not set, 
+By default, \code{glm} fits a logistic regression when \code{family} is not set,
 so the two are expected to give the same results in that case.
 Other types of generalized linear models are not supported.
 

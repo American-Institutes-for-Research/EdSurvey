@@ -12,8 +12,8 @@ readHSB_Sophomore(
 )
 }
 \arguments{
-\item{HSO8092_PRI_FilePath}{a character value to the main study-derived 
-analytical data file (HSO8092_REV.PRI). 
+\item{HSO8092_PRI_FilePath}{a character value to the main study-derived
+analytical data file (HSO8092_REV.PRI).
 Located within the \code{REVISED_ASCII} folder.}
 
 \item{HSO8092_SASSyntax_Path}{a character value to the SAS syntax file for
@@ -34,7 +34,7 @@ an \code{edsurvey.data.frame} for the HS&B Sophomore 1980--1992 longitudinal dat
 }
 \description{
 Opens a connection to a High School & Beyond 1980--1992 Sophomore cohort data file and
-             returns an \code{edsurvey.data.frame} with 
+             returns an \code{edsurvey.data.frame} with
              information about the file and data.
 }
 \details{

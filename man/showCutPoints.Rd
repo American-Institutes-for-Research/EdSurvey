@@ -17,7 +17,7 @@ Each line names the subject and then shows the cut point for each achievement le
 \description{
 Retrieves a summary of the achievement level cutpoints for a
              selected study represented in an
-             \code{edsurvey.data.frame}, a \code{light.edsurvey.data.frame}, 
+             \code{edsurvey.data.frame}, a \code{light.edsurvey.data.frame},
              or an \code{edsurvey.data.frame.list}.
 }
 \examples{

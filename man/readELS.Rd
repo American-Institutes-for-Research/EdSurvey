@@ -31,7 +31,7 @@ this parameter because it will inspect the \code{filename}
 argument. For data files with no BRR weight file
 associated, specify a value of \code{NULL} or \code{NA}.}
 
-\item{forceReread}{a logical value to force rereading of all processed data. 
+\item{forceReread}{a logical value to force rereading of all processed data.
 The default value of \code{FALSE} will speed up the read
 function by using existing read-in data already processed.}
 
@@ -45,7 +45,7 @@ an \code{edsurvey.data.frame} for the ELS longitudinal dataset
 }
 \description{
 Opens a connection to an ELS data file and
-             returns an \code{edsurvey.data.frame} with 
+             returns an \code{edsurvey.data.frame} with
              information about the file and data.
 }
 \details{

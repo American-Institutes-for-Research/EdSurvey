@@ -14,7 +14,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">EdSurvey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,14 +68,15 @@
 <span>  jrrIMax <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  varMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"jackknife"</span>, <span class="st">"Taylor"</span><span class="op">)</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
-<span>  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  dropOmittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  recode <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  returnNumberOfPSU <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  pctMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"symmetric"</span>, <span class="st">"unbiased"</span>, <span class="st">"simple"</span><span class="op">)</span>,</span>
 <span>  confInt <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  dofMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"JR"</span>, <span class="st">"WS"</span><span class="op">)</span></span>
+<span>  dofMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"JR"</span>, <span class="st">"WS"</span><span class="op">)</span>,</span>
+<span>  omittedLevels <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -101,18 +102,18 @@ typically a subject scale or subscale</p></dd>
 
 
 <dt>jrrIMax</dt>
-<dd><p>a numeric value; when using the jackknife variance estimation method, the default estimation option, <code>jrrIMax=1</code>, uses the 
-                  sampling variance from the first plausible value as the component for sampling variance estimation. The \(V_{jrr}\) 
-                  term (see 
+<dd><p>a numeric value; when using the jackknife variance estimation method, the default estimation option, <code>jrrIMax=1</code>, uses the
+                  sampling variance from the first plausible value as the component for sampling variance estimation. The \(V_{jrr}\)
+                  term (see
 <a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link"><em>Statistical Methods Used in EdSurvey</em></a>)
-                  can be estimated with any number of plausible values, and values larger than the number of 
-                  plausible values on the survey (including <code>Inf</code>) will result in all plausible values being used. 
+                  can be estimated with any number of plausible values, and values larger than the number of
+                  plausible values on the survey (including <code>Inf</code>) will result in all plausible values being used.
                   Higher values of <code>jrrIMax</code> lead to longer computing times and more accurate variance estimates.</p></dd>
 
 
 <dt>varMethod</dt>
 <dd><p>a character set to <code>jackknife</code> or <code>Taylor</code>
-that indicates the variance estimation method used when 
+that indicates the variance estimation method used when
 constructing the confidence intervals. The jackknife
 variance estimation method is always
 used to calculate the standard error.</p></dd>
@@ -120,24 +121,24 @@ used to calculate the standard error.</p></dd>
 
 <dt>alpha</dt>
 <dd><p>a numeric value between 0 and 1 indicating the confidence level.
-An <code>alpha</code> value of 0.05 would indicate a 95% 
+An <code>alpha</code> value of 0.05 would indicate a 95%
 confidence interval and is the default.</p></dd>
 
 
-<dt>omittedLevels</dt>
+<dt>dropOmittedLevels</dt>
 <dd><p>a logical value. When set to the default value of
-<code>TRUE</code>, drops those levels of 
+<code>TRUE</code>, drops those levels of
 all factor variables that are specified in
-<code>achievementVars</code> and <code>aggregatBy</code>. 
+<code>achievementVars</code> and <code>aggregatBy</code>.
 Use <code>print</code> on an <code>edsurvey.data.frame</code>
 to see the omitted levels.</p></dd>
 
 
 <dt>defaultConditions</dt>
 <dd><p>a logical value. When set to the default value
-of <code>TRUE</code>, uses the default 
+of <code>TRUE</code>, uses the default
 conditions stored in an <code>edsurvey.data.frame</code>
-to subset the data. 
+to subset the data.
 Use <code>print</code> on an <code>edsurvey.data.frame</code>
 to see the default conditions.</p></dd>
 
@@ -158,7 +159,7 @@ of covariances between estimates.</p></dd>
 
 
 <dt>returnNumberOfPSU</dt>
-<dd><p>a logical value set to <code>TRUE</code> to return the number of 
+<dd><p>a logical value set to <code>TRUE</code> to return the number of
 primary sampling units (PSUs)</p></dd>
 
 
@@ -167,7 +168,7 @@ primary sampling units (PSUs)</p></dd>
 unbiased produces a weighted median unbiased percentile estimate,
 whereas simple uses a basic formula that matches previously
 published results. Symmetric uses a more basic formula
-but requires that the percentile is symetric to multiplying
+but requires that the percentile is symmetric to multiplying
 the quantity by negative one.</p></dd>
 
 
@@ -177,6 +178,10 @@ the quantity by negative one.</p></dd>
 
 <dt>dofMethod</dt>
 <dd><p>passed to <code><a href="DoFCorrection.html">DoFCorrection</a></code> as the <code>method</code> argument</p></dd>
+
+
+<dt>omittedLevels</dt>
+<dd><p>this argument is deprecated. Use <code>dropOmittedLevels</code></p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -311,7 +316,7 @@ because percentiles are not continuously differentiable.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Paul Bailey.</p>
+  <p></p><p>Developed by Paul Bailey, Ahmad Emad, Huade Huo, Michael Lee, Yuqi Liao, Alex Lishinsku, Trang Nguyen, Qingshu Xie, Jiao Yu, Ting Zhang, Eric Buehler, Sun-joo Lee, Blue Webb.</p>
 </div>
 
 <div class="pkgdown-footer-right">

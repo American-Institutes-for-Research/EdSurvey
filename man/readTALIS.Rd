@@ -45,7 +45,7 @@ Opens a connection to a TALIS data file and
 \details{
 Reads in the unzipped files downloaded from the TALIS database using the OECD Repository (\url{https://www.oecd.org/education/talis/}).
        If \code{dataLevel} is set to be \code{teacher}, it treats the teacher data file as the main dataset, and merges school data into teacher data for
-       each country automatically. Use this option if wanting to analyze just teacher variables, or both teacher and school level variables together. 
+       each country automatically. Use this option if wanting to analyze just teacher variables, or both teacher and school level variables together.
        If \code{dataLevel} is set \code{school}, it uses only the school data file (no teacher data will be available).
 }
 \examples{

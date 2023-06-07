@@ -14,7 +14,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">EdSurvey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,14 +79,14 @@
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>a matrix-like object like <code>matrix</code> or <code>data.frame</code>. Returns a <code>light.edsurvey.data.frame</code> if there is 
+<p>a matrix-like object like <code>matrix</code> or <code>data.frame</code>. Returns a <code>light.edsurvey.data.frame</code> if there is
          at least one <code>light.edsurvey.data.frame</code> in the list of arguments.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Because <code>cbind</code> and <code>rbind</code> are standard generic functions that do not use method dispatch, we set this function as generic,
-         which means it overwrites <code><a href="https://rdrr.io/r/base/cbind.html" class="external-link">base::cbind</a></code> and <code><a href="https://rdrr.io/r/base/cbind.html" class="external-link">base::rbind</a></code> on loading. If none of the specified elements are of class <code>light.edsurvey.data.frame</code>, 
-         the function will revert to the standard <code>base</code> method. However, to be safe, you might want to explicitly use <code><a href="https://rdrr.io/r/base/cbind.html" class="external-link">base::cbind</a></code> when needed after loading the package.</p>         
+         which means it overwrites <code><a href="https://rdrr.io/r/base/cbind.html" class="external-link">base::cbind</a></code> and <code><a href="https://rdrr.io/r/base/cbind.html" class="external-link">base::rbind</a></code> on loading. If none of the specified elements are of class <code>light.edsurvey.data.frame</code>,
+         the function will revert to the standard <code>base</code> method. However, to be safe, you might want to explicitly use <code><a href="https://rdrr.io/r/base/cbind.html" class="external-link">base::cbind</a></code> when needed after loading the package.</p>
 <p>The returned object will contain attributes only from the first <code>light.edsurvey.data.frame</code> object in the call to
          <code>cbind.light.edsurvey.data.frame</code>.</p>
     </div>
@@ -104,7 +104,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Paul Bailey.</p>
+  <p></p><p>Developed by Paul Bailey, Ahmad Emad, Huade Huo, Michael Lee, Yuqi Liao, Alex Lishinsku, Trang Nguyen, Qingshu Xie, Jiao Yu, Ting Zhang, Eric Buehler, Sun-joo Lee, Blue Webb.</p>
 </div>
 
 <div class="pkgdown-footer-right">

@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">EdSurvey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,54 +73,54 @@
 
 
 <dt>formula</dt>
-<dd><p>a formula of the form <code>LHS ~ RHS</code> to cast the <code>edsurveyTable</code> 
-results from long format to wide format. This formula takes the form 
-<code>LHS ~ RHS</code> (e.g., <code>var1 + var2 ~ var3</code>). 
+<dd><p>a formula of the form <code>LHS ~ RHS</code> to cast the <code>edsurveyTable</code>
+results from long format to wide format. This formula takes the form
+<code>LHS ~ RHS</code> (e.g., <code>var1 + var2 ~ var3</code>).
 The order of the entries in the formula is essential.</p></dd>
 
 
 <dt>caption</dt>
-<dd><p>character vector of length one or two containing the table's caption or title. 
-If the length is two, the second item is the “short caption” used when LaTeX generates 
-a <code>List of Tables</code>. 
+<dd><p>character vector of length one or two containing the table's caption or title.
+If the length is two, the second item is the “short caption” used when LaTeX generates
+a <code>List of Tables</code>.
 Set to <code>NULL</code> to suppress the caption. Default value is <code>NULL</code>.</p></dd>
 
 
 <dt>filename</dt>
 <dd><p>a character string containing filenames and paths. By default (<code>filename = ""</code>),
-table will be saved in the working directory (<code><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd()</a></code>). 
-Use <code>filename = "CONSOLE"</code> to 
+table will be saved in the working directory (<code><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd()</a></code>).
+Use <code>filename = "CONSOLE"</code> to
 print LaTeX code in R console without generating a PDF file.</p></dd>
 
 
 <dt>toCSV</dt>
 <dd><p>a character string containing filenames and paths of .csv table output.
-<code>""</code> indicates no .csv output. <code>toCSV</code> is 
+<code>""</code> indicates no .csv output. <code>toCSV</code> is
 independent to <code>filename</code>, so both
-a csv file and PDF file would be generated if both <code>filename</code> 
+a csv file and PDF file would be generated if both <code>filename</code>
 and <code>toCSV</code> were specified.</p></dd>
 
 
 <dt>returnMeans</dt>
-<dd><p>a logical value set to <code>TRUE</code> (the default) to generate a PDF with 
-the <code>MEAN</code> and <code>SE(MEAN)</code>. It is set to <code>FALSE</code> to generate a PDF with 
-the <code>PCT</code> and <code>SE(PCT)</code>. See Value 
+<dd><p>a logical value set to <code>TRUE</code> (the default) to generate a PDF with
+the <code>MEAN</code> and <code>SE(MEAN)</code>. It is set to <code>FALSE</code> to generate a PDF with
+the <code>PCT</code> and <code>SE(PCT)</code>. See Value
 in <code><a href="edsurveyTable.html">edsurveyTable</a></code>.</p></dd>
 
 
 <dt>estDigits</dt>
-<dd><p>an integer indicating the number of decimal places to be used for estimates. 
+<dd><p>an integer indicating the number of decimal places to be used for estimates.
 Negative values are allowed. See Details.</p></dd>
 
 
 <dt>seDigits</dt>
-<dd><p>an integer indicating the number of decimal places to be used for standard errors. 
+<dd><p>an integer indicating the number of decimal places to be used for standard errors.
 Negative values are allowed.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Rounding to a negative number of digits means rounding to a power of 10, 
+    <p>Rounding to a negative number of digits means rounding to a power of 10,
 so, for example, <code>estDigits = -2</code> rounds estimates to the nearest hundred.</p>
     </div>
     <div class="section level2">
@@ -169,7 +169,7 @@ so, for example, <code>estDigits = -2</code> rounds estimates to the nearest hun
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Paul Bailey.</p>
+  <p></p><p>Developed by Paul Bailey, Ahmad Emad, Huade Huo, Michael Lee, Yuqi Liao, Alex Lishinsku, Trang Nguyen, Qingshu Xie, Jiao Yu, Ting Zhang, Eric Buehler, Sun-joo Lee, Blue Webb.</p>
 </div>
 
 <div class="pkgdown-footer-right">

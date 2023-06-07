@@ -19,7 +19,7 @@ an \code{edsurvey.data.frame} for the BTLS waves 1 to 5 longitudinal dataset.
 }
 \description{
 Opens a connection to the Beginning Teacher Longitudinal Study (BTLS) waves 1 through 5 data file and
-             returns an \code{edsurvey.data.frame} with 
+             returns an \code{edsurvey.data.frame} with
              information about the file and data.
 }
 \details{

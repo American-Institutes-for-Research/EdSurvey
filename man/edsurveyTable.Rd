@@ -14,10 +14,11 @@ edsurveyTable(
   returnSepct = TRUE,
   varMethod = c("jackknife", "Taylor"),
   drop = FALSE,
-  omittedLevels = TRUE,
+  dropOmittedLevels = TRUE,
   defaultConditions = TRUE,
   recode = NULL,
-  returnVarEstInputs = FALSE
+  returnVarEstInputs = FALSE,
+  omittedLevels = deprecated()
 )
 }
 \arguments{
@@ -44,11 +45,11 @@ replicate weights will be automatically included.
 When this argument is \code{NULL}, the function uses the default.
 Use \code{\link{showWeights}} to find the default.}
 
-\item{jrrIMax}{a numeric value; when using the jackknife variance estimation method, the default estimation option, \code{jrrIMax=1}, uses the 
-  sampling variance from the first plausible value as the component for sampling variance estimation. The \eqn{V_{jrr}} 
+\item{jrrIMax}{a numeric value; when using the jackknife variance estimation method, the default estimation option, \code{jrrIMax=1}, uses the
+  sampling variance from the first plausible value as the component for sampling variance estimation. The \eqn{V_{jrr}}
   term (see the Details section of
-\code{\link{lm.sdf}} to see the definition of \eqn{V_{jrr}}) can be estimated with any number of plausible values, and values larger than the number of 
-  plausible values on the survey (including \code{Inf}) will result in all of the plausible values being used. 
+\code{\link{lm.sdf}} to see the definition of \eqn{V_{jrr}}) can be estimated with any number of plausible values, and values larger than the number of
+  plausible values on the survey (including \code{Inf}) will result in all of the plausible values being used.
   Higher values of \code{jrrIMax} lead to longer computing times and more accurate variance estimates.}
 
 \item{pctAggregationLevel}{the percentage variable sums up to 100 for the first
@@ -62,7 +63,7 @@ then the percentage
 adds up to 100 within the interaction of the
 first and second variable, and so on.
 Default is \code{NULL}, which will result in the
-lowest feasible aggregation level. 
+lowest feasible aggregation level.
 See Examples section.}
 
 \item{returnMeans}{a logical value; set to \code{TRUE} (the default) to get the \code{MEAN} and
@@ -76,7 +77,7 @@ to be used.}
 \item{drop}{a logical value. When set to the default value of \code{FALSE}, when a single column is returned, it is still represented as a \code{data.frame} and is
 not converted to a vector.}
 
-\item{omittedLevels}{a logical value. When set to the default value of \code{TRUE}, drops those levels of all factor variables that are specified
+\item{dropOmittedLevels}{a logical value. When set to the default value of \code{TRUE}, drops those levels of all factor variables that are specified
 in an \code{edsurvey.data.frame}. Use \code{print} on an \code{edsurvey.data.frame} to see the omitted levels.}
 
 \item{defaultConditions}{a logical value. When set to the default value of \code{TRUE}, uses the default conditions stored in an \code{edsurvey.data.frame}
@@ -90,6 +91,8 @@ inputs to the jackknife and imputation variance
 estimates, which allows for
 the computation
 of covariances between estimates.}
+
+\item{omittedLevels}{this argument is deprecated. Use \code{dropOmittedLevels}.}
 }
 \value{
 A table with the following columns:
@@ -118,16 +121,16 @@ A table with the following columns:
 in the section
 \dQuote{Estimation of Weighted Means When Plausible Values Are Present.}}
    \item{SE(MEAN)}{the standard error of the \code{MEAN} column (the mean assessment score for units in the \code{RHS levels}), calculated according to the vignette titled
-\href{https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf}{\emph{Statistical Methods Used in EdSurvey}}                      
+\href{https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf}{\emph{Statistical Methods Used in EdSurvey}}
 in the sections
 \dQuote{Estimation of Standard Errors of Weighted Means When Plausible Values Are Present, Using the Jackknife Method}
-or 
+or
 \dQuote{Estimation of Standard Errors of Weighted Means When Plausible Values Are Present, Using the Taylor Series Method,}
 depending on the value of \code{varMethod}.}
 
  When \code{returnVarEstInputs} is \code{TRUE}, two additional elements are
  returned. These are \code{meanVarEstInputs} and \code{pctVarEstInputs} and
- regard the \code{MEAN} and \code{PCT} columns, respectively. These two 
+ regard the \code{MEAN} and \code{PCT} columns, respectively. These two
  objects can be used for calculating covariances with
  \code{\link{varEstToCov}}.
 }
@@ -142,8 +145,8 @@ This method can be used to generate a simple one-way, two-way, or
 \emph{n}-way
 table with unweighted and weighted \emph{n} values and percentages. It also
 can calculate the average of the subject scale or subscale for students at
-each level of the cross-tabulation table. 
-      
+each level of the cross-tabulation table.
+
 A detailed description of all statistics is given in the vignette titled
 \href{https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf}{\emph{Statistical Methods Used in EdSurvey}}.
 }
@@ -180,7 +183,7 @@ edsurveyTable(composite ~ dsex + b017451 + b003501, data=sdf, varMethod="Taylor"
 }
 }
 \references{
-Binder, D. A. (1983). On the variances of asymptotically normal estimators from complex surveys. \emph{International Statistical Review}, \emph{51}(3), 279--292. 
+Binder, D. A. (1983). On the variances of asymptotically normal estimators from complex surveys. \emph{International Statistical Review}, \emph{51}(3), 279--292.
 
 Rubin, D. B. (1987). \emph{Multiple imputation for nonresponse in surveys}. New York, NY: Wiley.
 }

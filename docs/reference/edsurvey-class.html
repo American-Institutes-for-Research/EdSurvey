@@ -36,7 +36,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">EdSurvey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -379,11 +379,11 @@ and <code>stratumVar</code>.</p>
 <p>The <code>pvvars</code> list has an element for each subject or subscale score
 that has plausible values. Each element is a list with a <code>varnames</code>
 element that indicates the column names of the plausible values and an
-<code>achievementLevel</code> argument that is a named vector of the 
+<code>achievementLevel</code> argument that is a named vector of the
 achievement-level cutpoints.</p>
 <p>An <code>edsurvey.data.frame</code> implements a unique data caching mechanism that allows users to create and merge data columns for flexibility.
 This <code>cache</code> object is a single <code>data.frame</code> that is an element in the <code>edsurvey.data.frame</code>. To accommodate studies with complex data models
-the cache can only support one data level at this time. The <code>cacheDataLevelName</code> parameter indicates which named element in the <code>dataList</code> 
+the cache can only support one data level at this time. The <code>cacheDataLevelName</code> parameter indicates which named element in the <code>dataList</code>
 the cache is indicated. The default value <code>cacheDataLevelName = NULL</code> will set the first item in the <code>dataList</code> as the <code>cache</code> level for an <code>edsurvey.data.frame</code>.</p>
     </div>
     <div class="section level2">
@@ -424,7 +424,7 @@ a <code>light.edsurvey.data.frame</code>, and the
 <p>Users can extract a column from an <code>edsurvey.data.frame</code> object using <code>$</code> or <code>[]</code> like a normal data frame.</p>
 <p><em>Extracting and updating attributes of an object of class <code>edsurvey.data.frame</code> or <code>light.edsurvey.data.frame</code></em></p>
 <p>Users can use the <code>getAttributes</code> method to extract any attribute of
-an <code>edsurvey.data.frame</code> or a <code>light.edsurvey.data.frame</code>. 
+an <code>edsurvey.data.frame</code> or a <code>light.edsurvey.data.frame</code>.
 The <code>errorCheck</code> parameter has a default value of<code>TRUE</code>, which throws an error if an attribute is not found.
 Setting <code>errorCheck = FALSE</code> will suppress error checking, and return <code>NULL</code> if an attribute can't be found.</p>
 <p>A <code>light.edsurvey.data.frame</code> will not have attributes related to data connection
@@ -468,7 +468,7 @@ use the <code>setAttributes</code> method.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Paul Bailey.</p>
+  <p></p><p>Developed by Paul Bailey, Ahmad Emad, Huade Huo, Michael Lee, Yuqi Liao, Alex Lishinsku, Trang Nguyen, Qingshu Xie, Jiao Yu, Ting Zhang, Eric Buehler, Sun-joo Lee, Blue Webb.</p>
 </div>
 
 <div class="pkgdown-footer-right">

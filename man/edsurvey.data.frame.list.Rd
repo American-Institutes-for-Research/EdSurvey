@@ -28,10 +28,10 @@ guessed. See Examples.}
 
 \item{sdfB}{an \code{edsurvey.data.frame} or an \code{edsurvey.data.frame.list} to be combined}
 
-\item{labelsA}{a character vector that specifies \code{labels} for \code{sdfA} when creating 
+\item{labelsA}{a character vector that specifies \code{labels} for \code{sdfA} when creating
 the new \code{edsurvey.data.frame.list}.}
 
-\item{labelsB}{a character vector that specifies \code{labels} for \code{sdfB} when creating 
+\item{labelsB}{a character vector that specifies \code{labels} for \code{sdfB} when creating
 the new \code{edsurvey.data.frame.list}.}
 }
 \value{
@@ -66,7 +66,7 @@ The \code{edsurvey.data.frame.list} function creates an
              data, for example, across time or graphically, and reduces
              repetition in function calls.
              The user may specify a variable that varies across the
-             \code{edsurvey.data.frame} objects that is 
+             \code{edsurvey.data.frame} objects that is
              then included in further output.
 }
 \details{
@@ -78,7 +78,7 @@ organization of the results varying by the particular method.
 An \code{edsurvey.data.frame.list} can be created from several
 \code{edsurvey.data.frame} objects that are related;
 for example, all are NAEP mathematics assessments but have one or more
-differences (e.g.,  they are all from different years). 
+differences (e.g.,  they are all from different years).
 Another example could be data from multiple countries for an
 international assessment.
 

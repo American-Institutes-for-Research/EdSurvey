@@ -10,15 +10,15 @@ read_ePIRLS(path, countries, forceReread = FALSE, verbose = TRUE)
 \item{path}{a character value to the full directory path to the ePIRLS extracted SPSS (.sav) set of data}
 
 \item{countries}{a character vector of the country/countries to include using
-the three-digit ISO country code.  
+the three-digit ISO country code.
 A list of country codes can be found on Wikipedia at
 \url{https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes}
 or other online sources. Consult the \emph{ePIRLS User Guide} to help determine what countries
 are included within a specific testing year of ePIRLS.
 To select all countries, use a wildcard value of \strong{\code{*}}.}
 
-\item{forceReread}{a logical value to force rereading of all processed data. 
-The default value of \code{FALSE} will speed up the \code{read_ePIRLS} function by 
+\item{forceReread}{a logical value to force rereading of all processed data.
+The default value of \code{FALSE} will speed up the \code{read_ePIRLS} function by
 using existing read-in data already processed.}
 
 \item{verbose}{a logical value to either print or suppress status message output.
@@ -30,31 +30,31 @@ an \code{edsurvey.data.frame} for a single specified country or an
 }
 \description{
 Opens a connection to an ePIRLS data file and
-             returns an \code{edsurvey.data.frame} with 
+             returns an \code{edsurvey.data.frame} with
              information about the file and data.
 }
 \details{
 Reads in the unzipped files downloaded from the ePIRLS international
-database(s) using the \href{https://www.iea.nl/data-tools/repository}{IEA Study Data Repository}. 
+database(s) using the \href{https://www.iea.nl/data-tools/repository}{IEA Study Data Repository}.
 Data files require the SPSS data file (.sav) format using the default filenames.
 
-An ePIRLS \code{edsurvey.data.frame} includes three distinct data levels: 
+An ePIRLS \code{edsurvey.data.frame} includes three distinct data levels:
          \itemize{
               \item student
               \item school
               \item teacher
          }
-          
+
          When the \code{getData} function is called using an ePIRLS \code{edsurvey.data.frame},
-         the requested data variables are inspected, and it handles any necessary data merges automatically. 
+         the requested data variables are inspected, and it handles any necessary data merges automatically.
          The \code{school} data always will be returned merged to the \code{student}
          data, even if only \code{school} variables are requested.
          If \code{teacher} variables are requested by the \code{getData} call, it will cause \code{teacher} data to be merged.
          A \code{student} can be linked to many \code{teachers}, which varies widely between countries.
 
-Please note that calling the \code{dim} function for an ePIRLS \code{edsurvey.data.frame} will result in 
+Please note that calling the \code{dim} function for an ePIRLS \code{edsurvey.data.frame} will result in
          the row count as if the \code{teacher} dataset was merged.
-         This row count will be considered the \code{full data N} of the \code{edsurvey.data.frame}, even if no \code{teacher} data were included in an analysis.  
+         This row count will be considered the \code{full data N} of the \code{edsurvey.data.frame}, even if no \code{teacher} data were included in an analysis.
          The column count returned by \code{dim} will be the count of unique column variables across all three data levels.
 }
 \examples{

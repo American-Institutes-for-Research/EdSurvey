@@ -33,7 +33,7 @@ an \code{edsurvey.data.frame} for the HS&B Senior 1980--1986 longitudinal datase
 }
 \description{
 Opens a connection to a High School & Beyond 1980--1986 Senior cohort data file and
-             returns an \code{edsurvey.data.frame} with 
+             returns an \code{edsurvey.data.frame} with
              information about the file and data.
 }
 \details{
@@ -41,8 +41,8 @@ Reads in the specified \code{HSR8086_SASSyntax_Path} file to parse
 the \code{HSR8086_PRI_FilePath} file.
 A cached data file and metadata file will be saved in the same
 directory and filename as the \code{HSR8086_PRI_FilePath} file,
-having new file extensions of .txt and .meta, respectively.  
-         
+having new file extensions of .txt and .meta, respectively.
+
 Please note the original source \code{repcode} variable has been split
 into two variables named \code{repcode_str} for the stratum value
 and \code{repcode_psu} for the primary sampling unit (PSU) value in the resulting

@@ -11,13 +11,13 @@
 \item{x}{an \code{edsurvey.data.frame} or an \code{edsurvey.data.frame.list}}
 }
 \value{
-For an \code{edsurvey.data.frame}, returns a 
+For an \code{edsurvey.data.frame}, returns a
         numeric vector of length two, with the first element being the number
         of rows and the second element being the number of columns.
-        
-        For an \code{edsurvey.data.frame.list}, returns a list of length 
-        two, where the first element is named \code{nrow} and is a 
-        numeric vector containing the number of rows for each element of the 
+
+        For an \code{edsurvey.data.frame.list}, returns a list of length
+        two, where the first element is named \code{nrow} and is a
+        numeric vector containing the number of rows for each element of the
         \code{edsurvey.data.frame.list}. The second element is named
         \code{ncol} and is the number of columns for each element.
         This is done so that the \code{nrow} and \code{ncol} functions

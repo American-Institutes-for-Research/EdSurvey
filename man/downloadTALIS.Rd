@@ -14,7 +14,7 @@ subdirectory named TALIS/[year].}
 \item{years}{a numeric value indicating the assessment year. Available years are 2008, 2013, and 2018.}
 
 \item{cache}{a logical value set to process and cache the text (.txt) version of files.
-This takes a very long time but saves time for future uses of 
+This takes a very long time but saves time for future uses of
 the data. Default value is \code{FALSE}.}
 
 \item{verbose}{a logical value to either print or suppress status message output.

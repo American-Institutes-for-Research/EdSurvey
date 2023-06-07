@@ -2,7 +2,7 @@
 #'
 #' @description Retrieves a summary of the achievement level cutpoints for a
 #'              selected study represented in an
-#'              \code{edsurvey.data.frame}, a \code{light.edsurvey.data.frame}, 
+#'              \code{edsurvey.data.frame}, a \code{light.edsurvey.data.frame},
 #'              or an \code{edsurvey.data.frame.list}.
 #'
 #' @param data an \code{edsurvey.data.frame}, a \code{light.edsurvey.data.frame}, or
@@ -21,12 +21,12 @@ showCutPoints <- function(data) {
   }
 
   checkDataClass(data, c("edsurvey.data.frame", "light.edsurvey.data.frame"))
-  
+
   cat(paste0("Achievement Levels:\n"))
   als <- getAttributes(data, "achievementLevels")
   if (length(als) > 0) {
-    for(i in 1:length(als)) {
-      cat(paste0("  ", names(als)[i], ":  ", paste(unname(als[[i]]), collapse=", "), "\n"))
+    for (i in 1:length(als)) {
+      cat(paste0("  ", names(als)[i], ":  ", paste(unname(als[[i]]), collapse = ", "), "\n"))
     }
   } else {
     # paste a statement if there are no achievement levels in the sdf

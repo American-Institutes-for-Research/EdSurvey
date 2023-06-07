@@ -2,16 +2,16 @@
 #' @importFrom utils find
 #' @method subset edsurvey.data.frame.list
 #' @export
-subset.edsurvey.data.frame.list <- function(x, subset, inside=FALSE, drop = FALSE, ...) {
+subset.edsurvey.data.frame.list <- function(x, subset, inside = FALSE, drop = FALSE, ...) {
   checkDataClass(x, c("edsurvey.data.frame.list"))
 
-  if(!inherits(x, c("edsurvey.data.frame.list"))) {
-    stop(paste0("The argument ",sQuote("x"), " must be an ", dQuote("edsurvey.data.frame.list"), "."))
+  if (!inherits(x, c("edsurvey.data.frame.list"))) {
+    stop(paste0("The argument ", sQuote("x"), " must be an ", dQuote("edsurvey.data.frame.list"), "."))
   }
 
-  if(inside) {
-    if(inherits(subset, "character")) {
-      subset <- parse(text=subset)[[1]]
+  if (inside) {
+    if (inherits(subset, "character")) {
+      subset <- parse(text = subset)[[1]]
     }
     subset_call <- subset
   } else {
@@ -25,8 +25,8 @@ subset.edsurvey.data.frame.list <- function(x, subset, inside=FALSE, drop = FALS
 
     # parse the subset
     # substitute in variables that are available in the current environment
-    subset_call <- iparse(substitute(subset), x=x)
-  } # Enf of if esle statmet: if inside is true 
+    subset_call <- iparse(substitute(subset), x = x)
+  } # Enf of if esle statmet: if inside is true
 
   res <- x
   subsetVars <- all.vars(subset_call)
@@ -35,30 +35,33 @@ subset.edsurvey.data.frame.list <- function(x, subset, inside=FALSE, drop = FALS
     # check whether the variable exists the edsurvey.data.frame
     for (dataList_v in subsetVars) {
       if (!dataList_v %in% colnames(dataList_li)) {
-        warning(paste0("Variable ", sQuote(dataList_v), "is not found in the data ",sQuote(x$covs[dataListi,]),"."))
+        warning(paste0("Variable ", sQuote(dataList_v), "is not found in the data ", sQuote(x$covs[dataListi, ]), "."))
         return(NULL)
       }
     }
     dataList_li[["userConditions"]] <- c(dataList_li[["userConditions"]], list(subset_call))
     dataList_li
   })
-  
+
   # Remove NULL element
   if (drop) {
-    index_removed <- which(sapply(res$datalist,
-                                  function(i) {
-                                    return(is.null(i) || nrow(i) == 0) }))
+    index_removed <- which(sapply(
+      res$datalist,
+      function(i) {
+        return(is.null(i) || nrow(i) == 0)
+      }
+    ))
   } else {
     index_removed <- which(sapply(res$datalist, is.null))
   }
- 
- 
+
+
   if (length(index_removed) > 0) {
     res$datalist[index_removed] <- NULL
-    res$covs <- res$covs[-index_removed,names(res$covs),drop=FALSE]
+    res$covs <- res$covs[-index_removed, names(res$covs), drop = FALSE]
     row.names(res$covs) <- NULL
   }
-  
+
   # if there is no element left
   if (length(res$datalist) == 0) {
     res <- NULL

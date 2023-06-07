@@ -9,7 +9,7 @@ downloadNHES(
 )
 }
 \arguments{
-\item{years}{an integer vector of the assessment years. Valid years are 
+\item{years}{an integer vector of the assessment years. Valid years are
 1991, 1993, 1995, 1996, 1999, 2001, 2003, 2005, 2007, 2012, 2016, and 2019.
 The instructions are the same for each year, this is used as reference only.}
 }
@@ -17,7 +17,7 @@ The instructions are the same for each year, this is used as reference only.}
 Provides instructions to download the public-use National Household Education Survey (NHES) data in SPSS (*.sav) format
              for use with the \code{readNHES} function.
              The data originates from the \href{https://nces.ed.gov/OnlineCodebook}{NCES Online Codebook} zip files.
-             This function works for data from the years 
+             This function works for data from the years
              1991, 1993, 1995, 1996, 1999, 2001, 2003, 2005, 2007, 2012, 2016, and 2019.
 }
 \note{

@@ -31,7 +31,7 @@ Parses an SPSS Syntax Script (.sps) file to return information relating to fixed
 }
 \details{
 NOT CURRENTLY EXPORTED!  In Future this could potentially be made to a separate R package
-THIS parseScript_SPSS function should be used 100% moving forward. 
+THIS parseScript_SPSS function should be used 100% moving forward.
 Old/Previous SPSS script parsers should be slowly transitioned to utilize this function when possible to maximize code use.
 
 The SPSS syntax script parser is focused on gathering details for use with fixed-width data files.  This function scans for the following SPSS commands:
@@ -57,11 +57,11 @@ The \code{outputFormat} specified will determine the result object returned.  Th
                The RecordNumber indicates which line the variable is assigned.}
                \item{Labels - The descriptive label associated with the variable name to give more detail or context.}
                \item{labelValues - For categorical variables a stored value will typically be assigned a longer label/definition. This string identifies these mappings.
-               The '^' symbol is used to delimit each individual label value. Then additionally, the '=' is used to split the value from the left side of the '=' symbol, 
+               The '^' symbol is used to delimit each individual label value. Then additionally, the '=' is used to split the value from the left side of the '=' symbol,
                and the remaining right-hand side of '=' is the text label for that value.}
                \item{dataType - A best-guess of the data type (either 'numeric' or 'character') without actually examining the data-file.}
                \item{missingValues - If a MISSING VALUE clause is included in the script this will list the values that are considered 'Missing'.
-               If multiple values specified, they will be delimited by a ';' (semi-colon) symbol.} 
+               If multiple values specified, they will be delimited by a ';' (semi-colon) symbol.}
           }
 }
 }

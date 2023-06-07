@@ -23,7 +23,7 @@ mixed.sdf(
 }
 \arguments{
 \item{formula}{a \ifelse{latex}{\code{formula}}{\code{\link[stats]{formula}}}
-for the multilevel regression or mixed model. See Examples and the vignette titled 
+for the multilevel regression or mixed model. See Examples and the vignette titled
 \emph{\href{https://www.air.org/sites/default/files/EdSurvey-Mixed_Models.pdf}{Methods Used for Estimating Mixed-Effects Models in EdSurvey}}
 for more details on how to specify a mixed model. If \emph{y} is
 left blank, the default subject scale or subscale variable
@@ -45,14 +45,14 @@ should standardize weights before using it in the
 multilevel model. If set to \code{TRUE}, the
 function will look up standard weight
 transformation methods often used for a specific
-survey. Weight transformation can be found in the vignette titled 
+survey. Weight transformation can be found in the vignette titled
 \emph{\href{https://www.air.org/sites/default/files/EdSurvey-Mixed_Models.pdf}{Methods Used for Estimating Mixed-Effects Models in EdSurvey}}.
 If set to \code{FALSE} or if the survey of the specified \code{data} does
 not have a standard weight transformation method,
 raw weights will be used.}
 
 \item{recode}{a list of lists to recode variables. Defaults to \code{NULL}. Can be set as
-\code{recode=}\code{list(}\code{var1} \code{=} \code{list(}\code{from=} \code{c("a",} \code{"b",} \code{"c"),} \code{to=} \code{"d"))}. 
+\code{recode=}\code{list(}\code{var1} \code{=} \code{list(}\code{from=} \code{c("a",} \code{"b",} \code{"c"),} \code{to=} \code{"d"))}.
 See Examples in \ifelse{latex}{\code{lm.sdf}}{\code{\link{lm.sdf}}}.}
 
 \item{defaultConditions}{a logical value. When set to the default value of
@@ -70,18 +70,18 @@ the brief progress of the function \code{mix.sdf}.
 Users can use these traced messages for further diagnosis.
 When set to \code{2}, it will print
 out the detailed progress, including temporary estimates
-   during the optimization. Defaults to \code{0}, which 
+   during the optimization. Defaults to \code{0}, which
    will run the function without output.}
 
 \item{family}{this argument is depreciated; please use the \code{WeMix}
 package's \code{mix} function directly for binomial models.}
 
-\item{centerGroup}{a list in which the name of each element is the name of the aggregation level, 
+\item{centerGroup}{a list in which the name of each element is the name of the aggregation level,
 and the element is a formula of variable names to be group mean centered. For example, to group mean center
- gender and age within the group student: \code{list("student"= ~gender+age)}. Defaults to \code{NULL}, which means 
+ gender and age within the group student: \code{list("student"= ~gender+age)}. Defaults to \code{NULL}, which means
  predictors are not adjusted by group centering. See Examples in the \code{WeMix} function \ifelse{latex}{\code{mix}}{\code{\link[WeMix]{mix}}}.}
 
-\item{centerGrand}{a formula of variable names to be grand mean centered. For example, to center the 
+\item{centerGrand}{a formula of variable names to be grand mean centered. For example, to center the
 variable education by overall mean of education: \code{~education}. Defaults to \code{NULL}, which means predictors
 are not adjusted by grand centering.}
 
@@ -104,7 +104,7 @@ A \code{mixedSdfResults} object with the following elements:
    \item{nused}{the number of observations used in the analysis}
    \item{model.frame}{the data used in the model}
 If the formula does not involve plausible values, the function will return the following additional elements:
-   \item{lnlf}{the likelihood function } 
+   \item{lnlf}{the likelihood function }
    \item{lnl}{the log-likelihood of the model }
 If the formula involves plausible values, the function will return the following additional elements:
    \item{Vimp}{the estimated variance from uncertainty in the scores}
@@ -149,7 +149,7 @@ summary(mix2)
 }
 }
 \references{
-Rabe-Hesketh, S., & Skrondal, A. (2006). Multilevel modelling of complex
+Rabe-Hesketh, S., & Skrondal, A. (2006). Multilevel modeling of complex
 survey data. \emph{Journal of the Royal Statistical Society: Series A
 (Statistics in Society), 169}(4), 805--827.
 }

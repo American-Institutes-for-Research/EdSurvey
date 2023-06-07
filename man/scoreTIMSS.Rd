@@ -22,7 +22,7 @@ scored \code{edf}
 Scoring TIMSS data
 }
 \details{
-This function scores TIMSS data. 
+This function scores TIMSS data.
 For multiple choice items, correct answers are assigned 1 point, and incorrect answers are assigned 0 points.
 For constructed response items, correct answers are assigned 2 points, partially correct answers are assigned 1 point,
 and incorrect answers are assigned 0 points. For both types of items, "NOT REACHED" and "OMITTED OR INVALID" are assigned 0 points.

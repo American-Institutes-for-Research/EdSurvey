@@ -2,7 +2,7 @@
 #'
 #' @description Prints a summary of the weights in an \code{edsurvey.data.frame}, a \code{light.edsurvey.data.frame}, or an \code{edsurvey.data.frame.list}.
 #'
-#' @param data an \code{edsurvey.data.frame}, a \code{light.edsurvey.data.frame}, or 
+#' @param data an \code{edsurvey.data.frame}, a \code{light.edsurvey.data.frame}, or
 #'         an \code{edsurvey.data.frame.list}
 #' @param verbose a logical value; set to TRUE to print the complete list of jackknife
 #'                replicate weights associated with each full sample weight;
@@ -13,7 +13,7 @@
 #' @export
 showWeights <- function(data, verbose = FALSE) {
   if (inherits(data, c("edsurvey.data.frame.list"))) {
-    itterateESDFL(match.call(),data)
+    itterateESDFL(match.call(), data)
     return(invisible(NULL))
   }
   checkDataClass(data, c("edsurvey.data.frame", "light.edsurvey.data.frame", "edsurvey.data.frame.list"))
@@ -22,7 +22,7 @@ showWeights <- function(data, verbose = FALSE) {
   wgtNames <- names(weights)
   helper <- ifelse(length(wgtNames) == 1, "is", "are")
   s <- ifelse(length(wgtNames) == 1, "", "s")
-  eout(paste0("There ", helper," ", length(wgtNames), " full sample weight",s," in this edsurvey.data.frame:\n"))
+  eout(paste0("There ", helper, " ", length(wgtNames), " full sample weight", s, " in this edsurvey.data.frame:\n"))
   for (i in 1:length(wgtNames)) {
     wgti <- weights[[i]]
     txt <- paste0(sQuote(names(weights)[i]), " with ", length(wgti$jksuffixes), " JK replicate weights")
@@ -32,16 +32,16 @@ showWeights <- function(data, verbose = FALSE) {
     } else {
       txt <- paste0(txt, ".")
     } # End of if/esle statment: if attributes(weights)$default == wgtNames[i]
-    eout(txt, indent=2, exdent=2)
+    eout(txt, indent = 2, exdent = 2)
 
     if (verbose) {
       # if verbose = TRUE, return the jackknife replicate weights using the default weight
-      eout(paste0("Jackknife replicate weight variables associated with the full sample weight ",sQuote(names(weights)[i]),":\n"), indent=4, exdent=4)
+      eout(paste0("Jackknife replicate weight variables associated with the full sample weight ", sQuote(names(weights)[i]), ":\n"), indent = 4, exdent = 4)
       jki <- getWeightJkReplicates(wgtNames[i], data)
-      eout(pasteItems(sQuote(jki)), indent=4, exdent=4)
-    } # end of if statment: if verbrose 
+      eout(pasteItems(sQuote(jki)), indent = 4, exdent = 4)
+    } # end of if statment: if verbrose
     cat("\n")
-  } #End of For loop: for i in 1:length(wgtNames)
+  } # End of For loop: for i in 1:length(wgtNames)
 }
 
 
@@ -64,7 +64,7 @@ showWeights <- function(data, verbose = FALSE) {
 #' @export
 isWeight <- function(var, data) {
   if (inherits(data, c("edsurvey.data.frame.list"))) {
-    return(itterateESDFL(match.call(),data))
+    return(itterateESDFL(match.call(), data))
   }
   checkDataClass(data, c("edsurvey.data.frame", "light.edsurvey.data.frame", "edsurvey.data.frame.list"))
 
@@ -91,11 +91,11 @@ isWeight <- function(var, data) {
 #' @export
 getWeightJkReplicates <- function(var, data) {
   if (inherits(data, c("edsurvey.data.frame.list"))) {
-    return(itterateESDFL(match.call(),data))
+    return(itterateESDFL(match.call(), data))
   }
   checkDataClass(data, c("edsurvey.data.frame", "light.edsurvey.data.frame", "edsurvey.data.frame.list"))
-  
-  if(!isWeight(var, data)) {
+
+  if (!isWeight(var, data)) {
     stop("The ", sQuote("var"), " argument level of ", dQuote(var), " is not a weight.")
   }
 

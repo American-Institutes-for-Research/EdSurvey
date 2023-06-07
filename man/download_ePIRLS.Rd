@@ -14,14 +14,14 @@ subdirectory named ePIRLS/[year].}
 \item{years}{an integer vector of the assessment years to download. Valid year is 2016 only.}
 
 \item{cache}{a logical value set to process and cache the text (.txt) version of files.
-This takes a very long time but saves time for future uses of 
+This takes a very long time but saves time for future uses of
 the data. Default value is \code{FALSE}.}
 
 \item{verbose}{a logical value to either print or suppress status message output.
 The default value is \code{TRUE}.}
 }
 \description{
-Uses an Internet connection to download ePIRLS data. 
+Uses an Internet connection to download ePIRLS data.
              Data come from \href{https://timssandpirls.bc.edu/}{timssandpirls.bc.edu} zip files. This
              function works for 2016 data.
 }

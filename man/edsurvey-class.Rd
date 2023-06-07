@@ -195,12 +195,12 @@ and \code{stratumVar}.
 The \code{pvvars} list has an element for each subject or subscale score
 that has plausible values. Each element is a list with a \code{varnames}
 element that indicates the column names of the plausible values and an
-\code{achievementLevel} argument that is a named vector of the 
+\code{achievementLevel} argument that is a named vector of the
 achievement-level cutpoints.
 
 An \code{edsurvey.data.frame} implements a unique data caching mechanism that allows users to create and merge data columns for flexibility.
 This \code{cache} object is a single \code{data.frame} that is an element in the \code{edsurvey.data.frame}. To accommodate studies with complex data models
-the cache can only support one data level at this time. The \code{cacheDataLevelName} parameter indicates which named element in the \code{dataList} 
+the cache can only support one data level at this time. The \code{cacheDataLevelName} parameter indicates which named element in the \code{dataList}
 the cache is indicated. The default value \code{cacheDataLevelName = NULL} will set the first item in the \code{dataList} as the \code{cache} level for an \code{edsurvey.data.frame}.
 }
 \section{EdSurvey Classes}{
@@ -245,7 +245,7 @@ Users can extract a column from an \code{edsurvey.data.frame} object using \code
 \emph{Extracting and updating attributes of an object of class \code{edsurvey.data.frame} or \code{light.edsurvey.data.frame}}
 
 Users can use the \code{getAttributes} method to extract any attribute of
-an \code{edsurvey.data.frame} or a \code{light.edsurvey.data.frame}. 
+an \code{edsurvey.data.frame} or a \code{light.edsurvey.data.frame}.
 The \code{errorCheck} parameter has a default value of\code{TRUE}, which throws an error if an attribute is not found.
 Setting \code{errorCheck = FALSE} will suppress error checking, and return \code{NULL} if an attribute can't be found.
 

@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">EdSurvey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,7 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>formula</dt>
 <dd><p>a <code><a href="https://rdrr.io/r/stats/formula.html" class="external-link">formula</a></code>
-for the multilevel regression or mixed model. See Examples and the vignette titled 
+for the multilevel regression or mixed model. See Examples and the vignette titled
 <em><a href="https://www.air.org/sites/default/files/EdSurvey-Mixed_Models.pdf" class="external-link">Methods Used for Estimating Mixed-Effects Models in EdSurvey</a></em>
 for more details on how to specify a mixed model. If <em>y</em> is
 left blank, the default subject scale or subscale variable
@@ -104,7 +104,7 @@ should standardize weights before using it in the
 multilevel model. If set to <code>TRUE</code>, the
 function will look up standard weight
 transformation methods often used for a specific
-survey. Weight transformation can be found in the vignette titled 
+survey. Weight transformation can be found in the vignette titled
 <em><a href="https://www.air.org/sites/default/files/EdSurvey-Mixed_Models.pdf" class="external-link">Methods Used for Estimating Mixed-Effects Models in EdSurvey</a></em>.
 If set to <code>FALSE</code> or if the survey of the specified <code>data</code> does
 not have a standard weight transformation method,
@@ -113,7 +113,7 @@ raw weights will be used.</p></dd>
 
 <dt>recode</dt>
 <dd><p>a list of lists to recode variables. Defaults to <code>NULL</code>. Can be set as
-<code>recode=</code><code>list(</code><code>var1</code> <code>=</code> <code>list(</code><code>from=</code> <code>c("a",</code> <code>"b",</code> <code>"c"),</code> <code>to=</code> <code>"d"))</code>. 
+<code>recode=</code><code>list(</code><code>var1</code> <code>=</code> <code>list(</code><code>from=</code> <code>c("a",</code> <code>"b",</code> <code>"c"),</code> <code>to=</code> <code>"d"))</code>.
 See Examples in <code><a href="lm.sdf.html">lm.sdf</a></code>.</p></dd>
 
 
@@ -139,7 +139,7 @@ the brief progress of the function <code>mix.sdf</code>.
 Users can use these traced messages for further diagnosis.
 When set to <code>2</code>, it will print
 out the detailed progress, including temporary estimates
-   during the optimization. Defaults to <code>0</code>, which 
+   during the optimization. Defaults to <code>0</code>, which
    will run the function without output.</p></dd>
 
 
@@ -149,14 +149,14 @@ package's <code>mix</code> function directly for binomial models.</p></dd>
 
 
 <dt>centerGroup</dt>
-<dd><p>a list in which the name of each element is the name of the aggregation level, 
+<dd><p>a list in which the name of each element is the name of the aggregation level,
 and the element is a formula of variable names to be group mean centered. For example, to group mean center
- gender and age within the group student: <code>list("student"= ~gender+age)</code>. Defaults to <code>NULL</code>, which means 
+ gender and age within the group student: <code>list("student"= ~gender+age)</code>. Defaults to <code>NULL</code>, which means
  predictors are not adjusted by group centering. See Examples in the <code>WeMix</code> function <code><a href="https://american-institutes-for-research.github.io/WeMix/reference/mix.html" class="external-link">mix</a></code>.</p></dd>
 
 
 <dt>centerGrand</dt>
-<dd><p>a formula of variable names to be grand mean centered. For example, to center the 
+<dd><p>a formula of variable names to be grand mean centered. For example, to center the
 variable education by overall mean of education: <code>~education</code>. Defaults to <code>NULL</code>, which means predictors
 are not adjusted by grand centering.</p></dd>
 
@@ -213,7 +213,7 @@ are not adjusted by grand centering.</p></dd>
 </dl><p>If the formula does not involve plausible values, the function will return the following additional elements:</p>
 <dl><dt>lnlf</dt>
 <dd><p>the likelihood function</p></dd>
- 
+
    <dt>lnl</dt>
 <dd><p>the log-likelihood of the model</p></dd>
 
@@ -247,7 +247,7 @@ the regression coefficients.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>Rabe-Hesketh, S., &amp; Skrondal, A. (2006). Multilevel modelling of complex
+    <p>Rabe-Hesketh, S., &amp; Skrondal, A. (2006). Multilevel modeling of complex
 survey data. <em>Journal of the Royal Statistical Society: Series A
 (Statistics in Society), 169</em>(4), 805--827.</p>
     </div>
@@ -282,7 +282,7 @@ survey data. <em>Journal of the Royal Statistical Society: Series A
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Paul Bailey.</p>
+  <p></p><p>Developed by Paul Bailey, Ahmad Emad, Huade Huo, Michael Lee, Yuqi Liao, Alex Lishinsku, Trang Nguyen, Qingshu Xie, Jiao Yu, Ting Zhang, Eric Buehler, Sun-joo Lee, Blue Webb.</p>
 </div>
 
 <div class="pkgdown-footer-right">

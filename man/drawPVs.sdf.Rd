@@ -15,7 +15,7 @@
 )
 }
 \arguments{
-\item{x}{a fit from a call to \code{\link{mml.sdf}}, or a \code{summary.mml.sdf}, which is a  \code{summary} of 
+\item{x}{a fit from a call to \code{\link{mml.sdf}}, or a \code{summary.mml.sdf}, which is a  \code{summary} of
 \code{mml.sdf} call.}
 
 \item{npv}{integer indicating the number of plausible values to draw}

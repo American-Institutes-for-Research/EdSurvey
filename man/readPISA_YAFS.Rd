@@ -23,12 +23,12 @@ parameter, then the resulting dataset will return an \code{edsurvey.data.frame} 
 }
 \description{
 Opens a connection to the Programme for International Student Assessment (PISA) YAFS 2016 data file and
-             returns an \code{edsurvey.data.frame} with 
+             returns an \code{edsurvey.data.frame} with
              information about the file and data.
 }
 \details{
 Reads in the unzipped files for the PISA YAFS.  The PISA YAFS dataset is a follow-up study of a subset of the students who
-participated in the PISA 2012 USA study.  It can be analyzed on its own as a singular dataset or optionally merged with the PISA 2012 USA data, 
+participated in the PISA 2012 USA study.  It can be analyzed on its own as a singular dataset or optionally merged with the PISA 2012 USA data,
 in which case there will be two sets of weights in the merged dataset (the default PISA YAFS weights and the PISA 2012 USA weights).
 }
 \examples{

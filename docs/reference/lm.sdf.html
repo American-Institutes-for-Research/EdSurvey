@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">EdSurvey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,9 +56,10 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">lm.sdf</span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, weightVar <span class="op">=</span> <span class="cn">NULL</span>, relevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>              varMethod <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"jackknife"</span>, <span class="st">"Taylor"</span><span class="op">)</span>, jrrIMax <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>              omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>, defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>, recode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>              dropOmittedLevels <span class="op">=</span> <span class="cn">TRUE</span>, defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>, recode <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>              returnVarEstInputs <span class="op">=</span> <span class="cn">FALSE</span>, returnNumberOfPSU <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>              standardizeWithSamplingVar <span class="op">=</span> <span class="cn">FALSE</span>, verbose<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span>              standardizeWithSamplingVar <span class="op">=</span> <span class="cn">FALSE</span>, verbose<span class="op">=</span><span class="cn">TRUE</span>,</span>
+<span>              omittedLevels <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -89,7 +90,7 @@ for the <code>edsurvey.data.frame</code>.</p></dd>
 <dt>relevels</dt>
 <dd><p>a list. Used to change the contrasts from the
 default treatment contrasts to the treatment contrasts with a chosen omitted
-group (the reference group). The name of each element should be the variable name, and the value 
+group (the reference group). The name of each element should be the variable name, and the value
 should be the group to be omitted (the reference group).</p></dd>
 
 
@@ -99,16 +100,16 @@ estimation method to be used. See Details.</p></dd>
 
 
 <dt>jrrIMax</dt>
-<dd><p>a numeric value; when using the jackknife variance estimation method, the default estimation option, <code>jrrIMax=1</code>, uses the 
-                  sampling variance from the first plausible value as the component for sampling variance estimation. The <code>Vjrr</code> 
-                  term (see 
+<dd><p>a numeric value; when using the jackknife variance estimation method, the default estimation option, <code>jrrIMax=1</code>, uses the
+                  sampling variance from the first plausible value as the component for sampling variance estimation. The <code>Vjrr</code>
+                  term (see
 <a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link"><em>Statistical Methods Used in EdSurvey</em></a>)
-                  can be estimated with any number of plausible values, and values larger than the number of 
-                  plausible values on the survey (including <code>Inf</code>) will result in all plausible values being used. 
+                  can be estimated with any number of plausible values, and values larger than the number of
+                  plausible values on the survey (including <code>Inf</code>) will result in all plausible values being used.
                   Higher values of <code>jrrIMax</code> lead to longer computing times and more accurate variance estimates.</p></dd>
 
 
-<dt>omittedLevels</dt>
+<dt>dropOmittedLevels</dt>
 <dd><p>a logical value. When set to the default value of <code>TRUE</code>, drops
 those levels of all factor variables that are specified
 in an <code>edsurvey.data.frame</code>. Use <code>print</code> on an
@@ -135,7 +136,7 @@ of covariances between estimates.</p></dd>
 
 
 <dt>returnNumberOfPSU</dt>
-<dd><p>a logical value set to <code>TRUE</code> to return the number of 
+<dd><p>a logical value set to <code>TRUE</code> to return the number of
 primary sampling units (PSUs)</p></dd>
 
 
@@ -147,6 +148,10 @@ with sampling variance. Defaults to <code>FALSE</code>.</p></dd>
 
 <dt>verbose</dt>
 <dd><p>logical; indicates whether a detailed printout should display during execution</p></dd>
+
+
+<dt>omittedLevels</dt>
+<dd><p>this argument is deprecated. Use <code>dropOmittedLevels</code></p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -260,7 +265,7 @@ with sampling variance. Defaults to <code>FALSE</code>.</p></dd>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This function implements an estimator that correctly handles left-hand
-side variables that are either numeric or plausible values and allows for survey 
+side variables that are either numeric or plausible values and allows for survey
 sampling weights and estimates variances using the jackknife replication method.
 The vignette titled
 <a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link"><em>Statistical Methods Used in EdSurvey</em></a>
@@ -388,7 +393,7 @@ the vignette titled
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Paul Bailey.</p>
+  <p></p><p>Developed by Paul Bailey, Ahmad Emad, Huade Huo, Michael Lee, Yuqi Liao, Alex Lishinsku, Trang Nguyen, Qingshu Xie, Jiao Yu, Ting Zhang, Eric Buehler, Sun-joo Lee, Blue Webb.</p>
 </div>
 
 <div class="pkgdown-footer-right">

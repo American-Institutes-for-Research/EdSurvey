@@ -13,7 +13,7 @@ readECLS_K1998(
 )
 }
 \arguments{
-\item{path}{a character value to the full directory path(s) to the 
+\item{path}{a character value to the full directory path(s) to the
 ECLS--K-extracted fixed-width-format (.dat) set of data files}
 
 \item{filename}{a character value of the name of the fixed-width (.dat)
@@ -24,7 +24,7 @@ data file in the specified \code{path} to be read}
 the specified \code{path}
 or a character value of the  filename of the SPSS syntax (.sps) layout file of the \code{filename} within the specified \code{path}}
 
-\item{forceReread}{a logical value to force rereading of all processed data. 
+\item{forceReread}{a logical value to force rereading of all processed data.
 The default value of \code{FALSE} will speed up the read function by using existing read-in data already processed.}
 
 \item{verbose}{a logical value that will determine if you want verbose output while the \code{readECLS-K1998} function is running to indicate processing progress.
@@ -35,7 +35,7 @@ an \code{edsurvey.data.frame} for the ECLS--K 1998 longitudinal dataset
 }
 \description{
 Opens a connection to an ECLS--K 1998 data file and
-             returns an \code{edsurvey.data.frame} with 
+             returns an \code{edsurvey.data.frame} with
              information about the file and data.
 }
 \details{

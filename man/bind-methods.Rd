@@ -16,7 +16,7 @@ rbind(..., deparse.level = 1)
 \item{deparse.level}{integer determining under which circumstances column and row names are built from the actual arguments. See \ifelse{latex}{\code{cbind}}{\code{\link[base:cbind]{cbind}}}.}
 }
 \value{
-a matrix-like object like \code{matrix} or \code{data.frame}. Returns a \code{light.edsurvey.data.frame} if there is 
+a matrix-like object like \code{matrix} or \code{data.frame}. Returns a \code{light.edsurvey.data.frame} if there is
          at least one \code{light.edsurvey.data.frame} in the list of arguments.
 }
 \description{
@@ -26,9 +26,9 @@ Implements \code{\link{cbind}} and \code{\link{rbind}} for \code{light.edsurvey.
 }
 \details{
 Because \code{cbind} and \code{rbind} are standard generic functions that do not use method dispatch, we set this function as generic,
-         which means it overwrites \code{base::cbind} and \code{base::rbind} on loading. If none of the specified elements are of class \code{light.edsurvey.data.frame}, 
+         which means it overwrites \code{base::cbind} and \code{base::rbind} on loading. If none of the specified elements are of class \code{light.edsurvey.data.frame},
          the function will revert to the standard \code{base} method. However, to be safe, you might want to explicitly use \code{base::cbind} when needed after loading the package.
-         
+
          The returned object will contain attributes only from the first \code{light.edsurvey.data.frame} object in the call to
          \code{cbind.light.edsurvey.data.frame}.
 }

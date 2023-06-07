@@ -9,13 +9,14 @@ getData(
   varnames = NULL,
   drop = FALSE,
   dropUnusedLevels = TRUE,
-  omittedLevels = TRUE,
+  dropOmittedLevels = TRUE,
   defaultConditions = TRUE,
   formula = NULL,
   recode = NULL,
   includeNaLabel = FALSE,
   addAttributes = FALSE,
-  returnJKreplicates = TRUE
+  returnJKreplicates = TRUE,
+  omittedLevels = deprecated()
 )
 }
 \arguments{
@@ -35,7 +36,7 @@ when a single column is returned, it is still represented as a
 \code{TRUE}, drops unused levels of all factor
 variables.}
 
-\item{omittedLevels}{a logical value. When set to the default value of
+\item{dropOmittedLevels}{a logical value. When set to the default value of
 \code{TRUE}, drops those levels of all factor variables
 that are specified in an \code{edsurvey.data.frame}. Use
 \code{print} on an \code{edsurvey.data.frame} to see
@@ -72,6 +73,8 @@ more information on \code{light.edsurvey.data.frame}.}
 
 \item{returnJKreplicates}{a logical value indicating if JK replicate weights
 should be returned. Defaults to \code{TRUE}.}
+
+\item{omittedLevels}{this argument is deprecated. Use \code{dropOmittedLevels}.}
 }
 \value{
 When \code{addAttributes} is \code{FALSE}, \code{getData} returns a

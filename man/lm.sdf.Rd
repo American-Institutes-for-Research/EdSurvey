@@ -6,9 +6,10 @@
 \usage{
 lm.sdf(formula, data, weightVar = NULL, relevels = list(),
               varMethod = c("jackknife", "Taylor"), jrrIMax = 1,
-              omittedLevels = TRUE, defaultConditions = TRUE, recode = NULL,
+              dropOmittedLevels = TRUE, defaultConditions = TRUE, recode = NULL,
               returnVarEstInputs = FALSE, returnNumberOfPSU = FALSE,
-              standardizeWithSamplingVar = FALSE, verbose=TRUE)
+              standardizeWithSamplingVar = FALSE, verbose=TRUE,
+              omittedLevels = deprecated())
 }
 \arguments{
 \item{formula}{a \ifelse{latex}{\code{formula}}{\code{\link[stats]{formula}}} for the
@@ -30,21 +31,21 @@ for the \code{edsurvey.data.frame}.}
 
 \item{relevels}{a list. Used to change the contrasts from the
 default treatment contrasts to the treatment contrasts with a chosen omitted
-group (the reference group). The name of each element should be the variable name, and the value 
+group (the reference group). The name of each element should be the variable name, and the value
 should be the group to be omitted (the reference group).}
 
 \item{varMethod}{a character set to \dQuote{jackknife} or \dQuote{Taylor} that indicates the variance
 estimation method to be used. See Details.}
 
-\item{jrrIMax}{a numeric value; when using the jackknife variance estimation method, the default estimation option, \code{jrrIMax=1}, uses the 
-                  sampling variance from the first plausible value as the component for sampling variance estimation. The \code{Vjrr} 
-                  term (see 
+\item{jrrIMax}{a numeric value; when using the jackknife variance estimation method, the default estimation option, \code{jrrIMax=1}, uses the
+                  sampling variance from the first plausible value as the component for sampling variance estimation. The \code{Vjrr}
+                  term (see
 \href{https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf}{\emph{Statistical Methods Used in EdSurvey}})
-                  can be estimated with any number of plausible values, and values larger than the number of 
-                  plausible values on the survey (including \code{Inf}) will result in all plausible values being used. 
+                  can be estimated with any number of plausible values, and values larger than the number of
+                  plausible values on the survey (including \code{Inf}) will result in all plausible values being used.
                   Higher values of \code{jrrIMax} lead to longer computing times and more accurate variance estimates.}
 
-\item{omittedLevels}{a logical value. When set to the default value of \code{TRUE}, drops
+\item{dropOmittedLevels}{a logical value. When set to the default value of \code{TRUE}, drops
 those levels of all factor variables that are specified
 in an \code{edsurvey.data.frame}. Use \code{print} on an
 \code{edsurvey.data.frame} to see the omitted levels.}
@@ -62,7 +63,7 @@ inputs to the jackknife and imputation variance
 estimates, which allow for the computation
 of covariances between estimates.}
 
-\item{returnNumberOfPSU}{a logical value set to \code{TRUE} to return the number of 
+\item{returnNumberOfPSU}{a logical value set to \code{TRUE} to return the number of
 primary sampling units (PSUs)}
 
 \item{standardizeWithSamplingVar}{a logical value indicating if the standardized coefficients
@@ -70,6 +71,8 @@ should have the variance of the regressors and outcome measured
 with sampling variance. Defaults to \code{FALSE}.}
 
 \item{verbose}{logical; indicates whether a detailed printout should display during execution}
+
+\item{omittedLevels}{this argument is deprecated. Use \code{dropOmittedLevels}}
 }
 \value{
 An \code{edsurvey.lm} with the following elements:
@@ -121,11 +124,11 @@ Fits a linear model that uses weights and variance estimates appropriate for the
 }
 \details{
 This function implements an estimator that correctly handles left-hand
-side variables that are either numeric or plausible values and allows for survey 
+side variables that are either numeric or plausible values and allows for survey
 sampling weights and estimates variances using the jackknife replication method.
 The vignette titled
 \href{https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf}{\emph{Statistical Methods Used in EdSurvey}}
- describes estimation of the reported statistics. 
+ describes estimation of the reported statistics.
 
 Regardless of the variance estimation, the coefficients are estimated
 using the sample weights according to the sections
@@ -231,7 +234,7 @@ summary(lm4)
 }
 }
 \references{
-Binder, D. A. (1983). On the variances of asymptotically normal estimators from complex surveys. \emph{International Statistical Review}, \emph{51}(3), 279--292. 
+Binder, D. A. (1983). On the variances of asymptotically normal estimators from complex surveys. \emph{International Statistical Review}, \emph{51}(3), 279--292.
 
 Rubin, D. B. (1987). \emph{Multiple imputation for nonresponse in surveys}. New York, NY: Wiley.
 

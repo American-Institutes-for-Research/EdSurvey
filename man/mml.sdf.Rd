@@ -10,7 +10,7 @@ mml.sdf(
   formula,
   data,
   weightVar = NULL,
-  omittedLevels = TRUE,
+  dropOmittedLevels = TRUE,
   composite = TRUE,
   verbose = 0,
   multiCore = FALSE,
@@ -19,15 +19,16 @@ mml.sdf(
   maxNode = 4,
   Q = 34,
   idVar = NULL,
-  returnMmlCall = FALSE
+  returnMmlCall = FALSE,
+  omittedLevels = deprecated()
 )
 }
 \arguments{
 \item{formula}{a \ifelse{latex}{\code{formula}}{\code{\link[stats]{formula}}} for the
 model.}
 
-\item{data}{an \code{edsurvey.data.frame} for the National Assessment of Educational Progress (NAEP) 
-and the Trends in International Mathematics and Science Study (TIMSS). 
+\item{data}{an \code{edsurvey.data.frame} for the National Assessment of Educational Progress (NAEP)
+and the Trends in International Mathematics and Science Study (TIMSS).
 The attributes \code{dichotParamTab}, \code{polyParamTab}, \code{testData},
 \code{scoreCard} (for NAEP), and \code{scoreDict} (for TIMSS) must not be \code{NULL}.
 Use the function \code{setNAEPScoreCard} or \code{setAttributes} to set attributes.}
@@ -37,7 +38,7 @@ The \code{weightVar} must be one of the weights for the
 \code{edsurvey.data.frame}. If \code{NULL}, it  uses the default
 for the \code{edsurvey.data.frame}.}
 
-\item{omittedLevels}{a logical value. When set to the value of \code{TRUE}, drops
+\item{dropOmittedLevels}{a logical value. When set to the value of \code{TRUE}, drops
 the levels of all factor variables that are specified
 in an \code{edsurvey.data.frame}. Use \code{print} on an
 \code{edsurvey.data.frame} to see the omitted levels.
@@ -52,7 +53,7 @@ fit as an overall (non-composite).}
 
 \item{multiCore}{allows the \code{foreach} package to be used. This function will setup and take down the cluster.}
 
-\item{numberOfCores}{the number of cores to be used when using \code{multiCore}. Defaults to 75\% of available cores. Users 
+\item{numberOfCores}{the number of cores to be used when using \code{multiCore}. Defaults to 75\% of available cores. Users
 can check available cores with \code{detectCores()}.}
 
 \item{minNode}{numeric; minimum integration point in direct estimation; see \ifelse{latex}{\code{mml}}{\code{\link[Dire]{mml}}}.}
@@ -61,15 +62,17 @@ can check available cores with \code{detectCores()}.}
 
 \item{Q}{integer; number of integration points per student used when integrating over the levels of the latent outcome construct.}
 
-\item{idVar}{a variable that is used to explicitly define the name of the student identifier 
-variable to be used from \code{data}. Defaults to \code{NULL}, and \code{sid} is used 
+\item{idVar}{a variable that is used to explicitly define the name of the student identifier
+variable to be used from \code{data}. Defaults to \code{NULL}, and \code{sid} is used
 as the student identifier.}
 
 \item{returnMmlCall}{logical; when \code{TRUE}, do not process the mml call but instead return it for the user to edit before calling}
+
+\item{omittedLevels}{this argument is deprecated. Use \code{dropOmittedLevels}}
 }
 \value{
 An \code{mml.sdf} object, which is the outcome from \code{mml.sdf}, with the following elements:
-   \item{mml}{an object containing information from the \code{mml} procedure. 
+   \item{mml}{an object containing information from the \code{mml} procedure.
    \code{?mml} can be used for further information.}
    \item{scoreDict}{the scoring used in the \code{mml} procedure}.
    \item{itemMapping}{the item mapping used in the \code{mml} procedure}.
@@ -84,7 +87,7 @@ See documentation for \ifelse{latex}{\code{mml}}{\code{\link[Dire]{mml}}} in the
 
 The \code{scoreDict} helps turn response categories that are not simple item responses, such as \code{Not Reached} and \code{Multiple},
 to something coded as inputs for the \code{mml} function in \code{Dire}. How \code{mml} treats these values depends on the test.
-For NAEP, for a dichotomous item, 8 is scored as the same proportion correct as the guessing parameter for that item, 0 is 
+For NAEP, for a dichotomous item, 8 is scored as the same proportion correct as the guessing parameter for that item, 0 is
 an incorrect response, an NA does not change the student's score, and 1 is correct. TIMSS does not require a \code{scoreDict}.
 }
 \examples{

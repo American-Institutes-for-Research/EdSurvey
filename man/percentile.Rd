@@ -12,14 +12,15 @@ percentile(
   jrrIMax = 1,
   varMethod = c("jackknife", "Taylor"),
   alpha = 0.05,
-  omittedLevels = TRUE,
+  dropOmittedLevels = TRUE,
   defaultConditions = TRUE,
   recode = NULL,
   returnVarEstInputs = FALSE,
   returnNumberOfPSU = FALSE,
   pctMethod = c("symmetric", "unbiased", "simple"),
   confInt = TRUE,
-  dofMethod = c("JR", "WS")
+  dofMethod = c("JR", "WS"),
+  omittedLevels = deprecated()
 )
 }
 \arguments{
@@ -34,35 +35,35 @@ typically a subject scale or subscale}
 
 \item{weightVar}{a character indicating the weight variable to use.}
 
-\item{jrrIMax}{a numeric value; when using the jackknife variance estimation method, the default estimation option, \code{jrrIMax=1}, uses the 
-                  sampling variance from the first plausible value as the component for sampling variance estimation. The \eqn{V_{jrr}} 
-                  term (see 
+\item{jrrIMax}{a numeric value; when using the jackknife variance estimation method, the default estimation option, \code{jrrIMax=1}, uses the
+                  sampling variance from the first plausible value as the component for sampling variance estimation. The \eqn{V_{jrr}}
+                  term (see
 \href{https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf}{\emph{Statistical Methods Used in EdSurvey}})
-                  can be estimated with any number of plausible values, and values larger than the number of 
-                  plausible values on the survey (including \code{Inf}) will result in all plausible values being used. 
+                  can be estimated with any number of plausible values, and values larger than the number of
+                  plausible values on the survey (including \code{Inf}) will result in all plausible values being used.
                   Higher values of \code{jrrIMax} lead to longer computing times and more accurate variance estimates.}
 
 \item{varMethod}{a character set to \code{jackknife} or \code{Taylor}
-that indicates the variance estimation method used when 
+that indicates the variance estimation method used when
 constructing the confidence intervals. The jackknife
 variance estimation method is always
 used to calculate the standard error.}
 
 \item{alpha}{a numeric value between 0 and 1 indicating the confidence level.
-An \code{alpha} value of 0.05 would indicate a 95\% 
+An \code{alpha} value of 0.05 would indicate a 95\%
 confidence interval and is the default.}
 
-\item{omittedLevels}{a logical value. When set to the default value of
-\code{TRUE}, drops those levels of 
+\item{dropOmittedLevels}{a logical value. When set to the default value of
+\code{TRUE}, drops those levels of
 all factor variables that are specified in
-\code{achievementVars} and \code{aggregatBy}. 
+\code{achievementVars} and \code{aggregatBy}.
 Use \code{print} on an \code{edsurvey.data.frame}
 to see the omitted levels.}
 
 \item{defaultConditions}{a logical value. When set to the default value
-of \code{TRUE}, uses the default 
+of \code{TRUE}, uses the default
 conditions stored in an \code{edsurvey.data.frame}
-to subset the data. 
+to subset the data.
 Use \code{print} on an \code{edsurvey.data.frame}
 to see the default conditions.}
 
@@ -77,19 +78,21 @@ inputs to the jackknife and imputation variance
 estimates which allows for the computation
 of covariances between estimates.}
 
-\item{returnNumberOfPSU}{a logical value set to \code{TRUE} to return the number of 
+\item{returnNumberOfPSU}{a logical value set to \code{TRUE} to return the number of
 primary sampling units (PSUs)}
 
 \item{pctMethod}{one of \dQuote{unbiased}, \dQuote{symmetric}, \dQuote{simple};
 unbiased produces a weighted median unbiased percentile estimate,
 whereas simple uses a basic formula that matches previously
 published results. Symmetric uses a more basic formula
-but requires that the percentile is symetric to multiplying
+but requires that the percentile is symmetric to multiplying
 the quantity by negative one.}
 
 \item{confInt}{a Boolean indicating if the confidence interval should be returned}
 
 \item{dofMethod}{passed to \code{\link{DoFCorrection}} as the \code{method} argument}
+
+\item{omittedLevels}{this argument is deprecated. Use \code{dropOmittedLevels}}
 }
 \value{
 The return type depends on whether the class of the \code{data} argument is an
@@ -125,7 +128,7 @@ The return type depends on whether the class of the \code{data} argument is an
   This is a data.frame with a \code{call} attribute.
   The columns in the \code{data.frame} are identical to those in the previous
   section, but there also are columns from the \code{edsurvey.data.frame.list}.
-  
+
     \item{covs}{a column for each column in the \code{covs} value of the
                 \code{edsurvey.data.frame.list}.
                 See Examples.}

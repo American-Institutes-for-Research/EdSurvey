@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">EdSurvey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,10 +61,11 @@
 <span>  weightVar <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  relevels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  jrrIMax <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  omittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  dropOmittedLevels <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  defaultConditions <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  recode <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  returnNumberOfPSU <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  omittedLevels <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -101,19 +102,19 @@ for the <code>edsurvey.data.frame</code>.</p></dd>
 <dt>relevels</dt>
 <dd><p>a list. Used to change the contrasts from the
 default treatment contrasts to the treatment contrasts with a chosen omitted
-group (the reference group). The name of each element should be the variable name, and the value 
+group (the reference group). The name of each element should be the variable name, and the value
 should be the group to be omitted (the reference group).</p></dd>
 
 
 <dt>jrrIMax</dt>
-<dd><p>when using the jackknife variance estimation method, the default estimation option, <code>jrrIMax=1</code>, uses the 
-sampling variance from the first plausible value as the component for sampling variance estimation. The \(V_{jrr}\) 
-term can be estimated with any number of plausible values, and values larger than the number of 
-plausible values on the survey (including <code>Inf</code>) will result in all plausible values being used. 
+<dd><p>when using the jackknife variance estimation method, the default estimation option, <code>jrrIMax=1</code>, uses the
+sampling variance from the first plausible value as the component for sampling variance estimation. The \(V_{jrr}\)
+term can be estimated with any number of plausible values, and values larger than the number of
+plausible values on the survey (including <code>Inf</code>) will result in all plausible values being used.
 Higher values of <code>jrrIMax</code> lead to longer computing times and more accurate variance estimates.</p></dd>
 
 
-<dt>omittedLevels</dt>
+<dt>dropOmittedLevels</dt>
 <dd><p>a logical value. When set to the default value of <code>TRUE</code>, drops
 those levels of all factor variables that are specified
 in an <code>edsurvey.data.frame</code>. Use <code>print</code> on an
@@ -129,13 +130,17 @@ to subset the data. Use <code>print</code> on an
 
 <dt>recode</dt>
 <dd><p>a list of lists to recode variables. Defaults to <code>NULL</code>. Can be set as
-<code>recode=</code><code>list(</code><code>var1</code> <code>=</code> <code>list(</code><code>from=</code> 
+<code>recode=</code><code>list(</code><code>var1</code> <code>=</code> <code>list(</code><code>from=</code>
 <code>c("a",</code> <code>"b",</code> <code>"c"),</code> <code>to=</code> <code>"d"))</code>.</p></dd>
 
 
 <dt>returnNumberOfPSU</dt>
-<dd><p>a logical value set to <code>TRUE</code> to return the number of 
+<dd><p>a logical value set to <code>TRUE</code> to return the number of
 primary sampling units (PSUs)</p></dd>
+
+
+<dt>omittedLevels</dt>
+<dd><p>this argument is deprecated. Use <code>dropOmittedLevels</code></p></dd>
 
 
 <dt>...</dt>
@@ -196,24 +201,24 @@ primary sampling units (PSUs)</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The function computes an estimate on the <code>tau</code>-th conditional quantile function of the response, 
-given the covariates, as specified by the formula argument. Like <code><a href="lm.sdf.html">lm.sdf()</a></code>, the  
-function presumes a linear specification for the quantile regression model (i.e., that the 
+    <p>The function computes an estimate on the <code>tau</code>-th conditional quantile function of the response,
+given the covariates, as specified by the formula argument. Like <code><a href="lm.sdf.html">lm.sdf()</a></code>, the
+function presumes a linear specification for the quantile regression model (i.e., that the
 formula defines a model that is linear in parameters). Unlike <code><a href="lm.sdf.html">lm.sdf()</a></code>, the jackknife is the
 only applicable variance estimation method used by the function.</p>
 <p>For further details on quantile regression models and how they are implemented in R, see Koenker
 and Bassett (1978), Koenker (2005), and the vignette from the <code>quantreg</code> package---
-accessible by <code>vignette("rq",package="quantreg")</code>---on which this function is 
+accessible by <code>vignette("rq",package="quantreg")</code>---on which this function is
 built.</p>
-<p>For further details on how left-hand side variables, survey sampling weights, and estimated 
+<p>For further details on how left-hand side variables, survey sampling weights, and estimated
 variances are correctly handled, see <code><a href="lm.sdf.html">lm.sdf</a></code> or the vignette titled
 <em><a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link">Statistical Methods Used in EdSurvey</a></em>.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>Binder, D. A. (1983). On the variances of asymptotically normal estimators from complex surveys. 
+    <p>Binder, D. A. (1983). On the variances of asymptotically normal estimators from complex surveys.
 <em>International Statistical Review</em>, <em>51</em>(3), 279--292.</p>
-<p>Johnson, E. G., &amp; Rust, K. F. (1992). Population inferences and variance estimation for NAEP 
+<p>Johnson, E. G., &amp; Rust, K. F. (1992). Population inferences and variance estimation for NAEP
 data. <em>Journal of Education Statistics</em>, <em>17</em>(2), 175--190.</p>
 <p>Koenker, R. W., &amp; Bassett, G. W. (1978). Regression quantiles, <em>Econometrica, 46,</em> 33--50.</p>
 <p>Koenker, R. W. (2005). <em>Quantile regression</em>. Cambridge, UK: Cambridge University Press.</p>
@@ -245,7 +250,7 @@ data. <em>Journal of Education Statistics</em>, <em>17</em>(2), 175--190.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Paul Bailey.</p>
+  <p></p><p>Developed by Paul Bailey, Ahmad Emad, Huade Huo, Michael Lee, Yuqi Liao, Alex Lishinsku, Trang Nguyen, Qingshu Xie, Jiao Yu, Ting Zhang, Eric Buehler, Sun-joo Lee, Blue Webb.</p>
 </div>
 
 <div class="pkgdown-footer-right">

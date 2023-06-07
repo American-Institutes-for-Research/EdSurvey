@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">EdSurvey</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +58,8 @@
 <span>  <span class="va">data</span>,</span>
 <span>  <span class="va">variable</span>,</span>
 <span>  weightVar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="fu"><a href="edsurvey-class.html">getAttributes</a></span><span class="op">(</span><span class="va">data</span>, <span class="st">"weights"</span><span class="op">)</span>, <span class="st">"default"</span><span class="op">)</span>,</span>
-<span>  omittedLevels <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  dropOmittedLevels <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  omittedLevels <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -75,13 +76,17 @@
 <dt>weightVar</dt>
 <dd><p>character weight variable name. Default is the default weight of <code>data</code> if it exists.
 If the given survey data do not have a default weight,
-the function will produce unweighted statistics instead. 
+the function will produce unweighted statistics instead.
 Can be set to <code>NULL</code> to return unweighted statistics.</p></dd>
 
 
-<dt>omittedLevels</dt>
+<dt>dropOmittedLevels</dt>
 <dd><p>a logical value. When set to <code>TRUE</code>, drops those levels of the specified <code>variable</code>.
 Use print on an <code>edsurvey.data.frame</code> to see the omitted levels. Defaults to <code>FALSE</code>.</p></dd>
+
+
+<dt>omittedLevels</dt>
+<dd><p>this argument is deprecated. Use <code>dropOmittedLevels</code></p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -89,7 +94,7 @@ Use print on an <code>edsurvey.data.frame</code> to see the omitted levels. Defa
     
 
 <p>summary of weighted or unweighted statistics of a given variable in an <code>edsurvey.data.frame</code></p>
-  
+
 
 
 <p>For categorical variables, the summary results are a crosstab of all variables and include the following:</p>
@@ -105,7 +110,7 @@ Use print on an <code>edsurvey.data.frame</code> to see the omitted levels. Defa
   <dt>SE</dt>
 <dd><p>standard error of the percentage statistics</p></dd>
 
- 
+
 </dl><p>For continuous variables, the summary results are by variable and include the following:</p>
 <dl><dt>Variable</dt>
 <dd><p>name of the variable the row regards</p></dd>
@@ -141,7 +146,7 @@ Use print on an <code>edsurvey.data.frame</code> to see the omitted levels. Defa
 <dd><p>number of zero weight cases if users choose to produce weighted statistics</p></dd>
 
 
-</dl><p>If the weight option is chosen, the function produces weighted percentile and standard deviation. Refer to the vignette titled 
+</dl><p>If the weight option is chosen, the function produces weighted percentile and standard deviation. Refer to the vignette titled
 <em><a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf" class="external-link">Statistical Methods Used in EdSurvey</a></em> and
 the vignette titled
 <em><a href="https://www.air.org/sites/default/files/EdSurvey-Percentiles.pdf" class="external-link">Methods Used for Estimating Percentiles in EdSurvey</a></em></p>
@@ -181,7 +186,7 @@ the vignette titled
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Paul Bailey.</p>
+  <p></p><p>Developed by Paul Bailey, Ahmad Emad, Huade Huo, Michael Lee, Yuqi Liao, Alex Lishinsku, Trang Nguyen, Qingshu Xie, Jiao Yu, Ting Zhang, Eric Buehler, Sun-joo Lee, Blue Webb.</p>
 </div>
 
 <div class="pkgdown-footer-right">
