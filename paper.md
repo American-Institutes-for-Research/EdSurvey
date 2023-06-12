@@ -16,9 +16,9 @@ authors:
     affiliation: 1
   - name: Eric Buehler
     orcid: 0009-0004-6354-2015
-    affiliation: 5
+    affiliation: 2
   - name: Ahmad Emad
-    affiliation: 7
+    affiliation: 3
   - name: Tom Fink
     orcid: 0009-0003-9308-2833
     affiliation: 1
@@ -27,21 +27,23 @@ authors:
     affiliation: 1
   - name: Claire Kelley
     orcid: 0000-0000-0000-0000
-    affiliation: 9
+    affiliation: 4
   - name: Michael Lee
-    affiliation: 8
+    affiliation: 5
     orcid: 0009-0006-0959-787X
   - name: Sun-joo Lee
-    affiliation: 3
+    affiliation: 6
   - name: Yuqi Liao
     orcid: 0000-0001-9359-6015
     affiliation: 1
   - name: Alex Lishinski
     orcid: 0000-0003-4506-1600
-    affiliation: 4
+    affiliation: 7
   - name: Trang Nguyen
+    orcid: 0009-0001-0167-8775
+    affiliation: 8
   - name: Emmanuel Sikali
-    affiliation: 2
+    affiliation: 9
   - name: Blue Webb
     orcid: 0009-0004-4080-9864
     affiliation: 1
@@ -51,7 +53,7 @@ authors:
     orcid: 0000-0003-3131-7820
     affiliation: 1
   - name: Jiao Yu
-    affiliation: 6
+    affiliation: 10
   - name: Ting Zhang
     orcid: 0009-0001-1724-6141
     affiliation: 1
@@ -59,22 +61,25 @@ authors:
 affiliations:
  - name: American Institutes for Research
    index: 1
- - name: National Center for Education Statistics, USA
-   index: 2
- - name: United Nations Development Programme
-   index: 3
- - name: University of Tennessee Knoxville
-   index: 4
  - name: Memorial Sloan Kettering Cancer Center
-   index: 5
- - name: JPMorgan Chase & Co.
-   index: 6
+   index: 2
  - name: Google LLC
-   index: 7
- - name: Independent researcher
-   index: 8
+   index: 3
  - name: Child Trends
+   index: 4
+ - name: Independent researcher
+   index: 5
+ - name: United Nations Development Programme
+   index: 6
+ - name: University of Tennessee Knoxville
+   index: 7
+ - name: University of Massachusetts Amherst
+   index: 8
+ - name: National Center for Education Statistics, USA
    index: 9
+ - name: JPMorgan Chase & Co.
+   index: 10
+
 
 date: 1 May 2023
 bibliography: paper.bib
@@ -83,7 +88,7 @@ bibliography: paper.bib
 
 # Summary
 
-Data from large-scale educational assessment programs, such as the National Assessment of Educational Progress (NAEP) and Progress in International Reading Literacy Study (PIRLS), require special methods to conduct statistical analyses because of their scope and complexity. The `EdSurvey` package gives users functions to perform analyses that account for both the complex sample survey design and the use of plausible values. The `EdSurvey` package also seamlessly takes advantage of the `LaF`[@LaF] package to read in data only when required for an analysis. Users with computers that have insufficient memory to read in entire datasets can still do analyses without having to write special code to read in just the appropriate variables. This is all addressed directly in the `EdSurvey` package — behind the scenes and without any special tuning by the user.
+Data from large-scale educational assessment programs, such as the National Assessment of Educational Progress (NAEP) and Progress in International Reading Literacy Study (PIRLS), require special methods to conduct statistical analyses because of their scope and complexity. The `EdSurvey` package gives users functions to perform analyses that account for both the complex sample survey design and the use of plausible values. The `EdSurvey` package also seamlessly takes advantage of the `LaF` [@LaF] package to read in data only when required for an analysis. Users with computers that have insufficient memory to read in entire datasets can still do analyses without having to write special code to read in just the appropriate variables. This is all addressed directly in the `EdSurvey` package — behind the scenes and without any special tuning by the user.
 
 # Statement of need
 
