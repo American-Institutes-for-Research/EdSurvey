@@ -26,7 +26,7 @@ authors:
     orcid: 0009-0004-5014-646X
     affiliation: 1
   - name: Claire Kelley
-    orcid: 0000-0000-0000-0000
+    orcid: 0000-0002-8143-1624
     affiliation: 4
   - name: Michael Lee
     affiliation: 5
@@ -81,7 +81,7 @@ affiliations:
    index: 10
 
 
-date: 1 May 2023
+date: 1 June 2023
 bibliography: paper.bib
 
 ---
