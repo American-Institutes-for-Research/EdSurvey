@@ -111,7 +111,7 @@ be mindful of variable selection as this may result in calculations taking a ver
 
 The Fisher Z-transformation is both a variance stabilizing  and normalizing transformation
 for the Pearson correlation coefficient (Fisher, 1915).
-The transformation takes the inverse hyberbolic tangent of the correlation coefficients and then calculates all variances and confidence intervals.
+The transformation takes the inverse hyperbolic tangent of the correlation coefficients and then calculates all variances and confidence intervals.
 These are then transformed back to the correlation space (values between -1 and 1, inclusive) using the hyperbolic tangent function.
 The Taylor series approximation (or delta method) is applied for the standard errors.
 }

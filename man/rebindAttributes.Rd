@@ -31,11 +31,12 @@ PISA2012 <- readPISA(path = paste0(edsurveyHome, "PISA/2012"),
 ledf <- getData(data = PISA2012, varnames = c("cnt", "oecd", "w_fstuwt",
                                               "st62q04", "st62q11",
                                               "st62q13", "math"),
-                omittedLevels = FALSE, addAttributes = TRUE)
+                dropOmittedLevels = FALSE, addAttributes = TRUE)
 
 omittedLevels <- c('Invalid', 'N/A', 'Missing', 'Miss', 'NA', '(Missing)')
 for (i in c("st62q04", "st62q11", "st62q13")) {
   ledf[,i] <- factor(ledf[,i], exclude=omittedLevels)
+  ledf[,i] <- as.numeric(ledf[,i])
 }
 
 # after applying some dplyr functions, the "light.edsurvey.data.frame" becomes just "data.frame"

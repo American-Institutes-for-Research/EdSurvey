@@ -300,12 +300,6 @@ the average R-squared using the sample weights for each set of plausible values.
 <span class="r-in"><span><span class="co"># residual covariance matrix</span></span></span>
 <span class="r-in"><span><span class="va">mvrlm.fit</span><span class="op">$</span><span class="va">residCov</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># model residuals and other details are available as well</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># show the structure of the residuals objects</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">mvrlm.fit</span><span class="op">$</span><span class="va">residuals</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">mvrlm.fit</span><span class="op">$</span><span class="va">residPV</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># dependent variables can have plausible values or not (or a combination)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">mvrlm.fit</span> <span class="op">&lt;-</span> <span class="fu">mvrlm.sdf</span><span class="op">(</span><span class="va">composite</span> <span class="op">|</span> <span class="va">mrps22</span> <span class="op">~</span> <span class="va">dsex</span> <span class="op">+</span> <span class="va">m072801</span>, data <span class="op">=</span> <span class="va">sdf</span>, jrrIMax <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>

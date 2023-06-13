@@ -167,12 +167,6 @@ mvrlm.fit$r.squared
 # residual covariance matrix
 mvrlm.fit$residCov
 
-# model residuals and other details are available as well
-
-# show the structure of the residuals objects
-str(mvrlm.fit$residuals)
-str(mvrlm.fit$residPV)
-
 # dependent variables can have plausible values or not (or a combination)
 
 mvrlm.fit <- mvrlm.sdf(composite | mrps22 ~ dsex + m072801, data = sdf, jrrIMax = 5)
