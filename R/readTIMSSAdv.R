@@ -455,7 +455,7 @@ processTIMSSAdv <- function(dataFolderPath, countryCode, fnames, fileYrs, subjec
       all.y = FALSE,
       suffixes = c("", ".junk")
     )
-    mm <- mm[, names(mm)[!grepl("\\.junk$", names(mm))]]
+    mm <- mm[ , names(mm)[!grepl("\\.junk$", names(mm))]]
 
     if (nrow(stuDF1) != nrow(mm)) {
       stop(paste0(
@@ -488,7 +488,7 @@ processTIMSSAdv <- function(dataFolderPath, countryCode, fnames, fileYrs, subjec
         all.y = FALSE,
         suffixes = c("", ".junk")
       )
-      mm <- mm[, names(mm)[!grepl("\\.junk$", names(mm))]]
+      mm <- mm[ , names(mm)[!grepl("\\.junk$", names(mm))]]
       if (nrow(stuDF1) != nrow(mm)) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote(paste0(subjChr, "sr")), " country code ", sQuote(tolower(countryCode)), ". ",
@@ -535,7 +535,7 @@ processTIMSSAdv <- function(dataFolderPath, countryCode, fnames, fileYrs, subjec
         all.y = FALSE,
         suffixes = c("", ".junk")
       )
-      mm <- mm[, names(mm)[!grepl("\\.junk$", names(mm))]]
+      mm <- mm[ , names(mm)[!grepl("\\.junk$", names(mm))]]
 
       if (nrow(stuTeachDF) != nrow(mm)) {
         stop(paste0(

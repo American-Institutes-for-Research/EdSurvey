@@ -134,7 +134,7 @@ mergev <- function(x, y,
     if (0 %in% by.x) {
       num.x <- TRUE
       rn.x <- genVarNames("rn", x)
-      x[, rn.x] <- rownames(x)
+      x[ , rn.x] <- rownames(x)
       by.x[!by.x %in% 0] <- by.x[!by.x %in% 0]
       by.x[by.x %in% 0] <- ncol(x)
     }
@@ -149,7 +149,7 @@ mergev <- function(x, y,
     if (0 %in% by.y) {
       num.y <- TRUE
       rn.y <- genVarNames("rny", y)
-      y[, rn.y] <- rownames(y)
+      y[ , rn.y] <- rownames(y)
       by.y[!by.y %in% 0] <- by.y[!by.y %in% 0]
       by.y[by.y %in% 0] <- ncol(y)
     }
@@ -184,8 +184,8 @@ mergev <- function(x, y,
   }
 
   for (i in 1:length(by.x)) {
-    nx <- sum(is.na(x[, by.x[i]]))
-    ny <- sum(is.na(y[, by.y[i]]))
+    nx <- sum(is.na(x[ , by.x[i]]))
+    ny <- sum(is.na(y[ , by.y[i]]))
     if (showWarnings && (nx >= 1 || ny >= 1)) {
       warning("For by variable, '", by.x[i], "' There are ", nx, " NA values on ", x.arg.name, " and ", ny, " NA values on ", y.arg.name, ".")
     }
@@ -202,9 +202,9 @@ mergev <- function(x, y,
       order.var <- paste0(order.var, sample(LETTERS, 1))
     }
     if (order == "x") {
-      x[, order.var] <- 1:nrow(x)
+      x[ , order.var] <- 1:nrow(x)
     } else {
-      y[, order.var] <- 1:nrow(y)
+      y[ , order.var] <- 1:nrow(y)
     }
   } else {
     if (order == "sort") {
@@ -218,8 +218,8 @@ mergev <- function(x, y,
   tempx <- genVarNames("x", x)
   tempy <- genVarNames("y", y)
 
-  x[, tempx] <- c(1:nrow(x))
-  y[, tempy] <- c(1:nrow(y))
+  x[ , tempx] <- c(1:nrow(x))
+  y[ , tempy] <- c(1:nrow(y))
 
   v1 <- names(x)
   v2 <- names(y)
@@ -231,14 +231,14 @@ mergev <- function(x, y,
   mat[1, 2] <- nrow(y)
   mat[1, 3] <- mat[1, 1] + mat[1, 2]
   if (inherits(x, "data.table") & inherits(y, "data.table")) {
-    mat[2, 1] <- nrow(ux <- unique(x[, ..by.x]))
-    mat[2, 2] <- nrow(uy <- unique(y[, ..by.y]))
+    mat[2, 1] <- nrow(ux <- unique(x[ , ..by.x]))
+    mat[2, 2] <- nrow(uy <- unique(y[ , ..by.y]))
     names(ux) <- by.x
     names(uy) <- by.x
     mat[2, 3] <- nrow(unique(rbind(ux, uy)))
   } else {
-    mat[2, 1] <- nrow(ux <- unique(as.data.frame(x)[, by.x, drop = FALSE]))
-    mat[2, 2] <- nrow(uy <- unique(as.data.frame(y)[, by.y, drop = FALSE]))
+    mat[2, 1] <- nrow(ux <- unique(as.data.frame(x)[ , by.x, drop = FALSE]))
+    mat[2, 2] <- nrow(uy <- unique(as.data.frame(y)[ , by.y, drop = FALSE]))
     names(ux) <- by.x
     names(uy) <- by.x
     mat[2, 3] <- nrow(as.data.frame(unique(rbind(ux, uy))))
@@ -284,13 +284,13 @@ mergev <- function(x, y,
   }
   # clear off the rn.x and rn.y variables. merge will add the proper variables
   if (!is.null(rn.x)) {
-    x[, rn.x] <- NULL
+    x[ , rn.x] <- NULL
     if (num.x) {
       by.x <- by.x.original
     }
   }
   if (!is.null(rn.y)) {
-    y[, rn.y] <- NULL
+    y[ , rn.y] <- NULL
     if (num.y) {
       by.y <- by.y.original
     }
@@ -319,9 +319,9 @@ mergev <- function(x, y,
     mat[4, 1] <- 0
     mat[4, 2] <- 0
     mat[4, 3] <- 0
-    mg[, tempx] <- NULL
-    mg[, tempy] <- NULL
-    mg[, ]
+    mg[ , tempx] <- NULL
+    mg[ , tempy] <- NULL
+    mg[ , ]
     if (verbose) {
       print(mat)
     }
@@ -332,16 +332,16 @@ mergev <- function(x, y,
     return(mg)
   }
   if (order %in% c("x", "y")) {
-    mg[is.na(mg[, order.var]), ] <- Inf
-    mg <- mg[order(mg[, order.var]), ]
-    mg[, order.var] <- NULL
+    mg[is.na(mg[ , order.var]), ] <- Inf
+    mg <- mg[order(mg[ , order.var]), ]
+    mg[ , order.var] <- NULL
   }
   if (inherits(mg, "data.table")) {
     mat[3, 1] <- nrow(mg[!is.na(mg[[tempx]]), ])
     mat[3, 2] <- nrow(mg[!is.na(mg[[tempy]]), ])
   } else {
-    mat[3, 1] <- nrow(mg[!is.na(mg[, tempx]), ])
-    mat[3, 2] <- nrow(mg[!is.na(mg[, tempy]), ])
+    mat[3, 1] <- nrow(mg[!is.na(mg[ , tempx]), ])
+    mat[3, 2] <- nrow(mg[!is.na(mg[ , tempy]), ])
   }
   mat[3, 3] <- nrow(mg)
 
@@ -352,7 +352,7 @@ mergev <- function(x, y,
   }
 
   if (nrow(mg) != 0) {
-    mg[, merge.type.colname] <- 0L
+    mg[ , merge.type.colname] <- 0L
     types <- c("x only", "y only", "matched")
     if (inherits(mg, "data.table")) {
       mx <- mg[[tempx]]
@@ -364,10 +364,10 @@ mergev <- function(x, y,
 
       mg[[merge.type.colname]] <- lfactor(mg[[merge.type.colname]], levels = 1:3, labels = types)
     } else {
-      mg[, merge.type.colname][is.na(mg[, tempx])] <- 2L
-      mg[, merge.type.colname][is.na(mg[, tempy])] <- 1L
-      mg[, merge.type.colname][mg[, merge.type.colname] == 0L] <- 3L
-      mg[, merge.type.colname] <- lfactor(mg[, merge.type.colname], levels = 1:3, labels = types)
+      mg[ , merge.type.colname][is.na(mg[ , tempx])] <- 2L
+      mg[ , merge.type.colname][is.na(mg[ , tempy])] <- 1L
+      mg[ , merge.type.colname][mg[ , merge.type.colname] == 0L] <- 3L
+      mg[ , merge.type.colname] <- lfactor(mg[ , merge.type.colname], levels = 1:3, labels = types)
     }
     if (verbose) {
       print(table(mg[[merge.type.colname]]))
@@ -382,16 +382,16 @@ mergev <- function(x, y,
   if (inherits(mg, "data.table")) {
     mat[4, 1] <- nrow(na.omit(unique(mg[!is.na(mg[[tempx]]), ..by.x])))
     mat[4, 2] <- nrow(na.omit(unique(mg[!is.na(mg[[tempy]]), ..by.x])))
-    mat[4, 3] <- nrow(na.omit(data.frame(unique(mg[, ..by.x]))))
+    mat[4, 3] <- nrow(na.omit(data.frame(unique(mg[ , ..by.x]))))
   } else {
-    mat[4, 1] <- length(na.omit(unique(mg[!is.na(mg[, tempx]), by.x])))
-    mat[4, 2] <- length(na.omit(unique(mg[!is.na(mg[, tempy]), by.x])))
-    mat[4, 3] <- length(na.omit(unique(mg[, by.x])))
+    mat[4, 1] <- length(na.omit(unique(mg[!is.na(mg[ , tempx]), by.x])))
+    mat[4, 2] <- length(na.omit(unique(mg[!is.na(mg[ , tempy]), by.x])))
+    mat[4, 3] <- length(na.omit(unique(mg[ , by.x])))
   }
 
   # remove temp columns
-  mg[, tempx] <- NULL
-  mg[, tempy] <- NULL
+  mg[ , tempx] <- NULL
+  mg[ , tempy] <- NULL
 
   lst$merge.matrix <- mat
 
@@ -400,7 +400,7 @@ mergev <- function(x, y,
   }
 
   if (flag) {
-    mg[, merge.type.colname] <- NULL
+    mg[ , merge.type.colname] <- NULL
   }
 
   # add back column attributes, X will take precedence over Y in the event of duplicate variables with attributes

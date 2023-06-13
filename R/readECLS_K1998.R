@@ -206,7 +206,7 @@ processECLS_K1998 <- function(files,
       formattedTxt <- matrix(nrow = nrow(dataChunk), ncol = ncol(dataChunk))
 
       for (coli in 1:ncol(dataChunk)) {
-        xCol <- dataChunk[, coli]
+        xCol <- dataChunk[ , coli]
         xCol[xCol == "."] <- NA # remove any null indicators, will be strictly '.' value
         xCol[trimws(xCol, which = "both") == ""] <- NA
 
@@ -257,7 +257,7 @@ processECLS_K1998 <- function(files,
         }
 
         xCol[is.na(xCol)] <- " "
-        formattedTxt[, coli] <- format(xCol, scientific = FALSE, width = fileFormat$Width[coli], justify = "right") # store formatted column into matrix for writing
+        formattedTxt[ , coli] <- format(xCol, scientific = FALSE, width = fileFormat$Width[coli], justify = "right") # store formatted column into matrix for writing
       }
 
       # remove the file if it exists and we are reprocessing

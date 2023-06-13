@@ -48,8 +48,8 @@ readBTLS <- function(dat_FilePath,
       cat(paste0("Processing column ", coli, " of ", ncol(lafObj), "\n"))
     }
     # ensure we have no out of bounds values per the file format specification::this also converts any scientific notation numbers to their full character count
-    colData <- lafObj[, coli]
-    colData <- colData[, 1, drop = TRUE]
+    colData <- lafObj[ , coli]
+    colData <- colData[ , 1, drop = TRUE]
 
     # test the type and precision is what it should be
     if (is.numeric(colData)) {

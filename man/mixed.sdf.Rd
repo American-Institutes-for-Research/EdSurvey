@@ -149,7 +149,7 @@ summary(mix2)
 }
 }
 \references{
-Rabe-Hesketh, S., & Skrondal, A. (2006). Multilevel modeling of complex
+Rabe-Hesketh, S., & Skrondal, A. (2006). Multilevel modelling of complex
 survey data. \emph{Journal of the Royal Statistical Society: Series A
 (Statistics in Society), 169}(4), 805--827.
 }

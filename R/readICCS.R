@@ -747,7 +747,7 @@ processICCS.Student <- function(dataFolderPath, countryCode, fnames, fileYrs, fo
       all.y = FALSE,
       suffixes = c("", ".junk")
     )
-    mm <- mm[, names(mm)[!grepl("\\.junk$", names(mm))]]
+    mm <- mm[ , names(mm)[!grepl("\\.junk$", names(mm))]]
 
     if (nrow(stuDF1) != nrow(mm)) {
       stop(paste0(
@@ -777,7 +777,7 @@ processICCS.Student <- function(dataFolderPath, countryCode, fnames, fileYrs, fo
         all.y = FALSE,
         suffixes = c("", ".junk")
       )
-      mm <- mm[, names(mm)[!grepl("\\.junk$", names(mm))]]
+      mm <- mm[ , names(mm)[!grepl("\\.junk$", names(mm))]]
       if (nrow(stuDF1) != nrow(mm)) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote(paste0(gradeLvlCode, "sr")), " country code ", sQuote(tolower(countryCode)), ". ",
@@ -810,14 +810,14 @@ processICCS.Student <- function(dataFolderPath, countryCode, fnames, fileYrs, fo
         all.y = FALSE,
         suffixes = c("", ".junk")
       )
-      mm <- mm[, names(mm)[!grepl("\\.junk$", names(mm))]]
+      mm <- mm[ , names(mm)[!grepl("\\.junk$", names(mm))]]
       if (nr != nrow(mm)) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote(paste0(gradeLvlCode, "se")), " country code ", sQuote(tolower(countryCode)), ". ",
           "Please email EdSurvey.help@air.org for assistance."
         ))
       }
-      mm <- mm[, names(mm)[!grepl("\\.junk$", names(mm))]]
+      mm <- mm[ , names(mm)[!grepl("\\.junk$", names(mm))]]
     } else {
       idsmm4 <- idsmm3
     }
@@ -838,14 +838,14 @@ processICCS.Student <- function(dataFolderPath, countryCode, fnames, fileYrs, fo
         all.y = FALSE,
         suffixes = c("", ".junk")
       )
-      mm <- mm[, names(mm)[!grepl("\\.junk$", names(mm))]]
+      mm <- mm[ , names(mm)[!grepl("\\.junk$", names(mm))]]
       if (nr != nrow(mm)) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote(paste0(gradeLvlCode, "sl")), " country code ", sQuote(tolower(countryCode)), ". ",
           "Please email EdSurvey.help@air.org for assistance."
         ))
       }
-      mm <- mm[, names(mm)[!grepl("\\.junk$", names(mm))]]
+      mm <- mm[ , names(mm)[!grepl("\\.junk$", names(mm))]]
     } else {
       idsmm5 <- idsmm4
     }
@@ -866,14 +866,14 @@ processICCS.Student <- function(dataFolderPath, countryCode, fnames, fileYrs, fo
         all.y = FALSE,
         suffixes = c("", ".junk")
       )
-      mm <- mm[, names(mm)[!grepl("\\.junk$", names(mm))]]
+      mm <- mm[ , names(mm)[!grepl("\\.junk$", names(mm))]]
       if (nr != nrow(mm)) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote(paste0(gradeLvlCode, "ss")), " country code ", sQuote(tolower(countryCode)), ". ",
           "Please email EdSurvey.help@air.org for assistance"
         ))
       }
-      mm <- mm[, names(mm)[!grepl("\\.junk$", names(mm))]]
+      mm <- mm[ , names(mm)[!grepl("\\.junk$", names(mm))]]
     }
 
     stuFP <- gsub(".sav$", "\\.txt", unlist(fnames[paste0(gradeLvlCode, "sg")])[1], ignore.case = TRUE)
@@ -1173,7 +1173,7 @@ processCivED.Student <- function(dataFolderPath, countryCode, fnames, fileYrs, f
         all.y = FALSE,
         suffixes = c("", ".junk")
       )
-      mm <- mm[, names(mm)[!grepl("\\.junk$", names(mm))]]
+      mm <- mm[ , names(mm)[!grepl("\\.junk$", names(mm))]]
 
       # need to make adjustment to have this file with the 'z' instead of the 't'
       tchFP <- gsub(".sav$", "\\.txt", unlist(fnames[paste0(gradeLvlCode, "t_")])[1], ignore.case = TRUE)

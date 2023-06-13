@@ -981,10 +981,10 @@ processMergeTxt <- function(filepath, LafDictList, countries, ff, database, forc
     if (is2003) {
       # in 2003, alternative merge
       countryDict <- merge(countryDict, all_countries, by.x = "country", by.y = "cnt_index", all.x = TRUE, all.y = FALSE)
-      all_countries <- all_countries[, "cnt", drop = TRUE]
+      all_countries <- all_countries[ , "cnt", drop = TRUE]
     } else {
       countryDict <- merge(countryDict, all_countries, by.x = "cnt", by.y = "cnt_index", all.x = TRUE, all.y = FALSE)
-      all_countries <- all_countries[, "cnt_index", drop = TRUE]
+      all_countries <- all_countries[ , "cnt_index", drop = TRUE]
     }
     countryDict$available[is.na(countryDict$available)] <- FALSE
     write.csv(countryDict, paste0(filepath, "/", database, "_all-countries.txt"), row.names = FALSE)
@@ -1045,7 +1045,7 @@ processMergeTxt <- function(filepath, LafDictList, countries, ff, database, forc
         trim = TRUE
       )
       # get the country
-      cnt <- lafD[, tolower(dict$variableName) == "cnt"]
+      cnt <- lafD[ , tolower(dict$variableName) == "cnt"]
       datai <- lafD[cnt == cntry, ]
       LaF::close(lafD)
       if (nrow(datai) == 0) {
@@ -1060,13 +1060,13 @@ processMergeTxt <- function(filepath, LafDictList, countries, ff, database, forc
           suffixes = c("", ".junk"), all.x = TRUE, all.y = FALSE
         )
         # these variables are duplicate, drop them
-        mainDat <- mainDat[, !grepl(".junk", colnames(mainDat))]
+        mainDat <- mainDat[ , !grepl(".junk", colnames(mainDat))]
       }
     }
     missingcolumns <- setdiff(tolower(ff$fileFormat$variableName), colnames(mainDat))
     if (length(missingcolumns) > 0) {
       for (missingcolumn in missingcolumns) {
-        mainDat[, missingcolumn] <- NA
+        mainDat[ , missingcolumn] <- NA
       }
     }
     if (length(missingcolumns <- setdiff(tolower(ff$fileFormat$variableName), colnames(mainDat))) > 0) {
@@ -1083,7 +1083,7 @@ processMergeTxt <- function(filepath, LafDictList, countries, ff, database, forc
       return(x)
     }
     mainDat <- as.data.frame(lapply(mainDat, maybeTrim), stringsAsFactors = FALSE)
-    mainDat <- mainDat[, tolower(ff$fileFormat$variableName)]
+    mainDat <- mainDat[ , tolower(ff$fileFormat$variableName)]
 
     # write out to CSV file
     write.table(mainDat,
@@ -1364,7 +1364,7 @@ processPISA2015 <- function(filepath, verbose, countries, year) {
       rm(m2)
       var_duplicated_valid <- grep("(senwt|ver_dat)\\.junk", colnames(mm), value = TRUE, ignore.case = TRUE)
       colnames(mm)[which(colnames(mm) %in% var_duplicated_valid)] <- gsub("\\.junk", paste0(".", names(savFileList)[li]), colnames(mm)[which(colnames(mm) %in% var_duplicated_valid)])
-      mm <- mm[, grep("\\.junk", colnames(mm), invert = TRUE, value = TRUE, ignore.case = TRUE)]
+      mm <- mm[ , grep("\\.junk", colnames(mm), invert = TRUE, value = TRUE, ignore.case = TRUE)]
     } # end li
     mm <- cbind("cnt" = cntry, mm)
     colnames(mm) <- tolower(colnames(mm))
@@ -1374,7 +1374,7 @@ processPISA2015 <- function(filepath, verbose, countries, year) {
       colnames(naMa) <- missingcolumns
       mm <- cbind(mm, naMa)
     }
-    mm <- mm[, tolower(ff$variableName)]
+    mm <- mm[ , tolower(ff$variableName)]
     ## Exporting dat and ff txt file
     for (i in 1:ncol(mm)) {
       if (is.numeric(mm[[i]])) {
@@ -1508,7 +1508,7 @@ readDict2015 <- function(l, year) {
 
 validateFileFormat_PISA_2015 <- function(df, fileFormat) {
   idx <- which(tolower(fileFormat$dataType) == "integer", arr.ind = TRUE) # only scan integers to see if they are numeric (i.e., have a decimal period)
-  tempDF <- df[, idx]
+  tempDF <- df[ , idx]
 
   res <- unlist(lapply(tempDF, valid.integer))
 
@@ -1567,7 +1567,7 @@ getMasterDTList <- function(filepath, x, countryDict) {
       # otherwise have to start with the garbage before cnt_index and throw it out
       laf0 <- laf_open_fwf(fname, column_types = c("character", "character"), column_widths = c(v1 - 1, v2 - v1 + 1), column_names = c("notused", "cnt_index"))
     }
-    text <- laf0[, "cnt_index", drop = FALSE]
+    text <- laf0[ , "cnt_index", drop = FALSE]
     LaF::close(laf0)
   } else {
     # PISA 2003 uses "COUNTRY" on countryDict (a numeric), and doesn't have "CNT" so use "but also has "CNT", so grab both
@@ -1575,7 +1575,7 @@ getMasterDTList <- function(filepath, x, countryDict) {
     v4 <- x$dict$End[tolower(x$dict$variableName) %in% c("country")]
     # LaF can handle a width of 0
     laf0 <- laf_open_fwf(fname, column_types = c("character", "character"), column_widths = c(3, 3), column_names = c("cnt_index", "cnt"))
-    text <- laf0[, c("cnt_index", "cnt"), drop = FALSE]
+    text <- laf0[ , c("cnt_index", "cnt"), drop = FALSE]
     LaF::close(laf0)
   }
   return(text)
@@ -1802,7 +1802,7 @@ processPISA2018_FIN <- function(filepath, verbose, countries, year) {
       rm(m2)
       var_duplicated_valid <- grep("(senwt|ver_dat)\\.junk", colnames(mm), value = TRUE, ignore.case = TRUE)
       colnames(mm)[which(colnames(mm) %in% var_duplicated_valid)] <- gsub("\\.junk", paste0(".", names(savFileList)[li]), colnames(mm)[which(colnames(mm) %in% var_duplicated_valid)])
-      mm <- mm[, grep("\\.junk", colnames(mm), invert = TRUE, value = TRUE, ignore.case = TRUE)]
+      mm <- mm[ , grep("\\.junk", colnames(mm), invert = TRUE, value = TRUE, ignore.case = TRUE)]
     } # end li
     mm <- cbind("cnt" = cntry, mm)
     colnames(mm) <- tolower(colnames(mm))
@@ -1812,7 +1812,7 @@ processPISA2018_FIN <- function(filepath, verbose, countries, year) {
       colnames(naMa) <- missingcolumns
       mm <- cbind(mm, naMa)
     }
-    mm <- mm[, tolower(ff$variableName)]
+    mm <- mm[ , tolower(ff$variableName)]
     ## Exporting dat and ff txt file
     for (i in 1:ncol(mm)) {
       if (is.numeric(mm[[i]])) {

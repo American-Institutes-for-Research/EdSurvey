@@ -424,7 +424,7 @@ process_ePIRLS <- function(dataFolderPath, countryCode, fnames, fileYrs, forceRe
       all.y = FALSE,
       suffixes = c("", ".junk")
     )
-    mm <- mm[, names(mm)[!grepl("\\.junk$", names(mm))]]
+    mm <- mm[ , names(mm)[!grepl("\\.junk$", names(mm))]]
 
     if (nrow(stuDF1) != nrow(mm)) {
       stop(paste0(
@@ -454,7 +454,7 @@ process_ePIRLS <- function(dataFolderPath, countryCode, fnames, fileYrs, forceRe
         all.y = FALSE,
         suffixes = c("", ".junk")
       )
-      mm <- mm[, names(mm)[!grepl("\\.junk$", names(mm))]]
+      mm <- mm[ , names(mm)[!grepl("\\.junk$", names(mm))]]
       if (nrow(stuDF1) != nrow(mm)) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote("ash"), " country code ", sQuote(tolower(countryCode)), ". ",
@@ -492,14 +492,14 @@ process_ePIRLS <- function(dataFolderPath, countryCode, fnames, fileYrs, forceRe
         all.y = FALSE,
         suffixes = c("", ".junk")
       )
-      mm <- mm[, names(mm)[!grepl("\\.junk$", names(mm))]]
+      mm <- mm[ , names(mm)[!grepl("\\.junk$", names(mm))]]
       if (nr != nrow(mm)) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote("asr"), " country code ", sQuote(tolower(countryCode)), ". ",
           "Please email EdSurvey.help@air.org for assistance."
         ))
       }
-      mm <- mm[, names(mm)[!grepl("\\.junk$", names(mm))]]
+      mm <- mm[ , names(mm)[!grepl("\\.junk$", names(mm))]]
     }
 
     stuFP <- gsub(".sav$", "\\.txt", unlist(fnames["asg"])[1], ignore.case = TRUE)
@@ -529,7 +529,7 @@ process_ePIRLS <- function(dataFolderPath, countryCode, fnames, fileYrs, forceRe
       all.y = FALSE,
       suffixes = c("", ".junk")
     )
-    mm <- mm[, names(mm)[!grepl("\\.junk$", names(mm))]]
+    mm <- mm[ , names(mm)[!grepl("\\.junk$", names(mm))]]
 
     if (nrow(stuTeachDF) != nrow(mm)) {
       stop(paste0(

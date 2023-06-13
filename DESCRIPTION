@@ -1,6 +1,6 @@
 Package: EdSurvey
-Version: 4.0.0
-Date: 2023-06-07
+Version: 4.0.1
+Date: 2023-06-12
 Title: Analysis of NCES Education Survey and Assessment Data
 Authors@R: c(
         person("Paul","Bailey",,"pbailey@air.org",role=c("aut","cre"), 
@@ -51,7 +51,7 @@ Note: This publication was prepared for NCES under Contract No.
         does not imply endorsement by the U.S. Government.
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2023-06-07 22:52:04 UTC; pbailey
+Packaged: 2023-06-13 14:50:10 UTC; pbailey
 Author: Paul Bailey [aut, cre] (<https://orcid.org/0000-0003-0989-8729>),
   Ahmad Emad [aut],
   Huade Huo [aut] (<https://orcid.org/0009-0004-5014-646X>),

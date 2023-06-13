@@ -771,7 +771,7 @@ processTIMSSGr4 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
       showWarnings = FALSE
     )
     mm <- mmRes$data
-    mm <- mm[, names(mm)[!grepl(colDropRegex, names(mm), ignore.case = TRUE)]]
+    mm <- mm[ , names(mm)[!grepl(colDropRegex, names(mm), ignore.case = TRUE)]]
     okFlag <- (mmRes$list$merge.type.table[3] > 0)
 
     if (verbose) {
@@ -820,7 +820,7 @@ processTIMSSGr4 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
       )
 
       mm <- mmRes$data
-      mm <- mm[, names(mm)[!grepl(colDropRegex, names(mm), ignore.case = TRUE)]]
+      mm <- mm[ , names(mm)[!grepl(colDropRegex, names(mm), ignore.case = TRUE)]]
       okFlag <- (mmRes$list$merge.type.table[3] > 0)
 
       if (verbose) {
@@ -870,7 +870,7 @@ processTIMSSGr4 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
         showWarnings = FALSE
       )
       mm <- mmRes$data
-      mm <- mm[, names(mm)[!grepl(colDropRegex, names(mm), ignore.case = TRUE)]]
+      mm <- mm[ , names(mm)[!grepl(colDropRegex, names(mm), ignore.case = TRUE)]]
       okFlag <- (mmRes$list$merge.type.table[3] > 0)
 
       if (verbose) {
@@ -956,7 +956,7 @@ processTIMSSGr4 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
       showWarnings = FALSE
     )
     mm <- mmRes$data
-    mm <- mm[, names(mm)[!grepl(colDropRegex, names(mm), ignore.case = TRUE)]]
+    mm <- mm[ , names(mm)[!grepl(colDropRegex, names(mm), ignore.case = TRUE)]]
     okFlag <- (mmRes$list$merge.type.table[3] > 0)
 
     if (verbose) {
@@ -1168,7 +1168,7 @@ processTIMSSGr8 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
       showWarnings = FALSE
     )
     mm <- mmRes$data
-    mm <- mm[, names(mm)[!grepl(colDropRegex, names(mm), ignore.case = TRUE)]]
+    mm <- mm[ , names(mm)[!grepl(colDropRegex, names(mm), ignore.case = TRUE)]]
     okFlag <- (mmRes$list$merge.type.table[3] > 0)
 
     if (verbose) {
@@ -1218,7 +1218,7 @@ processTIMSSGr8 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
       )
 
       mm <- mmRes$data
-      mm <- mm[, names(mm)[!grepl(colDropRegex, names(mm), ignore.case = TRUE)]]
+      mm <- mm[ , names(mm)[!grepl(colDropRegex, names(mm), ignore.case = TRUE)]]
       okFlag <- (mmRes$list$merge.type.table[3] > 0)
 
       if (verbose) {
@@ -1314,7 +1314,7 @@ processTIMSSGr8 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
     )
 
     mm <- mmRes$data
-    mm <- mm[, names(mm)[!grepl(colDropRegex, names(mm), ignore.case = TRUE)]]
+    mm <- mm[ , names(mm)[!grepl(colDropRegex, names(mm), ignore.case = TRUE)]]
     okFlag <- (mmRes$list$merge.type.table[3] > 0)
 
     if (verbose) {
@@ -1370,7 +1370,7 @@ processTIMSSGr8 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
     )
 
     mm <- mmRes$data
-    mm <- mm[, names(mm)[!grepl(colDropRegex, names(mm), ignore.case = TRUE)]]
+    mm <- mm[ , names(mm)[!grepl(colDropRegex, names(mm), ignore.case = TRUE)]]
     okFlag <- (mmRes$list$merge.type.table[3] > 0)
 
     if (verbose) {
@@ -1508,10 +1508,10 @@ writeTibbleToFWFReturnFileFormat <- function(spssDF, outF, jkType = c("JK2", "JK
     jkzonec <- grep(testJKZone[iWgt], fileFormat$variableName, ignore.case = TRUE, value = TRUE)
 
     if (length(wgtc) == 1 && length(jkrepc) == 1 && length(jkzonec) == 1) {
-      weight <- data.frame(spssDF[, wgtc, drop = FALSE])
-      jkrep <- data.frame(spssDF[, jkrepc, drop = FALSE])
-      jkzone <- data.frame(spssDF[, jkzonec, drop = FALSE])
-      ujkz <- sort(unique(jkzone[, 1]))
+      weight <- data.frame(spssDF[ , wgtc, drop = FALSE])
+      jkrep <- data.frame(spssDF[ , jkrepc, drop = FALSE])
+      jkzone <- data.frame(spssDF[ , jkzonec, drop = FALSE])
+      ujkz <- sort(unique(jkzone[ , 1]))
 
       # JK2 is the default, this applies to TIMSS, TIMSSAdv, and PIRLS
       # JK2 and JK1 differ by how the replicate weights are constructed
@@ -1523,10 +1523,10 @@ writeTibbleToFWFReturnFileFormat <- function(spssDF, outF, jkType = c("JK2", "JK
           jkw <- weight
           jkw[jkzone == i & jkrep == 0] <- 0
           jkw[jkzone == i & jkrep == 1] <- 2 * jkw[jkzone == i & jkrep == 1]
-          jkw[is.na(jkw[, 1]), 1] <- 0 # turn any NAs to a zero value
+          jkw[is.na(jkw[ , 1]), 1] <- 0 # turn any NAs to a zero value
 
           # add it to the fileFormat and the data
-          spssDF <- cbind(spssDF, jkw[, 1])
+          spssDF <- cbind(spssDF, jkw[ , 1])
           ffAppend <- subset(fileFormat, fileFormat$variableName == wgtc)
           ffAppend$variableName <- coli
           ffAppend$Labels <- paste0(ffAppend$Labels, " - ", coli)
@@ -1538,10 +1538,10 @@ writeTibbleToFWFReturnFileFormat <- function(spssDF, outF, jkType = c("JK2", "JK
           jkw <- weight
           jkw[jkzone == i & jkrep == 0] <- 2 * jkw[jkzone == i & jkrep == 0]
           jkw[jkzone == i & jkrep == 1] <- 0
-          jkw[is.na(jkw[, 1]), 1] <- 0 # turn any NAs to a zero value
+          jkw[is.na(jkw[ , 1]), 1] <- 0 # turn any NAs to a zero value
 
           # add it to the fileFormat and data
-          spssDF <- cbind(spssDF, jkw[, 1])
+          spssDF <- cbind(spssDF, jkw[ , 1])
           ffAppend <- subset(fileFormat, fileFormat$variableName == wgtc)
           ffAppend$variableName <- coli
           ffAppend$Labels <- paste0(ffAppend$Labels, " - ", coli)
@@ -1556,10 +1556,10 @@ writeTibbleToFWFReturnFileFormat <- function(spssDF, outF, jkType = c("JK2", "JK
           jkw <- weight
           jkw[jkzone == i & jkrep == 0] <- 0
           jkw[jkzone == i & jkrep == 1] <- 2 * jkw[jkzone == i & jkrep == 1]
-          jkw[is.na(jkw[, 1]), 1] <- 0 # turn any NAs to a zero value
+          jkw[is.na(jkw[ , 1]), 1] <- 0 # turn any NAs to a zero value
 
           # add it to the fileFormat and data
-          spssDF <- cbind(spssDF, jkw[, 1])
+          spssDF <- cbind(spssDF, jkw[ , 1])
           ffAppend <- subset(fileFormat, fileFormat$variableName == wgtc)
           ffAppend$variableName <- coli
           ffAppend$Labels <- paste0(ffAppend$Labels, " - ", coli)
@@ -1859,7 +1859,7 @@ processTIMSS4AndNumeracy <- function(dataFolderPath, countryCode, fnames, fnames
     )
 
     mm <- mmRes$data
-    mm <- mm[, names(mm)[!grepl(colDropRegex, names(mm), ignore.case = TRUE)]]
+    mm <- mm[ , names(mm)[!grepl(colDropRegex, names(mm), ignore.case = TRUE)]]
     okFlag <- (mmRes$list$merge.type.table[3] > 0)
 
     if (verbose) {
@@ -1926,7 +1926,7 @@ processTIMSS4AndNumeracy <- function(dataFolderPath, countryCode, fnames, fnames
         showWarnings = FALSE
       )
       mm <- mmRes$data
-      mm <- mm[, names(mm)[!grepl(colDropRegex, names(mm), ignore.case = TRUE)]]
+      mm <- mm[ , names(mm)[!grepl(colDropRegex, names(mm), ignore.case = TRUE)]]
       okFlag <- (mmRes$list$merge.type.table[3] > 0)
 
       if (verbose) {
@@ -1993,7 +1993,7 @@ processTIMSS4AndNumeracy <- function(dataFolderPath, countryCode, fnames, fnames
         showWarnings = FALSE
       )
       mm <- mmRes$data
-      mm <- mm[, names(mm)[!grepl(colDropRegex, names(mm), ignore.case = TRUE)]]
+      mm <- mm[ , names(mm)[!grepl(colDropRegex, names(mm), ignore.case = TRUE)]]
       okFlag <- (mmRes$list$merge.type.table[3] > 0)
 
       if (verbose) {
@@ -2088,7 +2088,7 @@ processTIMSS4AndNumeracy <- function(dataFolderPath, countryCode, fnames, fnames
       showWarnings = FALSE
     )
     mm <- mmRes$data
-    mm <- mm[, names(mm)[!grepl(colDropRegex, names(mm), ignore.case = TRUE)]]
+    mm <- mm[ , names(mm)[!grepl(colDropRegex, names(mm), ignore.case = TRUE)]]
     okFlag <- (mmRes$list$merge.type.table[3] > 0)
 
     if (verbose) {
@@ -2339,11 +2339,11 @@ appendIRTAttributes_TIMSS <- function(path, esdf) {
     # for testDat, average the location and scale
     testData <- aggregate(. ~ subject, transformations, mean)
 
-    testData <- testData[, 1:3]
+    testData <- testData[ , 1:3]
     colnames(testData) <- c("test", "location", "scale")
     testData$subtest <- NA
     # organize correctly
-    testData <- testData[, c("test", "subtest", "location", "scale")]
+    testData <- testData[ , c("test", "subtest", "location", "scale")]
     mathSubtests <- with(
       dichotParamTab[dichotParamTab$test == "mmat", ],
       unique(c(content_subtest, cognitive_subtest))

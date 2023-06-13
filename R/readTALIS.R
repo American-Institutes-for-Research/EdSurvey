@@ -160,12 +160,12 @@ readTALIS <- function(path,
       processedData$defaultConditions <- NULL
 
       # Set up weights
-      uklz <- unique(processedData$dataListFF$teacher[, "pvWT"])
+      uklz <- unique(processedData$dataListFF$teacher[ , "pvWT"])
       uklz <- max(as.integer(uklz[uklz != "" & !is.na(uklz)]))
       weights <- list(tchwgt = list(jkbase = "trwgt", jksuffixes = as.character(1:uklz)))
 
       # 2. school-level weights
-      uklz <- unique(processedData$dataListFF$school[, "pvWT"])
+      uklz <- unique(processedData$dataListFF$school[ , "pvWT"])
       uklz <- max(as.integer(uklz[uklz != "" & !is.na(uklz)]))
       weights$schwgt <- list(jkbase = "srwgt", jksuffixes = as.character(1:uklz))
 
@@ -324,15 +324,15 @@ processReturnFFormat <- function(filepath, isced) {
     options(stringsAsFactors = FALSE)
     countryDict <- data.frame(do.call("rbind", temp))
     colnames(countryDict) <- c("idcntry", "country.name")
-    countryDict <- merge(countryDict, unique(teacherDF[, c("IDCNTRY", "CNTRY")]), by.x = "idcntry", by.y = "IDCNTRY", all.x = FALSE, all.y = TRUE)
+    countryDict <- merge(countryDict, unique(teacherDF[ , c("IDCNTRY", "CNTRY")]), by.x = "idcntry", by.y = "IDCNTRY", all.x = FALSE, all.y = TRUE)
     colnames(countryDict) <- tolower(colnames(countryDict))
   } else { # TALIS 2008 does not have CNTRY variable
     temp <- strsplit(unlist(strsplit(fftch$labelValues[fftch$variableName == "IDCNTRY"], "\\^")), "=")
     options(stringsAsFactors = FALSE)
     countryDict <- data.frame(do.call("rbind", temp))
     colnames(countryDict) <- c("idcntry", "country.name")
-    if (all(grepl(" - ", countryDict[, "country.name"], ignore.case = TRUE))) {
-      temp <- strsplit(countryDict[, "country.name"], " - ")
+    if (all(grepl(" - ", countryDict[ , "country.name"], ignore.case = TRUE))) {
+      temp <- strsplit(countryDict[ , "country.name"], " - ")
       tempDF <- data.frame(do.call("rbind", temp))
       colnames(tempDF) <- c("cntry", "country.name")
       countryDict <- cbind(idcntry = countryDict$idcntry, tempDF)
@@ -459,7 +459,7 @@ returnFF <- function(spssDF) {
   }
 
   if ("CNTRY" %in% ff$variableName) {
-    countryLookup <- unique(spssDF[, c("CNTRY", "IDCNTRY")])
+    countryLookup <- unique(spssDF[ , c("CNTRY", "IDCNTRY")])
     replacementText <- as.character(countryLookup$CNTRY)
     names(replacementText) <- as.character(countryLookup$IDCNTRY)
     temp <- gsub(pattern = names(replacementText)[1], replacement = replacementText[1], x = ff$labelValues[ff$variableName == "IDCNTRY"], ignore.case = TRUE)
@@ -498,7 +498,7 @@ returnFF <- function(spssDF) {
 
 # write out csv files from a tibble with variable names in order with fileFormat
 writeFWF <- function(spssDF, outF, ff) {
-  spssDF <- spssDF[, ff$variableName]
+  spssDF <- spssDF[ , ff$variableName]
 
   charIdx <- which(tolower(ff$dataType) == "character", arr.ind = TRUE)
 

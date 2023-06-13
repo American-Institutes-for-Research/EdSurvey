@@ -696,7 +696,7 @@ gap <- function(variable, data, groupA = "default", groupB = "default",
           # for the first j value only, grab the percent
           if (j == 1) {
             for (ii in 1:ncol(resi$percentage)) {
-              pctdf0[i, colnames(resi$percentage)[ii]] <- resi$percentage[, ii]
+              pctdf0[i, colnames(resi$percentage)[ii]] <- resi$percentage[ , ii]
               if (i != refi) {
                 pctdf0$dofAA[i] <- dofCompute((resi$percentage)$pctAse, pctdf0[refi, "pctAse"], (resi$percentage)[["dofA"]], pctdf0[refi, "dofA"])
                 if (!skipB) {
@@ -855,7 +855,7 @@ gap <- function(variable, data, groupA = "default", groupB = "default",
       if ("sameSurvey" %in% names(resdf0) && sum(!is.na(resdf0$sameSurvey)) > 0) {
         resvar <- c(resvar, "sameSurvey")
       }
-      resdf0 <- resdf0[, resvar]
+      resdf0 <- resdf0[ , resvar]
       # remove "estimate" with "pct" where "estimate" must start the variable name
       resvar <- gsub("^estimate", "pct", resvar0)
       if (returnSimpleN) {
@@ -872,7 +872,7 @@ gap <- function(variable, data, groupA = "default", groupB = "default",
           resvar <- c(resvar, "nPSUA")
         }
       }
-      pctdf0 <- pctdf0[, resvar]
+      pctdf0 <- pctdf0[ , resvar]
     } else { # end  if(nocovs)
       # reorder columns when there are covs
       if (returnSimpleDoF) {
@@ -918,7 +918,7 @@ gap <- function(variable, data, groupA = "default", groupB = "default",
       if ("sameSurvey" %in% names(resdf0) && sum(!is.na(resdf0$sameSurvey)) > 0) {
         resvar <- c(resvar, "sameSurvey")
       }
-      resdf0 <- resdf0[, resvar]
+      resdf0 <- resdf0[ , resvar]
       resvar <- gsub("^estimate", "pct", resvar0)
       missing <- resvar[!resvar %in% names(pctdf0)]
       if (returnSimpleN) {
@@ -928,7 +928,7 @@ gap <- function(variable, data, groupA = "default", groupB = "default",
           resvar <- c(resvar, "nA")
         }
       }
-      pctdf0 <- pctdf0[, resvar]
+      pctdf0 <- pctdf0[ , resvar]
     } # end else  if(nocovs)
     res[["results"]] <- resdf0
     res[["percentage"]] <- pctdf0
@@ -1585,27 +1585,27 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
     dA <- do.call(getData, wgtcallA)
     wgtcallB <- c(callv, list(data = dataB))
     dB <- do.call(getData, wgtcallB)
-    pctA <- sum(dA[, wgt]) / sum(d0[, wgt])
-    pctB <- sum(dB[, wgt]) / sum(d0[, wgt])
+    pctA <- sum(dA[ , wgt]) / sum(d0[ , wgt])
+    pctB <- sum(dB[ , wgt]) / sum(d0[ , wgt])
     # calculate covAB using JK method
     wgtl <- getAttributes(data, "weights")[[wgt]]
     pctJK <- t(sapply(wgtl$jksuffixes, function(suffix) {
-      w0 <- sum(d0[, paste0(wgtl$jkbase, suffix)])
-      wA <- sum(dA[, paste0(wgtl$jkbase, suffix)])
-      wB <- sum(dB[, paste0(wgtl$jkbase, suffix)])
+      w0 <- sum(d0[ , paste0(wgtl$jkbase, suffix)])
+      wA <- sum(dA[ , paste0(wgtl$jkbase, suffix)])
+      wB <- sum(dB[ , paste0(wgtl$jkbase, suffix)])
       c(pctA = wA / w0, pctB = wB / w0)
     }))
-    seA <- 100 * sqrt(getAttributes(data, "jkSumMultiplier") * sum((pctJK[, 1] - pctA)^2))
-    seB <- 100 * sqrt(getAttributes(data, "jkSumMultiplier") * sum((pctJK[, 2] - pctB)^2))
+    seA <- 100 * sqrt(getAttributes(data, "jkSumMultiplier") * sum((pctJK[ , 1] - pctA)^2))
+    seB <- 100 * sqrt(getAttributes(data, "jkSumMultiplier") * sum((pctJK[ , 2] - pctB)^2))
     varJK <- data.frame(
       stringsAsFactors = FALSE,
       PV = rep(0, 3 * nrow(pctJK)),
       JKreplicate = rep(1:nrow(pctJK), 3),
       variable = rep(c("A", "B", "A-B"), each = nrow(pctJK)),
       value = c(
-        pctJK[, 1] - pctA,
-        pctJK[, 2] - pctB,
-        (pctJK[, 1] - pctA) - (pctJK[, 2] - pctB)
+        pctJK[ , 1] - pctA,
+        pctJK[ , 2] - pctB,
+        (pctJK[ , 1] - pctA) - (pctJK[ , 2] - pctB)
       )
     )
     # there is no PV here because weights are not imputed
@@ -1727,8 +1727,8 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
       percentage = percentage
     )
     if (returnNumberOfPSU) {
-      lst$labels$nPSUA <- nrow(unique(dA[, c(getAttributes(dataA, "stratumVar"), getAttributes(dataA, "psuVar"))]))
-      lst$labels$nPSUB <- nrow(unique(dB[, c(getAttributes(dataB, "stratumVar"), getAttributes(dataB, "psuVar"))]))
+      lst$labels$nPSUA <- nrow(unique(dA[ , c(getAttributes(dataA, "stratumVar"), getAttributes(dataA, "psuVar"))]))
+      lst$labels$nPSUB <- nrow(unique(dB[ , c(getAttributes(dataB, "stratumVar"), getAttributes(dataB, "psuVar"))]))
     }
   } else { # end if(!skipB)
     wgtl <- getAttributes(data, "weights")[[wgt]]
@@ -1785,19 +1785,19 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
     d0 <- do.call(getData, wgtcall0)
     wgtcallA <- c(callv, list(data = dataA))
     dA <- do.call(getData, wgtcallA)
-    pctA <- sum(dA[, wgt]) / sum(d0[, wgt])
+    pctA <- sum(dA[ , wgt]) / sum(d0[ , wgt])
     pctJK <- t(sapply(wgtl$jksuffixes, function(suffix) {
-      w0 <- sum(d0[, paste0(wgtl$jkbase, suffix)])
-      wA <- sum(dA[, paste0(wgtl$jkbase, suffix)])
+      w0 <- sum(d0[ , paste0(wgtl$jkbase, suffix)])
+      wA <- sum(dA[ , paste0(wgtl$jkbase, suffix)])
       c(pctA = wA / w0, pctB = 0)
     }))
-    seA <- 100 * sqrt(getAttributes(data, "jkSumMultiplier") * sum((pctJK[, 1] - pctA)^2))
+    seA <- 100 * sqrt(getAttributes(data, "jkSumMultiplier") * sum((pctJK[ , 1] - pctA)^2))
     varJK <- data.frame(
       stringsAsFactors = FALSE,
       PV = rep(0, nrow(pctJK)),
       JKreplicate = 1:nrow(pctJK),
       variable = "A",
-      value = pctJK[, 1] - pctA
+      value = pctJK[ , 1] - pctA
     )
     # there is no PV here because weights are not imputed
     pctVarEstInputs <- list(JK = varJK, PV = NULL)
@@ -1861,7 +1861,7 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
       if (getAttributes(dA, "stratumVar") %in% "JK1") {
         lst$labels$nPSUA <- nrow(dA)
       } else {
-        lst$labels$nPSUA <- nrow(dA[, c(getAttributes(dA, "stratumVar"), getAttributes(dA, "psuVar"))])
+        lst$labels$nPSUA <- nrow(dA[ , c(getAttributes(dA, "stratumVar"), getAttributes(dA, "psuVar"))])
       }
       lst$labels$nPSUB <- NA
     }

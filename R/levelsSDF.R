@@ -44,12 +44,10 @@ levelsSDF <- function(varnames, data, showOmitted = TRUE, showN = TRUE) {
     labelsFile$labelValues <- gsub("\\; ", "^", labelsFile$labelValues)
   } else {
     varnames <- toupper(varnames)
-    labelsFile <- do.call("rbind", lapply(
-      data$dataList,
-      function(dl) {
-        dl$fileFormat
-      }
-    ))
+    labelsFile <- do.call('rbind', lapply(data$dataList, function(dl){
+                                          ff <- dl$fileFormat
+                                          ff$fileFormat <- dl$levelLabel
+                                          subset(ff, !(variableName %in% dl$ignoreVars))}))
   }
   labelsFile$variableName <- toupper(labelsFile$variableName)
   vars <- subset(labelsFile, labelsFile$variableName %in% varnames)
@@ -167,7 +165,7 @@ levelsSDF <- function(varnames, data, showOmitted = TRUE, showN = TRUE) {
       if (nrow(levelsData[[x]]) == 0) {
         return(levelsData[[x]])
       } else {
-        ns <- table(dat[, x])
+        ns <- table(dat[ , x])
         ld <- levelsData[[x]]
         ld$n <- 0
         for (i in 1:nrow(ld)) {

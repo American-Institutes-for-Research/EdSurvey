@@ -230,23 +230,23 @@ edsurveyTable <- function(formula,
 
     for (i in 1:ncol(data$covs)) {
       # copy over this column from covs
-      cmbD[, colnames(data$covs)[i]] <- rep(data$covs[listi, i], nrow(cmbD))
+      cmbD[ , colnames(data$covs)[i]] <- rep(data$covs[listi, i], nrow(cmbD))
       cnames <- c(colnames(data$covs)[i], cnames)
     }
     # reorder columns so covs come first
-    cmbDi <- cmbD0 <- cmbD <- cmbD[, cnames]
+    cmbDi <- cmbD0 <- cmbD <- cmbD[ , cnames]
     # we need these for NULL data
     rhs_vars <- all.vars(formula[[3]])
     for (listi in 1:length(labels)) {
       if (!is.null(res2[[labels[listi]]])) {
         cmbDi <- (res2[[labels[listi]]])$data
         for (i in 1:ncol(data$covs)) {
-          cmbDi[, colnames(data$covs)[i]] <- rep(data$covs[listi, i], nrow(cmbDi))
+          cmbDi[ , colnames(data$covs)[i]] <- rep(data$covs[listi, i], nrow(cmbDi))
         }
         if (listi == 1) {
-          cmbD <- cmbDi[, cnames]
+          cmbD <- cmbDi[ , cnames]
         } else {
-          cmbD <- rbind(cmbD, cmbDi[, cnames])
+          cmbD <- rbind(cmbD, cmbDi[ , cnames])
         }
       } else {
         # res is NULL
@@ -254,24 +254,24 @@ edsurveyTable <- function(formula,
         for (i in 1:ncol(cmbDi)) {
           # leave in RHS variables
           if (!colnames(cmbDi)[i] %in% rhs_vars) {
-            cmbDi[, i] <- NA
+            cmbDi[ , i] <- NA
           }
         }
         # add covs data back
         for (i in 1:ncol(data$covs)) {
-          cmbDi[, colnames(data$covs)[i]] <- rep(data$covs[listi, i], nrow(cmbDi))
+          cmbDi[ , colnames(data$covs)[i]] <- rep(data$covs[listi, i], nrow(cmbDi))
         }
         if (listi == 1) {
-          cmbD <- cmbDi[, cnames]
+          cmbD <- cmbDi[ , cnames]
         } else {
-          cmbD <- rbind(cmbD, cmbDi[, cnames])
+          cmbD <- rbind(cmbD, cmbDi[ , cnames])
         }
       }
     }
     # add column labels back
     for (i in 1:ncol(cmbD)) {
-      # note, this works even if attributes(cmbD0[,i])$label is NULL
-      attr(cmbD[, i], "label") <- attributes(cmbD0[, i])$label
+      # note, this works even if attributes(cmbD0[ ,i])$label is NULL
+      attr(cmbD[ , i], "label") <- attributes(cmbD0[ , i])$label
     }
     cmbRes$data <- cmbD
     cmbRes$n0 <- NA
@@ -433,19 +433,19 @@ calcEdsurveyTable <- function(formula,
     ))
   }
   # remove rows with NA weights
-  if (any(is.na(edf[, wgt]))) {
-    warning(paste0("Removing ", sum(is.na(edf[, wgt])), " rows with NA weights from analysis."))
-    edf <- edf[!is.na(edf[, wgt]), ]
+  if (any(is.na(edf[ , wgt]))) {
+    warning(paste0("Removing ", sum(is.na(edf[ , wgt])), " rows with NA weights from analysis."))
+    edf <- edf[!is.na(edf[ , wgt]), ]
   }
   # drop rows with 0 weights
-  if ((returnMeans | returnSepct) & any(edf[, wgt] <= 0)) {
-    warning(paste0("Removing ", sum(!(edf[, wgt] > 0)), " rows with 0 weight from analysis."))
-    edf <- edf[edf[, wgt] > 0, ]
+  if ((returnMeans | returnSepct) & any(edf[ , wgt] <= 0)) {
+    warning(paste0("Removing ", sum(!(edf[ , wgt] > 0)), " rows with 0 weight from analysis."))
+    edf <- edf[edf[ , wgt] > 0, ]
   }
   # drop rows with missing outcomes, but only if showing means
-  if (returnMeans && any(is.na(edf[, yvar0]))) {
-    warning(paste0("Removing ", sum(is.na(edf[, yvar0])), " rows with missing scale score from analysis."))
-    edf <- edf[!is.na(edf[, yvar0]), ]
+  if (returnMeans && any(is.na(edf[ , yvar0]))) {
+    warning(paste0("Removing ", sum(is.na(edf[ , yvar0])), " rows with missing scale score from analysis."))
+    edf <- edf[!is.na(edf[ , yvar0]), ]
   }
   # keep only valid data
   for (var in rhs_vars) {
@@ -465,7 +465,7 @@ calcEdsurveyTable <- function(formula,
     pctVarEstInputsJK <- NULL
     res <- data.frame(
       "N" = nrow(edf),
-      "WTD_N" = sumna(edf[, wgt]),
+      "WTD_N" = sumna(edf[ , wgt]),
       "PCT" = 100.00
     )
     if (nrow(edf) > 0) {
@@ -521,7 +521,7 @@ calcEdsurveyTable <- function(formula,
   else {
     ## 3) build the output
     # this makes the n sizes and RHS variables in a table
-    n <- ftable(edf[, rhs_vars, drop = FALSE])
+    n <- ftable(edf[ , rhs_vars, drop = FALSE])
     res <- data.frame(n)
 
     # if length(rhs_vars) is 1, then the names do not get assigned correctly. Fix that.
@@ -532,8 +532,8 @@ calcEdsurveyTable <- function(formula,
 
     # rename the last column to WTD_N
     last_column <- names(wtdn)[length(names(wtdn))]
-    wtdn$WTD_N <- wtdn[, last_column]
-    wtdn[, last_column] <- NULL
+    wtdn$WTD_N <- wtdn[ , last_column]
+    wtdn[ , last_column] <- NULL
     # add the column WTD_N to the result table by merging it on
     res <- merge(res, wtdn, by = rhs_vars, sort = FALSE, all.x = TRUE)
     res$WTD_N[res$N %in% 0] <- 0
@@ -549,7 +549,7 @@ calcEdsurveyTable <- function(formula,
       res <- merge(res, twt, by = rhs_vars[1:pctAggregationLevel], all.x = TRUE)
     }
     # calculate the percent
-    res["PCT"] <- res[, "WTD_N"] / res[, "twt"] * 100
+    res["PCT"] <- res[ , "WTD_N"] / res[ , "twt"] * 100
     res[["PCT"]][is.nan(res[["PCT"]])] <- NA
     # make containers for these variables
     pctVarEstInputs <- NULL
@@ -587,7 +587,7 @@ calcEdsurveyTable <- function(formula,
             if (jki == 1) {
               wtdn_ <- wtdn
               for (ii in 1:length(rhs_vars)) {
-                wtdn_[, rhs_vars[ii]] <- as.character(wtdn[, rhs_vars[ii]])
+                wtdn_[ , rhs_vars[ii]] <- as.character(wtdn[ , rhs_vars[ii]])
               }
               level_ <- c()
               for (i in 1:nrow(wtdn)) {
@@ -616,14 +616,14 @@ calcEdsurveyTable <- function(formula,
           100 * sqrt(getAttributes(data, "jkSumMultiplier") * wtdnvar)
         )
         names(wtdndf)[1] <- "SE(PCT)"
-        wtdndf[, rhs_vars] <- wtdn[, rhs_vars]
+        wtdndf[ , rhs_vars] <- wtdn[ , rhs_vars]
         res <- merge(res, wtdndf, by = rhs_vars, sort = FALSE, all.x = TRUE)
       } else { # Taylor series based method
         if (is.null(getPSUVar(data, weightVar = wgt)) & is.null(getStratumVar(data, weightVar = wgt))) {
           stop("For Taylor series the PSU and stratum variables must be defined.")
         }
 
-        res_no0[, "SE(PCT)"] <- NA
+        res_no0[ , "SE(PCT)"] <- NA
         # for every group (row of the table)
         sapply(unique(res_no0$group), function(z) {
           # get the Taylor series SE for this row of the table
@@ -635,19 +635,19 @@ calcEdsurveyTable <- function(formula,
             datai <- edf
             if (pctAggregationLevel > 0) {
               for (i in 1:pctAggregationLevel) {
-                datai$rhsi <- datai[, rhs_vars[i]]
+                datai$rhsi <- datai[ , rhs_vars[i]]
                 vvv <- as.character(res_no0i[1, rhs_vars[i]])
                 datai <- datai[datai$rhsi == vvv, ]
               }
             }
-            datai$weight__n__ <- datai[, wgt]
+            datai$weight__n__ <- datai[ , wgt]
             # identify unit for each obs
             for (i in 1:n) {
               datai$gss <- 1
               # set gss to 1 for just rows in this group
               for (j in (pctAggregationLevel + 1):length(rhs_vars)) {
                 vvv <- as.character(res_no0i[i, rhs_vars[j]])
-                datai$gss[datai[, rhs_vars[j]] != vvv] <- 0
+                datai$gss[datai[ , rhs_vars[j]] != vvv] <- 0
               }
               if (sum(datai$gss) >= 1) { # allow for units with no obs that have that
                 datai$unit[datai$gss %in% 1] <- i
@@ -662,7 +662,7 @@ calcEdsurveyTable <- function(formula,
               w[ss, j] <- datai[ss, wgt]
             }
             for (j in 1:ncol(wtilde)) {
-              wtilde[, j] <- datai[, wgt] * pr[j]
+              wtilde[ , j] <- datai[ , wgt] * pr[j]
             }
             # again using notation from AM documentation, including multiplicaiton by w
             # in TeX, u_{hij} * w, is called uhijw here
@@ -677,12 +677,12 @@ calcEdsurveyTable <- function(formula,
             }
             uhijw <- data.frame(uhijw,
               unit = datai$unit,
-              stratV = datai[, getStratumVar(data, weightVar = wgt)],
-              psuV = datai[, getPSUVar(data, weightVar = wgt)]
+              stratV = datai[ , getStratumVar(data, weightVar = wgt)],
+              psuV = datai[ , getPSUVar(data, weightVar = wgt)]
             )
             for (vi in 1:n) {
               # build uhijw, see AM documentation
-              uhijw$v <- uhijw[, paste0("v", vi)]
+              uhijw$v <- uhijw[ , paste0("v", vi)]
               uhiw <- aggregate(v ~ psuV + stratV, data = uhijw, FUN = sum)
               uhiw$vv <- ave(uhiw$v, uhiw$stratV, FUN = meanna)
               uhiw$dx <- uhiw$v - uhiw$vv
@@ -721,7 +721,7 @@ calcEdsurveyTable <- function(formula,
             res_no0[res_no0$group == z, "SE(PCT)"] <<- 0
           } # end else for if(n!=1) {
         }) # end sapply(unique(res_no0$group), function(z) {
-        res <- merge(res, res_no0[, c(rhs_vars, "SE(PCT)")], by = rhs_vars, sort = FALSE, all.x = TRUE)
+        res <- merge(res, res_no0[ , c(rhs_vars, "SE(PCT)")], by = rhs_vars, sort = FALSE, all.x = TRUE)
       } # end else for if(varMethod == "j") {
       # these methods can produce NaN, return NA in those cases
       res[["SE(PCT)"]][is.nan(res[["SE(PCT)"]])] <- NA
@@ -732,7 +732,7 @@ calcEdsurveyTable <- function(formula,
     res["twt"] <- NULL
     # order correctly
     for (i in length(rhs_vars):1) {
-      res <- res[order(res[, rhs_vars[i]]), ]
+      res <- res[order(res[ , rhs_vars[i]]), ]
     }
 
     # res <- res[res$N>0,] #subset(res, N > 0)
@@ -762,7 +762,7 @@ calcEdsurveyTable <- function(formula,
           if (inherits(dsdf, "edsurvey.data.frame")) {
             dsdf <- subset.edsurvey.data.frame(dsdf, cond, inside = TRUE) # subset to just those values at level i of the first X variable
           } else {
-            dsdf <- dsdf[dsdf[, rhs_vars[j]] %in% res[i, rhs_vars[j]], ] # subset to just those values at level i of the first X variable
+            dsdf <- dsdf[dsdf[ , rhs_vars[j]] %in% res[i, rhs_vars[j]], ] # subset to just those values at level i of the first X variable
           }
         } # ends for(j in 1:length(rhs_vars))
         if (nrow(dsdf) > 0) {
@@ -897,7 +897,7 @@ fastAgg <- function(formula, data, FUN) {
   fun <- substitute(FUN)
   # DataTable is used here for faster evaluation, this is entirely based on performance testing
   # a lot of what makes it faster is that we do not sort the results at the end.
-  pp <- paste0("as.data.frame(setDT(copy(data))[,list(", y, "=", fun, "(", y, ")),by=list(", paste(x, collapse = ","), ")])")
+  pp <- paste0("as.data.frame(setDT(copy(data))[ ,list(", y, "=", fun, "(", y, ")),by=list(", paste(x, collapse = ","), ")])")
   eval(parse(text = pp))
 }
 

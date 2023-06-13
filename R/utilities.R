@@ -1,9 +1,3 @@
-attachHere <- function(x, e = parent.frame()) {
-  for (i in seq_along(x)) {
-    assign(x = names(x)[i], value = x[[i]], envir = e)
-  }
-}
-
 # if returNumberOfPSU is TRUE, returns the psu and stratum vars, after checking they're on the data
 PSUStratumNeeded <- function(returnNumberOfPSU, data) {
   if (returnNumberOfPSU) {
@@ -454,9 +448,13 @@ getXCols <- function(data) {
 }
 
 checkWeightVar <- function(data, weightVar) {
-  if (is.null(weightVar)) {
+  if(is.null(weightVar)) {
     weightVar <- attributes(getAttributes(data, "weights"))$default
-    if (min(nchar(weightVar)) == 0) {
+    #set to empty string if default is null to not trip on shoelaces below
+    if(is.null(weightVar) || is.na(weightVar)){
+      weightVar <- ""
+    }
+    if(min(nchar(weightVar)) == 0) {
       # no weight
       stop(paste0("There is no default weight variable for ", getAttributes(data, "survey"), " data, so the argument ", sQuote("weightVar"), " must be specified."))
     }

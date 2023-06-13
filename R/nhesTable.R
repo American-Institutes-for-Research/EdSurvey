@@ -16,7 +16,7 @@ nhesTable <- function(data, cols = NULL, byVar = NULL, wtvar = "fpwt", nCol = TR
   }
 
   if (!is.null(byVar)) {
-    bylevels <- names(table(data[, byVar]))
+    bylevels <- names(table(data[ , byVar]))
   } else {
     bylevels <- NULL
   }
@@ -33,7 +33,7 @@ nhesTable <- function(data, cols = NULL, byVar = NULL, wtvar = "fpwt", nCol = TR
   res <- matrix(0, nrow = length(row_names), ncol = length(col_names), dimnames = list(row_names, col_names))
   for (i in 1:nrow(res)) {
     if (i <= length(bylevels)) { # subset to just this row
-      datai <- data[data[, byVar] %in% bylevels[i], ]
+      datai <- data[data[ , byVar] %in% bylevels[i], ]
     } else { # this is the toal row
       datai <- data
     }
@@ -42,9 +42,9 @@ nhesTable <- function(data, cols = NULL, byVar = NULL, wtvar = "fpwt", nCol = TR
     for (j in 1:ncol(res)) {
       jj <- ifelse(nCol, j - 1, j)
       if (jj == 0) { # ncol
-        res[i, j] <- round(sum(datai[, wtvar]))
+        res[i, j] <- round(sum(datai[ , wtvar]))
       } else { # all other columns
-        tab <- weightedTable(datai[, cols[jj]], datai[, wtvar]) #
+        tab <- weightedTable(datai[ , cols[jj]], datai[ , wtvar]) #
         res[i, j] <- round(tab[names(tab) == "Yes"] / sum(tab) * 100)
       }
     } # for each column

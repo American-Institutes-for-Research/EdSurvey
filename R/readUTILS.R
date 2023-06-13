@@ -377,7 +377,7 @@ valueLabel_MakeCategorical <- function(fileFormat, variableNames, data) {
       paste(z[-1], sep = "", collapse = "=")
     })
 
-    uniqueVals <- unique(data[, subFF$variableName[[i]]])[[1]]
+    uniqueVals <- unique(data[ , subFF$variableName[[i]]])[[1]]
     uniqueVals <- uniqueVals[order(uniqueVals)]
 
     if (length(uniqueVals) > 0 && !is.null(uniqueVals)) {
@@ -829,7 +829,7 @@ writeDF_FWF <- function(df, fileFormat, savePath, verbose) {
       colData[grepl("\\\\", colData)] <- format(colData[grepl("\\\\", colData)], scientific = FALSE, width = width + 1, justify = "right")
     }
 
-    omat[, coli] <- colData
+    omat[ , coli] <- colData
   } # end for(coli in 1:nrow(fileFormat))
 
   # write the file out to the cache location

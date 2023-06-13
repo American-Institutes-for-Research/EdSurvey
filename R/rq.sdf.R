@@ -255,7 +255,7 @@ calc.rq.sdf <- function(formula,
   lapply(
     names(edf)[names(edf) %in% all.names(formula)],
     function(z) {
-      if (is.factor(edf[, z]) & length(levels(edf[, z])) < 2) {
+      if (is.factor(edf[ , z]) & length(levels(edf[ , z])) < 2) {
         stop(paste0(
           "The covariate ",
           dQuote(z),
@@ -290,11 +290,11 @@ calc.rq.sdf <- function(formula,
         ))
       } # End of if statment: length(relevels[[i]]) != 1
       # check that the level exists
-      lvls <- levels(edf[, vari])
-      if (inherits(edf[, vari], "lfactor")) {
+      lvls <- levels(edf[ , vari])
+      if (inherits(edf[ , vari], "lfactor")) {
         # for a factor it can be either a level or a label
-        lvls <- c(lvls, labels(edf[, vari]))
-      } # End of if statment: inherits(edf[,vari], "lfactor")
+        lvls <- c(lvls, labels(edf[ , vari]))
+      } # End of if statment: inherits(edf[ ,vari], "lfactor")
       if (!relevels[[i]] %in% lvls) {
         stop(paste0(
           "In the ", sQuote("relevels"),
@@ -303,14 +303,14 @@ calc.rq.sdf <- function(formula,
           paste(sQuote(lvls), collapse = ", "), "."
         ))
       } # End of if statment !relevels[[i]] %in% lvls
-      edf[, vari] <- relevel(edf[, vari], ref = relevels[[i]])
+      edf[ , vari] <- relevel(edf[ , vari], ref = relevels[[i]])
     } # end for(i in 1:length(relevels))
   } # end if(length(relevels) > 0)
 
   # 4) deal with yvar having plausible values
   pvy <- hasPlausibleValue(yvar, sdf) # pvy is the plausible values of the y variable
   yvars <- yvar
-  linkingError <- "NAEP" %in% getAttributes(data, "survey") & any(grepl("_linking", yvars, fixed = TRUE))
+  linkingError <- detectLinkingError(data, yvars)
   lyv <- length(yvars)
   if (any(pvy)) {
     pvs <- getPlausibleValue(yvars[max(pvy)], data)
@@ -323,7 +323,7 @@ calc.rq.sdf <- function(formula,
     )
   } else {
     # no PVs, just make sure that this variable is numeric
-    edf[, "yvar"] <- as.numeric(eval(formula[[2]], edf))
+    edf[ , "yvar"] <- as.numeric(eval(formula[[2]], edf))
     formula <- update(formula, new = substitute(yvar ~ ., list(yvar = as.name(yvar))))
     yvars <- "yvar"
   } # End of if statment: any(pvy)
@@ -336,23 +336,23 @@ calc.rq.sdf <- function(formula,
       # first, by PV, rename the ith PVs to be e.g. composite
       for (yvi in 1:length(pvy)) {
         if (pvy[yvi]) {
-          edf[, yvar[yvi]] <- edf[, getPlausibleValue(yvar[yvi], data)[i]]
+          edf[ , yvar[yvi]] <- edf[ , getPlausibleValue(yvar[yvi], data)[i]]
         }
       }
       # then set yvars[i] (e.g. outcome1) to be the evaluation at this PV point
-      edf[, yvars[i]] <- as.numeric(eval(formula[[2]], edf))
+      edf[ , yvars[i]] <- as.numeric(eval(formula[[2]], edf))
     }
     # finally, correctly set yvar0
-    edf$yvar0 <- edf[, yvar0]
+    edf$yvar0 <- edf[ , yvar0]
   } # end if(any(pvy)), no else
 
   # 5) run the main regression
   # run a regression, starting with the first PV or maybe the only outcome variable
   yvar0 <- yvars[1]
   # this allows that variable to not be dynamic variable, it is explicitly defined to be yvar0
-  edf$yvar0 <- edf[, yvar0]
+  edf$yvar0 <- edf[ , yvar0]
   frm <- update(formula, yvar0 ~ .)
-  edf$w <- edf[, wgt]
+  edf$w <- edf[ , wgt]
   lm0 <- rq(frm, data = edf, weights = w, tau = tau, ...)
   if (returnLm0) {
     return(lm0)
@@ -446,14 +446,14 @@ calc.rq.sdf <- function(formula,
       # store rho
       rho <- coefm$est["r.squared"]
       # remove rho, hiding as r.squared to help the helper function getVarEstJK
-      coefm <- coefm$coef[, colnames(coefm$coef) != "r.squared"]
+      coefm <- coefm$coef[ , colnames(coefm$coef) != "r.squared"]
       coef <- apply(coefm, 2, mean)
       coefm0 <- t(t(coefm) - coef)
       for (pvi in 1:jrrIMax) { # for each PV (up to jrrIMax)
         res <- getVarEstJK(
           stat = stat_rq,
-          yvar = edf[, yvars[pvi]],
-          wgtM = edf[, paste0(wgtl$jkbase, wgtl$jksuffixes)],
+          yvar = edf[ , yvars[pvi]],
+          wgtM = edf[ , paste0(wgtl$jkbase, wgtl$jksuffixes)],
           co0 = coefm[pvi, ],
           jkSumMult = jkSumMult,
           pvName = pvi
@@ -471,7 +471,7 @@ calc.rq.sdf <- function(formula,
           stringsAsFactors = FALSE,
           PV = 1:nrow(coefm0),
           variable = rep(names(coef(lm0))[coli], nrow(coefm0)),
-          value = coefm0[, coli]
+          value = coefm0[ , coli]
         )
       })
       coefmPV <- do.call(rbind, coefmPVByRow)
@@ -503,8 +503,8 @@ calc.rq.sdf <- function(formula,
       jkSumMult <- getAttributes(data, "jkSumMultiplier")
       res <- getVarEstJK(
         stat = stat_rq,
-        yvar = edf[, yvars[1]],
-        wgtM = edf[, paste0(wgtl$jkbase, wgtl$jksuffixes)],
+        yvar = edf[ , yvars[1]],
+        wgtM = edf[ , paste0(wgtl$jkbase, wgtl$jksuffixes)],
         co0 = coef,
         jkSumMult = jkSumMult,
         pvName = 1
@@ -538,11 +538,11 @@ calc.rq.sdf <- function(formula,
   if (linkingError) {
     yve <- yvars[grep("_est", yvars)]
     Y <- sapply(1:length(yve), function(yi) {
-      as.vector(edf[, yve[yi]])
+      as.vector(edf[ , yve[yi]])
     }, simplify = TRUE)
   } else {
     Y <- sapply(1:length(yvars), function(yi) {
-      as.vector(edf[, yvars[yi]])
+      as.vector(edf[ , yvars[yi]])
     }, simplify = TRUE)
   }
   resid1 <- Y - fitted1
@@ -562,7 +562,7 @@ calc.rq.sdf <- function(formula,
       coefm <- t(as.matrix(coefm))
     }
     # remove r-sq, if present
-    coefm <- coefm[, 1:length(coef)]
+    coefm <- coefm[ , 1:length(coef)]
     fitted2 <- as.matrix(X %*% t(coefm))
     resid2 <- Y - fitted2
   }
@@ -588,7 +588,7 @@ calc.rq.sdf <- function(formula,
   }
 
   pti <- pt(coefmat$t, df = coefmat$dof)
-  coefmat[, "Pr(>|t|)"] <- 2 * pmin(pti, 1 - pti)
+  coefmat[ , "Pr(>|t|)"] <- 2 * pmin(pti, 1 - pti)
   njk <- length(wgtl$jksuffixes)
   varmeth <- ifelse(varMethod == "t", "Taylor series", "jackknife")
   res <- list(
@@ -631,7 +631,7 @@ calc.rq.sdf <- function(formula,
     if ("JK1" %in% stratumVar) {
       res <- c(res, list(nPSU = nrow(edf)))
     } else {
-      res <- c(res, list(nPSU = nrow(unique(edf[, c(stratumVar, psuVar)]))))
+      res <- c(res, list(nPSU = nrow(unique(edf[ , c(stratumVar, psuVar)]))))
     }
   }
   if (returnVarEstInputs) {

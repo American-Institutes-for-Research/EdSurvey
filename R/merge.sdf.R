@@ -54,7 +54,7 @@ merge.edsurvey.data.frame <- function(x, y, by = "id", by.x = by, by.y = by, ...
   x$dataList[[cacheLvl]]$forceMerge <- TRUE
   # this puts the merge var on the cache if it isn't already
   if (!all(by.x %in% colnames(x$cache))) {
-    x[, by.x] <- x[, by.x]
+    x[ , by.x] <- x[ , by.x]
   }
 
   args$x <- as.data.frame(x$cache)

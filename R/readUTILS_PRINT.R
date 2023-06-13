@@ -98,7 +98,7 @@ printMergeStats_ESDF <- function(esdf) {
 
       if (length(esdf$dataList) > 1) {
         allXvar <- getMergeVars(esdf, dl$levelLabel)
-        xData <- dl$lafObject[, allXvar]
+        xData <- dl$lafObject[ , allXvar]
       }
 
       # fill output variables
@@ -112,14 +112,14 @@ printMergeStats_ESDF <- function(esdf) {
 
       mVar.y <- dl$mergeVars
       mVar.x <- allXvar[allXvar %in% dl$parentMergeVars]
-      yData <- dl$lafObject[, mVar.y] # get full data
+      yData <- dl$lafObject[ , mVar.y] # get full data
 
       mRes <- mergev(xData, yData,
         by.x = mVar.x, by.y = mVar.y, all.x = TRUE, all.y = FALSE,
         suffixes = c("", ".junk"), return.list = TRUE, verbose = FALSE
       )
       res <- mRes$data
-      res <- res[, names(res)[!grepl(colDropRegex, names(res), ignore.case = TRUE)], drop = FALSE] # drop duplicated columns, ensure it's still a data.frame (drop=FALSE)
+      res <- res[ , names(res)[!grepl(colDropRegex, names(res), ignore.case = TRUE)], drop = FALSE] # drop duplicated columns, ensure it's still a data.frame (drop=FALSE)
 
       vars <- dl$fileFormat$variableName
       vars <- vars[!vars %in% dl$ignoreVars]

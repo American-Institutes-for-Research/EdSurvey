@@ -85,7 +85,7 @@ primary sampling units (PSUs)}
 unbiased produces a weighted median unbiased percentile estimate,
 whereas simple uses a basic formula that matches previously
 published results. Symmetric uses a more basic formula
-but requires that the percentile is symmetric to multiplying
+but requires that the percentile is symetric to multiplying
 the quantity by negative one.}
 
 \item{confInt}{a Boolean indicating if the confidence interval should be returned}

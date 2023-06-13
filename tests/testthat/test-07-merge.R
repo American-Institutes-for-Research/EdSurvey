@@ -50,9 +50,9 @@ test_that("merge with NAEPprimer", {
 context("merge with TIMSS") # When this fails all regression tests are invalid.
 test_that("merge with TIMSS", {
   skip_on_cran()
-  usa <- readTIMSS(file.path(edsurveyHome, "TIMSS/2015"), "usa", 4, verbose = FALSE)
-
-  # acbg20 = years principal at school
+  usa <- readTIMSS(file.path(edsurveyHome, "TIMSS", "2015"), "usa", 4, verbose = FALSE)
+  
+  #acbg20 = years principal at school
   schDat <- getData(usa, c("idschool", "acbg20"), dropOmittedLevels = FALSE)
   schDat$Prin10 <- schDat$acbg20 > 10
   schDat <- unique(subset(schDat, Prin10 == TRUE)) # drop to small subset (22 records)

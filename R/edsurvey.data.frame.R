@@ -548,8 +548,8 @@ subset.edsurvey.data.frame <- function(x, subset, ..., inside = FALSE) {
   # because of "mySDF$name[subset] <-" it is possible for a new factor to be valid
   # but for the below assignment to appear invalid, this clears the cache and
   # overwrite, which always works
-  if (name %in% colnames(x$cache) && inherits(x$cache[, name], "factor")) {
-    x$cache[, name] <- NULL
+  if (name %in% colnames(x$cache) && inherits(x$cache[ , name], "factor")) {
+    x$cache[ , name] <- NULL
   }
   # cannot subset assign non-primative lfactors, so do not try
   if (inherits(value, "lfactor")) {
@@ -617,15 +617,15 @@ subset.edsurvey.data.frame <- function(x, subset, ..., inside = FALSE) {
     cl0 <- class(x)
     class(x) <- "list"
     if (is.null(value)) {
-      x$cache[, name] <- NULL
+      x$cache[ , name] <- NULL
       class(x) <- cl0
       return(invisible(x))
     }
     # because of "mySDF$name[subset] <-" it is possible for a new factor to be valid
     # but for the below assignment to appear invalid, this clears the cache and
     # overwrite, which always works
-    if (name %in% colnames(x$cache) && inherits(x$cache[, name], "factor")) {
-      x$cache[, name] <- NULL
+    if (name %in% colnames(x$cache) && inherits(x$cache[ , name], "factor")) {
+      x$cache[ , name] <- NULL
     }
     # cannot subset assign non-primative lfactors, so do not try
     if (inherits(value, "lfactor")) {

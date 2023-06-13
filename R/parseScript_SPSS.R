@@ -670,7 +670,7 @@ parseSPSS_MISSINGVALUES <- function(spsTxt, varNames) {
   tokens <- gsub("\n", "", tokens, fixed = TRUE)
   tokens <- paste0(tokens, collapse = "\n")
 
-  m <- gregexpr("(\\w+\\s*){1,}[(](\\s|\\w|[,]|[\"'])+[)]", tokens)
+  m <- gregexpr("(\\w+\\s*){1,}[(](\\s|\\w|[ ,]|[\"'])+[)]", tokens)
   valDef <- regmatches(tokens, m)
   valDef <- trimws(valDef[[1]]) # from list to vector
 

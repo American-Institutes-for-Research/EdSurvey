@@ -288,9 +288,9 @@ processCountryPIAAC <- function(filepath, countryCode, ff, forceRead, verbose) {
   # replace with NAs
   missingcolumns <- setdiff(ff$variableName, colnames(dat))
   if (length(missingcolumns) > 0) {
-    dat[, missingcolumns] <- NA
+    dat[ , missingcolumns] <- NA
   }
-  dat <- dat[, ff$variableName]
+  dat <- dat[ , ff$variableName]
 
   # replace SAS missing values with SPSS values
   for (ci in 1:nrow(ff)) {
@@ -329,7 +329,7 @@ processCountryPIAAC <- function(filepath, countryCode, ff, forceRead, verbose) {
   # calculate jkSumMultiplier
   # source: https://www.oecd.org/skills/piaac/PIAAC_Technical_Report_2nd_Edition_Full_Report.pdf
   # source: http://www.oecd.org/skills/piaac/PIACTOOLS_16OCT_for_web.pdf
-  vemethodn <- unique(dat[, "VEMETHODN"])
+  vemethodn <- unique(dat[ , "VEMETHODN"])
   if (length(vemethodn) > 1) {
     warning("There is more than one variance method. Using the first one.")
     vemethodn <- vemethodn[1]

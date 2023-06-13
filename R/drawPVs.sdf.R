@@ -121,7 +121,7 @@ checkNewData <- function(mml, scoreDict, data, getDataArgs, theSubject, survey) 
   edf[[idVar]] <- as.character(edf[[idVar]])
   # necessary because TIMSS, for example, will generate up to a row per teacher/student pair
   edf <- edf[!duplicated(idVar), ]
-  newStuDat <- filterOutIncompleteZeroWeight(edf, stuDatColnames, weightVar = NULL)[, stuDatColnames]
+  newStuDat <- filterOutIncompleteZeroWeight(edf, stuDatColnames, weightVar = NULL)[ , stuDatColnames]
 
   scoreInfo <- getScoreInfo(data, survey, theSubject)
   scoreInfo <- checkParamTabAgainstItems(data, scoreInfo)
@@ -129,7 +129,7 @@ checkNewData <- function(mml, scoreDict, data, getDataArgs, theSubject, survey) 
   scoreCallEnv <- list2env(scoreInfo)
   assign("edf", edf, envir = scoreCallEnv) # add edf to the environment
   edf <- eval(scoreCall, envir = scoreCallEnv)
-  newStuItems <- as.data.frame(melt(as.data.table(edf[, c(scoreInfo$itemsUse, idVar)]),
+  newStuItems <- as.data.frame(melt(as.data.table(edf[ , c(scoreInfo$itemsUse, idVar)]),
     id.vars = idVar,
     measure.vars = c(scoreInfo$itemsUse)
   ))

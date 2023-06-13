@@ -173,8 +173,8 @@ mixed.sdf <- function(formula,
   # check if LHS is pv and if so get all values and set flag "pv" to TRUE
   pv <- hasPlausibleValue(yvar, data)
   yvars <- yvar
-  linkingError <- "NAEP" %in% getAttributes(data, "survey") & any(grepl("_linking", yvars, fixed = TRUE))
-  if (linkingError) {
+  linkingError <- detectLinkingError(data, yvars)
+  if(linkingError) {
     stop("mixed.sdf does not support estimation with linking error.")
   }
   if (pv) {
@@ -205,9 +205,9 @@ mixed.sdf <- function(formula,
 
   # drop zero-weight case
   for (wgt in weightVars) {
-    if (any(!(!is.na(edf[, wgt]) & edf[, wgt] > 0))) {
-      warning("Removing ", sum(!(!is.na(edf[, wgt]) & edf[, wgt] > 0)), " rows with 0 or NA weight on ", dQuote(wgt), " from analysis.")
-      edf <- edf[!is.na(edf[, wgt]) & edf[, wgt] > 0, ]
+    if (any(!(!is.na(edf[ , wgt]) & edf[ , wgt] > 0))) {
+      warning("Removing ", sum(!(!is.na(edf[ , wgt]) & edf[ , wgt] > 0)), " rows with 0 or NA weight on ", dQuote(wgt), " from analysis.")
+      edf <- edf[!is.na(edf[ , wgt]) & edf[ , wgt] > 0, ]
     }
   }
 
@@ -219,7 +219,7 @@ mixed.sdf <- function(formula,
     yvars <- getPlausibleValue(yvar, data)
   } else {
     # if not, make sure that this variable is numeric
-    edf[, "yvar"] <- as.numeric(eval(formula[[2]], edf))
+    edf[ , "yvar"] <- as.numeric(eval(formula[[2]], edf))
     formula <- update(formula, new = substitute(yvar ~ ., list(yvar = as.name(yvar))))
     yvars <- "yvar"
   } # End of if statment: any(pvy)
@@ -232,19 +232,19 @@ mixed.sdf <- function(formula,
         # PV, so we have not evaluated the I() yet (if any)
         for (yvi in 1:length(pvy)) {
           if (pvy[yvi]) {
-            edf[, yvar[yvi]] <- edf[, getPlausibleValue(yvar[yvi], data)[i]]
+            edf[ , yvar[yvi]] <- edf[ , getPlausibleValue(yvar[yvi], data)[i]]
           }
         }
-        edf[, yvars[i]] <- as.numeric(eval(formula[[2]], edf))
+        edf[ , yvars[i]] <- as.numeric(eval(formula[[2]], edf))
       }
-      oneDef <- max(edf[, yvars], na.rm = TRUE)
+      oneDef <- max(edf[ , yvars], na.rm = TRUE)
       for (i in yvars) {
-        edf[, i] <- ifelse(edf[, i] %in% oneDef, 1, 0)
+        edf[ , i] <- ifelse(edf[ , i] %in% oneDef, 1, 0)
       }
     } else {
       # for non-PV, I() has been evaluated
-      oneDef <- max(edf[, yvars], na.rm = TRUE)
-      edf[, yvar0] <- ifelse(edf$yvar %in% oneDef, 1, 0)
+      oneDef <- max(edf[ , yvars], na.rm = TRUE)
+      edf[ , yvar0] <- ifelse(edf$yvar %in% oneDef, 1, 0)
     }
   }
 
@@ -282,27 +282,27 @@ mixed.sdf <- function(formula,
   if (!weightTransformation) {
     # no weight transformations
     for (wi in 1:length(weightVars)) {
-      edf[[paste0("pwt", wi)]] <- edf[, weightVars[wi]]
+      edf[[paste0("pwt", wi)]] <- edf[ , weightVars[wi]]
     }
   } else {
     # weight transformations by survey
     if (survey == "PISA") {
-      edf$sqw <- edf[, weightVars[1]]^2
+      edf$sqw <- edf[ , weightVars[1]]^2
       sumsqw <- aggregate(as.formula(paste0("sqw ~ ", groupNames)), data = edf, sum)
       sumw <- aggregate(as.formula(paste0(weightVars[1], "~", groupNames)), data = edf, sum)
-      edf$sumsqw <- sapply(edf[, groupNames], function(s) sumsqw$sqw[sumsqw[, groupNames] == s])
-      edf$sumw <- sapply(edf[, groupNames], function(s) sumw[sumw[, groupNames] == s, weightVars[1]])
-      edf$pwt1 <- edf[, weightVars[1]] * (edf$sumw / edf$sumsqw)
-      edf$pwt2 <- edf[, weightVars[2]]
+      edf$sumsqw <- sapply(edf[ , groupNames], function(s) sumsqw$sqw[sumsqw[ , groupNames] == s])
+      edf$sumw <- sapply(edf[ , groupNames], function(s) sumw[sumw[ , groupNames] == s, weightVars[1]])
+      edf$pwt1 <- edf[ , weightVars[1]] * (edf$sumw / edf$sumsqw)
+      edf$pwt2 <- edf[ , weightVars[2]]
       edf$sqw <- NULL
       edf$sumsqw <- NULL
       edf$sumw <- NULL
     } else if (survey %in% c("TIMSS", "TIMSS Advanced")) {
-      edf$pwt1 <- edf[, weightVars[1]] / edf[, weightVars[2]]
-      edf$pwt2 <- edf[, weightVars[2]]
+      edf$pwt1 <- edf[ , weightVars[1]] / edf[ , weightVars[2]]
+      edf$pwt2 <- edf[ , weightVars[2]]
     } else { # For other survey data in edsurvey, users need to specify their own weights
-      edf$pwt1 <- edf[, weightVars[1]]
-      edf$pwt2 <- edf[, weightVars[2]]
+      edf$pwt1 <- edf[ , weightVars[1]]
+      edf$pwt2 <- edf[ , weightVars[2]]
     }
   } # end if (!weightTransformation)
 
@@ -311,7 +311,7 @@ mixed.sdf <- function(formula,
   keep <- rep(0, nrow(edf))
   for (i in 1:ncol(edf)) {
     vari <- names(edf)[i]
-    keep <- keep + (tolower(edf[, vari]) %in% tolower(lev))
+    keep <- keep + (tolower(edf[ , vari]) %in% tolower(lev))
   }
   if (sum(keep > 0) > 0) {
     # only omit if something gets omitted
@@ -337,9 +337,9 @@ mixed.sdf <- function(formula,
 
     # use summary to extract variances.
     model_sum <- summary.WeMixResults(res)
-    res$se <- c(model_sum$coef[, 2], model_sum$vars[, 2])
+    res$se <- c(model_sum$coef[ , 2], model_sum$vars[ , 2])
     names(res$se) <- c(row.names(model_sum$coef), row.names(model_sum$vars))
-    res$vars <- model_sum$vars[, 1]
+    res$vars <- model_sum$vars[ , 1]
     names(res$vars) <- row.names(model_sum$vars)
     # Remove some return values
     res$CMODE <- NULL
@@ -406,7 +406,7 @@ mixed.sdf <- function(formula,
       results[[value]] <- model
       # use summary to extract variances
       model_sum <- summary.WeMixResults(model)
-      variances[[value]] <- c(model_sum$coef[, "Std. Error"]^2, model_sum$varDF$SEvcov^2)
+      variances[[value]] <- c(model_sum$coef[ , "Std. Error"]^2, model_sum$varDF$SEvcov^2)
       if (verbose > 1) {
         print(model_sum)
       }
@@ -522,7 +522,7 @@ mixed.sdf <- function(formula,
     }
 
     res$varsmatSum <- varsmat
-    res$vars <- varsmat[, 4:6]
+    res$vars <- varsmat[ , 4:6]
     rownames(res$vars) <- names(results[[1]]$vars)
     colnames(res$vars) <- colnames(results[[1]]$varDF)[4:6]
     # same thing for vcov
@@ -561,7 +561,7 @@ mixed.sdf <- function(formula,
 
   # get group numbers, which is burried in the covariance matrix constructor (cConstructor)
   ngrp <- res$varDF
-  ngrp <- ngrp[, c("grp", "ngrp", "level")]
+  ngrp <- ngrp[ , c("grp", "ngrp", "level")]
   ngrp <- ngrp[!duplicated(ngrp$level), ]
   names(ngrp) <- c("Group Var", "Observations", "Level")
   res$ngroups <- ngrp

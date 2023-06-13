@@ -46,7 +46,7 @@ searchSDF <- function(string, data, fileFormat = NULL, levels = FALSE) {
       if (inherits(ires, "data.frame")) {
         if (nrow(ires) > 0) {
           newCol <- paste(covs[i, covn], collapse = ";")
-          ires[, newCol] <- "*"
+          ires[ , newCol] <- "*"
           if (nrow(res) == 0) {
             res <- ires
           } else {
@@ -121,7 +121,7 @@ searchSDF <- function(string, data, fileFormat = NULL, levels = FALSE) {
       stop(paste0("The argument ", sQuote("string"), " must be nonempty to return variable levels."))
     }
     # create a dataframe with file formatting information for selected variables
-    varsData <- labelsFile[, c("variableName", "Labels", "labelValues", "Levels", "fileFormat")]
+    varsData <- labelsFile[ , c("variableName", "Labels", "labelValues", "Levels", "fileFormat")]
     if ("light.edsurvey.data.frame" %in% class(sdf) == TRUE) {
       varsData <- varsData[varsData$variableName %in% colnames(sdf), ]
     }
@@ -144,12 +144,12 @@ searchSDF <- function(string, data, fileFormat = NULL, levels = FALSE) {
         varsData$Levels[[i]] <- paste0(NA)
       }
     } # end for (i in 1:length(varsData$variableName))
-    varsData <- varsData[, c("variableName", "Labels", "Levels", "fileFormat")]
+    varsData <- varsData[ , c("variableName", "Labels", "Levels", "fileFormat")]
     class(varsData) <- c("searchSDF", "data.frame")
   } else { # end if (levels == TRUE)
     # variable levels aren't returned
     labelsFile$variableName <- tolower(labelsFile$variableName)
-    varsData <- labelsFile[, c("variableName", "Labels", "fileFormat")]
+    varsData <- labelsFile[ , c("variableName", "Labels", "fileFormat")]
     varsData <- data.frame(varsData, stringsAsFactors = FALSE, row.names = NULL)
     # remove duplicates such as linking variables
     varsData <- varsData[!duplicated(varsData$variableName), ]

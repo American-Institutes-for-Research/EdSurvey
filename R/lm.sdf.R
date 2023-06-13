@@ -354,7 +354,7 @@ calc.lm.sdf <- function(formula,
   # check for incomplete cases on the formula variables and weights (excluding Taylor vars)
   relVars <- colnames(edf)
   relVars <- relVars[!relVars %in% taylorVars]
-  incomplete <- !complete.cases(edf[, relVars])
+  incomplete <- !complete.cases(edf[ , relVars])
   if (any(incomplete)) {
     if (verbose) {
       message("Removing ", sum(incomplete), " rows with NAs from analysis.")
@@ -363,24 +363,24 @@ calc.lm.sdf <- function(formula,
   }
   # if doing Taylor series, check Taylor vars too
   if (varMethod == "t") {
-    incomplete <- !complete.cases(edf[, taylorVars])
+    incomplete <- !complete.cases(edf[ , taylorVars])
     if (any(incomplete)) {
-      if (any(incomplete[!edf[, wgt] %in% c(NA, 0)])) {
+      if (any(incomplete[!edf[ , wgt] %in% c(NA, 0)])) {
         if (verbose) {
-          message("Removing ", sum(incomplete[!edf[, wgt] %in% c(NA, 0)]), " rows with NA PSU or stratum variables and positive weights from analysis.")
+          message("Removing ", sum(incomplete[!edf[ , wgt] %in% c(NA, 0)]), " rows with NA PSU or stratum variables and positive weights from analysis.")
         }
       }
       edf <- edf[!incomplete, ]
     }
     # check for NAs in stratumVar and psuVar
-    if (sum(is.na(edf[, c(stratumVar, psuVar)])) != 0) {
+    if (sum(is.na(edf[ , c(stratumVar, psuVar)])) != 0) {
       stop("Taylor series variance estimation requested but stratum or PSU variables contian an NA value.")
     }
   }
 
   # remove non-positive (full sample) weights
-  if (any(edf[, wgt] <= 0)) {
-    posWeights <- edf[, wgt] > 0
+  if (any(edf[ , wgt] <= 0)) {
+    posWeights <- edf[ , wgt] > 0
     if (verbose) {
       message("Removing ", sum(!posWeights), " rows with nonpositive weight from analysis.")
     }
@@ -413,11 +413,11 @@ calc.lm.sdf <- function(formula,
         ))
       } # End of if statment: length(relevels[[i]]) != 1
       # check that the level exists
-      lvls <- levels(edf[, vari])
-      if (inherits(edf[, vari], "lfactor")) {
+      lvls <- levels(edf[ , vari])
+      if (inherits(edf[ , vari], "lfactor")) {
         # for a factor it can be either a level or a label
-        lvls <- c(lvls, labels(edf[, vari]))
-      } # End of if statment: inherits(edf[,vari], "lfactor")
+        lvls <- c(lvls, labels(edf[ , vari]))
+      } # End of if statment: inherits(edf[ ,vari], "lfactor")
       if (!relevels[[i]] %in% lvls) {
         stop(paste0(
           "In the ", sQuote("relevels"),
@@ -426,16 +426,16 @@ calc.lm.sdf <- function(formula,
           pasteItems(dQuote(lvls)), "."
         ))
       } # End of if statment !relevels[[i]] %in% lvls
-      edf[, vari] <- relevel(edf[, vari], ref = relevels[[i]])
+      edf[ , vari] <- relevel(edf[ , vari], ref = relevels[[i]])
     } # end for(i in 1:length(relevels))
   } # end if(length(relevels) > 0)
 
   # droplevel on covariates to avoid problems with X is formed later.
   # also, check that there are not factors with only one level and give more informative error.
   for (i in 1:ncol(edf)) {
-    if (inherits(edf[, i], "factor") & colnames(edf)[i] %in% formulaVars) {
-      edf[, i] <- droplevels(edf[, i])
-      if (length(levels(edf[, i])) < 2) {
+    if (inherits(edf[ , i], "factor") & colnames(edf)[i] %in% formulaVars) {
+      edf[ , i] <- droplevels(edf[ , i])
+      if (length(levels(edf[ , i])) < 2) {
         stop(paste0(
           "The covariate ", dQuote(colnames(edf)[i]),
           " has fewer than two levels after zero-weight cases are dropped. This covariate cannot be included in the regression."
@@ -449,10 +449,10 @@ calc.lm.sdf <- function(formula,
   # 4) deal with yvar having plausible values
   pvy <- hasPlausibleValue(yvar, sdf) # pvy is the plausible values of the y variable
   yvars <- yvar
-  linkingError <- "NAEP" %in% getAttributes(data, "survey") & any(grepl("_linking", yvars, fixed = TRUE))
-  if (any(pvy)) {
-    if (linkingError) {
-      if (standardizeWithSamplingVar) {
+  linkingError <- detectLinkingError(data, yvars)
+  if(any(pvy)) {
+    if(linkingError) {
+      if(standardizeWithSamplingVar) {
         stop(paste0(sQuote("standardizeWithSamplingVar"), " not supported with linking error."))
       }
       pvs <- getPlausibleValue(yvars[max(pvy)], data)
@@ -471,7 +471,7 @@ calc.lm.sdf <- function(formula,
     } # end if(any(pvy))
   } else {
     # no PVs, just make sure that this variable is numeric
-    edf[, "yvar"] <- as.numeric(eval(formula[[2]], edf))
+    edf[ , "yvar"] <- as.numeric(eval(formula[[2]], edf))
     formula <- update(formula, new = substitute(yvar ~ ., list(yvar = as.name(yvar))))
     yvars <- "yvar"
   } # End of if statment: any(pvy)
@@ -484,23 +484,23 @@ calc.lm.sdf <- function(formula,
       # first, by PV, rename the ith PVs to be e.g. composite
       for (yvi in 1:length(pvy)) {
         if (pvy[yvi]) {
-          edf[, yvar[yvi]] <- edf[, getPlausibleValue(yvar[yvi], data)[i]]
+          edf[ , yvar[yvi]] <- edf[ , getPlausibleValue(yvar[yvi], data)[i]]
         }
       }
       # then set yvars[i] (e.g. outcome1) to be the evaluation at this PV point
-      edf[, yvars[i]] <- as.numeric(eval(formula[[2]], edf))
+      edf[ , yvars[i]] <- as.numeric(eval(formula[[2]], edf))
     }
     # finally, correctly set yvar0
-    edf$yvar0 <- edf[, yvar0]
+    edf$yvar0 <- edf[ , yvar0]
   } # end if(any(pvy)), no else
 
   # 5) run the main regression
   # run a regression, starting with the first PV or maybe the only outcome variable
   yvar0 <- yvars[1]
   # this allows that variable to not be dynamic variable, it is explicitly defined to be yvar0
-  edf$yvar0 <- edf[, yvar0]
+  edf$yvar0 <- edf[ , yvar0]
   frm <- update(formula, yvar0 ~ .)
-  edf$w <- edf[, wgt]
+  edf$w <- edf[ , wgt]
   lm0 <- lm(frm, data = edf, weights = w)
   if (returnLm0) {
     return(lm0)
@@ -510,7 +510,7 @@ calc.lm.sdf <- function(formula,
   # calculation
   X <- model.matrix(frm, edf)
   # fill this in regardless of standardizeWithSamplingVar to make a "shell"
-  std <- getStdev(edf[, yvars], X, edf[, wgt])
+  std <- getStdev(edf[ , yvars], X, edf[ , wgt])
 
   # this grabs the list of weight variable names
   wgtl <- getAttributes(sdf, "weights")[[wgt]]
@@ -564,8 +564,8 @@ calc.lm.sdf <- function(formula,
           wgt = wgt
         )
         # coefficients matrix, r-squared vector
-        coefm <- est$coef[, -ncol(est$coef), drop = FALSE]
-        r2s <- est$coef[, ncol(est$coef), drop = FALSE]
+        coefm <- est$coef[ , -ncol(est$coef), drop = FALSE]
+        r2s <- est$coef[ , ncol(est$coef), drop = FALSE]
         # get imputation variance
         impVar <- getLinkingImpVar(
           data = edf,
@@ -601,9 +601,9 @@ calc.lm.sdf <- function(formula,
           wgt = wgt
         )
         # coef matrix (coefm)
-        coefm <- est$coef[, -ncol(est$coef), drop = FALSE]
+        coefm <- est$coef[ , -ncol(est$coef), drop = FALSE]
         # r-squared vector
-        r2s <- est$coef[, ncol(est$coef), drop = FALSE]
+        r2s <- est$coef[ , ncol(est$coef), drop = FALSE]
         # for standardized coefficients (matrix)
         if (standardizeWithSamplingVar) {
           coefmS <- t(apply(coefm, 1, function(co0row) standardizeCoef(co0row, std)))
@@ -616,8 +616,8 @@ calc.lm.sdf <- function(formula,
         for (pvi in 1:jrrIMax) { # for each PV (up to jrrIMax)
           res <- getVarEstJK(
             stat = stat_reg,
-            yvar = edf[, yvars[pvi]],
-            wgtM = edf[, paste0(wgtl$jkbase, wgtl$jksuffixes)],
+            yvar = edf[ , yvars[pvi]],
+            wgtM = edf[ , paste0(wgtl$jkbase, wgtl$jksuffixes)],
             co0 = coefm[pvi, ],
             jkSumMult = jkSumMult,
             pvName = pvi
@@ -627,13 +627,13 @@ calc.lm.sdf <- function(formula,
           varm[pvi, ] <- res$VsampInp
           if (standardizeWithSamplingVar) {
             stdev <- apply(
-              edf[, paste0(wgtl$jkbase, wgtl$jksuffixes)], 2,
-              function(w) getStdev(edf[, yvars[pvi]], X, w)
+              edf[ , paste0(wgtl$jkbase, wgtl$jksuffixes)], 2,
+              function(w) getStdev(edf[ , yvars[pvi]], X, w)
             )
             varmS[pvi, ] <- getVarEstJKStandard(
               stat = stat_reg,
-              yvar = edf[, yvars[pvi]],
-              wgtM = edf[, paste0(wgtl$jkbase, wgtl$jksuffixes)],
+              yvar = edf[ , yvars[pvi]],
+              wgtM = edf[ , paste0(wgtl$jkbase, wgtl$jksuffixes)],
               co0 = coefm[pvi, ],
               jkSumMult = jkSumMult,
               pvName = pvi,
@@ -653,9 +653,9 @@ calc.lm.sdf <- function(formula,
       # the QR decomposition is used to improve stability but
       # the D matrix involves an inverse that cannot be avoided
       X <- sparse.model.matrix(frm, edf)
-      XW <- X * sqrt(edf[, wgt, drop = TRUE])
+      XW <- X * sqrt(edf[ , wgt, drop = TRUE])
       qrXW <- qr(XW)
-      W <- Diagonal(n = nrow(edf), edf[, wgt, drop = TRUE])
+      W <- Diagonal(n = nrow(edf), edf[ , wgt, drop = TRUE])
       D <- solve(t(X) %*% W %*% X)
 
       # build per yvar
@@ -667,8 +667,8 @@ calc.lm.sdf <- function(formula,
       # variance and warning per yvar
       for (mm in 1:length(yvars)) {
         # for each PV, run the regression, form the coefficients and variance components
-        Y <- as(edf[, yvars[mm], drop = FALSE], "Matrix")
-        YW <- Y * sqrt(edf[, wgt, drop = TRUE])
+        Y <- as(edf[ , yvars[mm], drop = FALSE], "Matrix")
+        YW <- Y * sqrt(edf[ , wgt, drop = TRUE])
         # next line gets b (the coefficients) in the traditional
         # but less stable way than the line after it, which is based on QR
         # b <- D %*% t(X) %*% W %*% Y
@@ -686,8 +686,8 @@ calc.lm.sdf <- function(formula,
         res2 <- getR2Taylor(res$vv, D, W, Y, e)
 
         # collect
-        dofNum[, mm] <- res$nums
-        dofDenom[, mm] <- res$nums2
+        dofNum[ , mm] <- res$nums
+        dofDenom[ , mm] <- res$nums2
         warnDrop <- warnDrop + res$warnDrop
         coefm[mm, ] <- as.numeric(b)
         varM[[mm]] <- as.matrix(res2$vc)
@@ -721,7 +721,7 @@ calc.lm.sdf <- function(formula,
           stringsAsFactors = FALSE,
           PV = 1:nrow(coefm0),
           variable = rep(names(coef(lm0))[coli], nrow(coefm0)),
-          value = coefm0[, coli]
+          value = coefm0[ , coli]
         )
       })
       coefmPV <- do.call(rbind, coefmPVByRow)
@@ -753,8 +753,8 @@ calc.lm.sdf <- function(formula,
       coef <- coef(lm0) # coefficients come from full sample weights run
       res <- getVarEstJK(
         stat = stat_reg,
-        yvar = edf[, yvars[1]],
-        wgtM = edf[, paste0(wgtl$jkbase, wgtl$jksuffixes)],
+        yvar = edf[ , yvars[1]],
+        wgtM = edf[ , paste0(wgtl$jkbase, wgtl$jksuffixes)],
         co0 = coef,
         jkSumMult = jkSumMult,
         pvName = 1
@@ -764,9 +764,9 @@ calc.lm.sdf <- function(formula,
       varEstInputs[["JK"]] <- res$veiJK
     } else { # end if(varMethod == "j")
       # Taylor series, no PV
-      Y <- as(edf[, yvars[1], drop = FALSE], "Matrix")
+      Y <- as(edf[ , yvars[1], drop = FALSE], "Matrix")
       X <- sparse.model.matrix(frm, edf)
-      W <- Diagonal(n = nrow(edf), edf[, wgt, drop = TRUE])
+      W <- Diagonal(n = nrow(edf), edf[ , wgt, drop = TRUE])
       D <- vcov(lm0)
       b <- coef(lm0)
       # get residual
@@ -812,7 +812,7 @@ calc.lm.sdf <- function(formula,
   # get fitted and resid based on overall coef
   fitted1 <- as.vector(X %*% coef)
   Y <- do.call(cbind, lapply(1:length(yvars), function(yi) {
-    as.vector(edf[, yvars[yi]])
+    as.vector(edf[ , yvars[yi]])
   }))
   resid1 <- Y - fitted1
   colnames(resid1) <- colnames(Y) <- yvars
@@ -831,7 +831,7 @@ calc.lm.sdf <- function(formula,
       coefm <- t(as.matrix(coefm))
     }
     fitted2 <- as.matrix(X %*% t(coefm))
-    resid2 <- Y[, 1:ncol(fitted2)] - fitted2
+    resid2 <- Y[ , 1:ncol(fitted2)] - fitted2
   }
 
   coefmat <- data.frame(
@@ -857,7 +857,7 @@ calc.lm.sdf <- function(formula,
     })
   }
   pti <- pt(coefmat$t, df = coefmat$dof)
-  coefmat[, "Pr(>|t|)"] <- 2 * pmin(pti, 1 - pti)
+  coefmat[ , "Pr(>|t|)"] <- 2 * pmin(pti, 1 - pti)
   njk <- length(wgtl$jksuffixes)
   if (varMethod == "t") {
     njk <- NA
@@ -915,14 +915,14 @@ calc.lm.sdf <- function(formula,
   if (returnNumberOfPSU) {
     if ("JK1" %in% stratumVar) {
       res <- c(res, list(nPSU = nrow(edf)))
-    } else if (sum(is.na(edf[, c(stratumVar, psuVar)])) == 0) {
-      res <- c(res, list(nPSU = nrow(unique(edf[, c(stratumVar, psuVar)]))))
+    } else if (sum(is.na(edf[ , c(stratumVar, psuVar)])) == 0) {
+      res <- c(res, list(nPSU = nrow(unique(edf[ , c(stratumVar, psuVar)]))))
     } else {
       warning("Cannot return number of PSUs because the stratum or PSU variables contain NA values.")
     }
   }
   if (all(c(stratumVar, psuVar) %in% colnames(edf))) {
-    if (sum(is.na(edf[, c(stratumVar, psuVar)])) == 0) {
+    if (sum(is.na(edf[ , c(stratumVar, psuVar)])) == 0) {
       res <- c(res, list(waldDenomBaseDof = waldDof(edf, stratumVar, psuVar)))
     }
   }
@@ -1108,8 +1108,8 @@ plot.edsurveyLm <- function(x, ...) {
 getStdev <- function(outcomeData, XData, weightData) {
   std <- c(outcome = fast.sd(outcomeData, weightData)["std"])
   for (i in 1:ncol(XData)) {
-    if (!is.na(sd(XData[, i])) & sd(XData[, i]) > 0) {
-      std <- c(std, fast.sd(XData[, i], weightData)["std"])
+    if (!is.na(sd(XData[ , i])) & sd(XData[ , i]) > 0) {
+      std <- c(std, fast.sd(XData[ , i], weightData)["std"])
     } else {
       std <- c(std, 0)
     }
@@ -1153,7 +1153,7 @@ getLinkingImpVar <- function(data, pvImp, ramCols, stat, wgt, T0, T0Centered, jk
   if (is.null(data)) {
     w <- wgt
   } else {
-    w <- data[, wgt]
+    w <- data[ , wgt]
   }
   ramRows <- round(length(pvImp) / ramCols)
   if (ramRows - length(pvImp) / ramCols > sqrt(.Machine$double.eps)) {
@@ -1167,7 +1167,7 @@ getLinkingImpVar <- function(data, pvImp, ramCols, stat, wgt, T0, T0Centered, jk
       if (is.null(data)) {
         pv_nj <- pvImp[pvi]
       } else {
-        pv_nj <- data[, pvImp[pvi]]
+        pv_nj <- data[ , pvImp[pvi]]
       }
       T_jn[j, ] <- stat(pv = pv_nj, w = w)
       pvi <- pvi + 1
@@ -1180,7 +1180,7 @@ getLinkingImpVar <- function(data, pvImp, ramCols, stat, wgt, T0, T0Centered, jk
       center <- T0
     }
     for (i in 1:length(center)) {
-      V_n[n, i] <- (1 + 1 / 20) * sum((T_jn[, i] - center[i])^2) / (20 - 1)
+      V_n[n, i] <- (1 + 1 / 20) * sum((T_jn[ , i] - center[i])^2) / (20 - 1)
     }
     if (n == 1) {
       veiPV <- (T_jn - center[i])
@@ -1191,7 +1191,7 @@ getLinkingImpVar <- function(data, pvImp, ramCols, stat, wgt, T0, T0Centered, jk
   V <- apply(V_n, 2, mean)
   names(V) <- names(T0)
   colnames(V_n) <- names(T0)
-  veiPV <- veiPV[, !names(T0) %in% "r.squared", drop = FALSE]
+  veiPV <- veiPV[ , !names(T0) %in% "r.squared", drop = FALSE]
   npv <- nrow(veiPV)
   nT0 <- length(T0)
   if ("r.squared" %in% names(T0)) {
@@ -1201,7 +1201,7 @@ getLinkingImpVar <- function(data, pvImp, ramCols, stat, wgt, T0, T0Centered, jk
     data.frame(
       PV = 1:npv, # actually RAM element
       variable = rep(names(T0)[i], npv),
-      value = veiPV[, i] - mean(veiPV[, i])
+      value = veiPV[ , i] - mean(veiPV[ , i])
     )
   })
   vei <- do.call(rbind, veiList)
@@ -1229,8 +1229,8 @@ getLinkingSampVar <- function(data, pvSamp, stat, rwgt, T0, T0Centered, jkSumMul
       pv <- pvSamp[i]
       w <- rwgt[i]
     } else {
-      pv <- data[, pvSamp[i]]
-      w <- data[, rwgt[i]]
+      pv <- data[ , pvSamp[i]]
+      w <- data[ , rwgt[i]]
     }
     T_i[i, ] <- stat(pv = pv, w = w)
   }
@@ -1249,14 +1249,14 @@ getLinkingSampVar <- function(data, pvSamp, stat, rwgt, T0, T0Centered, jkSumMul
       data.frame(
         PV = rep(1, nrow(resi)),
         variable = rep(names(T0)[i], nrow(resi)),
-        value = resi[, i],
+        value = resi[ , i],
         JKreplicate = 1:nrow(resi)
       )
     }
   })
   vei <- do.call(rbind, veiList)
   colnames(resi) <- names(T0)
-  resi <- resi[, names(T0) != ("r.squared"), drop = FALSE]
+  resi <- resi[ , names(T0) != ("r.squared"), drop = FALSE]
   Bi <- jkSumMult *
     Reduce(
       "+",
@@ -1283,14 +1283,14 @@ getLinkingSampVar <- function(data, pvSamp, stat, rwgt, T0, T0Centered, jkSumMul
 #         and another element \code{coef} that is the coefficient by pvEst variable, useful for further
 #         variance calculations
 getEst <- function(data, pvEst, stat, wgt, longReturn = TRUE) {
-  w <- data[, wgt]
-  pv_1 <- data[, pvEst[1]]
+  w <- data[ , wgt]
+  pv_1 <- data[ , pvEst[1]]
   T_0 <- stat(pv = pv_1, w = w)
   T_n <- matrix(0, ncol = length(T_0), nrow = length(pvEst))
   T_n[1, ] <- T_0
   if (length(pvEst) > 1) {
     for (n in 2:length(pvEst)) {
-      pv_n <- data[, pvEst[n]]
+      pv_n <- data[ , pvEst[n]]
       T_n[n, ] <- stat(pv = pv_n, w = w)
     }
   }
@@ -1327,7 +1327,7 @@ getVarEstJK <- function(stat, yvar, wgtM, co0, jkSumMult, pvName) {
     # wgtM is a matrix/data.frame
     nwgt <- ncol(wgtM)
     coefa <- lapply(1:nwgt, function(wgti) {
-      stat(pv = yvar, w = wgtM[, wgti])
+      stat(pv = yvar, w = wgtM[ , wgti])
     })
     coefa <- do.call(cbind, coefa)
     colnames(coefa) <- colnames(wgtM)
@@ -1360,7 +1360,7 @@ getVarEstJK <- function(stat, yvar, wgtM, co0, jkSumMult, pvName) {
       PV = rep(pvName, nwgt),
       JKreplicate = 1:nwgt,
       variable = rep(colnames(coefa)[coli], nwgt),
-      value = coefa[, coli]
+      value = coefa[ , coli]
     )
   })
   # veiJK is the JK part of varEstInputs
@@ -1399,14 +1399,14 @@ getVarEstJK <- function(stat, yvar, wgtM, co0, jkSumMult, pvName) {
 # @ return  VsampInpS   standardized varmVal
 getVarEstJKStandard <- function(stat, yvar, wgtM, co0, jkSumMult, pvName, stdev, coefmSi) {
   coefa <- lapply(1:ncol(wgtM), function(wgti) {
-    stat(pv = yvar, w = wgtM[, wgti])
+    stat(pv = yvar, w = wgtM[ , wgti])
   })
   coefa <- do.call(cbind, coefa)
   colnames(coefa) <- colnames(wgtM)
   coefa <- coefa[rownames(coefa) != "r.squared", ]
   coefS <- sapply(
     1:ncol(wgtM),
-    function(i) standardizeCoef(coefa[, i], stdev[[i]])
+    function(i) standardizeCoef(coefa[ , i], stdev[[i]])
   )
   coefS <- t(coefS - coefmSi)
   coefS[2 * abs(coefmSi * .Machine$double.eps) > abs(coefS)] <- 0
@@ -1435,7 +1435,7 @@ getVarTaylor <- function(uhij, edf, D, wgt, psuVar, stratumVar) {
   coefNames <- colnames(uhij)
   uhil <- lapply(1:length(coefNames), function(j) {
     # get the stratum/PSU based sum
-    edf$bb <- uhij[, j] * edf[, wgt]
+    edf$bb <- uhij[ , j] * edf[ , wgt]
     res_sp <- aggregate(formula(paste0("bb ~ ", psuVar, " + ", stratumVar)), edf, sum)
     # and the average of the previous line results across strata (notice data=res_sp)
     res_s <- aggregate(formula(paste0("bb ~ ", stratumVar)), res_sp, mean)
@@ -1443,7 +1443,7 @@ getVarTaylor <- function(uhij, edf, D, wgt, psuVar, stratumVar) {
     names(res_sp)[3] <- coln
     names(res_s)[2] <- paste0("uh_", coln)
     uhi <- merge(res_sp, res_s, by = c(stratumVar), all = TRUE)
-    uhi[, paste0("dx", coln)] <- uhi[, coln] - uhi[, paste0("uh_", coln)]
+    uhi[ , paste0("dx", coln)] <- uhi[ , coln] - uhi[ , paste0("uh_", coln)]
     uhi
   })
   # cols: for each coef: sum by strat and psu, mean by strat, diff of two
@@ -1453,10 +1453,10 @@ getVarTaylor <- function(uhij, edf, D, wgt, psuVar, stratumVar) {
   vv <- matrix(0, nrow = length(coefNames), ncol = length(coefNames))
   nums <- vector(length = length(coefNames))
   nums2 <- vector(length = length(coefNames))
-  for (ii in unique(uhi[, stratumVar])) {
-    unkj <- unique(uhi[uhi[, stratumVar] == ii, psuVar, drop = TRUE])
+  for (ii in unique(uhi[ , stratumVar])) {
+    unkj <- unique(uhi[uhi[ , stratumVar] == ii, psuVar, drop = TRUE])
     if (length(unkj) > 1) {
-      v <- do.call(cbind, lapply(1:length(unkj), function(jj) as.numeric(t(uhi[uhi[, stratumVar] == ii & uhi[, psuVar] == unkj[jj], paste0("dx", coefNames), drop = FALSE]))))
+      v <- do.call(cbind, lapply(1:length(unkj), function(jj) as.numeric(t(uhi[uhi[ , stratumVar] == ii & uhi[ , psuVar] == unkj[jj], paste0("dx", coefNames), drop = FALSE]))))
       vvj <- v %*% t(v)
       vvj <- vvj * ((length(unkj)) / (length(unkj) - 1))
       num <- diag(D %*% vvj %*% D)
@@ -1500,15 +1500,14 @@ getR2Taylor <- function(M, D, W, Y, e) {
   return(res)
 }
 
-
 getVarEstJKPercentile <- function(data, pvEst, stat, wgt, jkw, rvs, jmaxN) {
-  w <- data[, wgt]
-  pv_1 <- data[, pvEst[1]]
-  jkws <- data[, jkw]
+  w <- data[ , wgt]
+  pv_1 <- data[ , pvEst[1]]
+  jkws <- data[ , jkw]
   T_n <- stat(pv = pv_1, w = w, jkw = jkws, rv = rvs[1, ], jmax = T)
   if (length(pvEst) > 1) {
     for (n in 2:length(pvEst)) {
-      pv_n <- data[, pvEst[n]]
+      pv_n <- data[ , pvEst[n]]
       if (n <= jmaxN) {
         T_p <- stat(pv = pv_n, w = w, jkw = jkws, rv = rvs[n, ], jmax = T)
         T_n$rprs <- rbind(T_n$rprs, T_p$rprs)
@@ -1518,6 +1517,19 @@ getVarEstJKPercentile <- function(data, pvEst, stat, wgt, jkw, rvs, jmaxN) {
         T_n$nsmall <- rbind(T_n$nsmall, T_p$nsmall)
       }
     }
+  } 
+  return (T_n)
+}
+
+detectLinkingError <- function(data, yvars) {
+  if(is.null(yvars)) {
+    return(FALSE)
   }
-  return(T_n)
+  if(length(yvars) == 0) {
+    return(FALSE)
+  }
+  if(is.null(data)) {
+    return(FALSE)
+  }
+  any(c("HSTS", "NAEP") %in% getAttributes(data, "survey")) & any(grepl("_linking", yvars, fixed=TRUE))
 }

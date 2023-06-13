@@ -191,7 +191,7 @@ waldDof <- function(data, stratumVar, psuVar) {
       min(minN, length(x[x > 0]))
     }))
   }
-  return(uniqueMin(data[, c(stratumVar, psuVar)]) - uniqueMin(data[, stratumVar, drop = FALSE]) + 1)
+  return(uniqueMin(data[ , c(stratumVar, psuVar)]) - uniqueMin(data[ , stratumVar, drop = FALSE]) + 1)
 }
 
 

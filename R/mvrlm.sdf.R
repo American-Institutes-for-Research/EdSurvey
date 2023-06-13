@@ -224,11 +224,11 @@ calc.mvrlm.sdf <- function(formula,
   }
   # edf is the actual data
   edf <- do.call(getData, getDataArgs)
-  if (any(edf[, wgt] <= 0)) {
+  if (any(edf[ , wgt] <= 0)) {
     if (verbose) {
       message("Removing rows with 0 weight from analysis.")
     }
-    edf <- edf[edf[, wgt] > 0, ]
+    edf <- edf[edf[ , wgt] > 0, ]
   }
 
   # 3) deal with relevels.
@@ -249,11 +249,11 @@ calc.mvrlm.sdf <- function(formula,
         ))
       } # End of if statment: length(relevels[[i]]) != 1
       # check that the level exists
-      lvls <- levels(edf[, vari])
-      if (inherits(edf[, vari], "lfactor")) {
+      lvls <- levels(edf[ , vari])
+      if (inherits(edf[ , vari], "lfactor")) {
         # for a factor it can be either a level or a label
-        lvls <- c(lvls, labels(edf[, vari]))
-      } # End of if statment: inherits(edf[,vari], "lfactor")
+        lvls <- c(lvls, labels(edf[ , vari]))
+      } # End of if statment: inherits(edf[ ,vari], "lfactor")
       if (!relevels[[i]] %in% lvls) {
         stop(paste0(
           "In the ", sQuote("relevels"),
@@ -262,7 +262,7 @@ calc.mvrlm.sdf <- function(formula,
           pasteItems(dQuote(lvls)), "."
         ))
       } # End of if statment !relevels[[i]] %in% lvls
-      edf[, vari] <- relevel(edf[, vari], ref = relevels[[i]])
+      edf[ , vari] <- relevel(edf[ , vari], ref = relevels[[i]])
     } # end for(i in 1:length(relevels))
   } # end if(length(relevels) > 0)
 
@@ -298,7 +298,7 @@ calc.mvrlm.sdf <- function(formula,
         yvars[[i]] <- getPlausibleValue(yvar[[i]], sdf)
       } else {
         # if not, make sure that this variable is numeric
-        edf[, yvar[[i]]] <- as.numeric(edf[, yvar[[i]]])
+        edf[ , yvar[[i]]] <- as.numeric(edf[ , yvar[[i]]])
         # and repeat variable name npv times
         yvars[[i]] <- rep(yvar[[i]], npv)
       } # End of if statment: pvy
@@ -325,11 +325,11 @@ calc.mvrlm.sdf <- function(formula,
     # must tell formula "frm" to use the current environment
     env <- list2env(list(edf = edf, wgt = wgt))
     attr(frm, ".Environment") <- env
-    mdf <- model.frame(frm, data = edf, weights = edf[, wgt])
+    mdf <- model.frame(frm, data = edf, weights = edf[ , wgt])
     X <- model.matrix(object = frm, data = mdf, rhs = NULL)
     coefNames <- colnames(X)
     Y <- as.matrix(model.part(object = frm, data = mdf, lhs = NULL))
-    W <- Diagonal(x = mdf[, "(weights)"])
+    W <- Diagonal(x = mdf[ , "(weights)"])
     list(X = X, Y = Y, W = W, coefNames = coefNames, mdf = mdf, frm = frm)
   }
 
@@ -346,7 +346,6 @@ calc.mvrlm.sdf <- function(formula,
   coefEstWtd <- function(X, Y, W) {
     bHat <- try(solve((t(X) %*% W) %*% X) %*% (t(X) %*% W %*% Y), silent = TRUE)
     if (inherits(bHat, "try-error")) { # deals with the case where there's a singularity by using lm.wfit instead
-      # print("singularity case hit")
       bHat <- lm.wfit(x = X, y = Y, w = diag(W))$coefficients
     }
     bHat
@@ -448,8 +447,7 @@ calc.mvrlm.sdf <- function(formula,
   madeB <- FALSE
 
   if (sum(pvy) > 0) { # there are plausible values in 1 or more of the dependent variables
-
-    jrrIMax <- jrrIMax # min(jrrIMax, length(yvars))
+    jrrIMax <- min(jrrIMax, min(unlist(lapply(yvars, length))))
 
     # for the first (PV) formula
     coefInputs <- coefEstInputs(frm = frm, wgt = wgt, edf = edf)
@@ -474,8 +472,7 @@ calc.mvrlm.sdf <- function(formula,
     varm <- matrix(NA, nrow = jrrIMax, ncol = (ncol(co0) * nrow(co0)))
     varM <- list()
     # coefficients by PV
-    # coefm <- matrix(NA, nrow=jrrIMax, ncol=(ncol(co0) * nrow(co0)))
-    coefm <- matrix(NA, nrow = length(yvars[[1]]), ncol = (ncol(co0) * nrow(co0)))
+    coefm <- matrix(NA, nrow=min(unlist(lapply(yvars, length))), ncol=(ncol(co0) * nrow(co0)))
 
     # R-squared by PV (needs to be a matrix)
     r2s <- matrix(NA, nrow = length(yvars[[1]]), ncol = length(yvar))
@@ -574,7 +571,7 @@ calc.mvrlm.sdf <- function(formula,
             PV = rep(pvi, nrow(coefa)),
             JKreplicate = 1:nrow(coefa),
             variable = rep(coefInputs$coefNames, nDV)[coli],
-            value = coefa[, coli]
+            value = coefa[ , coli]
           )
         })
         veiJK <- do.call(rbind, dfl)
@@ -585,7 +582,7 @@ calc.mvrlm.sdf <- function(formula,
             JKreplicate = 1:nrow(coefa),
             # variable=names(coef(lmi))[coli],
             variable = rep(coefInputs$coefNames, nDV)[coli],
-            value = coefa[, coli]
+            value = coefa[ , coli]
           )
         })
         veiJK <- rbind(veiJK, do.call(rbind, dfl))
@@ -613,22 +610,7 @@ calc.mvrlm.sdf <- function(formula,
 
     # imputation variance / variance due to uncertaintly about PVs
 
-    coefm0 <- t(t(coefm) - apply(coefm, 2, mean))
-    B <- (1 / (M - 1)) * Reduce(
-      "+", # add up the matrix results of the sapply
-      sapply(1:nrow(coefm), function(q) {
-        # within each PV set, calculate the outer product
-        # (2.19 of Van Buuren)
-        outer(coefm0[q, ], coefm0[q, ])
-      }, simplify = FALSE)
-    )
-
-    madeB <- TRUE
-
-    # \bar{U} from 2.18 in var Buuren
-    Ubar <- (1 / length(varM)) * Reduce("+", varM)
-
-    while (pvi < max(unlist(lapply(yvars, length)))) {
+    while (pvi < min(unlist(lapply(yvars, length)))) {
       pvi <- pvi + 1
 
       frm <- pvModelFormula(pvi)
@@ -652,6 +634,20 @@ calc.mvrlm.sdf <- function(formula,
       # take the coefs and add them to the matrix (as a flattened row)
       coefm[pvi, ] <- as.vector(co0)
     }
+
+    coefm0 <- t(t(coefm) - apply(coefm, 2, mean))
+    B <- (1 / (nrow(coefm) - 1)) * Reduce(
+      "+", # add up the matrix results of the sapply
+      sapply(1:nrow(coefm), function(q) {
+        # within each PV set, calculate the outer product
+        # (2.19 of Van Buuren)
+        outer(coefm0[q, ], coefm0[q, ])
+      }, simplify = FALSE)
+    )
+    madeB <- TRUE
+
+    # \bar{U} from 2.18 in var Buuren
+    Ubar <- (1 / length(varM)) * Reduce("+", varM)
 
     M <- pvi
     Vimp <- (M + 1) / M * apply(coefm, 2, var)
@@ -681,7 +677,7 @@ calc.mvrlm.sdf <- function(formula,
     out <- list()
     for (i in 1:nDV) {
       co <- unlist(lapply(coefm, function(x) {
-        x[, i]
+        x[ , i]
       }))
       out[[length(out) + 1]] <- matrix(co, nrow = length(coefm), ncol = length(coefInputs$coefNames), byrow = TRUE)
     }
@@ -742,7 +738,7 @@ calc.mvrlm.sdf <- function(formula,
         PV = rep(1, nrow(coefa)),
         JKreplicate = 1:nrow(coefa),
         variable = names(coef0)[coli],
-        value = coefa[, coli]
+        value = coefa[ , coli]
       )
     })
 
@@ -803,9 +799,9 @@ calc.mvrlm.sdf <- function(formula,
   coefmatlist <- list()
   for (i in 1:nDV) {
     coefmatlist[[length(coefmatlist) + 1]] <- data.frame(
-      coef = coef[, i],
-      se = se[((i - 1) * length(coef[, i]) + 1):(i * length(coef[, i]))],
-      t = coef[, i] / se[((i - 1) * length(coef[, i]) + 1):(i * length(coef[, i]))]
+      coef = coef[ , i],
+      se = se[((i - 1) * length(coef[ , i]) + 1):(i * length(coef[ , i]))],
+      t = coef[ , i] / se[((i - 1) * length(coef[ , i]) + 1):(i * length(coef[ , i]))]
     )
   }
 
@@ -842,7 +838,7 @@ calc.mvrlm.sdf <- function(formula,
       coefmat[[var]]$dof <- dof
 
       pti <- pt(coefmat[[var]]$t, df = coefmat[[var]]$dof)
-      coefmat[[var]][, "Pr(>|t|)"] <- 2 * pmin(pti, 1 - pti)
+      coefmat[[var]][ , "Pr(>|t|)"] <- 2 * pmin(pti, 1 - pti)
     } else {
       # variables without plausible values
       vei <- list()
@@ -857,7 +853,7 @@ calc.mvrlm.sdf <- function(formula,
       coefmat[[var]]$dof <- dof
 
       pti <- pt(coefmat[[var]]$t, df = coefmat[[var]]$dof)
-      coefmat[[var]][, "Pr(>|t|)"] <- 2 * pmin(pti, 1 - pti)
+      coefmat[[var]][ , "Pr(>|t|)"] <- 2 * pmin(pti, 1 - pti)
     }
   }
 
@@ -867,7 +863,7 @@ calc.mvrlm.sdf <- function(formula,
     for (var in yvar) {
       index <- which(yvar == var)
       resid <- lapply(resid, as.matrix)
-      a1 <- rapply(resid, classes = "matrix", how = "list", f = function(x) x[, index, drop = FALSE])
+      a1 <- rapply(resid, classes = "matrix", how = "list", f = function(x) x[ , index, drop = FALSE])
       a1 <- do.call(cbind, a1)
       rownames(a1) <- NULL # drop scrambled row names
       residPV[[index]] <- a1
@@ -949,11 +945,11 @@ coef.edsurveyMvrlmList <- function(object, ...) {
   for (i in 1:object[[1]]$nDV) {
     cat(paste0("\n", yvar[i], "\n"))
     print(sapply(object, function(x) {
-      x$coef[, i]
+      x$coef[ , i]
     }))
     cat("\n")
     coeflist[[yvar[i]]] <- sapply(object, function(x) {
-      x$coef[, i]
+      x$coef[ , i]
     })
   }
   return(coeflist)
@@ -1049,13 +1045,15 @@ linearHypothesis.edsurveyMvrlm <- function(model, hypothesis.matrix, rhs = NULL,
   linearHypothesis.default(model, hypothesis.matrix = hypothesis, rhs = rhs, test = test, vcov. = vcov., verbose = FALSE)
 }
 
-
 #' @method makeHypothesis edsurveyMvrlm
 #' @export
-makeHypothesis.edsurveyMvrlm <- function(model, hypothesis) {
+makeHypothesis.edsurveyMvrlm <- function(cnames, hypothesis, rhs = NULL) {
+  if(!missing(rhs)){
+    warning("Argument 'rhs' will be ignored.")
+  }
   names <- expand.grid(
-    colnames(model$coef),
-    rownames(model$coef)
+    colnames(cnames$coef),
+    rownames(cnames$coef)
   )
 
   varnames <- apply(X = names, MARGIN = 1, FUN = function(x) {
@@ -1064,7 +1062,7 @@ makeHypothesis.edsurveyMvrlm <- function(model, hypothesis) {
 
   hypothesis.matrix <- car::makeHypothesis(varnames, hypothesis)
   if (is.matrix(hypothesis.matrix)) {
-    hypothesis.matrix <- hypothesis.matrix[, -ncol(hypothesis.matrix)]
+    hypothesis.matrix <- hypothesis.matrix[ , -ncol(hypothesis.matrix)]
   } else if (is.numeric(hypothesis.matrix)) {
     hypothesis.matrix <- hypothesis.matrix[-length(hypothesis.matrix)]
   }

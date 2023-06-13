@@ -223,7 +223,7 @@ processECLS_B <- function(files,
       formattedTxt <- matrix(nrow = nrow(dataChunk), ncol = ncol(dataChunk))
 
       for (coli in 1:ncol(dataChunk)) {
-        xCol <- dataChunk[, coli]
+        xCol <- dataChunk[ , coli]
         # remove any null indicators, will be strictly '.' value
         xCol[xCol == "."] <- NA
         xCol[trimws(xCol, which = "both") == ""] <- NA
@@ -277,7 +277,7 @@ processECLS_B <- function(files,
         # convert to blank for writing to FWF
         xCol[is.na(xCol)] <- " "
         # store formatted column into matrix for writing
-        formattedTxt[, coli] <- format(xCol, scientific = FALSE, width = fileFormat$Width[coli], justify = "right")
+        formattedTxt[ , coli] <- format(xCol, scientific = FALSE, width = fileFormat$Width[coli], justify = "right")
       }
 
       # remove the file if it exists and we are reprocessing

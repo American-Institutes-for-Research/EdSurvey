@@ -248,8 +248,8 @@ naepParamTabs <- function(params_use) {
 
   # polyParamTab
   poly <- params_use[!is.na(params_use$d1), ]
-  polyParamTab <- poly[, colnames(poly)[!colnames(poly) %in% c("c")]]
-  polyParamTab <- polyParamTab[, c("NAEPid", "subtest", "a", "b", paste0("d", 1:5))]
+  polyParamTab <- poly[ , colnames(poly)[!colnames(poly) %in% c("c")]]
+  polyParamTab <- polyParamTab[ , c("NAEPid", "subtest", "a", "b", paste0("d", 1:5))]
   colnames(polyParamTab) <- c("ItemID", "subtest", "slope", "itemLocation", paste0("d", 1:5))
   polyParamTab$ItemID <- tolower(polyParamTab$ItemID)
   if (nrow(polyParamTab) > 0) {
@@ -260,8 +260,8 @@ naepParamTabs <- function(params_use) {
 
   # dichotomous
   bi <- params_use[!params_use$NAEPid %in% poly$NAEPid, ]
-  dichotParamTab <- bi[, colnames(bi)[!colnames(bi) %in% paste0("d", 1:5)]]
-  dichotParamTab <- dichotParamTab[, c("NAEPid", "subtest", "a", "b", "c")]
+  dichotParamTab <- bi[ , colnames(bi)[!colnames(bi) %in% paste0("d", 1:5)]]
+  dichotParamTab <- dichotParamTab[ , c("NAEPid", "subtest", "a", "b", "c")]
   colnames(dichotParamTab) <- c("ItemID", "subtest", "slope", "difficulty", "guessing")
   dichotParamTab$ItemID <- tolower(dichotParamTab$ItemID)
   if (nrow(dichotParamTab) > 0) {
@@ -281,9 +281,9 @@ timssParamTabs <- function(params_use) {
   paramTabs <- list()
   # polyParamTab
   poly <- params_use[!is.na(params_use$d1), ]
-  polyParamTab <- poly[, colnames(poly)[!colnames(poly) %in% c("c")]]
+  polyParamTab <- poly[ , colnames(poly)[!colnames(poly) %in% c("c")]]
   ds <- grep("^d[0-9]$", colnames(polyParamTab), value = TRUE)
-  polyParamTab <- polyParamTab[, c("TIMSSid", "content_subtest", "cognitive_subtest", "a", "b", ds, "subject", "scorePoints")]
+  polyParamTab <- polyParamTab[ , c("TIMSSid", "content_subtest", "cognitive_subtest", "a", "b", ds, "subject", "scorePoints")]
   colnames(polyParamTab) <- c("ItemID", "content_subtest", "cognitive_subtest", "slope", "itemLocation", ds, "test", "scorePoints")
   ss <- is.na(polyParamTab$scorePoints)
   for (i in 1:length(ds)) {
@@ -296,8 +296,8 @@ timssParamTabs <- function(params_use) {
 
   # dichotomous
   bi <- params_use[!params_use$TIMSSid %in% poly$TIMSSid, ]
-  dichotParamTab <- bi[, colnames(bi)[!colnames(bi) %in% paste0("d", 1:2)]]
-  dichotParamTab <- dichotParamTab[, c("TIMSSid", "content_subtest", "cognitive_subtest", "a", "b", "c", "subject")]
+  dichotParamTab <- bi[ , colnames(bi)[!colnames(bi) %in% paste0("d", 1:2)]]
+  dichotParamTab <- dichotParamTab[ , c("TIMSSid", "content_subtest", "cognitive_subtest", "a", "b", "c", "subject")]
   colnames(dichotParamTab) <- c("ItemID", "content_subtest", "cognitive_subtest", "slope", "difficulty", "guessing", "test")
   dichotParamTab$ItemID <- tolower(dichotParamTab$ItemID)
   if (nrow(dichotParamTab) > 0) {
@@ -410,7 +410,7 @@ timssParam <- function(timssDir, theYear, theLevel) {
     fixDF1 <- function(z, subject) {
       res <- suppressMessages(read_excel(z, sheet = subject, progress = FALSE))
       if (theYear == 2019 & "2015" %in% res[2, 4] & "RMSD" %in% res[1, 4]) {
-        res <- res[, -4]
+        res <- res[ , -4]
       }
       colnames(res) <- NA
       return(res)
@@ -448,9 +448,9 @@ timssParamForm <- function(itemParamDf, itemInfoDf, transConst, theYear, theLeve
     itemParamDf <- itemParamDf[3:nrow(itemParamDf), ]
     colnames(itemParamDf) <- c("", "Item ID", "a", "", "b", "", "c", "", "d1", "", "d2", "")
   }
-  itemParamDf <- itemParamDf[, !colnames(itemParamDf) %in% ""]
+  itemParamDf <- itemParamDf[ , !colnames(itemParamDf) %in% ""]
   itemParamDf <- itemParamDf[!is.na(itemParamDf$`Item ID`), ]
-  itemInfoDf <- itemInfoDf[, c("Item ID", "Grade", "Subject", "Content Domain", "Cognitive Domain", "Maximum Points")]
+  itemInfoDf <- itemInfoDf[ , c("Item ID", "Grade", "Subject", "Content Domain", "Cognitive Domain", "Maximum Points")]
   # these did not merge, they will not be on this assessment
   params <- merge(itemParamDf, itemInfoDf, by = "Item ID", all.x = TRUE)
   # merge param and info together

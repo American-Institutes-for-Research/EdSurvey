@@ -393,29 +393,29 @@ calc.glm.sdf <- function(formula,
 
   relVars <- colnames(edf)
   relVars <- relVars[!relVars %in% taylorVars]
-  incomplete <- !complete.cases(edf[, relVars])
+  incomplete <- !complete.cases(edf[ , relVars])
   if (any(incomplete)) {
     warning("Removing ", sum(incomplete), " rows with NAs from analysis.")
     edf <- edf[!incomplete, ]
   }
   # if doing Taylor series, check Taylor vars too
   if (varMethod == "t") {
-    incomplete <- !complete.cases(edf[, taylorVars])
+    incomplete <- !complete.cases(edf[ , taylorVars])
     if (any(incomplete)) {
-      if (any(incomplete[!edf[, wgt] %in% c(NA, 0)])) {
+      if (any(incomplete[!edf[ , wgt] %in% c(NA, 0)])) {
         warning("Removing ", sum(incomplete), " rows with NA PSU or stratum variables from analysis.")
       }
       edf <- edf[!incomplete, ]
     }
   }
   # remove non-positive (full sample) weights
-  if (any(edf[, wgt] <= 0)) {
-    posWeights <- edf[, wgt] > 0
+  if (any(edf[ , wgt] <= 0)) {
+    posWeights <- edf[ , wgt] > 0
     warning("Removing ", sum(!posWeights), " rows with nonpositive weight from analysis.")
     edf <- edf[posWeights, ]
   }
 
-  if (varMethod == "t" && sum(is.na(edf[, c(stratumVar, psuVar)])) != 0) {
+  if (varMethod == "t" && sum(is.na(edf[ , c(stratumVar, psuVar)])) != 0) {
     stop("Taylor series variance estimation requested but stratum or PSU variables contian an NA value.")
   }
 
@@ -423,7 +423,7 @@ calc.glm.sdf <- function(formula,
   lapply(
     names(edf)[names(edf) %in% all.names(formula)],
     function(z) {
-      if (is.factor(edf[, z]) & length(levels(edf[, z])) < 2) {
+      if (is.factor(edf[ , z]) & length(levels(edf[ , z])) < 2) {
         stop(paste0(
           "The covariate ",
           dQuote(z),
@@ -458,11 +458,11 @@ calc.glm.sdf <- function(formula,
         ))
       } # End of if statment: length(relevels[[i]]) != 1
       # check that the level exists
-      lvls <- levels(edf[, vari])
-      if (inherits(edf[, vari], "lfactor")) {
+      lvls <- levels(edf[ , vari])
+      if (inherits(edf[ , vari], "lfactor")) {
         # for a factor it can be either a level or a label
-        lvls <- c(lvls, labels(edf[, vari]))
-      } # End of if statment: inherits(edf[,vari], "lfactor")
+        lvls <- c(lvls, labels(edf[ , vari]))
+      } # End of if statment: inherits(edf[ ,vari], "lfactor")
       if (!relevels[[i]] %in% lvls) {
         stop(paste0(
           "In the ", sQuote("relevels"),
@@ -471,16 +471,16 @@ calc.glm.sdf <- function(formula,
           pasteItems(dQuote(lvls)), "."
         ))
       } # End of if statment !relevels[[i]] %in% lvls
-      edf[, vari] <- relevel(edf[, vari], ref = relevels[[i]])
+      edf[ , vari] <- relevel(edf[ , vari], ref = relevels[[i]])
     } # end for(i in 1:length(relevels))
   } # end if(length(relevels) > 0)
 
   # 4) yvar and plausible values
   pvy <- hasPlausibleValue(yvar, data) # pvy is the plausible values of the y variable
   yvars <- yvar
-  linkingError <- ifelse("NAEP" %in% getAttributes(data, "survey") & any(grepl("_linking", yvars, fixed = TRUE)), TRUE, FALSE)
-  if (linkingError) {
-    if (varMethod == "t") {
+  linkingError <- detectLinkingError(data, yvars)
+  if(linkingError){
+    if(varMethod == "t") {
       stop("Taylor series variance estimation not supported with NAEP linking error.")
     }
     if (jrrIMax != 1) {
@@ -501,7 +501,7 @@ calc.glm.sdf <- function(formula,
     }
   } else {
     # if not, make sure that this variable is numeric
-    edf[, "yvar"] <- as.numeric(eval(formula[[2]], edf))
+    edf[ , "yvar"] <- as.numeric(eval(formula[[2]], edf))
     formula <- update(formula, new = substitute(yvar ~ ., list(yvar = as.name(yvar))))
     yvars <- "yvar"
   } # End of if statment: any(pvy)
@@ -518,25 +518,25 @@ calc.glm.sdf <- function(formula,
         # PV, so we have not evaluated the I() yet (if any)
         for (yvi in 1:length(pvy)) {
           if (pvy[yvi]) {
-            edf[, yvar[yvi]] <- edf[, getPlausibleValue(yvar[yvi], data)[i]]
+            edf[ , yvar[yvi]] <- edf[ , getPlausibleValue(yvar[yvi], data)[i]]
           }
         }
-        edf[, yvars[i]] <- as.numeric(eval(formula[[2]], edf))
+        edf[ , yvars[i]] <- as.numeric(eval(formula[[2]], edf))
       }
-      oneDef <- max(edf[, yvars], na.rm = TRUE)
+      oneDef <- max(edf[ , yvars], na.rm = TRUE)
       for (i in yvars) {
-        edf[, i] <- ifelse(edf[, i] %in% oneDef, 1, 0)
+        edf[ , i] <- ifelse(edf[ , i] %in% oneDef, 1, 0)
       }
-      edf$yvar0 <- edf[, yvar0]
+      edf$yvar0 <- edf[ , yvar0]
     } else {
       # for non-PV, I() has been evaluated
-      oneDef <- max(edf[, yvars], na.rm = TRUE)
+      oneDef <- max(edf[ , yvars], na.rm = TRUE)
       edf$yvar0 <- ifelse(edf$yvar %in% oneDef, 1, 0)
     }
   }
   # set up formula for initial regression with yvar0 predicted by all other vars
   frm <- update(formula, yvar0 ~ .)
-  edf$w <- edf[, wgt]
+  edf$w <- edf[ , wgt]
 
   # get an approximate fit without weights. Starting with weights can lead to
   # convergence problems.
@@ -636,8 +636,8 @@ calc.glm.sdf <- function(formula,
         for (pvi in 1:jrrIMax) { # for each PV (up to jrrIMax)
           res <- getVarEstJK(
             stat = stat_reg_glm(fam = FALSE),
-            yvar = edf[, yvars[pvi]],
-            wgtM = edf[, paste0(wgtl$jkbase, wgtl$jksuffixes)],
+            yvar = edf[ , yvars[pvi]],
+            wgtM = edf[ , paste0(wgtl$jkbase, wgtl$jksuffixes)],
             co0 = coefm[pvi, ],
             jkSumMult = jkSumMult,
             pvName = pvi
@@ -656,7 +656,7 @@ calc.glm.sdf <- function(formula,
             stringsAsFactors = FALSE,
             PV = 1:nrow(coefm0),
             variable = rep(names(coef(lm0))[coli], nrow(coefm0)),
-            value = coefm0[, coli]
+            value = coefm0[ , coli]
           )
         })
         coefmPV <- do.call(rbind, coefmPVByRow)
@@ -676,8 +676,8 @@ calc.glm.sdf <- function(formula,
       )
       coefm <- est$coef
       for (mm in 1:length(yvars)) {
-        edf$yvar0 <- as.numeric(edf[, yvars[mm]])
-        y <- edf[, yvars[mm]]
+        edf$yvar0 <- as.numeric(edf[ , yvars[mm]])
+        y <- edf[ , yvars[mm]]
         suppressWarnings(lmi <- glm2(frm, data = edf, weights = w, family = family, mustart = c2, epsilon = 1e-14))
         coef <- b <- co0 <- coef(lmi)
         D <- vcov(lmi)
@@ -696,8 +696,8 @@ calc.glm.sdf <- function(formula,
         vc <- D %*% res$vv %*% D
 
         # collect
-        dofNum[, mm] <- res$nums
-        dofDenom[, mm] <- res$nums2
+        dofNum[ , mm] <- res$nums
+        dofDenom[ , mm] <- res$nums2
         varM[[mm]] <- as.matrix(vc)
         varm[mm, ] <- as.numeric(diag(vc))
       }
@@ -711,7 +711,7 @@ calc.glm.sdf <- function(formula,
           stringsAsFactors = FALSE,
           PV = 1:nrow(coefm0),
           variable = rep(names(coef(lm0))[coli], nrow(coefm0)),
-          value = coefm0[, coli]
+          value = coefm0[ , coli]
         )
       })
       coefmPV <- do.call(rbind, coefmPVByRow)
@@ -741,8 +741,8 @@ calc.glm.sdf <- function(formula,
       coef <- coef(lm0)
       res <- getVarEstJK(
         stat = stat_reg_glm(fam = FALSE),
-        yvar = edf[, yvars[1]],
-        wgtM = edf[, paste0(wgtl$jkbase, wgtl$jksuffixes)],
+        yvar = edf[ , yvars[1]],
+        wgtM = edf[ , paste0(wgtl$jkbase, wgtl$jksuffixes)],
         co0 = coef,
         jkSumMult = jkSumMult,
         pvName = 1
@@ -798,13 +798,13 @@ calc.glm.sdf <- function(formula,
   if (linkingError) {
     ye <- grep("_est_", yvars)
     Y <- sapply(ye, function(yi) {
-      as.vector(edf[, yvars[yi]])
+      as.vector(edf[ , yvars[yi]])
     }, simplify = TRUE)
     resid1 <- Y - fitted1
     colnames(resid1) <- yvars[ye]
   } else {
     Y <- sapply(1:length(yvars), function(yi) {
-      as.vector(edf[, yvars[yi]])
+      as.vector(edf[ , yvars[yi]])
     }, simplify = TRUE)
     resid1 <- Y - fitted1
     colnames(resid1) <- yvars
@@ -845,7 +845,7 @@ calc.glm.sdf <- function(formula,
     })
   }
   pti <- pt(coefmat$t, df = coefmat$dof)
-  coefmat[, "Pr(>|t|)"] <- 2 * pmin(pti, 1 - pti)
+  coefmat[ , "Pr(>|t|)"] <- 2 * pmin(pti, 1 - pti)
   njk <- length(wgtl$jksuffixes)
   if (varMethod == "t") {
     njk <- NA
@@ -896,8 +896,8 @@ calc.glm.sdf <- function(formula,
     if ("JK1" %in% stratumVar) {
       res <- c(res, list(nPSU = nrow(edf)))
     } else if (all(c(stratumVar, psuVar) %in% colnames(edf))) {
-      if (sum(is.na(edf[, c(stratumVar, psuVar)])) == 0) {
-        res <- c(res, list(nPSU = nrow(unique(edf[, c(stratumVar, psuVar)]))))
+      if (sum(is.na(edf[ , c(stratumVar, psuVar)])) == 0) {
+        res <- c(res, list(nPSU = nrow(unique(edf[ , c(stratumVar, psuVar)]))))
       } else {
         warning("Cannot return number of PSUs because the stratum or PSU variables contain NA values.")
       }
@@ -906,7 +906,7 @@ calc.glm.sdf <- function(formula,
   # add waldDenomBaseDof if relevant
   if (!is.null(stratumVar) && !is.null(psuVar)) {
     if (all(c(stratumVar, psuVar) %in% colnames(edf))) {
-      if (sum(is.na(edf[, c(stratumVar, psuVar)])) == 0) {
+      if (sum(is.na(edf[ , c(stratumVar, psuVar)])) == 0) {
         res <- c(res, list(waldDenomBaseDof = waldDof(edf, stratumVar, psuVar)))
       }
     }

@@ -292,8 +292,8 @@ cor.sdf <- function(x,
     lsdf$one <- 1
   } else {
     # weighted, check for negative weights
-    if (any(lsdf[, wgt] <= 0)) {
-      lsdf <- lsdf[lsdf[, wgt] > 0, ]
+    if (any(lsdf[ , wgt] <= 0)) {
+      lsdf <- lsdf[lsdf[ , wgt] > 0, ]
       if (nrow(lsdf) == 0) {
         stop("No rows with positive weights.")
       }
@@ -306,15 +306,15 @@ cor.sdf <- function(x,
     if (hpvx) {
       stop("Reordering ", dQuote("x"), " variables with plausible values not implimented.")
     }
-    llx <- unique(lsdf[, x])
-    if (is.factor(lsdf[, x])) {
+    llx <- unique(lsdf[ , x])
+    if (is.factor(lsdf[ , x])) {
       llx <- levels(llx)
     } # End if statment: if lsdf is a factor
     if (sum(!reorder[[x]] %in% llx) > 0) {
       bad <- reorder[[x]][!reorder[[x]] %in% llx]
       stop(paste0("Could not find reorder level(s) ", pasteItems(sQuote(bad), final = "or"), " when reordering ", sQuote("x"), "."))
     } # End if Statment: if sum(!reorder[[x]] %in% llx) > 0
-    lsdf[, x] <- factor(lsdf[, x], levels = c(reorder[[x]]))
+    lsdf[ , x] <- factor(lsdf[ , x], levels = c(reorder[[x]]))
   } # End if statment: if reorder x is not null
 
   # now reorder for y variables
@@ -322,15 +322,15 @@ cor.sdf <- function(x,
     if (hpvy) {
       stop("Reordering ", dQuote("y"), " variables with plausible values not implimented.")
     }
-    lly <- unique(lsdf[, y])
-    if (is.factor(lsdf[, y])) {
+    lly <- unique(lsdf[ , y])
+    if (is.factor(lsdf[ , y])) {
       lly <- levels(lly)
-    } # End if statment: if lsdf[,y] is a factor
+    } # End if statment: if lsdf[ ,y] is a factor
     if (sum(!reorder[[y]] %in% lly) > 0) {
       bad <- reorder[[y]][!reorder[[y]] %in% lly]
       stop(paste0("Could not find reorder level(s) ", pasteItems(sQuote(bad), final = "or"), " when reordering ", sQuote("y"), "."))
     } # End if statment sum(!reorder[[y]] %in% lly) > 0
-    lsdf[, y] <- factor(lsdf[, y], levels = c(reorder[[y]]))
+    lsdf[ , y] <- factor(lsdf[ , y], levels = c(reorder[[y]]))
   } # End if statment: if reorder[[y]] is null
 
   # Generate levels output for variables
@@ -376,14 +376,14 @@ cor.sdf <- function(x,
   # end reorder variables
   # extract plausible values
   linkingError <- FALSE
-  if (hpvx) {
-    xvarlsdf <- lsdf[, unlist(pvx), drop = FALSE] # lsdf
-    linkingError <- "NAEP" %in% getAttributes(data, "survey") & any(grepl("_linking", pvx, fixed = TRUE))
+  if(hpvx) {
+    xvarlsdf <- lsdf[ , unlist(pvx), drop=FALSE] #lsdf
+    linkingError <- detectLinkingError(data, pvx)
   } else {
-    xvarlsdf <- lsdf[, pvx <- x, drop = FALSE] # lsdf
+    xvarlsdf <- lsdf[ , pvx <- x, drop = FALSE] # lsdf
   }
   if (hpvy) {
-    yvarlsdf <- lsdf[, unlist(pvy), drop = FALSE] # lsdf
+    yvarlsdf <- lsdf[ , unlist(pvy), drop = FALSE] # lsdf
     # check for parity in _linking variables
     if (xor(
       hpvx & "NAEP" %in% getAttributes(data, "survey") & any(grepl("_linking", pvy, fixed = TRUE)),
@@ -392,11 +392,9 @@ cor.sdf <- function(x,
       stop("When correlating two assessment scores, cannot mix _linking variables with variables not including linking error")
     }
     # this could be the only PV, so check for linking
-    if ("NAEP" %in% getAttributes(data, "survey") & any(grepl("_linking", pvy, fixed = TRUE))) {
-      linkingError <- TRUE
-    }
+    linkingError <- detectLinkingError(data, pvy)
   } else {
-    yvarlsdf <- lsdf[, pvy <- y, drop = FALSE] # lsdf
+    yvarlsdf <- lsdf[ , pvy <- y, drop = FALSE] # lsdf
   }
 
   # drop NAs
@@ -417,10 +415,10 @@ cor.sdf <- function(x,
   }
   # the results, across the PVs (vector of length PV)
   diagVar <- sapply(1:npv, function(i) {
-    weightedCorr(xvarlsdf[, min(i, npvx)],
-      yvarlsdf[, min(i, npvy)],
+    weightedCorr(xvarlsdf[ , min(i, npvx)],
+      yvarlsdf[ , min(i, npvy)],
       method = pm,
-      weights = lsdf[, wgt],
+      weights = lsdf[ , wgt],
       fast = TRUE,
       ML = FALSE
     )
@@ -441,18 +439,18 @@ cor.sdf <- function(x,
   # the rest of the code estimates the variance
 
   # for each jackknife replicate
-  jkwgtdf <- lsdf[, paste0(wgtl$jkbase, wgtl$jksuffixes), drop = FALSE] # dataframe of jk replicate weights
+  jkwgtdf <- lsdf[ , paste0(wgtl$jkbase, wgtl$jksuffixes), drop = FALSE] # dataframe of jk replicate weights
   posFilter <- jkwgtdf > 0 # dataframe of T/F
   jrrIMax <- min(npv, max(1, jrrIMax))
   diagVarWgt <- matrix(NA, ncol = jrrIMax, nrow = length(wgts))
 
   # rerun with JK replicate weights
   for (i in 1:jrrIMax) {
-    diagVarWgt[, i] <- sapply(length(wgts):1, function(jki) {
-      trans(weightedCorr(xvarlsdf[posFilter[, jki], min(i, npvx)],
-        yvarlsdf[posFilter[, jki], min(i, npvy)],
+    diagVarWgt[ , i] <- sapply(length(wgts):1, function(jki) {
+      trans(weightedCorr(xvarlsdf[posFilter[ , jki], min(i, npvx)],
+        yvarlsdf[posFilter[ , jki], min(i, npvy)],
         method = pm,
-        weights = jkwgtdf[posFilter[, jki], jki],
+        weights = jkwgtdf[posFilter[ , jki], jki],
         fast = TRUE,
         ML = FALSE
       )) - ft[i]

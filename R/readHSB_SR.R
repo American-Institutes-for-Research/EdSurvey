@@ -201,10 +201,10 @@ writeCacheWithRepWgt_HSB <- function(dataLaF, fileFormat, stratumVar, psuVar, ca
 
   # build the JK2 replicate weights================
   for (w in wgtVars) {
-    weight <- dataLaF[, w]
-    jkrep <- dataLaF[, psuVar]
-    jkzone <- dataLaF[, stratumVar]
-    ujkz <- sort(unique(jkzone[, 1]))
+    weight <- dataLaF[ , w]
+    jkrep <- dataLaF[ , psuVar]
+    jkzone <- dataLaF[ , stratumVar]
+    ujkz <- sort(unique(jkzone[ , 1]))
     jkvars <- c()
 
     for (i in ujkz) {
@@ -214,12 +214,12 @@ writeCacheWithRepWgt_HSB <- function(dataLaF, fileFormat, stratumVar, psuVar, ca
       jkw <- weight
       jkw[jkzone == i & jkrep == 1] <- 0
       jkw[jkzone == i & jkrep != 1] <- 2 * jkw[jkzone == i & jkrep != 1]
-      jkw[is.na(jkw[, 1]), 1] <- 0 # turn any NAs to a zero value
+      jkw[is.na(jkw[ , 1]), 1] <- 0 # turn any NAs to a zero value
 
       if (!is.null(wgtDFtemp)) {
-        wgtDFtemp <- cbind(wgtDFtemp, jkw[, 1])
+        wgtDFtemp <- cbind(wgtDFtemp, jkw[ , 1])
       } else {
-        wgtDFtemp <- jkw[, 1]
+        wgtDFtemp <- jkw[ , 1]
       }
 
 
@@ -230,7 +230,7 @@ writeCacheWithRepWgt_HSB <- function(dataLaF, fileFormat, stratumVar, psuVar, ca
       tempFF$weights <- FALSE
 
       # ensure we have adequate size for the fileFormat otherwise it will throw off our spacing
-      testFmt <- format(jkw[, 1], scientific = FALSE, width = tempFF$Width, nsmall = tempFF$Decimal, justify = "right", drop0trailing = FALSE)
+      testFmt <- format(jkw[ , 1], scientific = FALSE, width = tempFF$Width, nsmall = tempFF$Decimal, justify = "right", drop0trailing = FALSE)
       tempFF$Width <- max(nchar(testFmt))
 
       newFF <- rbind(newFF, tempFF)
@@ -241,9 +241,9 @@ writeCacheWithRepWgt_HSB <- function(dataLaF, fileFormat, stratumVar, psuVar, ca
       jkw <- weight
       jkw[jkzone == i & jkrep == 1] <- 2 * jkw[jkzone == i & jkrep == 1]
       jkw[jkzone == i & jkrep != 1] <- 0
-      jkw[is.na(jkw[, 1]), 1] <- 0 # turn any NAs to a zero value
+      jkw[is.na(jkw[ , 1]), 1] <- 0 # turn any NAs to a zero value
 
-      wgtDFtemp <- cbind(wgtDFtemp, jkw[, 1])
+      wgtDFtemp <- cbind(wgtDFtemp, jkw[ , 1])
 
       tempFF <- fileFormat[fileFormat$variableName == w, ]
       tempFF$variableName <- coli
@@ -252,7 +252,7 @@ writeCacheWithRepWgt_HSB <- function(dataLaF, fileFormat, stratumVar, psuVar, ca
       tempFF$weights <- FALSE
 
       # ensure we have adequate size for the fileFormat otherwise it will throw off our spacing
-      testFmt <- format(jkw[, 1], scientific = FALSE, width = tempFF$Width, nsmall = tempFF$Decimal, justify = "right", drop0trailing = FALSE)
+      testFmt <- format(jkw[ , 1], scientific = FALSE, width = tempFF$Width, nsmall = tempFF$Decimal, justify = "right", drop0trailing = FALSE)
       tempFF$Width <- max(nchar(testFmt))
 
       newFF <- rbind(newFF, tempFF)

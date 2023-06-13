@@ -145,7 +145,7 @@ extractCovs <- function(dataList, cov, searching) {
 
   if (searching) {
     for (i in ncol(covs):1) {
-      if (length(unique(covs[, i])) == 1) {
+      if (length(unique(covs[ , i])) == 1) {
         if (i == 1 & ncol(covs) == 1) {
           # we have removed all of the columns.
           # So, the user asked us to automatically identify attributes that varried and we could not.
@@ -158,7 +158,7 @@ extractCovs <- function(dataList, cov, searching) {
           covs$labels <- let[1:nrow(covs)]
         }
         # if there is no variation in the column, get rid of it
-        covs <- covs[, -i, drop = FALSE]
+        covs <- covs[ , -i, drop = FALSE]
       }
     }
   }
@@ -243,10 +243,10 @@ append.edsurvey.data.frame.list <- function(sdfA, sdfB, labelsA = NULL, labelsB 
   cnA <- colnames(labA)
   cnB <- colnames(labB)
   for (i in seq_along(sdA <- setdiff(cnA, cnB))) {
-    labB[, sdA[i]] <- NA
+    labB[ , sdA[i]] <- NA
   }
   for (i in seq_along(sdB <- setdiff(cnB, cnA))) {
-    labA[, sdB[i]] <- NA
+    labA[ , sdB[i]] <- NA
   }
   labs <- rbind(labA, labB)
   # labels may not be unique, if so, start over

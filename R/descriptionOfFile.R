@@ -119,7 +119,7 @@ descriptionOfFile <- function(filename) {
 # @author Tom Fink and Ahmad Emad
 achievementLevelsHelp <- function(grade, year, subject, assessmentCode) {
   alDF <- readRDS(system.file("extdata", "NAEP_AL.rds", package = "EdSurvey"))
-  alDF[, "Subject"] <- gsub(" ", "", alDF$Subject)
+  alDF[ , "Subject"] <- gsub(" ", "", alDF$Subject)
 
   # filter down the data.frame to our specific rows of interest
   t1 <- grepl(subject, alDF$Subject, ignore.case = TRUE)

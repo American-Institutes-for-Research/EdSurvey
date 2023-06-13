@@ -79,7 +79,7 @@ See Details.}
 
 \item{jrrIMax}{a numeric value; when using the jackknife variance estimation method, the default estimation option, \code{jrrIMax=1}, uses the
 sampling variance from the first plausible value as the component for sampling variance estimation. The \code{Vjrr}
-term, or sampling variance term, can be estimated with any number of plausible values, and values larger than the number of
+term, or sampeling variance term, can be estimated with any number of plausible values, and values larger than the number of
 plausible values on the survey (including \code{Inf}) will result in all plausible values being used.
 Higher values of \code{jrrIMax} lead to longer computing times and more accurate variance estimates.}
 

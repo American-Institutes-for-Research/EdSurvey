@@ -1,7 +1,7 @@
 predict.edsurveyGlm <- function(object,
                                 newdata = NULL,
                                 type = c("link", "response"),
-                                se.fit = FALSE) {
+                                se.fit = FALSE,...) {
   type <- match.arg(type)
   if (is.null(newdata)) {
     dat <- object$data
@@ -32,7 +32,7 @@ predict.edsurveyGlm <- function(object,
     notinb <- names(b)[!names(b) %in% colnames(X)]
     stop("cannot find coefficients in b: ", pasteItems(notinb), ".")
   }
-  res <- X[, names(b)] %*% b
+  res <- X[ , names(b)] %*% b
   if (type %in% "response") {
     res <- fam$linkinv(res)
   }

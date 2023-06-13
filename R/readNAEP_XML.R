@@ -584,11 +584,11 @@ parseNAEP_XML_IRT_DichotParam <- function(fileContents, fileFormat_pvvars) {
   irtItems <- irtItems[irtItems$numcat == 1, ] # filter here for 3PL and 2PL items
 
   irtScales <- fileContents$IRTScales
-  scaleInfo <- irtScales[, c("subject", "scalecode", "scalelabel")]
+  scaleInfo <- irtScales[ , c("subject", "scalecode", "scalelabel")]
   scaleInfo$convertedCode <- parseNAEP_XML_CodeConvert(irtScales, fileFormat_pvvars)
 
   # get our data subset
-  subIRT <- unique(irtItems[, c("fieldname", "scale", "sample", "numalt", "numcat", "model", "score")]) # numcat==1 gives us 2PL and 3PL items
+  subIRT <- unique(irtItems[ , c("fieldname", "scale", "sample", "numalt", "numcat", "model", "score")]) # numcat==1 gives us 2PL and 3PL items
 
   # split these out into separate data frames for easier merging
   matchFields <- c("fieldname", "scale", "sample")
@@ -597,23 +597,23 @@ parseNAEP_XML_IRT_DichotParam <- function(fileContents, fileFormat_pvvars) {
   bparams <- irtItems[irtItems$parametercode == "B", c(matchFields, dataFields)]
   cparams <- irtItems[irtItems$parametercode == "C", c(matchFields, dataFields)]
   abcParams <- unique(rbind(
-    aparams[, matchFields],
-    bparams[, matchFields],
-    cparams[, matchFields]
+    aparams[ , matchFields],
+    bparams[ , matchFields],
+    cparams[ , matchFields]
   ))
 
   # slope
   abcParams <- merge(abcParams, aparams, by = matchFields, all.x = TRUE)
   abcParams$slope <- abcParams$IRTValue
-  abcParams[, dataFields] <- NULL
+  abcParams[ , dataFields] <- NULL
   # difficulty
   abcParams <- merge(abcParams, bparams, by = matchFields, all.x = TRUE)
   abcParams$difficulty <- abcParams$IRTValue
-  abcParams[, dataFields] <- NULL
+  abcParams[ , dataFields] <- NULL
   # guessing
   abcParams <- merge(abcParams, cparams, by = matchFields, all.x = TRUE)
   abcParams$guessing <- abcParams$IRTValue
-  abcParams[, dataFields] <- NULL
+  abcParams[ , dataFields] <- NULL
   abcParams$guessing[is.na(abcParams$guessing)] <- 0 # set any 2PL items to 0 here
 
   # these fields are to match existing IRT 'dichotParamTab' value and will be what gets returned
@@ -632,7 +632,7 @@ parseNAEP_XML_IRT_DichotParam <- function(fileContents, fileFormat_pvvars) {
   subIRT <- merge(subIRT, abcParams, by = matchFields, all.x = TRUE)
 
   # to match existing IRT specs
-  res <- subIRT[, c("ItemID", "subtest", "slope", "difficulty", "guessing", "D", "missingValue", "missingCode")]
+  res <- subIRT[ , c("ItemID", "subtest", "slope", "difficulty", "guessing", "D", "missingValue", "missingCode")]
   return(res)
 }
 
@@ -641,11 +641,11 @@ parseNAEP_XML_IRT_PolyParam <- function(fileContents, fileFormat_pvvars) {
   irtItems <- irtItems[irtItems$numcat > 1, ] # filter here for poly items (having numcat > 1)
 
   irtScales <- fileContents$IRTScales
-  scaleInfo <- irtScales[, c("subject", "scalecode", "scalelabel")]
+  scaleInfo <- irtScales[ , c("subject", "scalecode", "scalelabel")]
   scaleInfo$convertedCode <- parseNAEP_XML_CodeConvert(irtScales, fileFormat_pvvars)
 
   # get our data subset
-  subIRT <- unique(irtItems[, c("fieldname", "scale", "sample", "numalt", "numcat", "model", "score")])
+  subIRT <- unique(irtItems[ , c("fieldname", "scale", "sample", "numalt", "numcat", "model", "score")])
 
   matchFields <- c("fieldname", "scale", "sample")
   dataFields <- c("IRTValue", "stderror")
@@ -659,43 +659,43 @@ parseNAEP_XML_IRT_PolyParam <- function(fileContents, fileFormat_pvvars) {
   d5 <- irtItems[irtItems$parametercode == "D05", c(matchFields, dataFields)]
 
   allParams <- unique(rbind(
-    aparam[, matchFields],
-    bparam[, matchFields],
-    d1[, matchFields],
-    d2[, matchFields],
-    d3[, matchFields],
-    d4[, matchFields],
-    d5[, matchFields]
+    aparam[ , matchFields],
+    bparam[ , matchFields],
+    d1[ , matchFields],
+    d2[ , matchFields],
+    d3[ , matchFields],
+    d4[ , matchFields],
+    d5[ , matchFields]
   ))
 
   # slope
   allParams <- merge(allParams, aparam, by = matchFields, all.x = TRUE)
   allParams$slope <- allParams$IRTValue
-  allParams[, dataFields] <- NULL
+  allParams[ , dataFields] <- NULL
   # item location
   allParams <- merge(allParams, bparam, by = matchFields, all.x = TRUE)
   allParams$itemLocation <- allParams$IRTValue
-  allParams[, dataFields] <- NULL
+  allParams[ , dataFields] <- NULL
   # d1
   allParams <- merge(allParams, d1, by = matchFields, all.x = TRUE)
   allParams$d1 <- allParams$IRTValue
-  allParams[, dataFields] <- NULL
+  allParams[ , dataFields] <- NULL
   # d2
   allParams <- merge(allParams, d2, by = matchFields, all.x = TRUE)
   allParams$d2 <- allParams$IRTValue
-  allParams[, dataFields] <- NULL
+  allParams[ , dataFields] <- NULL
   # d3
   allParams <- merge(allParams, d3, by = matchFields, all.x = TRUE)
   allParams$d3 <- allParams$IRTValue
-  allParams[, dataFields] <- NULL
+  allParams[ , dataFields] <- NULL
   # d4
   allParams <- merge(allParams, d4, by = matchFields, all.x = TRUE)
   allParams$d4 <- allParams$IRTValue
-  allParams[, dataFields] <- NULL
+  allParams[ , dataFields] <- NULL
   # d5
   allParams <- merge(allParams, d5, by = matchFields, all.x = TRUE)
   allParams$d5 <- allParams$IRTValue
-  allParams[, dataFields] <- NULL
+  allParams[ , dataFields] <- NULL
 
   # these fields are to match existing IRT 'dichotParamTab' value and will be what gets returned
   subIRT$ItemID <- tolower(subIRT$fieldname)
@@ -713,7 +713,7 @@ parseNAEP_XML_IRT_PolyParam <- function(fileContents, fileFormat_pvvars) {
   subIRT <- merge(subIRT, allParams, by = matchFields, all.x = TRUE)
 
   # to match existing IRT specs
-  res <- subIRT[, c("ItemID", "subtest", "slope", "itemLocation", "d1", "d2", "d3", "d4", "d5", "D", "missingValue", "missingCode")]
+  res <- subIRT[ , c("ItemID", "subtest", "slope", "itemLocation", "d1", "d2", "d3", "d4", "d5", "D", "missingValue", "missingCode")]
   return(res)
 }
 
@@ -747,7 +747,7 @@ parseNAEP_XML_IRT_AdjustedData <- function(fileContents) {
 }
 
 parseNAEP_XML_IRT_ScoreCard <- function(fileContents, scoreDict) {
-  irtItems <- unique(fileContents$DataFields$IRTItems[, c("fieldname", "score", "numcat", "model")])
+  irtItems <- unique(fileContents$DataFields$IRTItems[ , c("fieldname", "score", "numcat", "model")])
 
   dataFields <- fileContents$DataFields$DataFields
   dataFields <- subset(dataFields, (tolower(dataFields$fieldname) %in% tolower(irtItems$fieldname)))

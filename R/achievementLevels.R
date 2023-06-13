@@ -252,8 +252,8 @@ calAL <- function(achievementVars = NULL,
   }))
 
   # with yvar in hand check for linking error
-  linkingError <- "NAEP" %in% getAttributes(data, "survey") & any(grepl("_linking$", c(yvar)))
-
+  linkingError <- detectLinkingError(data, yvar)
+  
   if (length(aggregateByNoPV) == 0) {
     aggregateByNoPV <- NULL
   }
@@ -375,7 +375,7 @@ calAL <- function(achievementVars = NULL,
   levelsOfEdfDT <- sapply(edfDT, levels)
   levelsOfEdfDT[sapply(levelsOfEdfDT, is.null)] <- NULL
   levelsOfEdfDTGrid <- expand.grid(levelsOfEdfDT)
-  levelsOfEdfDTGrid <- levelsOfEdfDTGrid[, intersect(unique(c(aggregateByNoPV, colnames(levelsOfEdfDTGrid))), colnames(levelsOfEdfDTGrid)), drop = FALSE]
+  levelsOfEdfDTGrid <- levelsOfEdfDTGrid[ , intersect(unique(c(aggregateByNoPV, colnames(levelsOfEdfDTGrid))), colnames(levelsOfEdfDTGrid)), drop = FALSE]
   # Calculate discrete achievement levels
   pvs <- lapply(pvs, function(x) {
     return(x[1:npv])
@@ -397,15 +397,15 @@ calAL <- function(achievementVars = NULL,
         aggregateBy2[aggregateBy2 == "Level"][i] <- pv[names(aggregateBy2[aggregateBy2 == "Level"])[i] == names(pv)]
       }
       for (byVar_i in aggregateBy2) {
-        if (is.null(levels(data[, get(byVar_i)]))) {
+        if (is.null(levels(data[ , get(byVar_i)]))) {
           stop(paste0(sQuote(byVar_i), " is continuous. You must use only factors, or character variables, and scores with plausible values with achievementLevels. Consider recasting ", sQuote(byVar_i), " as a factor and trying again."))
         }
       }
       byVars <- unique(c(pv, achievementVars, aggregateBy2))
-      d1 <- data[, list(N = .N, wtdN = sum(get(w))), by = byVars]
+      d1 <- data[ , list(N = .N, wtdN = sum(get(w))), by = byVars]
       # make sure every level is populated and ordered for output
       allLevels <- do.call(expand.grid, lapply(byVars, function(x) {
-        levels(data[, get(x)])
+        levels(data[ , get(x)])
       }))
       colnames(allLevels) <- byVars
       setkeyv(d1, byVars)
@@ -415,35 +415,35 @@ calAL <- function(achievementVars = NULL,
       if (cum) {
         # now cumsum by non-aggregateBy
         nonAgg <- byVars[!byVars %in% pv[1]]
-        d1 <- d1[, wtdN2 := cumsum2(.SD$wtdN), by = nonAgg]
-        d1 <- d1[, N := cumsum2(.SD$N), by = nonAgg]
+        d1 <- d1[ , wtdN2 := cumsum2(.SD$wtdN), by = nonAgg]
+        d1 <- d1[ , N := cumsum2(.SD$N), by = nonAgg]
         # aggregate by aggregateBy
         if (pv[1] %in% aggregateBy2) {
-          d1 <- d1[, Denom := sum(.SD$wtdN2), by = aggregateBy2]
+          d1 <- d1[ , Denom := sum(.SD$wtdN2), by = aggregateBy2]
         } else {
-          d1 <- d1[, Denom := sum(.SD$wtdN), by = aggregateBy2]
+          d1 <- d1[ , Denom := sum(.SD$wtdN), by = aggregateBy2]
         }
-        d1 <- d1[, DenomGroup := .GRP, by = aggregateBy2]
-        d1 <- d1[, Percent := wtdN2 * 100 / Denom, by = aggregateBy2]
+        d1 <- d1[ , DenomGroup := .GRP, by = aggregateBy2]
+        d1 <- d1[ , Percent := wtdN2 * 100 / Denom, by = aggregateBy2]
         # rename levels to cumulative level names
-        x <- d1[, get(pv[1])]
+        x <- d1[ , get(pv[1])]
         lvls <- levels(x)
         lvls[-length(lvls)] <- gsub("^At", "At or Above", lvls[-length(lvls)])
         x <- factor(x, levels(x), lvls)
-        d1 <- d1[, (pv[1]) := x]
-        d1 <- d1[, "Denom" := NULL]
+        d1 <- d1[ , (pv[1]) := x]
+        d1 <- d1[ , "Denom" := NULL]
         if (pv[1] %in% aggregateBy2) {
-          d1 <- d1[, "wtdN" := NULL]
+          d1 <- d1[ , "wtdN" := NULL]
           colnames(d1)[colnames(d1) == "wtdN2"] <- "wtdN"
         } else {
-          d1 <- d1[, "wtdN3" := wtdN]
-          d1 <- d1[, "wtdN" := NULL]
+          d1 <- d1[ , "wtdN3" := wtdN]
+          d1 <- d1[ , "wtdN" := NULL]
           colnames(d1)[colnames(d1) == "wtdN2"] <- "wtdN"
         }
       } else {
         # aggregate according to aggregateBy
-        d1 <- d1[, Percent := wtdN * 100 / sum(.SD$wtdN), by = aggregateBy2]
-        d1 <- d1[, DenomGroup := .GRP, by = aggregateBy2]
+        d1 <- d1[ , Percent := wtdN * 100 / sum(.SD$wtdN), by = aggregateBy2]
+        d1 <- d1[ , DenomGroup := .GRP, by = aggregateBy2]
       }
       d1 <- as.data.frame(d1)
       if (short) {
@@ -509,7 +509,7 @@ calAL <- function(achievementVars = NULL,
     discVarEstInputs[["PV"]] <- data.frame()
     cn <- colnames(discreteEst$est)
     cn <- cn[!cn %in% c("N", "wtdN", "Percent")]
-    d0 <- cbind(row = paste0("Row", 1:nrow(discreteEst$est)), discreteEst$est[, cn, drop = FALSE])
+    d0 <- cbind(row = paste0("Row", 1:nrow(discreteEst$est)), discreteEst$est[ , cn, drop = FALSE])
     # renames lit_level to variable1...
     d0 <- renameLevelsToVariables(d0, estAL)
   }
@@ -534,7 +534,7 @@ calAL <- function(achievementVars = NULL,
     cumVarEstInputs[["PV"]] <- data.frame()
     cn <- colnames(cumEst$est)
     cn <- cn[!cn %in% c("N", "wtdN", "Percent")]
-    c0 <- cbind(row = paste0("Row", 1:nrow(cumEst$est)), cumEst$est[, cn, drop = FALSE])
+    c0 <- cbind(row = paste0("Row", 1:nrow(cumEst$est)), cumEst$est[ , cn, drop = FALSE])
     c0 <- renameLevelsToVariables(c0, estAL)
   }
   jkSumMult <- getAttributes(data, "jkSumMultiplier")
@@ -642,25 +642,25 @@ calAL <- function(achievementVars = NULL,
       pv <- t(discreteEst$coef)
       npv <- ncol(pv)
       colnames(pv) <- paste0("v", 1:npv)
-      pv <- cbind(discreteEst$est[, cn, drop = FALSE], pv)
+      pv <- cbind(discreteEst$est[ , cn, drop = FALSE], pv)
       # make varEstInputs
       if (returnVarEstInputs) {
         for (i in 1:npv) {
-          newdf <- pv[, c(cn, paste0("v", i))]
+          newdf <- pv[ , c(cn, paste0("v", i))]
           colnames(newdf)[colnames(newdf) == paste0("v", i)] <- "value"
           newdf$PV <- i
           if (any(grepl("Level$", colnames(newdf)))) {
             for (i in seq_along(names(estAL))) {
               if (i == 1) {
-                newdf$variable <- newdf[, paste0(names(estAL)[i], "_Level")]
+                newdf$variable <- newdf[ , paste0(names(estAL)[i], "_Level")]
               } else {
-                newdf$variable <- paste0(newdf$variable, ":", newdf[, paste0(names(estAL)[i], "_Level")])
+                newdf$variable <- paste0(newdf$variable, ":", newdf[ , paste0(names(estAL)[i], "_Level")])
               }
-              newdf[, paste0(names(estAL)[i], "_Level")] <- NULL
+              newdf[ , paste0(names(estAL)[i], "_Level")] <- NULL
             }
           }
           v1 <- c("PV", "variable", "value")
-          newdf <- newdf[, c("PV", setdiff(colnames(newdf), v1), "variable", "value")]
+          newdf <- newdf[ , c("PV", setdiff(colnames(newdf), v1), "variable", "value")]
           discVarEstInputs[["PV"]] <- rbind(discVarEstInputs[["PV"]], newdf)
         }
       }
@@ -682,24 +682,24 @@ calAL <- function(achievementVars = NULL,
       pv <- t(cumEst$coef)
       npv <- ncol(pv)
       colnames(pv) <- paste0("v", 1:npv)
-      pv <- cbind(cumEst$est[, cn, drop = FALSE], pv)
+      pv <- cbind(cumEst$est[ , cn, drop = FALSE], pv)
       if (returnVarEstInputs) {
         for (i in 1:npv) {
-          newdf <- pv[, c(cn, paste0("v", i))]
+          newdf <- pv[ , c(cn, paste0("v", i))]
           colnames(newdf)[colnames(newdf) == paste0("v", i)] <- "value"
           newdf$PV <- i
           if (any(grepl("Level$", colnames(newdf)))) {
             for (i in seq_along(names(estAL))) {
               if (i == 1) {
-                newdf$variable <- newdf[, paste0(names(estAL)[i], "_Level")]
+                newdf$variable <- newdf[ , paste0(names(estAL)[i], "_Level")]
               } else {
-                newdf$variable <- paste0(newdf$variable, ":", newdf[, paste0(names(estAL)[i], "_Level")])
+                newdf$variable <- paste0(newdf$variable, ":", newdf[ , paste0(names(estAL)[i], "_Level")])
               }
-              newdf[, paste0(names(estAL)[i], "_Level")] <- NULL
+              newdf[ , paste0(names(estAL)[i], "_Level")] <- NULL
             }
           }
           v1 <- c("PV", "variable", "value")
-          newdf <- newdf[, c("PV", setdiff(colnames(newdf), v1), "variable", "value")]
+          newdf <- newdf[ , c("PV", setdiff(colnames(newdf), v1), "variable", "value")]
           cumVarEstInputs[["PV"]] <- rbind(cumVarEstInputs[["PV"]], newdf)
         }
       }
@@ -752,10 +752,10 @@ calAL <- function(achievementVars = NULL,
     if (stratumVar %in% "JK1") {
       res$nPSU <- res$nUsed
     } else {
-      edfDT <- edfDT[, stratumAndPSU := paste0(.SD, collapse = "-"),
+      edfDT <- edfDT[ , stratumAndPSU := paste0(.SD, collapse = "-"),
         .SDcols = c(stratumVar, psuVar),
         by = 1:edfDTnrow
-      ][, c(stratumVar, psuVar) := NULL]
+      ][ , c(stratumVar, psuVar) := NULL]
       if (sum(is.na(edfDT$stratumAndPSU)) == 0) {
         res$nPSU <- length(unique(edfDT$stratumAndPSU))
       } else {
@@ -775,12 +775,12 @@ renameLevelsToVariables <- function(data, estAL) {
   for (i in seq_along(names(estAL))) {
     leveli <- paste0(names(estAL)[i], "_Level")
     if (i == 1) {
-      data$variable <- data[, leveli]
+      data$variable <- data[ , leveli]
     } else {
-      levels <- cartFactor(data$variable, data[, leveli])
-      data$variable <- factor(paste0(as.character(data$variable), ":", as.character(data[, leveli])), levels = levels, labels = levels)
+      levels <- cartFactor(data$variable, data[ , leveli])
+      data$variable <- factor(paste0(as.character(data$variable), ":", as.character(data[ , leveli])), levels = levels, labels = levels)
     }
-    data[, leveli] <- NULL
+    data[ , leveli] <- NULL
   }
   return(data)
 }
@@ -796,8 +796,8 @@ cov2VarEstPart <- function(varEstInput) {
   cn <- colnames(varEstInput)
   cnr <- cn[!cn %in% c("PV", "variable", "value", "JKreplicate")]
   for (i in seq_along(cnr)) {
-    varEstInput$variable <- paste0(varEstInput$variable, ":", cnr[i], "=", varEstInput[, cnr[i]])
-    varEstInput[, cnr[i]] <- NULL
+    varEstInput$variable <- paste0(varEstInput$variable, ":", cnr[i], "=", varEstInput[ , cnr[i]])
+    varEstInput[ , cnr[i]] <- NULL
   }
   return(varEstInput)
 }
@@ -873,7 +873,7 @@ recodeEdf <- function(edfDT, pvs, als, returnCumulative, cumulativeLevel = 0) {
   # clean existing level columns
   junk <- intersect(levelCols, names(edfDT))
   if (length(junk) > 0) {
-    edfDT <- edfDT[, (junk) := NULL]
+    edfDT <- edfDT[ , (junk) := NULL]
   }
 
   # build level columns for each pv
@@ -882,13 +882,13 @@ recodeEdf <- function(edfDT, pvs, als, returnCumulative, cumulativeLevel = 0) {
     if (length(als) > 1) {
       discreteLabels <- c(discreteLabels, paste0("At ", names(als)[2:length(als)]))
     }
-    edfDT <- edfDT[, (levelCols) := lapply(.SD, function(c) {
+    edfDT <- edfDT[ , (levelCols) := lapply(.SD, function(c) {
       cut(c, breaks = c(-Inf, als, Inf), labels = discreteLabels, right = FALSE)
     }),
     .SDcols = pvs
     ]
   } else {
-    edfDT <- edfDT[, (levelCols) := lapply(.SD, function(c) {
+    edfDT <- edfDT[ , (levelCols) := lapply(.SD, function(c) {
       ifelse(c < als[cumulativeLevel], "Other", paste0("At or Above ", names(als)[cumulativeLevel]))
     }),
     .SDcols = pvs
@@ -1043,7 +1043,7 @@ fixALVarEstInputRows <- function(vei, namedData) {
   icn <- intersect(colnames(namedData), colnames(vei))
   icn <- setdiff(icn, "variable")
   for (vi in icn) {
-    namedData[, vi] <- NULL
+    namedData[ , vi] <- NULL
   }
   res <- merge(namedData, vei, by.x = "row", by.y = "variable", all.x = TRUE, all.y = FALSE)
   vn <- colnames(namedData)
@@ -1051,13 +1051,13 @@ fixALVarEstInputRows <- function(vei, namedData) {
   res$row <- NULL
   cn <- colnames(res)
   cn <- cn[!cn %in% c("PV", vn, "value")]
-  res <- res[, c("PV", cn, vn, "value")]
+  res <- res[ , c("PV", cn, vn, "value")]
   ov <- list(res$PV)
   if ("JKreplicate" %in% colnames(res)) {
     ov <- c(ov, list(res$JKreplicate))
   }
   for (vni in seq_along(vn)) {
-    ov <- c(ov, list(res[, vn[vni]]))
+    ov <- c(ov, list(res[ , vn[vni]]))
   }
   res <- res[do.call(order, ov), ]
   return(res)
@@ -1065,8 +1065,8 @@ fixALVarEstInputRows <- function(vei, namedData) {
 
 unfactor <- function(x) {
   for (i in 1:ncol(x)) {
-    if (inherits(x[, i], "factor")) {
-      x[, i] <- as.character(x[, i])
+    if (inherits(x[ , i], "factor")) {
+      x[ , i] <- as.character(x[ , i])
     }
   }
   return(x)

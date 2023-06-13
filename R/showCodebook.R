@@ -42,8 +42,10 @@ showCodebook <- function(data, fileFormat = NULL, labelLevels = FALSE, includeRe
   vars <- data.frame()
   # if fileFormat is NULL, retrieve all available fileFormats from connection via getAttributes and append
   if (is.null(fileFormat)) {
-    for (i in 1:length(dataList)) {
-      vars <- rbind(vars, data.frame(dataList[[i]]$fileFormat, fileFormat = names(dataList)[i]))
+    for(i in 1:length(dataList)) {
+      iVar <- data.frame(dataList[[i]]$fileFormat, fileFormat = names(dataList)[i])
+      iVar <- subset(iVar, !iVar$variableName %in% dataList[[i]]$ignoreVars) #remove ignoreVars from result
+      vars <- rbind(vars, iVar)
     }
   } else {
     # fileFormat is defined (must be a combination of student, school, or teacher)
@@ -54,8 +56,10 @@ showCodebook <- function(data, fileFormat = NULL, labelLevels = FALSE, includeRe
     names(dataList) <- tolower(names(dataList))
 
     # retrieve all available fileFormats from connection via getAttributes and append
-    for (i in 1:length(fileFormat)) {
-      vars <- rbind(vars, data.frame(dataList[[fileFormat[i]]]$fileFormat, fileFormat = fileFormat[i]))
+    for(i in 1:length(fileFormat)) {
+      iVar <-  data.frame(dataList[[fileFormat[i]]]$fileFormat, fileFormat = fileFormat[i])
+      iVar <- subset(iVar, !iVar$variableName %in% dataList[[fileFormat[i]]]$ignoreVars) #remove ignoreVars from result
+      vars <- rbind(vars, iVar)
     }
   }
 
@@ -68,7 +72,7 @@ showCodebook <- function(data, fileFormat = NULL, labelLevels = FALSE, includeRe
     vars$variableName <- tolower(vars$variableName)
 
     # return only variables relevant to codebook
-    varsData <- vars[, c("variableName", "Labels", "labelValues", "fileFormat")]
+    varsData <- vars[ , c("variableName", "Labels", "labelValues", "fileFormat")]
     if ("light.edsurvey.data.frame" %in% class(sdf) == TRUE) {
       varsData <- varsData[varsData$variableName %in% colnames(sdf), ]
     }
@@ -114,12 +118,12 @@ showCodebook <- function(data, fileFormat = NULL, labelLevels = FALSE, includeRe
     }
 
     # if labelLevels are returned, parse out the "^" and replace it with "; "
-    if (labelLevels) {
-      if (includeRecodes) {
-        varsData$labelValueRecodes <- gsub("^", "; ", varsData$labelValueRecodes, fixed = TRUE)
-      }
-      varsData$labelValues <- gsub("^", "; ", varsData$labelValues, fixed = TRUE)
-    }
+    if(labelLevels) {
+      if(includeRecodes) {
+        varsData$labelValueRecodes <- gsub("^", "; ", varsData$labelValueRecodes, fixed=TRUE)
+      } 
+      varsData$labelValues <- gsub("^", "; ", varsData$labelValues, fixed=TRUE)
+    } 
   }
   if (version$major %in% "3" && "fileFormat" %in% colnames(varsData)) {
     varsData$fileFormat <- as.character(varsData$fileFormat)

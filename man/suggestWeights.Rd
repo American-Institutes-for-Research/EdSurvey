@@ -19,7 +19,7 @@ or an \code{edsurvey.data.frame.list}}
 
 \item{showAllWeightSuggestions}{a logical value. When set to \code{TRUE}, all applicable weights that covers
 more components, which typically are more conservative with
-smaller sample size, will be returned. By default (i.e., \code{FALSE}), only the most appropriate
+smaller sample size, will be returned. By default (i.e., \code{FALSE}), only the most approperate
 weight is displayed.}
 
 \item{verbose}{a logical value to either print or suppress status message output.}

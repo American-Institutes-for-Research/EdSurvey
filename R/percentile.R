@@ -267,9 +267,9 @@ percentile <- function(variable, percentiles, data,
     # edf is the actual data
     suppressWarnings(edf <- do.call(getData, getDataArgs))
     # check that there is some data to work with
-    if (any(edf[, wgt] <= 0)) {
+    if (any(edf[ , wgt] <= 0)) {
       warning("Removing rows with 0 weight from analysis.")
-      edf <- edf[edf[, wgt] > 0, ]
+      edf <- edf[edf[ , wgt] > 0, ]
     }
     if (nrow(edf) <= 0) {
       stop(paste0(
@@ -285,11 +285,11 @@ percentile <- function(variable, percentiles, data,
       variables <- getPlausibleValue(variable, data)
     } else {
       # if not, make sure that this variable is numeric
-      edf[, variable] <- as.numeric(edf[, variable])
+      edf[ , variable] <- as.numeric(edf[ , variable])
     }
 
     # is this a NAEP linking error formula case
-    linkingError <- "NAEP" %in% getAttributes(data, "survey") & any(grepl("_linking", variables, fixed = TRUE))
+    linkingError <- detectLinkingError(data, variables)
     # jrrIMax
     jrrIMax <- min(jrrIMax, length(variables))
 
@@ -339,7 +339,7 @@ percentile <- function(variable, percentiles, data,
             len <- length(thesePercentiles)
           }
           xpwdt <- data.table(xpw)
-          xpw <- as.data.frame(xpwdt[, w := mean(w), by = "x"])
+          xpw <- as.data.frame(xpwdt[ , w := mean(w), by = "x"])
           # see Stats vignette or Hyndman & Fan
           kp <- 1 + (nn - 1) / (WW - 1) * ((cumsum(c(0, xpw$w[-nrow(xpw)])) + (xpw$w - 1) / 2))
           # do not let kp go below 1 nor above nn-1, moves nothing when all weights >= 1
@@ -390,7 +390,7 @@ percentile <- function(variable, percentiles, data,
           # result vector
           resv <- rep(NA, length(thesePercentiles))
           xpwdt <- data.table(xpw)
-          xpw <- as.data.frame(xpwdt[, w := mean(w), by = "x"])
+          xpw <- as.data.frame(xpwdt[ , w := mean(w), by = "x"])
           # see Stats vignette or Hyndman & Fan
           kp <- 1 / 2 + (nn - 1) / (WW - 1) * ((cumsum(c(0, xpw$w[-nrow(xpw)])) + (xpw$w - 1) / 2))
           # do not let kp go below 1 nor above nn-1, moves nothing when all weights >= 1
@@ -456,7 +456,7 @@ percentile <- function(variable, percentiles, data,
       )
       for (pcti in 1:length(percentiles)) {
         for (pctj in 1:length(estVars)) {
-          varEstInputsPV$value[varEstInputsPV$PV == pctj & varEstInputsPV$variable == names(esti$est)[pcti]] <- esti$coef[pctj, pcti] - mean(esti$coef[, pcti])
+          varEstInputsPV$value[varEstInputsPV$PV == pctj & varEstInputsPV$variable == names(esti$est)[pcti]] <- esti$coef[pctj, pcti] - mean(esti$coef[ , pcti])
         }
       }
 
@@ -501,7 +501,7 @@ percentile <- function(variable, percentiles, data,
       )
       for (pcti in 1:length(percentiles)) {
         for (pctj in 1:length(variables)) {
-          varEstInputsPV$value[varEstInputsPV$PV == pctj & varEstInputsPV$variable == names(esti$est)[pcti]] <- esti$coef[pctj, pcti] - mean(esti$coef[, pcti])
+          varEstInputsPV$value[varEstInputsPV$PV == pctj & varEstInputsPV$variable == names(esti$est)[pcti]] <- esti$coef[pctj, pcti] - mean(esti$coef[ , pcti])
         }
       }
       if (!pctMethod %in% "unbiased") {
@@ -510,7 +510,7 @@ percentile <- function(variable, percentiles, data,
         vsi <- matrix(0, nrow = jrrIMax, ncol = length(percentiles))
         for (j in 1:jrrIMax) {
           # based on jth PV, so use co0 from jth PV
-          vestj <- getVarEstJK(stat = pctfi, yvar = edf[, variables[j]], wgtM = edf[, jkw], co0 = esti$coef[j, ], jkSumMult = jkSumMult, pvName = j)
+          vestj <- getVarEstJK(stat = pctfi, yvar = edf[ , variables[j]], wgtM = edf[ , jkw], co0 = esti$coef[j, ], jkSumMult = jkSumMult, pvName = j)
           if (j == 1) {
             varEstInputsJK <- vestj$veiJK
           } else {
@@ -545,7 +545,7 @@ percentile <- function(variable, percentiles, data,
             WW <- sum(xpw$w)
             nn <- nrow(xpw)
             xpwdt <- data.table(xpw)
-            xpwc <- as.data.frame(xpwdt[, w := mean(w), by = "x"])
+            xpwc <- as.data.frame(xpwdt[ , w := mean(w), by = "x"])
             w <- xpw$w
             # see Stats vignette or Hyndman & Fan
             kp <- 1 + (nn - 1) / (WW - 1) * ((cumsum(c(0, w[-length(w)])) + (w - 1) / 2))
@@ -573,7 +573,7 @@ percentile <- function(variable, percentiles, data,
                   WW <- sum(xpw$w)
                   nn <- nrow(xpw) - 2
                   xpwdt <- data.table(xpw)
-                  xpw <- as.data.frame(xpwdt[, w := mean(w), by = "x"])
+                  xpw <- as.data.frame(xpwdt[ , w := mean(w), by = "x"])
                   w <- xpw$w
                   # see Stats vignette or Hyndman & Fan
                   kp <- 1 + (nn - 1) / (WW - 1) * ((cumsum(c(0, w[-length(w)])) + (w - 1) / 2))
@@ -603,7 +603,7 @@ percentile <- function(variable, percentiles, data,
                 rpr <- jkrp - rp
                 # if difference rpr is very small round to 0 for DOF correctness
                 rpr[which(abs(rpr) < (sqrt(.Machine$double.eps) * sqrt(length(jkrp))))] <- 0
-                rprs[, ri] <- rpr
+                rprs[ , ri] <- rpr
               }
             }
             nsmall[is.na(nsmall)] <- 0
@@ -626,7 +626,7 @@ percentile <- function(variable, percentiles, data,
         varEstInputsJK$vs <- varEstInputsJK$value^2
         varm2 <- aggregate(vs ~ PV + variable, varEstInputsJK, sum)
         varEstInputsJK$vs <- NULL
-        varEstInputsJK <- varEstInputsJK[, c("PV", "JKreplicate", "variable", "value")]
+        varEstInputsJK <- varEstInputsJK[ , c("PV", "JKreplicate", "variable", "value")]
         # sampling variance is then the mean
         a <- aggregate(vs ~ variable, varm2, mean)
         a$variable <- as.numeric(gsub("P", "", a$variable))
@@ -684,7 +684,7 @@ percentile <- function(variable, percentiles, data,
           return(f)
         }
         belowf <- belowGen(esti$est)
-        belowf(edf[, variables[1]], edf$origwt)
+        belowf(edf[ , variables[1]], edf$origwt)
         # estb[elow] that percentile
         pEst <- getEst(edf, variables, stat = belowf, wgt = wgt)
         # imputation variance
@@ -697,7 +697,7 @@ percentile <- function(variable, percentiles, data,
         # sampling variance for below
         pVsi <- matrix(0, nrow = jrrIMax, ncol = length(percentiles))
         for (j in 1:jrrIMax) {
-          vestj <- getVarEstJK(stat = belowf, yvar = edf[, variables[j]], wgtM = edf[, jkw], co0 = pEst$coef[j, ], jkSumMult = jkSumMult, pvName = j)
+          vestj <- getVarEstJK(stat = belowf, yvar = edf[ , variables[j]], wgtM = edf[ , jkw], co0 = pEst$coef[j, ], jkSumMult = jkSumMult, pvName = j)
           pVsi[j, ] <- vestj$VsampInp
         }
         # sampling variance is then the mean across PVs up to jrrIMax
@@ -743,8 +743,8 @@ percentile <- function(variable, percentiles, data,
             D = D,
             r0_ri = r0[ri],
             s0 = mu0[ri],
-            psuV = edf[, getPSUVar(data, wgt)],
-            stratV = edf[, getStratumVar(data, wgt)]
+            psuV = edf[ , getPSUVar(data, wgt)],
+            stratV = edf[ , getStratumVar(data, wgt)]
           )
         })
 
@@ -770,9 +770,9 @@ percentile <- function(variable, percentiles, data,
 
       if (!pctMethod %in% "unbiased") {
         # map back to the variable space
-        pctfiCIL <- percentileGen(latent_ci[, 1], pctMethod)
+        pctfiCIL <- percentileGen(latent_ci[ , 1], pctMethod)
         ciL <- getEst(edf, variables, stat = pctfiCIL, wgt = wgt)$est
-        pctfiCIU <- percentileGen(latent_ci[, 2], pctMethod)
+        pctfiCIU <- percentileGen(latent_ci[ , 2], pctMethod)
         ciU <- getEst(edf, variables, stat = pctfiCIU, wgt = wgt)$est
         ci <- data.frame(ci_lower = ciL, ci_upper = ciU)
       } else {
@@ -810,8 +810,8 @@ percentile <- function(variable, percentiles, data,
       if (stratumVar %in% "JK1") {
         attr(res, "nPSU") <- attr(res, "nUsed")
       } else {
-        if (sum(is.na(edf[, c(stratumVar, psuVar)])) == 0) {
-          attr(res, "nPSU") <- nrow(unique(edf[, c(stratumVar, psuVar)]))
+        if (sum(is.na(edf[ , c(stratumVar, psuVar)])) == 0) {
+          attr(res, "nPSU") <- nrow(unique(edf[ , c(stratumVar, psuVar)]))
         } else {
           warning("Cannot return number of PSUs because the stratum or PSU variables contain NA values.")
         }
@@ -920,8 +920,8 @@ getEstPcTy <- function(data, pvEst, stat, wgt, D, r0_ri, s0, psuV, stratV) {
   pVimps <- c()
   for (n in 1:length(pvEst)) {
     xpw <- data.frame(
-      x = data[, pvEst[n]],
-      w = data[, wgt],
+      x = data[ , pvEst[n]],
+      w = data[ , wgt],
       psuV = psuV,
       stratV = stratV
     )

@@ -40,7 +40,7 @@ a \code{light.edsurvey.data.frame},
 the recommended value can be recovered with
 \code{EdSurvey::getAttributes(}\code{myData,} \code{"jkSumMultiplier")}.}
 
-\item{returnComponents}{set to \code{TRUE} to return the imputation variance separate from the sampling variance}
+\item{returnComponents}{set to \code{TRUE} to return the imputation variance seperate from the sampling variance}
 }
 \value{
 a numeric value; the jackknife covariance estimate. If \code{returnComponents} is \code{TRUE}, returns a vector of

@@ -178,15 +178,15 @@ mml.sdf <- function(formula,
   scoreFunction <- scoreCall[[1]]
 
   # return scored data
-  pvs <- edf[, c(scoreInfo$itemsUse, idVar)]
-  pvs$id <- pvs[, idVar]
-  pvs[, idVar] <- NULL
+  pvs <- edf[ , c(scoreInfo$itemsUse, idVar)]
+  pvs$id <- pvs[ , idVar]
+  pvs[ , idVar] <- NULL
   # robust to light or full data frame
   data <- mergePVGeneral(data, pvs, idVar)
 
   # make long stuItems from the wide edf
 
-  stuItems <- as.data.frame(melt(as.data.table(edf[, c(scoreInfo$itemsUse, idVar)]),
+  stuItems <- as.data.frame(melt(as.data.table(edf[ , c(scoreInfo$itemsUse, idVar)]),
     id.vars = idVar,
     measure.vars = c(scoreInfo$itemsUse)
   ))
@@ -197,7 +197,7 @@ mml.sdf <- function(formula,
     stop("No students on this data have valid test data.")
   }
   # create stuDat
-  stuDat <- edf[edf[, idVar] %in% unique(stuItems[, idVar]), c(idVar, indepVars, weightVar, strataVar, psuVar)]
+  stuDat <- edf[edf[ , idVar] %in% unique(stuItems[ , idVar]), c(idVar, indepVars, weightVar, strataVar, psuVar)]
   if (nrow(stuDat) == 0) {
     stop("No students with valid test data also have valid covariates.")
   }
@@ -440,7 +440,7 @@ checkParamTabAgainstItems <- function(data, scoreInfo) {
 
   # check poly param tab has score points that agree with parameters
   dCols <- grep("d[0-9]", colnames(ppt), value = TRUE)
-  apparentScorePoints <- apply(ppt[, dCols, drop = FALSE], 1, function(x) {
+  apparentScorePoints <- apply(ppt[ , dCols, drop = FALSE], 1, function(x) {
     length(dCols) - sum(is.na(x))
   })
   if (!"socrePoints" %in% colnames(ppt)) {
@@ -466,7 +466,7 @@ checkParamTabAgainstItems <- function(data, scoreInfo) {
 }
 
 filterOutIncompleteZeroWeight <- function(edf, indepVars, weightVar, verbose) {
-  incomplete <- !complete.cases(edf[, c(indepVars, weightVar)])
+  incomplete <- !complete.cases(edf[ , c(indepVars, weightVar)])
   if (any(incomplete)) {
     if (verbose) {
       message("Removing ", sum(incomplete), " rows with NAs from analysis.")
@@ -475,8 +475,8 @@ filterOutIncompleteZeroWeight <- function(edf, indepVars, weightVar, verbose) {
   }
   # remove non-positive (full sample) weights
   if (!is.null(weightVar)) {
-    if (any(edf[, weightVar] <= 0)) {
-      posWeights <- edf[, weightVar] > 0
+    if (any(edf[ , weightVar] <= 0)) {
+      posWeights <- edf[ , weightVar] > 0
       if (verbose) {
         message("Removing ", sum(!posWeights), " rows with nonpositive weight from analysis.")
       }

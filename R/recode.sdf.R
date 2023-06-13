@@ -44,18 +44,18 @@ recode.sdf <- function(x, recode) {
       }
 
       badFrom <- c() # levels with incorrect recodes
-      if (inherits(x[, ni], "factor")) {
+      if (inherits(x[ , ni], "factor")) {
         newto <- to
         if (to %in% from) { # remove degenerate recode
           from <- from[!from %in% to]
         }
-        labs <- levels(x[, ni]) # used for both lfactors and factors
+        labs <- levels(x[ , ni]) # used for both lfactors and factors
         if (newto %in% labs) { # this is not a new label
           newto <- NULL
         }
-        tmp <- as.character(x[, ni])
-        if (inherits(x[, ni], "lfactor")) { # it is an lfactor
-          levs <- llevels(x[, ni])
+        tmp <- as.character(x[ , ni])
+        if (inherits(x[ , ni], "lfactor")) { # it is an lfactor
+          levs <- llevels(x[ , ni])
           # in case of lfactor:
           # + from can be numeric or character
           # + to can be numeric or character
@@ -88,7 +88,7 @@ recode.sdf <- function(x, recode) {
 
           # changing tmp according to numeric values of from
           if (length(fromNum) > 0) {
-            tmp_numeric <- lfactors:::switchllevels(x[, ni])
+            tmp_numeric <- lfactors:::switchllevels(x[ , ni])
             tmp[tmp_numeric %in% fromNum] <- to
             if (any(!fromNum %in% levs)) {
               # add any missing levels to missing list
@@ -107,8 +107,8 @@ recode.sdf <- function(x, recode) {
             labs <- labs[!labs %in% setdiff(fromChar, to)]
           }
           # Now we need to call lfactors again to make sure levels are mapped correctly to modified character vectors
-          x[, ni] <- lfactor(tmp, levels = levs, labels = labs, exclude = NULL)
-        } else { # end if(inherits(x[,ni],"lfactor"))
+          x[ , ni] <- lfactor(tmp, levels = levs, labels = labs, exclude = NULL)
+        } else { # end if(inherits(x[ ,ni],"lfactor"))
           # it is a base r factor so from and to have to be character
           tmp[tmp %in% from] <- to
           if (any(!from %in% labs)) {
@@ -118,15 +118,15 @@ recode.sdf <- function(x, recode) {
           if (!to %in% labs) {
             labs <- c(labs, to)
           }
-          x[, ni] <- factor(tmp, levels = labs)
+          x[ , ni] <- factor(tmp, levels = labs)
         }
-      } else { # end if(inherits(x[,ni], "factor"))
+      } else { # end if(inherits(x[ ,ni], "factor"))
         # recode for non factors
-        if (any(!from %in% x[, ni])) {
-          badFrom <- from[!from %in% x[, ni]]
+        if (any(!from %in% x[ , ni])) {
+          badFrom <- from[!from %in% x[ , ni]]
         }
-        x[, ni][x[, ni] %in% from] <- to
-      } # end else for if(inherits(x[,ni], "factor"))
+        x[ , ni][x[ , ni] %in% from] <- to
+      } # end else for if(inherits(x[ ,ni], "factor"))
       if (length(badFrom) > 0) {
         warning(paste0(
           "When recoding, could not find the level(s) ",

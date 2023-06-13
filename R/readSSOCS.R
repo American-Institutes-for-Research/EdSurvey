@@ -305,7 +305,7 @@ getSSOCS_FileFormat <- function(data, valueLabels, verbose) {
 
   # apply the value labels as they are defined in the lookup table
   for (i in seq_along(varNames)) {
-    d <- data[, i, drop = TRUE]
+    d <- data[ , i, drop = TRUE]
 
     # attempt to determine it's data type, will be validated in the writeDF_FWF function as well
     if (is.numeric(d)) {

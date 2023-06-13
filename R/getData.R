@@ -342,12 +342,12 @@ getData <- function(data,
           varinds <- 1
         }
 
-        dataChunk <- laf[, varinds, drop = FALSE] # retrieve the values from the LaF
+        dataChunk <- laf[ , varinds, drop = FALSE] # retrieve the values from the LaF
 
         if (hasCachedVars && dlevel$levelLabel == cacheLevelLabel) {
           if (ncol(dataChunk) > 0) {
             # the cache data with same column names will have precedence!
-            dataChunk <- dataChunk[, !(names(dataChunk) %in% cachedVars), drop = FALSE]
+            dataChunk <- dataChunk[ , !(names(dataChunk) %in% cachedVars), drop = FALSE]
             dataChunk <- cbind(dataChunk, sdf$cache[cachedVars])
           } else {
             dataChunk <- sdf$cache[cachedVars]
@@ -370,7 +370,7 @@ getData <- function(data,
 
           # back to base data.frame
           data <- as.data.frame(data) # back to regular data.frame
-          data <- data[, names(data)[!grepl("\\.dupe$", names(data))], drop = FALSE]
+          data <- data[ , names(data)[!grepl("\\.dupe$", names(data))], drop = FALSE]
 
           # check here to see if the variable names differed between the parent and level
           # if there is a mismatch we need to insert
@@ -378,7 +378,7 @@ getData <- function(data,
             idx <- which(dlevel$parentMergeVars != dlevel$mergeVars, arr.ind = TRUE)
             # duplicate the column value based on the parent name::note that this will only ever apply to merge variables with varying names
             for (i in idx) {
-              data[, dlevel$mergeVars[i]] <- data[, dlevel$parentMergeVars[i]]
+              data[ , dlevel$mergeVars[i]] <- data[ , dlevel$parentMergeVars[i]]
             }
           } # end if(any(dlevel$parentMergeVars!=dlevel$mergeVars))
           ff <- ff[varinds, ] # subset just to the grabbed values
@@ -396,7 +396,7 @@ getData <- function(data,
     # tidy up and drop any columns not requested by user
     dataChunk <- NULL
 
-    data <- data[, (names(data) %in% varnamesTotal), drop = FALSE]
+    data <- data[ , (names(data) %in% varnamesTotal), drop = FALSE]
 
     if (!is.null(data)) {
       row.names(data) <- 1:nrow(data)
@@ -441,7 +441,7 @@ getData <- function(data,
 
     for (var in convToNumVars) {
       # convToNum converts the variable to a number--if it will not cause data loss
-      data[, var] <- convToNum(data[, var])
+      data[ , var] <- convToNum(data[ , var])
     }
 
     # Apply default conditions
@@ -480,18 +480,18 @@ getData <- function(data,
               }
 
               badFrom <- c() # levels with incorrect recodes
-              if (inherits(data[, ni], "factor")) {
+              if (inherits(data[ , ni], "factor")) {
                 newto <- to
                 if (to %in% from) { # remove degenerate recode
                   from <- from[!from %in% to]
                 }
-                labs <- levels(data[, ni]) # used for both lfactors and factors
+                labs <- levels(data[ , ni]) # used for both lfactors and factors
                 if (newto %in% labs) { # this is not a new label
                   newto <- NULL
                 }
-                tmp <- as.character(data[, ni])
-                if (inherits(data[, ni], "lfactor")) { # it is an lfactor
-                  levs <- llevels(data[, ni])
+                tmp <- as.character(data[ , ni])
+                if (inherits(data[ , ni], "lfactor")) { # it is an lfactor
+                  levs <- llevels(data[ , ni])
                   # in case of lfactor:
                   # + from can be numeric or character
                   # + to can be numeric or character
@@ -524,7 +524,7 @@ getData <- function(data,
 
                   # changing tmp according to numeric values of from
                   if (length(fromNum) > 0) {
-                    tmp_numeric <- lfactors:::switchllevels(data[, ni])
+                    tmp_numeric <- lfactors:::switchllevels(data[ , ni])
                     tmp[tmp_numeric %in% fromNum] <- to
                     if (any(!fromNum %in% levs)) {
                       # add any missing levels to missing list
@@ -543,8 +543,8 @@ getData <- function(data,
                     labs <- labs[!labs %in% setdiff(fromChar, to)]
                   }
                   # Now we need to call lfactors again to make sure levels are mapped correctly to modified character vectors
-                  data[, ni] <- lfactor(tmp, levels = levs, labels = labs, exclude = NULL)
-                } else { # end if(inherits(x[,ni],"lfactor"))
+                  data[ , ni] <- lfactor(tmp, levels = levs, labels = labs, exclude = NULL)
+                } else { # end if(inherits(x[ ,ni],"lfactor"))
                   # it is a base r factor so from and to have to be character
                   tmp[tmp %in% from] <- to
                   if (any(!from %in% labs)) {
@@ -554,15 +554,15 @@ getData <- function(data,
                   if (!to %in% labs) {
                     labs <- c(labs, to)
                   }
-                  data[, ni] <- factor(tmp, levels = labs)
+                  data[ , ni] <- factor(tmp, levels = labs)
                 }
-              } else { # end if(inherits(x[,ni], "factor"))
+              } else { # end if(inherits(x[ ,ni], "factor"))
                 # recode for non factors
-                if (any(!from %in% data[, ni])) {
-                  badFrom <- from[!from %in% data[, ni]]
+                if (any(!from %in% data[ , ni])) {
+                  badFrom <- from[!from %in% data[ , ni]]
                 }
-                data[, ni][data[, ni] %in% from] <- to
-              } # end else for if(inherits(data[,ni], "factor"))
+                data[ , ni][data[ , ni] %in% from] <- to
+              } # end else for if(inherits(data[ ,ni], "factor"))
               if (length(badFrom) > 0) {
                 warning(paste0(
                   "When recoding, could not find the level(s) ",
@@ -589,7 +589,7 @@ getData <- function(data,
         vari <- varnamesTotal[i]
         if (!vari %in% vars_exclude_omitted) {
           # omit data at these levels
-          keep <- keep | (data[, vari] %in% sdf$omittedLevels)
+          keep <- keep | (data[ , vari] %in% sdf$omittedLevels)
         }
       }
       if (any(!keep)) {
@@ -602,8 +602,8 @@ getData <- function(data,
     # call droplevels on data when dropUnusedLevels=TRUE
     if (dropUnusedLevels) {
       for (i in 1:length(varnamesTotal)) {
-        if (is.factor(data[, varnamesTotal[i]])) {
-          data[, varnamesTotal[i]] <- droplevels(data[, varnamesTotal[i]])
+        if (is.factor(data[ , varnamesTotal[i]])) {
+          data[ , varnamesTotal[i]] <- droplevels(data[ , varnamesTotal[i]])
         }
       }
     }
@@ -625,7 +625,7 @@ getData <- function(data,
         vari <- varnamesTotal[i]
         if (!vari %in% vars_exclude_omitted) {
           # omit data at these levels
-          keep <- keep + (data[, vari] %in% lev)
+          keep <- keep + (data[ , vari] %in% lev)
         }
       }
       if (sum(keep > 0) > 0) {
@@ -638,13 +638,13 @@ getData <- function(data,
     if (!missing(dropUnusedLevels)) {
       if (dropUnusedLevels) {
         for (i in 1:length(varnamesTotal)) {
-          if (is.factor(data[, varnamesTotal[i]])) {
-            data[, varnamesTotal[i]] <- droplevels(data[, varnamesTotal[i]])
+          if (is.factor(data[ , varnamesTotal[i]])) {
+            data[ , varnamesTotal[i]] <- droplevels(data[ , varnamesTotal[i]])
           }
         }
       }
     }
-    data <- data[, varnames, drop = FALSE]
+    data <- data[ , varnames, drop = FALSE]
   } # end else for if(inherits(sdf, "edsurvey.data.frame"))
   # now the variable 'data' has a data.frame in it
 
@@ -655,7 +655,7 @@ getData <- function(data,
     if (nrow(data) == 0) {
       warning("The requested dataset has 0 rows.")
     }
-    data <- data[, varnames, drop = drop]
+    data <- data[ , varnames, drop = drop]
     class(sdf) <- "list"
     # get the names of the attributes
     sdfnames <- names(sdf)
@@ -679,7 +679,7 @@ getData <- function(data,
   if (nrow(data) == 0) {
     warning("The requested dataset has 0 rows.")
   }
-  data <- data[, varnames, drop = drop]
+  data <- data[ , varnames, drop = drop]
 
   return(data)
 }
@@ -920,7 +920,7 @@ applyValueLabels <- function(data, lblList, labelDF, esdf, includeNaLabel = FALS
 
       # put next block into function
       isTaylorVal <- vari %in% getAllTaylorVars(esdf)
-      data[, vari] <- getFactorValue(lvls = lvls, lbls = lbls, dataVals = data[[vari]], factorOnly = (isTaylorVal || isPISA_IDVar), includeNaLabel = includeNaLabel)
+      data[ , vari] <- getFactorValue(lvls = lvls, lbls = lbls, dataVals = data[[vari]], factorOnly = (isTaylorVal || isPISA_IDVar), includeNaLabel = includeNaLabel)
     } # end else if(esdf$survey != "PIAAC" && all(lblVals %in% omittedLevels))
   } # end for(i in seq_along(labels)
 
@@ -1001,9 +1001,9 @@ applyDecimalConversion <- function(dataDF, labelsDF, varNameColumn = "variableNa
     decLen <- as.numeric(decLen)
     if (decLen > 0) {
       mult <- (10^decLen)
-      xCol <- dataDF[, varn] / mult
+      xCol <- dataDF[ , varn] / mult
       # if it has a decimal conversion and is in the requested data
-      dataDF[, varn] <- xCol
+      dataDF[ , varn] <- xCol
     }
   }
 
