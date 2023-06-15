@@ -44,7 +44,7 @@
 #'
 #' @seealso \code{\link{showCodebook}}, \code{\link{searchSDF}}, \code{\link{edsurvey.data.frame}}, \code{\link{merge.edsurvey.data.frame}}, and \code{\link{getData}}
 #' @author Tom Fink
-#'
+#' @export
 readHSTS <- function(dataFilePath = getwd(),
                      spssPrgPath = dataFilePath,
                      year = c("2019"),
