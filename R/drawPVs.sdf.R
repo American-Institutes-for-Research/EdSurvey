@@ -125,7 +125,7 @@ checkNewData <- function(mml, scoreDict, data, getDataArgs, theSubject, survey) 
 
   scoreInfo <- getScoreInfo(data, survey, theSubject)
   scoreInfo <- checkParamTabAgainstItems(data, scoreInfo)
-  scoreCall <- getScoreCall(data)
+  scoreCall <- getScoreCall(data, scoreInfo)
   scoreCallEnv <- list2env(scoreInfo)
   assign("edf", edf, envir = scoreCallEnv) # add edf to the environment
   edf <- eval(scoreCall, envir = scoreCallEnv)

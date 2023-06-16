@@ -1,6 +1,19 @@
 \name{NEWS}
 \title{NEWS for EdSurvey}
 
+\section{Changes in version 4.0.3}{
+  \subsection{UPDATES}{
+    \itemize{
+      \item updated subscale mappings for TIMSS to allow for four-character subscale names to be used with \code{mml.sdf} for all subscales across grade, subject, and year
+      \item exported \code{readHSTS}
+    }
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item fixed bug where \code{mml.sdf} produced an error if there were not polytomous items associated with the subscale.
+    }
+  }
+}
+
 \section{Changes in version 4.0.0}{
   \subsection{UPDATES}{
     \itemize{

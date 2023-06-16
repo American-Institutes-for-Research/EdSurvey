@@ -154,7 +154,6 @@ mml.sdf <- function(formula,
   scoreInfo <- getScoreInfo(data, survey, theSubject)
   # check for paramTab items not in data
   scoreInfo <- checkParamTabAgainstItems(data, scoreInfo)
-
   # ### create stuItems, stuDat
   # # get dependent vars, weight, and items from data
   indepVars <- all.vars(formula)
@@ -169,8 +168,7 @@ mml.sdf <- function(formula,
 
   # check completeness
   edf <- filterOutIncompleteZeroWeight(edf, indepVars, weightVar, verbose)
-
-  scoreCall <- getScoreCall(data)
+  scoreCall <- getScoreCall(data, scoreInfo)
   # make the score call enviornment
   scoreCallEnv <- list2env(scoreInfo)
   assign("edf", edf, envir = scoreCallEnv) # add edf to the environment
@@ -391,16 +389,24 @@ filterParamTabToSubject <- function(paramTab, survey, subject) {
   return(paramTab)
 }
 
-getScoreCall <- function(data) {
+getScoreCall <- function(data, scoreInfo) {
   scoreFunction <- getAttributes(data, "scoreFunction")
   if (is.null(scoreFunction)) {
     stop("attribute scoreFunction must be set on the data.")
   }
   if (inherits(scoreFunction, "function")) {
-    scoreCall <- list(scoreFunction, quote(edf), quote(polyParamTab), quote(dichotParamTab), quote(scoreDict))
+    if(!"polyParamTab" %in% names(scoreInfo)) {
+      scoreCall <- list(scoreFunction, quote(edf), quote(NULL), quote(dichotParamTab), quote(scoreDict))
+    }else {
+      scoreCall <- list(scoreFunction, quote(edf), quote(polyParamTab), quote(dichotParamTab), quote(scoreDict))
+    }
     mode(scoreCall) <- "call"
   } else {
-    scoreCall <- call(scoreFunction, quote(edf), quote(polyParamTab), quote(dichotParamTab), quote(scoreDict))
+    if(!"polyParamTab" %in% names(scoreInfo)) {
+      scoreCall <- call(scoreFunction, quote(edf), quote(NULL), quote(dichotParamTab), quote(scoreDict))
+    }else {
+      scoreCall <- call(scoreFunction, quote(edf), quote(polyParamTab), quote(dichotParamTab), quote(scoreDict))
+    }
   }
   return(scoreCall)
 }
@@ -430,6 +436,7 @@ checkParamTabAgainstItems <- function(data, scoreInfo) {
   itemsNotInData <- setdiff(items, itemsUse)
 
   if (length(itemsNotInData) > 0) {
+    
     ppt <- ppt[ppt$ItemID %in% itemsUse, ]
     dpt <- dpt[dpt$ItemID %in% itemsUse, ]
     warning(paste0("These items were in the assessment, but not in your data: ", pasteItems(dQuote(itemsNotInData), final = "and ")))
