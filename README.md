@@ -9,7 +9,7 @@
 [![CRAN status](https://www.r-pkg.org/badges/version-ago/EdSurvey)](https://www.r-pkg.org/badges/version-ago/EdSurvey)
 [![CRAN weekly](https://cranlogs.r-pkg.org/badges/EdSurvey)](https://cranlogs.r-pkg.org/badges/EdSurvey)
 [![CRAN grand total](https://cranlogs.r-pkg.org/badges/grand-total/EdSurvey)](https://cranlogs.r-pkg.org/badges/grand-total/EdSurvey)
-Markdown: [![status](https://joss.theoj.org/papers/9c1e70616ca856cde31b09804e5df374/status.svg)](https://joss.theoj.org/papers/9c1e70616ca856cde31b09804e5df374)
+[![status](https://joss.theoj.org/papers/9c1e70616ca856cde31b09804e5df374/status.svg)](https://joss.theoj.org/papers/9c1e70616ca856cde31b09804e5df374)
 <!-- badges: end -->
 
 ## Overview
