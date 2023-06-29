@@ -44,7 +44,7 @@ test_that("ECLS_K getData", {
   expect_equal(co, dat1Summary.Ref)
 
   # test continuous variable having only omitted levels
-  dat2 <- getData(eclsk98, c("childid", "c1height", "c2height", "c3height", "c4height", "c5height", "c6height", "c7height"), omittedLevels = FALSE)
+  dat2 <- getData(eclsk98, c("childid", "c1height", "c2height", "c3height", "c4height", "c5height", "c6height", "c7height"), dropOmittedLevels = FALSE)
   expect_equal(dim(dat2), c(21409, 8))
   withr::with_options(list(digits = 7), co <- capture.output(summary(dat2)))
   expect_equal(co, dat2Summary.Ref)
@@ -57,7 +57,7 @@ test_that("ECLS_K rebindAttributes", {
       "p9hmwork", "p9hlphwk", "x_chsex_r",
       "x9rscalk5", "x9mscalk5", "w9c29p_9t90"
     ),
-    omittedLevels = FALSE, addAttributes = TRUE
+    dropOmittedLevels = FALSE, addAttributes = TRUE
   )
   mvData$p9hlphwk <- ifelse(mvData$p9hmwork == "1: NEVER" &
     mvData$p9hlphwk == "-1: NOT APPLICABLE", 0,

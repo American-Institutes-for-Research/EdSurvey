@@ -195,7 +195,7 @@ test_that("LESDF gap", {
   mle <- "Male"
   g1p <- gap("composite", sdf, dsex == mle, dsex == "Female")
   expect_equal(g1$results, g1p$results)
-  # omittedLevels must be set to FALSE or rows will be deleted because of other columns
+  # dropOmittedLevels must be set to FALSE or rows will be deleted because of other columns
   # using omitted levels
   g1l <- gap("composite", lsdf0, dsex == "Male", dsex == "Female")
   # calls not expected to be equal
@@ -253,7 +253,7 @@ test_that("LESDF cor.sdf", {
   lsdf2 <- getData(sdf, c("m815401", "m815701", "b017451", "origwt"), addAttributes = TRUE, dropOmittedLevels = FALSE)
   b4 <- cor.sdf("m815401", "b017451", method = "Pearson", lsdf2, weightVar = "origwt", dropOmittedLevels = TRUE) # dropUnusedLevels nolonger revealed, not set
   expect_equal(b3, b4)
-  # cor passes omittedLevels to getData
+  # cor passes dropOmittedLevels to getData
   # in some ways this is maybe more of a test of getData
   b1 <- cor.sdf("m815401", "b017451", method = "Pearson", sdf, weightVar = "origwt")
   lsdf3 <- getData(sdf, c("m815401", "b017451", "origwt"), addAttributes = TRUE, dropOmittedLevels = TRUE)
@@ -316,7 +316,7 @@ test_that("LESDF edsurveyTable", {
   es2l <- edsurveyTable(composite ~ dsex + b017451, lsdfm, jrrIMax = Inf)
   es2lc <- withr::with_options(list(digits = 7), capture.output(es2l))
   expect_equal(es2lc, es2lREF)
-  # test omittedLevels, here it should be ignored and es2 is the correct reference
+  # test dropOmittedLevels, here it should be ignored and es2 is the correct reference
   es2lb <- edsurveyTable(composite ~ dsex + b017451, lsdfm, jrrIMax = Inf, dropOmittedLevels = FALSE)
   es2lbc <- withr::with_options(list(digits = 7), capture.output(es2lb))
   expect_equal(es2lbc, es2lbREF)

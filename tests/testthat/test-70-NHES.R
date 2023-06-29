@@ -65,12 +65,12 @@ test_that("NHES getData", {
   expect_equal(co, "[1] 11.98719")
 
   # test NHES ECPP 2016 variables
-  dat2 <- getData(ecpp2016, c("cpdays", "p1sex", "p1mrsta"), omittedLevels = FALSE)
+  dat2 <- getData(ecpp2016, c("cpdays", "p1sex", "p1mrsta"), dropOmittedLevels = FALSE)
   expect_equal(dim(dat2), c(5844, 3))
   withr::with_options(list(digits = 7), co <- capture.output(base::summary(dat2)))
   expect_equal(co, dat2Summary.Ref)
 
-  # test with some continuous variables that have omittedLevels
+  # test with some continuous variables that have dropOmittedLevels
   dat3 <- getData(ate2016, c("eehrs", "cenreg"))
   expect_equal(dim(dat3), c(36567, 2))
   withr::with_options(list(digits = 7), co <- capture.output(base::summary(dat3)))

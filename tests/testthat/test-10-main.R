@@ -450,7 +450,7 @@ test_that("edsurveyTable", {
   es2 <- edsurveyTable(composite ~ dsex + b017451, sdfm, jrrIMax = Inf)
   es2c <- capture.output(es2)
   expect_equal(es2c, es2REF)
-  # test omittedLevels
+  # test dropOmittedLevels
   es2b <- edsurveyTable(composite ~ dsex + b017451, sdfm, jrrIMax = 1, dropOmittedLevels = FALSE)
   es2bc <- capture.output(es2b)
   expect_equal(es2bc, es2bREF)
@@ -1192,7 +1192,7 @@ test_that("no PSU var error and warnings", {
       dataType = sdf$dataType,
       gradeLevel = sdf$gradeLevel,
       achievementLevels = sdf$achievementLevels,
-      omittedLevels = sdf$omittedLevels,
+      dropOmittedLevels = sdf$omittedLevels,
       survey = sdf$survey,
       country = sdf$country,
       psuVar = NULL, # remove the PSU var for testing

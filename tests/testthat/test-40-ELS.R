@@ -45,12 +45,12 @@ test_that("ELS getData", {
   expect_equal(co[-4], dat1Summary.Ref[-4])
 
   # test ELS School variables
-  withr::with_options(list(digits = 4), dat2 <- getData(elsSchl, c("sch_id", "byregion", "byurban"), omittedLevels = FALSE)) # digits=4 impacts rounding in summary call
+  withr::with_options(list(digits = 4), dat2 <- getData(elsSchl, c("sch_id", "byregion", "byurban"), dropOmittedLevels = FALSE)) # digits=4 impacts rounding in summary call
   expect_equal(dim(dat2), c(1954, 3))
   withr::with_options(list(digits = 4), co <- capture.output(summary(dat2)))
   expect_equal(co[-4], dat2Summary.Ref[-4])
 
-  # test with some continuous variables that have omittedLevels
+  # test with some continuous variables that have dropOmittedLevels
   withr::with_options(list(digits = 7), dat3 <- getData(els, c("stu_id", "f1ses1", "f1ses1qu", "f1ses2", "f1ses2qu"))) # digits=4 impacts rounding in summary call
   expect_equal(dim(dat3), c(16160, 5))
   withr::with_options(list(digits = 7), co <- capture.output(summary(dat3)))

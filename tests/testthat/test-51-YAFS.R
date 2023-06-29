@@ -43,7 +43,7 @@ test_that("PISA YAFS edsurveyTable", {
   lit <- edsurveyTable(
     formula = lit ~ 1,
     data = pisa_yafs,
-    omittedLevels = TRUE,
+    dropOmittedLevels = TRUE,
     jrrIMax = Inf
   )
   withr::with_options(list(digits = 7), out <- capture.output(lit))

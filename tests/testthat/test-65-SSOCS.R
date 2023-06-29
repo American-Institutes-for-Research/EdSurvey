@@ -103,7 +103,7 @@ test_that("SSOCS correlation", {
     data = ssocs16,
     varMethod = "jackknife",
     weightVar = "finalwgt",
-    omittedLevels = FALSE
+    dropOmittedLevels = FALSE
   ))
 
   withr::with_options(list(digits = 7), co <- capture.output(l1))
