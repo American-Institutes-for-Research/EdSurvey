@@ -429,13 +429,13 @@ process_ePIRLS <- function(dataFolderPath, countryCode, fnames, fileYrs, forceRe
     if (nrow(stuDF1) != nrow(mm)) {
       stop(paste0(
         "Failed consistency check for filetype ", sQuote("asa"), " country code ", sQuote(tolower(countryCode)), ". ",
-        "Please email EdSurvey.help@air.org for assistance."
+        "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
       ))
     }
     if (nrow(stuDF2) != nrow(mm)) {
       stop(paste0(
         "Failed consistency check for filetype ", sQuote("asg"), " country code ", sQuote(tolower(countryCode)), ". ",
-        "Please email EdSurvey.help@air.org for assistance."
+        "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
       ))
     }
     if (min(is.na(ash)) == 0) {
@@ -458,13 +458,13 @@ process_ePIRLS <- function(dataFolderPath, countryCode, fnames, fileYrs, forceRe
       if (nrow(stuDF1) != nrow(mm)) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote("ash"), " country code ", sQuote(tolower(countryCode)), ". ",
-          "Please email EdSurvey.help@air.org for assistance."
+          "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
         ))
       }
       if (nr != nrow(mm)) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote("ash"), " country code ", sQuote(tolower(countryCode)), ". ",
-          "Please email EdSurvey.help@air.org for assistance."
+          "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
         ))
       }
     } else {
@@ -496,7 +496,7 @@ process_ePIRLS <- function(dataFolderPath, countryCode, fnames, fileYrs, forceRe
       if (nr != nrow(mm)) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote("asr"), " country code ", sQuote(tolower(countryCode)), ". ",
-          "Please email EdSurvey.help@air.org for assistance."
+          "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
         ))
       }
       mm <- mm[ , names(mm)[!grepl("\\.junk$", names(mm))]]
@@ -534,7 +534,7 @@ process_ePIRLS <- function(dataFolderPath, countryCode, fnames, fileYrs, forceRe
     if (nrow(stuTeachDF) != nrow(mm)) {
       stop(paste0(
         "Failed consistency check for filetype ", sQuote("atg"), " country code ", sQuote(tolower(countryCode)), ". ",
-        "Please email EdSurvey.help@air.org for assistance."
+        "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
       ))
     }
 

@@ -4,6 +4,7 @@
 \section{Changes in version 4.0.3}{
   \subsection{UPDATES}{
     \itemize{
+      \item `downloadPIRLS` and `readPIRLS` were updated to include PIRLS 2021 data
       \item updated subscale mappings for TIMSS to allow for four-character subscale names to be used with \code{mml.sdf} for all subscales across grade, subject, and year
       \item exported \code{readHSTS}
     }

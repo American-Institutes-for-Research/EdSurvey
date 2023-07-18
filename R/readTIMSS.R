@@ -793,7 +793,7 @@ processTIMSSGr4 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
     if (!okFlag || (nrow(stuDF1) != nrow(mm)) || (nrow(stuDF2) != nrow(mm))) {
       stop(paste0(
         "Failed consistency check for filetype ", sQuote("asg"), " country code ", sQuote(tolower(countryCode)), ". ",
-        "Please email EdSurvey.help@air.org for assistance."
+        "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
       ))
     }
 
@@ -842,7 +842,7 @@ processTIMSSGr4 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
       if (!okFlag || (nrow(stuDF1) != nrow(mm)) || (nr != nrow(mm))) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote("ash"), " country code ", sQuote(tolower(countryCode)), ". ",
-          "Please email EdSurvey.help@air.org for assistance."
+          "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
         ))
       }
     } else {
@@ -893,7 +893,7 @@ processTIMSSGr4 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
       if (!okFlag || (nr != nrow(mm))) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote("asr"), " country code ", sQuote(tolower(countryCode)), ". ",
-          "Please email EdSurvey.help@air.org for assistance."
+          "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
         ))
       }
     } else {
@@ -979,7 +979,7 @@ processTIMSSGr4 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
     if (!okFlag || (nr != nrow(mm))) {
       stop(paste0(
         "Failed consistency check for filetype ", sQuote("atg"), " country code ", sQuote(tolower(countryCode)), ". ",
-        "Please email EdSurvey.help@air.org for assistance."
+        "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
       ))
     }
 
@@ -1191,7 +1191,7 @@ processTIMSSGr8 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
     if (!okFlag || (nrow(stuDF1) != nrow(mm)) || (nrow(stuDF2) != nrow(mm))) {
       stop(paste0(
         "Failed consistency check for filetype ", sQuote("bsg"), " country code ", sQuote(tolower(countryCode)), ". ",
-        "Please email EdSurvey.help@air.org for assistance"
+        "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
       ))
     }
 
@@ -1241,7 +1241,7 @@ processTIMSSGr8 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
       if (!okFlag || (nr != nrow(mm))) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote("bsr"), " country code ", sQuote(tolower(countryCode)), ". ",
-          "Please email EdSurvey.help@air.org for assistance"
+          "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
         ))
       }
     }
@@ -1336,7 +1336,7 @@ processTIMSSGr8 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
     if (!okFlag || (nrow(stuTeachDF) != nrow(mm))) {
       stop(paste0(
         "Failed consistency check for filetype ", sQuote("btm"), " country code ", sQuote(tolower(countryCode)), ". ",
-        "Please email EdSurvey.help@air.org for assistance"
+        "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
       ))
     }
 
@@ -1392,7 +1392,7 @@ processTIMSSGr8 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
     if (!okFlag || (nr != nrow(mm))) {
       stop(paste0(
         "Failed consistency check for filetype ", sQuote("bts"), " country code ", sQuote(tolower(countryCode)), ". ",
-        "Please email EdSurvey.help@air.org for assistance"
+        "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
       ))
     }
 
@@ -1881,7 +1881,7 @@ processTIMSS4AndNumeracy <- function(dataFolderPath, countryCode, fnames, fnames
     if (!okFlag || (nrow(stuDF1) != nrow(mm)) || (nrow(stuDF2) != nrow(mm))) {
       stop(paste0(
         "Failed consistency check for filetype ", sQuote("asg"), " country code ", sQuote(tolower(countryCode)), ". ",
-        "Please email EdSurvey.help@air.org for assistance."
+        "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
       ))
     }
     # =========================================
@@ -1948,7 +1948,7 @@ processTIMSS4AndNumeracy <- function(dataFolderPath, countryCode, fnames, fnames
       if (!okFlag || (nrow(stuDF1) != nrow(mm)) || (nr != nrow(mm))) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote("ash"), " country code ", sQuote(tolower(countryCode)), ". ",
-          "Please email EdSurvey.help@air.org for assistance."
+          "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
         ))
       }
     } else {
@@ -2015,7 +2015,7 @@ processTIMSS4AndNumeracy <- function(dataFolderPath, countryCode, fnames, fnames
       if (!okFlag || (nr != nrow(mm))) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote("asr"), " country code ", sQuote(tolower(countryCode)), ". ",
-          "Please email EdSurvey.help@air.org for assistance."
+          "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
         ))
       }
     }
@@ -2110,7 +2110,7 @@ processTIMSS4AndNumeracy <- function(dataFolderPath, countryCode, fnames, fnames
     if (!okFlag || (nrow(stuTeachDF) != nrow(mm))) {
       stop(paste0(
         "Failed consistency check for filetype ", sQuote("atg"), " country code ", sQuote(tolower(countryCode)), ". ",
-        "Please email EdSurvey.help@air.org for assistance."
+        "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
       ))
     }
 

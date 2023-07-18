@@ -525,15 +525,15 @@ context("edsurveyTable2pdf")
 test_that("edsurveyTable2pdf", {
   skip_on_cran()
   est1 <- edsurveyTable(composite ~ dsex + b017451, sdf)
-  expect_known_value(
-    evaluate_promise(edsurveyTable2pdf(
+  expect_equal(
+    capture.output(edsurveyTable2pdf(
       data = est1,
       formula = b017451 ~ dsex,
       toCSV = "",
       filename = "CONSOLE",
       returnMeans = FALSE
     )),
-    file = "es_2pdf.rds", update = FALSE
+    pdf_estREF
   )
 })
 
@@ -1192,7 +1192,7 @@ test_that("no PSU var error and warnings", {
       dataType = sdf$dataType,
       gradeLevel = sdf$gradeLevel,
       achievementLevels = sdf$achievementLevels,
-      dropOmittedLevels = sdf$omittedLevels,
+      omittedLevels = sdf$omittedLevels,
       survey = sdf$survey,
       country = sdf$country,
       psuVar = NULL, # remove the PSU var for testing

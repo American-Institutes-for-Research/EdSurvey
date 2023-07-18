@@ -777,3 +777,22 @@ mmlDsexIntREF <- c(
   "  (Intercept)    dsexFemale Population SD ",
   "       279.23          0.34         34.85 "
 )
+
+
+pdf_estREF <- c(
+  "% LaTeX script for EdSurvey Table:",
+  "\\begin{table}[ht]", 
+  "\\centering",
+  "\\begin{tabular}{lll}",
+  "  \\hline",
+  "Talk about studies at home & Male & Female \\\\ ",
+  "  \\hline",
+  "Never or hardly ever & 29.01 (0.696) & 18.20 (0.508) \\\\ ", 
+  "  Once every few weeks & 19.52 (0.502) & 18.62 (0.489) \\\\ ", 
+  "  About once a week & 16.96 (0.506) & 18.16 (0.578) \\\\ ", 
+  "  2 or 3 times a week & 18.63 (0.481) & 29.01 (0.696) \\\\ ", 
+  "  Every day & 15.88 (0.587) & 29.01 (0.696) \\\\ ",
+  "   \\hline", 
+  "\\end{tabular}",
+  "\\end{table}"
+)

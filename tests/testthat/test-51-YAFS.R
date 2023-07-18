@@ -5,14 +5,6 @@ options(width = 500)
 options(useFancyQuotes = FALSE)
 source("REF-9-YAFS.R") # has REF output in it
 
-if (!exists("edsurveyHome")) {
-  if (Sys.info()[["sysname"]] == "Windows") {
-    edsurveyHome <- "C:/EdSurveyData/"
-  } else {
-    edsurveyHome <- "~/EdSurveyData/"
-  }
-}
-
 if (!dir.exists(edsurveyHome)) {
   dir.create(edsurveyHome)
 }

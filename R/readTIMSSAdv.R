@@ -460,13 +460,13 @@ processTIMSSAdv <- function(dataFolderPath, countryCode, fnames, fileYrs, subjec
     if (nrow(stuDF1) != nrow(mm)) {
       stop(paste0(
         "Failed consistency check for filetype ", sQuote(paste0(subjChr, "sa")), " country code ", sQuote(tolower(countryCode)), ". ",
-        "Please email EdSurvey.help@air.org for assistance."
+        "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
       ))
     }
     if (nrow(stuDF2) != nrow(mm)) {
       stop(paste0(
         "Failed consistency check for filetype ", sQuote(paste0(subjChr, "sg")), " country code ", sQuote(tolower(countryCode)), ". ",
-        "Please email EdSurvey.help@air.org for assistance."
+        "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
       ))
     }
 
@@ -492,13 +492,13 @@ processTIMSSAdv <- function(dataFolderPath, countryCode, fnames, fileYrs, subjec
       if (nrow(stuDF1) != nrow(mm)) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote(paste0(subjChr, "sr")), " country code ", sQuote(tolower(countryCode)), ". ",
-          "Please email EdSurvey.help@air.org for assistance."
+          "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
         ))
       }
       if (nr != nrow(mm)) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote(paste0(subjChr, "sr")), " country code ", sQuote(tolower(countryCode)), ". ",
-          "Please email EdSurvey.help@air.org for assistance."
+          "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
         ))
       }
     } else {
@@ -540,7 +540,7 @@ processTIMSSAdv <- function(dataFolderPath, countryCode, fnames, fileYrs, subjec
       if (nrow(stuTeachDF) != nrow(mm)) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote(paste0(subjChr, "tg")), " country code ", sQuote(tolower(countryCode)), ". ",
-          "Please email EdSurvey.help@air.org for assistance."
+          "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
         ))
       }
 

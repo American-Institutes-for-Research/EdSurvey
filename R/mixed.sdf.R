@@ -582,7 +582,7 @@ mixed.sdf <- function(formula,
 
 # helper function
 run_mix <- function(nQuad, call, formula, edf, verbose, tolerance, family, center_group, center_grand, fast, ...) {
-  verboseAll <- ifelse(verbose == 2, TRUE, FALSE) # set verbosity for WeMix to true if overall verbosity is 2
+  verboseAll <- ifelse(verbose >= 2, TRUE, FALSE) # set verbosity for WeMix to true if overall verbosity is 2
   # linear models do not use nquad nor fast, drop those
   if (is.null(family)) {
     res <- mix(formula, data = edf, weights = c("pwt1", "pwt2"), verbose = verboseAll, center_group = center_group, center_grand = center_grand, ...)

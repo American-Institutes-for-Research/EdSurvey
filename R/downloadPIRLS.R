@@ -2,12 +2,12 @@
 #'
 #' @description Uses an Internet connection to download PIRLS data.
 #'              Data come from \href{https://timssandpirls.bc.edu/}{timssandpirls.bc.edu} zip files. This
-#'              function works for 2001, 2006, 2011, and 2016 data.
+#'              function works for 2001, 2006, 2011, 2016, and 2021 data.
 #'
 #' @param root a character string indicating the directory where the PIRLS
 #'             data should be stored. Files are placed in a
 #'             subdirectory named PIRLS/[year].
-#' @param years an integer vector of the assessment years to download. Valid years are 2001, 2006, 2011, and 2016.
+#' @param years an integer vector of the assessment years to download. Valid years are 2001, 2006, 2011, 2016, and 2021.
 #' @param cache a logical value set to process and cache the text (.txt) version of files.
 #'              This takes a very long time but saves time for future uses of
 #'              the data. Default value is \code{FALSE}.
@@ -19,7 +19,7 @@
 #' @example man\examples\downloadPIRLS.R
 #' @importFrom utils download.file
 #' @export
-downloadPIRLS <- function(root, years = c(2001, 2006, 2011, 2016), cache = FALSE, verbose = TRUE) {
+downloadPIRLS <- function(root, years = c(2001, 2006, 2011, 2016, 2021), cache = FALSE, verbose = TRUE) {
   fixTimeout()
   if (is.null(root)) {
     stop(paste0("The argument ", sQuote("root"), " must be specified."))
@@ -34,7 +34,7 @@ downloadPIRLS <- function(root, years = c(2001, 2006, 2011, 2016), cache = FALSE
     stop(paste0("The argument ", sQuote("root"), " must be a valid path."))
   }
 
-  validYears <- c(2001, 2006, 2011, 2016)
+  validYears <- c(2001, 2006, 2011, 2016, 2021)
   if (length(years) > 1) {
     for (yi in years) {
       downloadPIRLS(years = yi, root = root, cache = cache, verbose = verbose)
@@ -57,6 +57,10 @@ downloadPIRLS <- function(root, years = c(2001, 2006, 2011, 2016), cache = FALSE
     "https://timssandpirls.bc.edu/pirls2016/international-database/downloads/P16_SPSSData_pt1.zip",
     "https://timssandpirls.bc.edu/pirls2016/international-database/downloads/P16_SPSSData_pt2.zip",
     "https://timssandpirls.bc.edu/pirls2016/international-database/downloads/PL16_SPSSData.zip"
+  )
+  
+  d2021 <- c(
+    "https://pirls2021.org/data/downloads/P21_Data_SPSS.zip"
   )
 
   if (!year %in% validYears) {

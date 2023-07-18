@@ -5,10 +5,6 @@ require(EdSurvey)
 options(width = 500)
 options(useFancyQuotes = FALSE)
 
-if (!exists("edsurveyHome")) {
-  edsurveyHome <- "~/EdSurveyData/"
-}
-
 if (!dir.exists(edsurveyHome)) {
   dir.create(edsurveyHome)
 }

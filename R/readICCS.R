@@ -752,13 +752,13 @@ processICCS.Student <- function(dataFolderPath, countryCode, fnames, fileYrs, fo
     if (nrow(stuDF1) != nrow(mm)) {
       stop(paste0(
         "Failed consistency check for filetype ", sQuote(paste0(gradeLvlCode, "sa")), " country code ", sQuote(tolower(countryCode)), ". ",
-        "Please email EdSurvey.help@air.org for assistance."
+        "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
       ))
     }
     if (nrow(stuDF2) != nrow(mm)) {
       stop(paste0(
         "Failed consistency check for filetype ", sQuote(paste0(gradeLvlCode, "sg")), " country code ", sQuote(tolower(countryCode)), ". ",
-        "Please email EdSurvey.help@air.org for assistance."
+        "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
       ))
     }
     if (min(is.na(sr)) == 0) {
@@ -781,13 +781,13 @@ processICCS.Student <- function(dataFolderPath, countryCode, fnames, fileYrs, fo
       if (nrow(stuDF1) != nrow(mm)) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote(paste0(gradeLvlCode, "sr")), " country code ", sQuote(tolower(countryCode)), ". ",
-          "Please email EdSurvey.help@air.org for assistance."
+          "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
         ))
       }
       if (nr != nrow(mm)) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote(paste0(gradeLvlCode, "sr")), " country code ", sQuote(tolower(countryCode)), ". ",
-          "Please email EdSurvey.help@air.org for assistance."
+          "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
         ))
       }
     } else {
@@ -814,7 +814,7 @@ processICCS.Student <- function(dataFolderPath, countryCode, fnames, fileYrs, fo
       if (nr != nrow(mm)) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote(paste0(gradeLvlCode, "se")), " country code ", sQuote(tolower(countryCode)), ". ",
-          "Please email EdSurvey.help@air.org for assistance."
+          "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
         ))
       }
       mm <- mm[ , names(mm)[!grepl("\\.junk$", names(mm))]]
@@ -842,7 +842,7 @@ processICCS.Student <- function(dataFolderPath, countryCode, fnames, fileYrs, fo
       if (nr != nrow(mm)) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote(paste0(gradeLvlCode, "sl")), " country code ", sQuote(tolower(countryCode)), ". ",
-          "Please email EdSurvey.help@air.org for assistance."
+          "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
         ))
       }
       mm <- mm[ , names(mm)[!grepl("\\.junk$", names(mm))]]
@@ -870,7 +870,7 @@ processICCS.Student <- function(dataFolderPath, countryCode, fnames, fileYrs, fo
       if (nr != nrow(mm)) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote(paste0(gradeLvlCode, "ss")), " country code ", sQuote(tolower(countryCode)), ". ",
-          "Please email EdSurvey.help@air.org for assistance"
+          "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
         ))
       }
       mm <- mm[ , names(mm)[!grepl("\\.junk$", names(mm))]]

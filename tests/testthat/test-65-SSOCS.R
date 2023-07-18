@@ -7,13 +7,6 @@ options(useFancyQuotes = FALSE)
 
 
 source("REF-12-SSOCS.R") # has REF output in it
-if (!exists("edsurveyHome")) {
-  if (Sys.info()[["sysname"]] == "Windows") {
-    edsurveyHome <- "C:/EdSurveyData/"
-  } else {
-    edsurveyHome <- "~/EdSurveyData/"
-  }
-}
 
 if (!dir.exists(edsurveyHome)) {
   dir.create(edsurveyHome)

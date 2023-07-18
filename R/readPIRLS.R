@@ -416,6 +416,7 @@ convertPIRLSYearCode <- function(yrCode) {
   yrTest[yrTest %in% "r2"] <- 2006
   yrTest[yrTest %in% "r3"] <- 2011
   yrTest[yrTest %in% c("r4", "l2")] <- 2016
+  yrTest[yrTest %in% "r5"] <- 2021
 
   return(yrTest)
 }
@@ -423,8 +424,8 @@ convertPIRLSYearCode <- function(yrCode) {
 getPIRLSYearCodes <- function() {
   # retrieve the TIMMS years based on their filenaming structure
 
-  yrVals <- c("r1", "r2", "r3", "r4", "l2")
-  names(yrVals) <- c(2001, 2006, 2011, 2016, 2016)
+  yrVals <- c("r1", "r2", "r3", "r4", "l2", "r5")
+  names(yrVals) <- c(2001, 2006, 2011, 2016, 2016, 2021)
 
   return(yrVals)
 }
@@ -548,13 +549,13 @@ processPIRLS <- function(dataFolderPath, countryCode, fnames, fileYrs, forceRere
     if (nrow(stuDF1) != nrow(mm)) {
       stop(paste0(
         "Failed consistency check for filetype ", sQuote("asa"), " country code ", sQuote(tolower(countryCode)), ". ",
-        "Please email EdSurvey.help@air.org for assistance."
+        "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
       ))
     }
     if (nrow(stuDF2) != nrow(mm)) {
       stop(paste0(
         "Failed consistency check for filetype ", sQuote("asg"), " country code ", sQuote(tolower(countryCode)), ". ",
-        "Please email EdSurvey.help@air.org for assistance."
+        "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
       ))
     }
     if (min(is.na(ash)) == 0) {
@@ -577,13 +578,13 @@ processPIRLS <- function(dataFolderPath, countryCode, fnames, fileYrs, forceRere
       if (nrow(stuDF1) != nrow(mm)) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote("ash"), " country code ", sQuote(tolower(countryCode)), ". ",
-          "Please email EdSurvey.help@air.org for assistance."
+          "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
         ))
       }
       if (nr != nrow(mm)) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote("ash"), " country code ", sQuote(tolower(countryCode)), ". ",
-          "Please email EdSurvey.help@air.org for assistance."
+          "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
         ))
       }
     } else {
@@ -615,7 +616,7 @@ processPIRLS <- function(dataFolderPath, countryCode, fnames, fileYrs, forceRere
       if (nr != nrow(mm)) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote("asr"), " country code ", sQuote(tolower(countryCode)), ". ",
-          "Please email EdSurvey.help@air.org for assistance."
+          "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
         ))
       }
       mm <- mm[ , names(mm)[!grepl("\\.junk$", names(mm))]]
@@ -654,7 +655,7 @@ processPIRLS <- function(dataFolderPath, countryCode, fnames, fileYrs, forceRere
     if (nrow(stuTeachDF) != nrow(mm)) {
       stop(paste0(
         "Failed consistency check for filetype ", sQuote("atg"), " country code ", sQuote(tolower(countryCode)), ". ",
-        "Please email EdSurvey.help@air.org for assistance."
+        "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
       ))
     }
 
@@ -864,13 +865,13 @@ processPIRLSAndLiteracy <- function(dataFolderPath, countryCode, fnames, fnamesL
     if (nrow(stuDF1) != nrow(mm)) {
       stop(paste0(
         "Failed consistency check for filetype ", sQuote("asa"), " country code ", sQuote(tolower(countryCode)), ". ",
-        "Please email EdSurvey.help@air.org for assistance."
+        "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
       ))
     }
     if (nrow(stuDF2) != nrow(mm)) {
       stop(paste0(
         "Failed consistency check for filetype ", sQuote("asg"), " country code ", sQuote(tolower(countryCode)), ". ",
-        "Please email EdSurvey.help@air.org for assistance."
+        "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
       ))
     }
     # =======================
@@ -917,13 +918,13 @@ processPIRLSAndLiteracy <- function(dataFolderPath, countryCode, fnames, fnamesL
       if (nrow(stuDF1) != nrow(mm)) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote("ash"), " country code ", sQuote(tolower(countryCode)), ". ",
-          "Please email EdSurvey.help@air.org for assistance."
+          "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
         ))
       }
       if (nr != nrow(mm)) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote("ash"), " country code ", sQuote(tolower(countryCode)), ". ",
-          "Please email EdSurvey.help@air.org for assistance."
+          "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
         ))
       }
     } else {
@@ -979,7 +980,7 @@ processPIRLSAndLiteracy <- function(dataFolderPath, countryCode, fnames, fnamesL
       if (nr != nrow(mm)) {
         stop(paste0(
           "Failed consistency check for filetype ", sQuote("asr"), " country code ", sQuote(tolower(countryCode)), ". ",
-          "Please email EdSurvey.help@air.org for assistance."
+          "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
         ))
       }
       mm <- mm[ , names(mm)[!grepl("\\.junk$", names(mm))]]
@@ -1041,7 +1042,7 @@ processPIRLSAndLiteracy <- function(dataFolderPath, countryCode, fnames, fnamesL
     if (nrow(stuTeachDF) != nrow(mm)) {
       stop(paste0(
         "Failed consistency check for filetype ", sQuote("atg"), " country code ", sQuote(tolower(countryCode)), ". ",
-        "Please email EdSurvey.help@air.org for assistance."
+        "Please report this to https://github.com/American-Institutes-for-Research/EdSurvey/issues for assistance."
       ))
     }
     # =========================
@@ -1170,13 +1171,14 @@ getPIRLSCountryName <- function(countryCode) {
       "sau", "sco", "se3", "sgp", "svk", "svn", "swe",
       "tto", "tur", "twn",
       "usa",
-      "za5", "zaf"
+      "za5", "zaf",
+      "alb", "bra", "cnl", "jor", "mne", "srb", "uzb", "xkx", "za6"
     ),
     cntryName = c(
       "Abu Dhabi, UAE", "Buenos Aires, Argentina", "Dubai, UAE", "United Arab Emirates", "Argentina", "Australia", "Austria", "Azerbaijan",
       "Belgium (Flemish)", "Belgium (French)", "Bulgaria", "Bahrain", "Belize", "Botswana",
       "Alberta, Canada", "Canada", "British Columbia, Canada", "Chile", "Nova Scotia, Canada", "Colombia", "Ontario, Canada", "Quebec, Canada", "Cyprus", "Czech Republic",
-      "Germany", "Denmark (3rd Grade)", "Denmark",
+      "Germany", "Denmark (Grade 3)", "Denmark",
       "Andalusia, Spain", "Egypt", "Madrid, Spain", "England", "Spain",
       "Finland", "France",
       "Georgia", "Greece",
@@ -1184,16 +1186,17 @@ getPIRLSCountryName <- function(countryCode) {
       "Indonesia", "Ireland", "Iran, Islamic Rep. of", "Iceland (Grade 5)", "Iceland", "Israel", "Italy",
       "Kazakhstan", "Kuwait",
       "Lithuania", "Luxembourg", "Latvia",
-      "Morocco (6th Grade)", "Macao SAR", "Morocco", "Moldova, Republic of", "Macedonia, Rep. of", "Maltese - Malta", "Malta",
+      "Morocco (Grade 6)", "Macao SAR", "Morocco", "Moldova, Republic of", "Macedonia, Rep. of", "Maltese - Malta", "Malta",
       "Northern Ireland", "Netherlands", "Norway (Grade 4)", "Norway (Grade 5)", "Norway", "New Zealand",
       "Oman",
       "Poland", "Portugal",
       "Qatar",
-      "Moscow City, Russian Fed.", "Romania", "Russian Federation",
+      "Moscow City, Russian Federation", "Romania", "Russian Federation",
       "Saudi Arabia", "Scotland", "Sweden (Grade 3)", "Singapore", "Slovak Republic", "Slovenia", "Sweden",
       "Trinidad and Tobago", "Turkey", "Chinese Taipei",
       "United States",
-      "Eng Afr Zulu RSA (5)", "South Africa"
+      "Eng Afr Zulu RSA (Grade 5)", "South Africa",
+      "Albania", "Brazil", "Newfoundland & Labrador, Canada", "Jordan", "Montenegro", "Serbia", "Uzbekistan", "Kosovo", "South Africa (Grade 6)"
     ),
     stringsAsFactors = FALSE
   ) # be sure to not create any factors::factors not needed at all

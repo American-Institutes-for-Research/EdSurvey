@@ -6,14 +6,6 @@ options(width = 500)
 options(useFancyQuotes = FALSE)
 source("REF-3-TIMSS.R") # has REF output in it
 
-if (!exists("edsurveyHome")) {
-  if (Sys.info()[["sysname"]] == "Windows") {
-    edsurveyHome <- "C:/EdSurveyData/"
-  } else {
-    edsurveyHome <- "~/EdSurveyData/"
-  }
-}
-
 # able to toggle 'forceReread' for recaching the data if necessary
 if (!exists("forceCacheUpdate")) {
   forceCacheUpdate <- FALSE

@@ -6,7 +6,7 @@
 \usage{
 downloadPIRLS(
   root,
-  years = c(2001, 2006, 2011, 2016),
+  years = c(2001, 2006, 2011, 2016, 2021),
   cache = FALSE,
   verbose = TRUE
 )
@@ -16,7 +16,7 @@ downloadPIRLS(
 data should be stored. Files are placed in a
 subdirectory named PIRLS/[year].}
 
-\item{years}{an integer vector of the assessment years to download. Valid years are 2001, 2006, 2011, and 2016.}
+\item{years}{an integer vector of the assessment years to download. Valid years are 2001, 2006, 2011, 2016, and 2021.}
 
 \item{cache}{a logical value set to process and cache the text (.txt) version of files.
 This takes a very long time but saves time for future uses of
@@ -28,7 +28,7 @@ The default value is \code{TRUE}.}
 \description{
 Uses an Internet connection to download PIRLS data.
              Data come from \href{https://timssandpirls.bc.edu/}{timssandpirls.bc.edu} zip files. This
-             function works for 2001, 2006, 2011, and 2016 data.
+             function works for 2001, 2006, 2011, 2016, and 2021 data.
 }
 \examples{
 \dontrun{

@@ -7,13 +7,6 @@ options(useFancyQuotes = FALSE)
 
 source("REF-mixed.R")
 
-if (!exists("edsurveyHome")) {
-  if (Sys.info()[["sysname"]] == "Windows") {
-    edsurveyHome <- "C:/EdSurveyData/"
-  } else {
-    edsurveyHome <- "~/EdSurveyData/"
-  }
-}
 
 test_that("mixed.sdf", {
   usa8 <- readTIMSS(file.path(edsurveyHome, "TIMSS/2003"), countries = c("usa"), gradeLvl = 8, verbose = FALSE)
@@ -48,9 +41,7 @@ context("mixed.sdf Wald test")
 test_that("mixed.sdf Wald test", {
   cntl <- readPISA(file.path(edsurveyHome, "PISA/2012"), countries = "USA", verbose = FALSE)
   # model with one random effect
-  m1 <- mixed.sdf(math ~ st29q03 + sc14q02 + st04q01 + escs + (1 | schoolid),
-    data = cntl
-  )
+  m1 <- mixed.sdf(math ~ st29q03 + sc14q02 + st04q01 + escs + (1 | schoolid), data = cntl)
   wt <- waldTest(m1, coef = 2:4)
   expect_is(wt, "edsurveyWaldTest")
   # the estimates vary from computer to computer

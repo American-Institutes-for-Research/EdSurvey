@@ -444,7 +444,13 @@ calc.lm.sdf <- function(formula,
     }
   }
 
-  varSummary <- lapply(formulaVars, function(x) summary2(data = edf, variable = x, weightVar = NULL, dropOmittedLevels = FALSE))
+  sum2 <- function(x) {
+    res <- summary2(data = edf, variable = x, weightVar = NULL, dropOmittedLevels = FALSE)
+    res$call <- NULL
+    return(res)
+  }
+  varSummary <- lapply(formulaVars, sum2)
+
 
   # 4) deal with yvar having plausible values
   pvy <- hasPlausibleValue(yvar, sdf) # pvy is the plausible values of the y variable
