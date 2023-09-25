@@ -37,7 +37,7 @@ install.packages("EdSurvey")
 
 ## Contributions
 
-Contributions from external collaborators will be considered for inclusion in the package.
+Contributions from external collaborators will be considered for inclusion in the package. Please see [Contributing to EdSurvey](.github/CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md) for details.
 
 ## Acknowledgement 
 
