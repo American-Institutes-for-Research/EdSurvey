@@ -1,6 +1,6 @@
 # Contributing to EdSurvey
 
-This outlines how to propose a change to EdSurvey. 
+These steps outline how to propose a change to EdSurvey.
 
 ## Fixing typos
 
@@ -8,15 +8,12 @@ You can fix typos, spelling mistakes, or grammatical errors in the documentation
 
 ## Bigger changes
 
-If you want to make a bigger change, it's a good idea to first file an issue and make sure someone from the team agrees that it’s needed.
-If you’ve found a bug, please file an issue that illustrates the bug with a minimal reproducible example.
+If you want to make a bigger change, it's a good idea to first file an issue and make sure someone from the team agrees that it’s needed. If you’ve found a bug, please file an issue that illustrates the bug with a minimal reproducible example.
 
 ### Pull request process
 
-*   Fork the package and clone onto your computer. If you haven't done this before, we recommend using `usethis::create_from_github("American-Institutes-for-Research/EdSurvey_internal", fork = TRUE)`.
-
-*   Install all development dependencies with `devtools::install_dev_deps()`, and then make sure the package passes R CMD check by running `devtools::check()`. 
-    If R CMD check doesn't pass cleanly, it's a good idea to ask for help before continuing. 
+*   Fork the package and clone onto your computer. If you haven't done this before, we recommend using `usethis::create_from_github("American-Institutes-for-Research/EdSurvey", fork = TRUE)`.
+*   Install all development dependencies with `devtools::install_dev_deps()`, and then make sure the package passes R CMD check by running `devtools::check()`. If R CMD check doesn't pass cleanly, it's a good idea to ask for help before continuing. 
 *   Create a Git branch for your pull request (PR). We recommend using `usethis::pr_init("brief-description-of-change")`.
 *   Make your changes, commit to git, and then create a PR by running `usethis::pr_push()`, and following the prompts in your browser.
     The title of your PR should briefly describe the change.
