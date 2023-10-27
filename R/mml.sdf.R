@@ -241,6 +241,7 @@ mml.sdf <- function(formula,
     PSUVar = psuVar,
     weightVar = weightVar,
     fast = TRUE,
+    verbose= max(0,verbose -1),
     multiCore = multiCoreSetup$multiCore
   )
   if (returnMmlCall) {

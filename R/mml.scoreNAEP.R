@@ -78,6 +78,7 @@ getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, sco
       points <- replace(NA * c(1:12), c(1:length(points)), points) # make it length 12 filled with NAs where applicable
     } else {
       points <- NA * c(1:12)
+      scorePoints <- NA
     }
 
     # parse the value labels from the .FR2 specification

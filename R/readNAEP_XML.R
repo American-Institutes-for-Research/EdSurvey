@@ -113,9 +113,12 @@ parseNAEP_XML_ToEdSurveyFileFormat <- function(fileContents) {
 
   # normally there is just one set of weights. When there are multiple sets
   # then one starts with an "A" and is the accommodations permitted values
-  ff$Labels[grepl("weight", tolower(ff$Labels)) & grepl("replicate", tolower(ff$Labels)) & "A" != toupper(substring(ff$variableName, 1, 1))] <- "JK"
+  # for very specific files it will have an 'norigwt' or a 'vorigwt'
+  ff$Labels[grepl("weight", tolower(ff$Labels)) & grepl("replicate", tolower(ff$Labels)) & !toupper(substring(ff$variableName, 1, 1)) %in% c("A", "N", "V")] <- "JK"
   ff$Labels[grepl("weight", tolower(ff$Labels)) & grepl("replicate", tolower(ff$Labels)) & "A" == toupper(substring(ff$variableName, 1, 1))] <- "JK2"
-
+  ff$Labels[grepl("weight", tolower(ff$Labels)) & grepl("replicate", tolower(ff$Labels)) & "N" == toupper(substring(ff$variableName, 1, 1))] <- "JK-N"
+  ff$Labels[grepl("weight", tolower(ff$Labels)) & grepl("replicate", tolower(ff$Labels)) & "V" == toupper(substring(ff$variableName, 1, 1))] <- "JK-V"
+  
   # Check if there is at least one Plausible Value, and then finding their names
   tempValue <- applyPV("PV", ff$Labels, ff$pvWt, oLabels, ff$Type) # from readMRC
   ff$Labels <- tempValue[["Labels"]]
@@ -135,24 +138,25 @@ parseNAEP_XML_ToEdSurveyFileFormat <- function(fileContents) {
   ff$Type <- tempValue[["Type"]]
 
   # Check if there is at least one JK replicate.
-  if (sum(ff$Labels == "JK") > 0) {
+  if(any(grepl("^(JK|JK2|JK-N|JK-V)$", ff$Labels))) {
     # get the number of the JK replicate
-    ff$pvWt[ff$Labels == "JK"] <- as.numeric(gsub("[^\\d]+", "", oLabels[ff$Labels == "JK"], perl = TRUE))
-    ff$pvWt[ff$Labels == "JK2"] <- as.numeric(gsub("[^\\d]+", "", oLabels[ff$Labels == "JK2"], perl = TRUE))
+    ff$pvWt[ff$Labels == "JK"] <- as.numeric(gsub("[^\\d]+", "", oLabels[ff$Labels=="JK"], perl=TRUE))
+    ff$pvWt[ff$Labels == "JK2"] <- as.numeric(gsub("[^\\d]+", "", oLabels[ff$Labels=="JK2"], perl=TRUE))
+    ff$pvWt[ff$Labels == "JK-N"] <- as.numeric(gsub("[^\\d]+", "", oLabels[ff$Labels=="JK-N"], perl=TRUE))
+    ff$pvWt[ff$Labels == "JK-V"] <- as.numeric(gsub("[^\\d]+", "", oLabels[ff$Labels=="JK-V"], perl=TRUE))
   }
 
   # identify weights (tries to use new method first, then old method of )
   # the weight variable will be 'preselected' and have a 'designrole' of "W"
   varDF <- fileContents$DataFields$DataFields
-  wgtVar <- varDF$fieldname[trimws(tolower(varDF$designrole)) == "w"]
-
-  if (length(wgtVar) == 0) { # if no weight found, use the readMRC method of weight identification using variableName and Label description
-    testLbls <- tolower(ff$Labels)
-    ff$weights <- ifelse(4 * grepl("origwt", ff$variableName, ignore.case = TRUE) + grepl("wgt", ff$variableName) + grepl("student", testLbls) + grepl("weight", testLbls) + grepl("unadjusted", testLbls) + grepl("overall", testLbls) + grepl("unpoststratified", testLbls) - 5 * grepl("replicate", testLbls) >= 4, TRUE, FALSE)
-  } else {
-    ff$weights <- tolower(ff$variableName) %in% tolower(wgtVar)
+  wgtVar <- varDF$fieldname[trimws(tolower(varDF$designrole))=="w"]
+  
+  ff$weights <- grepl("^(a|n|v){0,1}(origwt)$", ff$variableName, ignore.case = TRUE) #T/F if variable is a weight
+  
+  #only do this check if the above does not locate any weights, this will be only applicable for old NAEP files
+  if (!any(ff$weights)){
+    ff$weights <- grepl("^(weight)$", ff$variableName, ignore.case = TRUE)
   }
-
   return(ff)
 }
 
@@ -236,7 +240,7 @@ parseNAEP_XML_DataFields <- function(fieldList) {
   names(classitems) <- fieldname
 
   df <- data.frame(fieldname, naepid, start, width, decimal, format, type, validn, minvalue, maxvalue,
-    mean, stddev, usage, formatname, nummiss, fieldLabel, preselect, designrole, block, item,
+    mean, stddev, usage, formatname, nummiss, fieldLabel, preselect, designrole, block, item, accnum,
     stringsAsFactors = FALSE
   )
 

@@ -175,7 +175,7 @@ df0 <- getData(sdf, varnames=colnames(sdf),
 }
 }
 \seealso{
-\code{\link{rebindAttributes}}, \code{\link{subset.edsurvey.data.frame}}
+\code{\link{rebindAttributes}}
 }
 \author{
 Tom Fink, Paul Bailey, and Ahmad Emad

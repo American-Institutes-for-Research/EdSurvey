@@ -231,18 +231,15 @@ mergev <- function(x, y,
   mat[1, 2] <- nrow(y)
   mat[1, 3] <- mat[1, 1] + mat[1, 2]
   if (inherits(x, "data.table") & inherits(y, "data.table")) {
-    mat[2, 1] <- nrow(ux <- unique(x[ , ..by.x]))
-    mat[2, 2] <- nrow(uy <- unique(y[ , ..by.y]))
-    names(ux) <- by.x
-    names(uy) <- by.x
-    mat[2, 3] <- nrow(unique(rbind(ux, uy)))
+    mat[2, 1] <- nrow(ux <- unique(as.data.frame(x[ , ..by.x])))
+    mat[2, 2] <- nrow(uy <- unique(as.data.frame(y[ , ..by.y])))
   } else {
     mat[2, 1] <- nrow(ux <- unique(as.data.frame(x)[ , by.x, drop = FALSE]))
     mat[2, 2] <- nrow(uy <- unique(as.data.frame(y)[ , by.y, drop = FALSE]))
-    names(ux) <- by.x
-    names(uy) <- by.x
-    mat[2, 3] <- nrow(as.data.frame(unique(rbind(ux, uy))))
   }
+  names(ux) <- by.x
+  names(uy) <- by.x
+  mat[2, 3] <- nrow(as.data.frame(unique(rbind(ux, uy))))
   ri <- 3
 
 

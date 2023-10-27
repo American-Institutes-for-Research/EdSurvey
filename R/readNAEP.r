@@ -133,7 +133,21 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
       base <- gsub(jksuffix[1], "", weight_temp[1])
       weights[["aorigwt"]] <- list(jkbase = base, jksuffixes = jksuffix)
     }
-  } # end if(isLTT)
+
+    if(sum("JK-N" %in% labelsFile$Labels) > 0){ #norigwt (n = national?)
+      weight_temp <-  tolower(varNames[labelsFile$Labels == "JK-N"])
+      jksuffix <- gsub("[^0-9]","", weight_temp)
+      base <- gsub(jksuffix[1],"", weight_temp[1])
+      weights[["norigwt"]] <- list(jkbase = base, jksuffixes = jksuffix)
+    }
+    if(sum("JK-V" %in% labelsFile$Labels) > 0){ #vorigwt (v = vocabulary)
+      weight_temp <-  tolower(varNames[labelsFile$Labels == "JK-V"])
+      jksuffix <- gsub("[^0-9]","", weight_temp)
+      base <- gsub(jksuffix[1],"", weight_temp[1])
+      weights[["vorigwt"]] <- list(jkbase = base, jksuffixes = jksuffix)
+    }
+
+  } #end if(isLTT)
 
   # set default weight
   if (missing(defaultWeight) || !any(defaultWeight %in% names(weights))) {
@@ -619,9 +633,12 @@ readMRC <- function(filename) {
 
   # normally there is just one set of weights. When there are multiple sets
   # then one starts with an "A" and is the accommodations permitted values
-  Labels[grepl("weight", tolower(Labels)) & grepl("replicate", tolower(Labels)) & "A" != substring(variableName, 1, 1)] <- "JK"
-  Labels[grepl("weight", tolower(Labels)) & grepl("replicate", tolower(Labels)) & "A" == substring(variableName, 1, 1)] <- "JK2"
-
+  # for very specific files it will have an 'norigwt' or a 'vorigwt'
+  Labels[grepl("weight", tolower(Labels)) & grepl("replicate", tolower(Labels)) & !toupper(substring(variableName, 1, 1)) %in% c("A", "N", "V")] <- "JK"
+  Labels[grepl("weight", tolower(Labels)) & grepl("replicate", tolower(Labels)) & "A" == toupper(substring(variableName, 1, 1))] <- "JK2"
+  Labels[grepl("weight", tolower(Labels)) & grepl("replicate", tolower(Labels)) & "N" == toupper(substring(variableName, 1, 1))] <- "JK-N"
+  Labels[grepl("weight", tolower(Labels)) & grepl("replicate", tolower(Labels)) & "V" == toupper(substring(variableName, 1, 1))] <- "JK-V"
+  
   pvWt <- character(length(mrcFile)) # the number of the PV (e.g. for a subject or subscale with five PVs this would show values from 1 to 5 for five variables)
   Type <- character(length(mrcFile)) # this is the subject or subscale
 
@@ -644,15 +661,23 @@ readMRC <- function(filename) {
   Type <- tempValue[["Type"]]
   # Check if there is at least one JK replicate.
 
-  if (sum(Labels == "JK") > 0) {
+  if(any(grepl("^(JK|JK2|JK-N|JK-V)$", Labels))) {
     # get the number of the JK replicate
-    pvWt[Labels == "JK"] <- as.numeric(gsub("[^\\d]+", "", oLabels[Labels == "JK"], perl = TRUE))
-    pvWt[Labels == "JK2"] <- as.numeric(gsub("[^\\d]+", "", oLabels[Labels == "JK2"], perl = TRUE))
+    pvWt[Labels == "JK"] <- as.numeric(gsub("[^\\d]+", "", oLabels[Labels=="JK"], perl=TRUE))
+    pvWt[Labels == "JK2"] <- as.numeric(gsub("[^\\d]+", "", oLabels[Labels=="JK2"], perl=TRUE))
+    pvWt[Labels == "JK-N"] <- as.numeric(gsub("[^\\d]+", "", oLabels[Labels=="JK-N"], perl=TRUE))
+    pvWt[Labels == "JK-V"] <- as.numeric(gsub("[^\\d]+", "", oLabels[Labels=="JK-V"], perl=TRUE))
   }
 
   # identify weights
   labels <- tolower(Labels)
-  weights <- ifelse(4 * grepl("origwt", variableName, ignore.case = TRUE) + grepl("wgt", variableName) + grepl("student", labels) + grepl("weight", labels) + grepl("unadjusted", labels) + grepl("overall", labels) + grepl("unpoststratified", labels) - 5 * grepl("replicate", labels) >= 4, TRUE, FALSE)
+  weights <- grepl("^(a|n|v){0,1}(origwt)$", variableName, ignore.case = TRUE) #T/F if variable is a weight
+
+  #only do this check if the above does not locate any weights, this will be only applicable for old NAEP files
+  if (!any(weights)){
+    weights <- grepl("^(weight)$", variableName, ignore.case = TRUE)
+  }
+  
   # For now, assume all variables are characters.
   dataType <- rep("character", length(mrcFile))
   # Create appropriate data type for variables.

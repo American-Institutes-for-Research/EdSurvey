@@ -5,7 +5,6 @@ require(EdSurvey)
 options(width = 500)
 options(useFancyQuotes = FALSE)
 
-
 source("REF-11-NHES.R") # has REF output in it
 
 if (!dir.exists(edsurveyHome)) {

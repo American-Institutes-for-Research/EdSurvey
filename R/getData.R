@@ -81,7 +81,7 @@
 #' variables. When \code{addAttributes} is \code{TRUE}, \code{getData} returns a
 #' \code{light.edsurvey.data.frame}.
 #'
-#' @seealso \code{\link{rebindAttributes}}, \code{\link{subset.edsurvey.data.frame}}
+#' @seealso \code{\link{rebindAttributes}}
 #'
 #' @author Tom Fink, Paul Bailey, and Ahmad Emad
 #' @example man\examples\getData.R

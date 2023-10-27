@@ -13,7 +13,16 @@
     <loc>/authors.html</loc>
   </url>
   <url>
+    <loc>/CODE_OF_CONDUCT.html</loc>
+  </url>
+  <url>
+    <loc>/CONTRIBUTING.html</loc>
+  </url>
+  <url>
     <loc>/index.html</loc>
+  </url>
+  <url>
+    <loc>/LICENSE.html</loc>
   </url>
   <url>
     <loc>/reference/achievementLevels.html</loc>
@@ -22,7 +31,7 @@
     <loc>/reference/as.data.frame.html</loc>
   </url>
   <url>
-    <loc>/reference/bind-methods.html</loc>
+    <loc>/reference/cbind.light.edsurvey.data.frame.html</loc>
   </url>
   <url>
     <loc>/reference/checkIdVar.html</loc>
@@ -281,9 +290,6 @@
   </url>
   <url>
     <loc>/reference/showWeights.html</loc>
-  </url>
-  <url>
-    <loc>/reference/subset.html</loc>
   </url>
   <url>
     <loc>/reference/suggestWeights.html</loc>

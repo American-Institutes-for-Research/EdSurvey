@@ -1,15 +1,20 @@
 \name{NEWS}
 \title{NEWS for EdSurvey}
 
-\section{Changes in version 4.0.3}{
+\section{Changes in version 4.0.4}{
   \subsection{UPDATES}{
     \itemize{
+      \item upated to pass CRAN checks, \code{cbind} and \code{rbind} are nolonger explicitly exported. Apparently this changed in R 4.0.0 and we were behind the times. The load message is not shorter because we do not export these functions.
+      \item similarly \code{subset} is nolonger exported but is instead implemented. Becuase of that there is no documentation for it now, but it works as the original \code{subset} works and adds an \code{inside} argument that prevents \code{substitute} from being called on the \code{subset} argument as recomended in Advanced R (Wickham, 2014).
+      \item 
       \item `downloadPIRLS` and `readPIRLS` were updated to include PIRLS 2021 data
       \item updated subscale mappings for TIMSS to allow for four-character subscale names to be used with \code{mml.sdf} for all subscales across grade, subject, and year
       \item exported \code{readHSTS}
     }
+  }
   \subsection{BUG FIXES}{
     \itemize{
+      \item \code{readNAEP} used to read in a non-existant weight named \code{weight} in rare instances. This is now fixed.
       \item fixed bug where \code{mml.sdf} produced an error if there were not polytomous items associated with the subscale.
     }
   }
@@ -404,7 +409,7 @@
     \itemize{
       \item Added \code{logit.sdf} and \code{probit.sdf} functions with support
             for survey item responses.
-      \item Added \code{gap} code{gap} that compares the average, percentile, achievement level, or percentage of survey responses between two groups that potentially share members.
+      \item Added \code{gap} that compares the average, percentile, achievement level, or percentage of survey responses between two groups that potentially share members.
       \item Added \code{percentile} that calculates the percentiles of a numeric variable.
       \item Added \code{showCodebook} that retrieves variable names, variable labels, and value labels for an \code{edsurvey.data.frame}, \code{light.edsurvey.data.frame}, or \code{edsurvey.data.frame.list}.
     }

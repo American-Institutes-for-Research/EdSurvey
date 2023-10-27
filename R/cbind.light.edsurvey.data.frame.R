@@ -17,45 +17,38 @@
 #'
 #' @seealso \ifelse{latex}{\code{cbind}}{\code{\link[base:cbind]{cbind}}}
 #' @author Trang Nguyen, Michael Lee, and Paul Bailey
-#' @rdname bind-methods
+#' @method cbind light.edsurvey.data.frame
 #' @export
-setGeneric("cbind",
-  signature = "...",
-  def = function(..., deparse.level = 1) {
-    args <- list(...)
-    atrs <- NULL
-    if (all(sapply(args, function(x) {
-      !inherits(x, "light.edsurvey.data.frame")
-    }))) {
-      return(do.call(base::cbind, c(args, list(deparse.level = deparse.level))))
-    }
-
-    for (x in list(...)) {
-      if (inherits(x, "light.edsurvey.data.frame")) {
-        atrs <- names(attributes(x))
-        atrs <- atrs[!atrs %in% c("names", "row.names", "class")]
-        atrslist <- attributes(x)
-        break # only use attributes of the first light.edsurvey.data.frame
-      }
-    }
-
-    if (!is.null(atrs)) {
-      res <- data.frame(...)
-      lapply(atrs, function(z) {
-        # make a temporary copy of res
-        dat <- get("res")
-        # add the attribute to the temporary copy
-        attr(dat, z) <- atrslist[[z]]
-        # then make res (in the environment of the function) be the temporary
-        # copy that now has this attribute
-        res <<- dat
-      })
-      if (inherits(res, "data.frame")) {
-        class(res) <- class(x)
-      }
-    } else {
-      res <- base::cbind(..., deparse.level = deparse.level)
-    }
-    res
+cbind.light.edsurvey.data.frame <- function(..., deparse.level=1) {
+  args <- list(...)
+  atrs <- NULL
+  if (all(sapply(args, function(x) { !inherits(x, "light.edsurvey.data.frame") }))) {
+    return(do.call(base::cbind, c(args, list(deparse.level = deparse.level))))
   }
-)
+  for (x in list(...)) {
+    if (inherits(x, "light.edsurvey.data.frame")) {
+      atrs <- names(attributes(x))
+      atrs <- atrs[!atrs %in% c("names", "row.names", "class")]
+      atrslist <- attributes(x)
+      break # only use attributes of the first light.edsurvey.data.frame
+    }
+  }
+  if (!is.null(atrs)) {
+    res <- data.frame(...)
+    lapply(atrs, function(z) {
+      # make a temporary copy of res
+      dat <- get("res")
+      # add the attribute to the temporary copy
+      attr(dat, z) <- atrslist[[z]]
+      # then make res (in the environment of the function) be the temporary
+      # copy that now has this attribute
+      res <<- dat
+    })
+    if (inherits(res, "data.frame")) {
+      class(res) <- class(x)
+    }
+  } else {
+    res <- base::cbind(..., deparse.level = deparse.level)
+  }
+  res
+}

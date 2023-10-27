@@ -350,6 +350,7 @@ SD <- function(data,
   if (missing(weightVar)) {
     weightVar <- attributes(getAttributes(data, "weights"))$default
   }
+
   gg <- getData(
     varnames = c(variable, weightVar), data = data, dropOmittedLevels = dropOmittedLevels,
     recode = recode, defaultConditions = defaultConditions

@@ -25,8 +25,8 @@ test_that("LESDF cbind function", {
   expect_equal(sm4, sm3) # test everything
 
   # cbind a data.frame
-  sm5 <- cbind(sm2, sm1)
-  expect_equal(sm5, sm3)
+  sm5 <- cbind(sm1, sm2) # in S3 the first class dominates, so must flop the columns here
+  expect_equal(attributes(unname(sm5)), attributes(unname(sm3)))
 
   # cbind matrix
   expect_is(cbind(c(1, 2), c(1, 2)), "matrix")

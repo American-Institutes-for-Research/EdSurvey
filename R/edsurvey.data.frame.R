@@ -418,36 +418,7 @@ dataListItem <- function(lafObject,
 
 
 
-#' @name subset
-#' @title EdSurvey Subset
-#' @aliases subset.edsurvey.data.frame.list subset.light.edsurvey.data.frame
-#'
-#' @description Subsets an \code{edsurvey.data.frame}, an \code{edsurvey.data.frame.list},
-#' or a \code{light.edsurvey.data.frame}.
-#'
-#' @param x an \code{edsurvey.data.frame}, an \code{edsurvey.data.frame.list},
-#'          or a \code{light.edsurvey.data.frame}
-#' @param subset a logical expression indicating elements or rows to keep
-#' @param inside set to \code{TRUE} to prevent the \code{substitute} condition
-#'               from being called on it (see Details)
-#' @param ... not used; included only for compatibility
-#' @details Any variables defined on condition that are not references
-#' to column names on the
-#' \code{edsurvey.data.frame} and are part of the environment where
-#' \code{subset.edsurvey.data.frame} was called will be evaluated
-#' in the environment from which \code{subset.edsurvey.data.frame} was called.
-#' Similar to the difficulty of using subset within a function call because of
-#' the call to substitute on condition,
-#' this function is difficult to use (with \code{inside} set to the default value of
-#' \code{FALSE}) inside another function call.
-#' See Examples for how to call this function from within another function.
-#'
-#' @return an object of the same class as \code{x}
-#' @references
-#' Wickham, H. (2014). \emph{Advanced R}. Boca Raton, FL: Chapman & Hall/CRC.
-#'
 #' @author Paul Bailey and Trang Nguyen
-#' @example man\examples\subset.edsurvey.data.frame.R
 #' @method subset edsurvey.data.frame
 #' @export
 subset.edsurvey.data.frame <- function(x, subset, ..., inside = FALSE) {
