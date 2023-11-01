@@ -1,6 +1,14 @@
 \name{NEWS}
 \title{NEWS for EdSurvey}
 
+\section{Changes in version 4.0.5}{
+  \subsection{UPDATES}{
+    \itemize{
+      \item allow Matrix 1-5-4.1 after testing to allower older R versions on Mac OS.
+    }
+  }
+}
+
 \section{Changes in version 4.0.4}{
   \subsection{UPDATES}{
     \itemize{

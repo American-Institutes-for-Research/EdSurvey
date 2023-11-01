@@ -1,6 +1,6 @@
 Package: EdSurvey
-Version: 4.0.4
-Date: 2023-10-24
+Version: 4.0.5
+Date: 2023-10-31
 Title: Analysis of NCES Education Survey and Assessment Data
 Authors@R: c(
         person("Paul","Bailey",,"pbailey@air.org",role=c("aut","cre"), 
@@ -35,7 +35,7 @@ Maintainer: Paul Bailey <pbailey@air.org>
 Depends: R (>= 4.0.0), car (>= 3.1-2), lfactors (>= 1.0.3), Dire (>=
         2.2.0)
 Imports: data.table (>= 1.11.4), Formula, glm2, haven (>= 2.2.0), LaF
-        (>= 0.8.4), lifecycle, lme4, MASS, Matrix (>= 1.6-1.1),
+        (>= 0.8.4), lifecycle, lme4, MASS, Matrix (>= 1.5-4.1),
         methods, NAEPprimer (>= 1.0.1), quantreg, readxl, tibble, wCorr
         (>= 1.9.8), NAEPirtparams (>= 1.0.0), WeMix (>= 4.0.0), xtable,
         xml2
@@ -53,7 +53,7 @@ Note: This publication was prepared for NCES under Contract No.
         does not imply endorsement by the U.S. Government.
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2023-10-26 23:19:09 UTC; pbailey
+Packaged: 2023-11-01 15:38:14 UTC; pbailey
 Author: Paul Bailey [aut, cre] (<https://orcid.org/0000-0003-0989-8729>),
   Ahmad Emad [aut],
   Huade Huo [aut] (<https://orcid.org/0009-0004-5014-646X>),
