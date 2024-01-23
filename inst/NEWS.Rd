@@ -5,6 +5,7 @@
   \subsection{UPDATES}{
     \itemize{
       \item allow Matrix 1-5-4.1 after testing to allower older R versions on Mac OS.
+      \item reduce complexity of mergev without changing functionality
     }
   }
 }
