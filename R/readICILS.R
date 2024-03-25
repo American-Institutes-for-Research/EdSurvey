@@ -694,7 +694,22 @@ getICILSCountryName <- function(countryCode) {
       "svk", "svn",
       "tha", "tur",
       "fin", "fra", "ita", "kaz", "lux", "prt",
-      "usa", "ury", "rmo", "dnw", "dew"
+      "usa", "ury", "rmo", "dnw", "dew",
+      
+      # New in 2023
+      "aut","aze", 
+      "bfl","bih", 
+      "cyp", 
+      "esp", 
+      "grc", 
+      "hun", 
+      "lva", 
+      "mlt", 
+      "omn", 
+      "rou", 
+      "srb","swe", 
+      "twn", 
+      "xkx" 
     ),
     cntryName = c(
       "Buenos Aires, Argentina", "Australia",
@@ -709,7 +724,22 @@ getICILSCountryName <- function(countryCode) {
       "Slovak Republic", "Slovenia",
       "Thailand", "Turkey",
       "Finland", "France", "Italy", "Kazakhstan", "Luxembourg", "Portugal",
-      "United States", "Uruguay", "Moscow (Russian Federation)", "North Rhine-Westphalia (Germany)", "Germany - DEU and NRW"
+      "United States", "Uruguay", "Moscow (Russian Federation)", "North Rhine-Westphalia (Germany)", "Germany - DEU and NRW",
+      
+      # New in 2023
+      "Austria", "Azerbaijan", 
+      "Belgium (Flanders)", "Bosnia and Herzegovina", 
+      "Cyprus", 
+      "Spain", 
+      "Greece", 
+      "Hungary", 
+      "Latvia", 
+      "Malta", 
+      "Oman", 
+      "Romania", 
+      "Serbia", "Sweden", 
+      "Taiwan", 
+      "Kosovo"
     ),
     stringsAsFactors = FALSE
   ) # be sure to not create any factors not needed at all
