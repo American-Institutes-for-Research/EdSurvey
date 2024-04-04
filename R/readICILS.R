@@ -38,7 +38,7 @@
 #' \code{edsurvey.data.frame.list} if multiple countries specified
 #'
 #' @seealso \code{\link{readNAEP}}, \code{\link{readTIMSS}}, and \code{\link{getData}}
-#' @author Tom Fink and Jeppe Bundsgaard (updated for 2018)
+#' @author Tom Fink and Jeppe Bundsgaard (updated for 2018 and 2023)
 #'
 #' @example man/examples/readICILS.R
 #'
@@ -397,7 +397,7 @@ convertICILSYearCode <- function(yrCode) {
   return(yrTest)
 }
 
-# contributor: Jeppe Bundsgaard: updates for ICILS 2018
+# contributor: Jeppe Bundsgaard: updates for ICILS 2018 and 2023
 getICILSYearCodes <- function() {
   # retrieve the ICILS years based on their filenaming structure
 
@@ -679,7 +679,7 @@ exportICILSToCSV <- function(folderPath, exportPath, cntryCodes, dataSet, ...) {
 # get the full country name to aide the user, so they won't have to track them down.
 # cntryCode should be the 3 character country code vector defined in the data filename scheme (e.g., usa = United States, swe = Sweden)
 # if a match is not found, this funtion will return a character value indicating it is unknown '(unknown) CountryCode: xxx'
-# contributor: Jeppe Bundsgaard: updates for ICILS 2018
+# contributor: Jeppe Bundsgaard: updates for ICILS 2018 and 2023
 getICILSCountryName <- function(countryCode) {
   cntryCodeDF <- data.frame(
     cntryCode = c(
