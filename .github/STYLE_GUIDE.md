@@ -2,7 +2,7 @@
 
 This style guide emphasis writing R code that other programmers can edit. 
 
-##General
+## General
 
 - When coding, emphasize accessibility for readers over brevity, trendiness, and speed. Given our work environment, even if you are working alone on a project, someone else should be able to take over your code. You may be surprised how often you return to your own code to discover you feel like a different person than the person who wrote it. 
   - Inline comments should, at a minimum give a general outline of what is going on.
@@ -16,7 +16,7 @@ This style guide emphasis writing R code that other programmers can edit.
     - When that object has a list, each element of that list is described with details similar to if it was the only thing being returned.
     - When the function returns nothing (e.g. a print function) this section can be omitted.
 
-##The five types of functions their placement in code
+## The five types of functions their placement in code
 
 1. Main exported functions. These are the functions that people use the package to get access to (e.g. `lm.sdf`). Put these in a .R file named [functionname].R
 2. Helper exported functions. These are functions that make the main functions work (e.g. `print.lm.sdf`). These are placed in [functionname]Helpers.R or [functionname].R at the programmers discretion.
@@ -24,12 +24,14 @@ This style guide emphasis writing R code that other programmers can edit.
 4. Functions similar to those in 2 except that the functions are used by multiple functions. These are treated similar to main functions. functions of this type should include documentation.
 5. R S3/S4 OO calls, e.g. calls to setMethod. These are either placed in functionname.R or all.R or zzz.R when required to do so by CRAN/the compiler or when it is not clear which file they should go in.
 
-##Variables:
+## Variables
+
 - All function names and arguments are in camel case (`likeThis`) 
   - However function names use dots when required to do so by the R specification (e.g. `print.objectName`)
 - Inside functions, shorter variable names can be used but the logic should be explained when not immediately apparent (e.g. # `od` is short for "original data")
 
-##Type setting: 
+## Type setting
+
 - Indenting is accomplished with two spaces
 - Opening a function call or conditional leads to an increase of one level indenting
 - If/else statements always use curly braces, e.g., {}, and appear on multiple lines
@@ -42,7 +44,8 @@ if(foo) {
 }
 ```
 
-##Details
+## Details
+
 - Use `TRUE/FALSE` in preference to `T/F` because `T` and `F` can be redefined and yield surprising results.
 - Avoid using other packages when a minor bit of functionality is required. This decreases issues due to others functions having surprising changes in their API that cause our package to malfunction.
 - All long conditionals should indicate, when closed, what statement is being closed e.g.
