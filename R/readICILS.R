@@ -38,7 +38,7 @@
 #' \code{edsurvey.data.frame.list} if multiple countries specified
 #'
 #' @seealso \code{\link{readNAEP}}, \code{\link{readTIMSS}}, and \code{\link{getData}}
-#' @author Tom Fink and Jeppe Bundsgaard (updated for 2018)
+#' @author Tom Fink and Jeppe Bundsgaard (updated for 2018 and 2023)
 #'
 #' @example man/examples/readICILS.R
 #'
@@ -339,7 +339,8 @@ readICILS <- function(path,
         "LOGICALLY NOT APPLICABLE", "MISSING", "NOT ADMINISTERED/MISSING BY DESIGN",
         "PRESENTED BUT NOT ANSWERED/INVALID", "NOT REACHED", "NOT APPLICABLE", "NOT STATED",
         "NOT ADMINISTERED OR MISSING BY DESIGN", "PRESENTED BUT NOT ANSWERED OR INVALID",
-        "(Missing)"
+        "(Missing)",
+        "NOT ADMINISTERED/NOT SCORED/SCORE OUT OF RANGE"
       )
 
       processedData$survey <- "ICILS"
@@ -392,16 +393,17 @@ convertICILSYearCode <- function(yrCode) {
   yrTest <- tolower(sort(unique(yrCode)))
   yrTest[yrTest %in% "i1"] <- 2013
   yrTest[yrTest %in% "i2"] <- 2018
-
+  yrTest[yrTest %in% "i3"] <- 2023
+  
   return(yrTest)
 }
 
-# contributor: Jeppe Bundsgaard: updates for ICILS 2018
+# contributor: Jeppe Bundsgaard: updates for ICILS 2018 and 2023
 getICILSYearCodes <- function() {
   # retrieve the ICILS years based on their filenaming structure
 
-  yrVals <- c("i1", "i2")
-  names(yrVals) <- c(2013, 2018)
+  yrVals <- c("i1", "i2", "i3")
+  names(yrVals) <- c(2013, 2018, 2023)
 
   return(yrVals)
 }
@@ -678,7 +680,7 @@ exportICILSToCSV <- function(folderPath, exportPath, cntryCodes, dataSet, ...) {
 # get the full country name to aide the user, so they won't have to track them down.
 # cntryCode should be the 3 character country code vector defined in the data filename scheme (e.g., usa = United States, swe = Sweden)
 # if a match is not found, this funtion will return a character value indicating it is unknown '(unknown) CountryCode: xxx'
-# contributor: Jeppe Bundsgaard: updates for ICILS 2018
+# contributor: Jeppe Bundsgaard: updates for ICILS 2018 and 2023
 getICILSCountryName <- function(countryCode) {
   cntryCodeDF <- data.frame(
     cntryCode = c(
@@ -694,7 +696,22 @@ getICILSCountryName <- function(countryCode) {
       "svk", "svn",
       "tha", "tur",
       "fin", "fra", "ita", "kaz", "lux", "prt",
-      "usa", "ury", "rmo", "dnw", "dew"
+      "usa", "ury", "rmo", "dnw", "dew",
+      
+      # New in 2023
+      "aut","aze", 
+      "bfl","bih", 
+      "cyp", 
+      "esp", 
+      "grc", 
+      "hun", 
+      "lva", 
+      "mlt", 
+      "omn", 
+      "rou", 
+      "srb","swe", 
+      "twn", 
+      "xkx" 
     ),
     cntryName = c(
       "Buenos Aires, Argentina", "Australia",
@@ -709,7 +726,22 @@ getICILSCountryName <- function(countryCode) {
       "Slovak Republic", "Slovenia",
       "Thailand", "Turkey",
       "Finland", "France", "Italy", "Kazakhstan", "Luxembourg", "Portugal",
-      "United States", "Uruguay", "Moscow (Russian Federation)", "North Rhine-Westphalia (Germany)", "Germany - DEU and NRW"
+      "United States", "Uruguay", "Moscow (Russian Federation)", "North Rhine-Westphalia (Germany)", "Germany - DEU and NRW",
+      
+      # New in 2023
+      "Austria", "Azerbaijan", 
+      "Belgium (Flanders)", "Bosnia and Herzegovina", 
+      "Cyprus", 
+      "Spain", 
+      "Greece", 
+      "Hungary", 
+      "Latvia", 
+      "Malta", 
+      "Oman", 
+      "Romania", 
+      "Serbia", "Sweden", 
+      "Taiwan", 
+      "Kosovo"
     ),
     stringsAsFactors = FALSE
   ) # be sure to not create any factors not needed at all
