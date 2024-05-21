@@ -127,14 +127,14 @@ searchSDF <- function(string, data, fileFormat = NULL, levels = FALSE) {
     }
     # remove duplicates such as linking variables
     varsData <- varsData[!duplicated(varsData$variableName), ]
-    for (i in 1:length(varsData$variableName)) {
+    for (i in seq_along(varsData$variableName)) {
       # return levels of each of the variables; involves splitting and appending levels from the
       # fileFormat file. Note that some variable don't have levels and are read in as ''
       if (varsData$labelValues[[i]] != "") {
         levelsInfo <- levelsSDF(varsData$variableName[[i]], sdf)[[varsData$variableName[[i]]]]
         varLevels <- paste0(levelsInfo$level, ". ", levelsInfo$labels)
         varLevelsSplit <- c()
-        for (ii in 1:length(varLevels)) {
+        for (ii in seq_along(varLevels)) {
           x <- varLevels[[ii]]
           varLevelsSplit <- c(varLevelsSplit, x)
         }
@@ -143,7 +143,7 @@ searchSDF <- function(string, data, fileFormat = NULL, levels = FALSE) {
       } else {
         varsData$Levels[[i]] <- paste0(NA)
       }
-    } # end for (i in 1:length(varsData$variableName))
+    } # end for (i in seq_along(varsData$variableName))
     varsData <- varsData[ , c("variableName", "Labels", "Levels", "fileFormat")]
     class(varsData) <- c("searchSDF", "data.frame")
   } else { # end if (levels == TRUE)
@@ -166,7 +166,7 @@ print.searchSDF <- function(x, ...) {
   cols <- colnames(x)
   if ("Levels" %in% cols) {
     x[] <- lapply(x, as.character)
-    for (i in 1:length(unique(x$variableName))) {
+    for (i in seq_along(unique(x$variableName))) {
       # loop print function over each unique variable returned in searchSDF
       cat(paste("Variable: ", tolower(x[i, "variableName"]), "\n", sep = "")) # paste the variable name
       cat(paste("Label: ", x[i, "Labels"], "\n", sep = "")) # paste the label name
@@ -175,7 +175,7 @@ print.searchSDF <- function(x, ...) {
       } else {
         cat(paste("Levels (Lowest level first):\n ", sep = ""))
         labs <- lapply(x$Levels, strsplit, split = ";")
-        for (ii in 1:length(labs[[i]][[1]])) {
+        for (ii in seq_along(labs[[i]][[1]])) {
           # for each unique level, paste the level number and name
           cat(paste("    ", labs[[i]][[1]][ii], "\n", sep = ""))
         }

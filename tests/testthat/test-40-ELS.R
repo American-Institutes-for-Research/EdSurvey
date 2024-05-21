@@ -31,20 +31,20 @@ test_that("ELS data reads in correctly", {
 
 context("ELS getData")
 test_that("ELS getData", {
-  withr::with_options(list(digits = 4), dat1 <- getData(els, c("stu_id", "bysex", "byrace"))) # digits=4 impacts rounding in summary call
+  withr::with_options(list(digits = 4), dat1 <- EdSurvey::getData(els, c("stu_id", "bysex", "byrace"))) # digits=4 impacts rounding in summary call
   expect_equal(dim(dat1), c(15244, 3))
   withr::with_options(list(digits = 4), co <- capture.output(summary(dat1)))
   # ignore median
   expect_equal(co[-4], dat1Summary.Ref[-4])
 
   # test ELS School variables
-  withr::with_options(list(digits = 4), dat2 <- getData(elsSchl, c("sch_id", "byregion", "byurban"), dropOmittedLevels = FALSE)) # digits=4 impacts rounding in summary call
+  withr::with_options(list(digits = 4), dat2 <- EdSurvey::getData(elsSchl, c("sch_id", "byregion", "byurban"), dropOmittedLevels = FALSE)) # digits=4 impacts rounding in summary call
   expect_equal(dim(dat2), c(1954, 3))
   withr::with_options(list(digits = 4), co <- capture.output(summary(dat2)))
   expect_equal(co[-4], dat2Summary.Ref[-4])
 
   # test with some continuous variables that have dropOmittedLevels
-  withr::with_options(list(digits = 7), dat3 <- getData(els, c("stu_id", "f1ses1", "f1ses1qu", "f1ses2", "f1ses2qu"))) # digits=4 impacts rounding in summary call
+  withr::with_options(list(digits = 7), dat3 <- EdSurvey::getData(els, c("stu_id", "f1ses1", "f1ses1qu", "f1ses2", "f1ses2qu"))) # digits=4 impacts rounding in summary call
   expect_equal(dim(dat3), c(16160, 5))
   withr::with_options(list(digits = 7), co <- capture.output(summary(dat3)))
   expect_equal(co[-4], dat3Summary.Ref[-4])

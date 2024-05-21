@@ -43,14 +43,20 @@ coef.mml.sdf <- function(object, ...) {
 
 #' @method print mml.sdf
 #' @export
-print.mml.sdf <- function(x, ...) {
+print.mml.sdf <- function(x, use_es_round=getOption("EdSurvey_round_output"), ...) {
+  if(use_es_round) {
+    x <- es_round(x)
+  }
   co <- coef(x)
   print(co, ...)
 }
 
 #' @method print summary.mml.sdf
 #' @export
-print.summary.mml.sdf <- function(x, ...) {
+print.summary.mml.sdf <- function(x, use_es_round=getOption("EdSurvey_round_output"), ...) {
+  if(use_es_round) {
+    x <- es_round(x)
+  }
   cat(paste0("Call:\n"))
   print(x$Call)
   cat(paste0("Summary Call:\n"))

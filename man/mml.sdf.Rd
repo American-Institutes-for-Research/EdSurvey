@@ -94,7 +94,7 @@ an incorrect response, an NA does not change the student's score, and 1 is corre
 \dontrun{
 ## Direct Estimation with NAEP 
 # Load data 
-sdfNAEP <- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
+sdfNAEP <- readNAEP(path=system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
 
 # Inspect scoring guidelines
 defaultNAEPScoreCard()
@@ -110,7 +110,7 @@ defaultNAEPScoreCard()
 # 7     Off Task         0          0
 
 # Run NAEP model, warnings are about item codings
-mmlNAEP <- mml.sdf(algebra ~ dsex + b013801, sdfNAEP, weightVar='origwt')
+mmlNAEP <- mml.sdf(formula=algebra ~ dsex + b013801, data=sdfNAEP, weightVar='origwt')
 
 # Call with Taylor
 summary(mmlNAEP, varType="Taylor", strataVar="repgrp1", PSUVar="jkunit")
@@ -118,10 +118,10 @@ summary(mmlNAEP, varType="Taylor", strataVar="repgrp1", PSUVar="jkunit")
 ## Direct Estimation with TIMSS 
 # Load data 
 downloadTIMSS("~/", year=2015)
-sdfTIMSS <- readTIMSS("~/TIMSS/2015", countries="usa", grade = "4")
+sdfTIMSS <- readTIMSS(path="~/TIMSS/2015", countries="usa", grade = "4")
 
 # Run TIMSS model, warnings are about item codings 
-mmlTIMSS <- mml.sdf(mmat ~ itsex + asbg04, sdfTIMSS, weightVar='totwgt')
+mmlTIMSS <- mml.sdf(formula=mmat ~ itsex + asbg04, data=sdfTIMSS, weightVar='totwgt')
 
 # Call with Taylor
 summary(mmlTIMSS, varType="Taylor", strataVar="jkzone", PSUVar="jkrep")

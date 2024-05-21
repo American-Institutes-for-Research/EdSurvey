@@ -302,7 +302,7 @@ processCountryPIAAC <- function(filepath, countryCode, ff, forceRead, verbose) {
       names(replv) <- sapply(repl, function(x) {
         x[1]
       })
-      for (replvi in 1:length(replv)) {
+      for (replvi in seq_along(replv)) {
         dat[[ci]] <- gsub(pattern = names(replv)[replvi], replacement = replv[replvi], x = dat[[ci]])
       }
     }

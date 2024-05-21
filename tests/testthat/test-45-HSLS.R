@@ -31,19 +31,19 @@ test_that("HSLS data reads in correctly", {
 
 context("HSLS getData")
 test_that("HSLS getData", {
-  withr::with_options(list(digits = 4), dat1 <- getData(hsls, c("stu_id", "x1sex", "x1race")))
+  withr::with_options(list(digits = 4), dat1 <- EdSurvey::getData(hsls, c("stu_id", "x1sex", "x1race")))
   expect_equal(dim(dat1), c(22496, 3))
   withr::with_options(list(digits = 7), co <- capture.output(summary(dat1)))
   expect_equal(co[-4], dat1Summary.Ref[-4]) # medians may agree and round differently, ignore them
 
   # test HSLS School variables
-  withr::with_options(list(digits = 4), dat2 <- getData(hslsSchl, c("sch_id", "x1region", "x1locale"), dropOmittedLevels = FALSE))
+  withr::with_options(list(digits = 4), dat2 <- EdSurvey::getData(hslsSchl, c("sch_id", "x1region", "x1locale"), dropOmittedLevels = FALSE))
   expect_equal(dim(dat2), c(944, 3))
   withr::with_options(list(digits = 7), co <- capture.output(summary(dat2)))
   expect_equal(co, dat2Summary.Ref)
 
   # test with some continuous variables that have dropOmittedLevels
-  withr::with_options(list(digits = 4), dat3 <- getData(hsls, c("stu_id", "x1ses", "x2ses")))
+  withr::with_options(list(digits = 4), dat3 <- EdSurvey::getData(hsls, c("stu_id", "x1ses", "x2ses")))
   expect_equal(dim(dat3), c(18948, 3))
   withr::with_options(list(digits = 7), co <- capture.output(summary(dat3)))
   expect_equal(co[-4], dat3Summary.Ref[-4])

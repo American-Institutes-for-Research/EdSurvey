@@ -30,7 +30,7 @@ subset.edsurvey.data.frame.list <- function(x, subset, inside = FALSE, drop = FA
 
   res <- x
   subsetVars <- all.vars(subset_call)
-  res$datalist <- lapply(1:length(x$datalist), function(dataListi) {
+  res$datalist <- lapply(seq_along(x$datalist), function(dataListi) {
     dataList_li <- x$datalist[[dataListi]]
     # check whether the variable exists the edsurvey.data.frame
     for (dataList_v in subsetVars) {

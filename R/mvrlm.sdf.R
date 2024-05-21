@@ -234,7 +234,7 @@ calc.mvrlm.sdf <- function(formula,
   # 3) deal with relevels.
   # An argument that allows the user to change the omitted level for a factor variable
   if (length(relevels) > 0) {
-    for (i in 1:length(relevels)) {
+    for (i in seq_along(relevels)) {
       vari <- names(relevels)[i]
       if (!vari %in% names(edf)) {
         stop(paste0(
@@ -263,7 +263,7 @@ calc.mvrlm.sdf <- function(formula,
         ))
       } # End of if statment !relevels[[i]] %in% lvls
       edf[ , vari] <- relevel(edf[ , vari], ref = relevels[[i]])
-    } # end for(i in 1:length(relevels))
+    } # end for(i in seq_along(relevels))
   } # end if(length(relevels) > 0)
 
   #################
@@ -293,7 +293,7 @@ calc.mvrlm.sdf <- function(formula,
   # add PVs to list of Y vars if there are any PVs
   if (sum(pvy) > 0) {
     npv <- length(getPlausibleValue(yvar[pvy][1], sdf))
-    for (i in 1:length(pvy)) {
+    for (i in seq_along(pvy)) {
       if (pvy[i]) {
         yvars[[i]] <- getPlausibleValue(yvar[[i]], sdf)
       } else {
@@ -534,7 +534,7 @@ calc.mvrlm.sdf <- function(formula,
 
       r2s[pvi, ] <- unlist(R2)
 
-      for (jki in 1:length(wgtl$jksuffixes)) {
+      for (jki in seq_along(wgtl$jksuffixes)) {
         coefInputs_jk <- coefEstInputs(frm = frm, wgt = paste0(wgtl$jkbase, wgtl$jksuffixes[jki]), edf = edf)
         coefs <- coefEstWtd(coefInputs_jk$X, coefInputs_jk$Y, coefInputs_jk$W)
 
@@ -684,7 +684,7 @@ calc.mvrlm.sdf <- function(formula,
 
     coefm <- out
 
-    names(residuals) <- paste("PV", 1:length(residuals))
+    names(residuals) <- paste("PV", seq_along(residuals))
 
     sigmaHat <- (1 / M) * Reduce("+", residCovar)
     colnames(sigmaHat) <- yvar
@@ -710,7 +710,7 @@ calc.mvrlm.sdf <- function(formula,
 
     coefa <- matrix(NA, nrow = length(wgtl$jksuffixes), ncol = (ncol(co0) * nrow(co0)))
 
-    for (jki in 1:length(wgtl$jksuffixes)) {
+    for (jki in seq_along(wgtl$jksuffixes)) {
       coefInputs_jk <- coefEstInputs(frm = frm, wgt = paste0(wgtl$jkbase, wgtl$jksuffixes[jki]), edf = edf)
       coefs <- coefEstWtd(coefInputs_jk$X, coefInputs_jk$Y, coefInputs_jk$W)
 
@@ -908,15 +908,21 @@ calc.mvrlm.sdf <- function(formula,
 
 #' @method print edsurveyMvrlm
 #' @export
-print.edsurveyMvrlm <- function(x, ...) {
+print.edsurveyMvrlm <- function(x, use_es_round=getOption("EdSurvey_round_output"), ...) {
+  if(use_es_round) {
+    x <- es_round(x)
+  }
   print(x$coef)
 }
 
 #' @method print edsurveyMvrlmList
 #' @export
-print.edsurveyMvrlmList <- function(x, ...) {
-  for (i in 1:length(x)) {
+print.edsurveyMvrlmList <- function(x, use_es_round=getOption("EdSurvey_round_output"), ...) {
+  for (i in seq_along(x)) {
     cat("lm", i, "\n")
+    if(use_es_round) {
+      x[[i]] <- es_round(x[[i]])
+    }
     print(coef(x[[i]]), ...)
   }
 }
@@ -966,7 +972,7 @@ summary.edsurveyMvrlm <- function(object, ...) {
 #' @export
 summary.edsurveyMvrlmList <- function(object, ...) {
   class(object) <- "summary.edsurveyMvrlmList"
-  for (i in 1:length(object)) {
+  for (i in seq_along(object)) {
     class(object[[i]]) <- "summary.edsurveyMvrlm"
   }
   object
@@ -976,7 +982,10 @@ summary.edsurveyMvrlmList <- function(object, ...) {
 #' @method print summary.edsurveyMvrlm
 #' @importFrom stats printCoefmat
 #' @export
-print.summary.edsurveyMvrlm <- function(x, ...) {
+print.summary.edsurveyMvrlm <- function(x, use_es_round=getOption("EdSurvey_round_output"), ...) {
+  if(use_es_round) {
+    x <- es_round(x)
+  }
   cat(paste0("\nFormula: ", paste(deparse(x$formula), collapse = ""), "\n\n"))
   if (x$npv != 1) {
     cat(paste0("jrrIMax: ", x$jrrIMax, "\n"))
@@ -989,7 +998,7 @@ print.summary.edsurveyMvrlm <- function(x, ...) {
   cat(paste0("full data n: ", x$n0, "\n"))
   cat(paste0("n used: ", x$nUsed, "\n\n"))
   cat(paste0("Coefficients:\n\n"))
-  for (i in 1:length(x$coefmat)) {
+  for (i in seq_along(x$coefmat)) {
     cat(names(x$coefmat)[i], "\n")
     printCoefmat(x$coefmat[[i]], P.values = TRUE, has.Pvalue = TRUE)
     cat("\n")
@@ -1002,9 +1011,12 @@ print.summary.edsurveyMvrlm <- function(x, ...) {
 
 #' @method print summary.edsurveyMvrlmList
 #' @export
-print.summary.edsurveyMvrlmList <- function(x, ...) {
-  for (i in 1:length(x)) {
+print.summary.edsurveyMvrlmList <- function(x, use_es_round=getOption("EdSurvey_round_output"), ...) {
+  for (i in seq_along(x)) {
     cat("\n", "lm", i, "\n")
+    if(use_es_round) {
+      x[[i]] <- es_round(x[[i]])
+    }
     print(x[[i]], ...)
   }
 }

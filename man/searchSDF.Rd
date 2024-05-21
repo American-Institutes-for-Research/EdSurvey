@@ -34,7 +34,7 @@ using character string matching.
 \examples{
 \dontrun{
 # read in the example data (generated, not real student data)
-sdf <- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package="NAEPprimer"))
+sdf <- readNAEP(path=system.file("extdata/data", "M36NT2PM.dat", package="NAEPprimer"))
 
 # search both the student and school files by a character string
 searchSDF(string="book", data=sdf)

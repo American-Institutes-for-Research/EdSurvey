@@ -349,7 +349,7 @@ cor.sdf <- function(x,
       if (inherits(lsdf[[i]], "logical")) {
         lsdf[[i]] <- factor(0 + lsdf[[i]], 0:1, c("FALSE", "TRUE"))
       }
-      for (z in 1:length(levels(lsdf[[i]]))) {
+      for (z in seq_along(levels(lsdf[[i]]))) {
         # Use llevels if it's a lfactor
         if (inherits(lsdf[[i]], "lfactor") && !condenseLevels) {
           zi <- llevels(lsdf[[i]])[z]
@@ -475,7 +475,7 @@ cor.sdf <- function(x,
   veJK <- data.frame(
     stringsAsFactors = FALSE,
     PV = rep(1:jrrIMax, each = length(wgts)),
-    JKreplicate = rep(1:length(wgts), jrrIMax),
+    JKreplicate = rep(seq_along(wgts), jrrIMax),
     variable = "cor",
     value = as.vector(diagVarWgt)
   ) # as.vector stacks the columns of diagVarWgt
@@ -519,7 +519,10 @@ cor.sdf <- function(x,
 
 #' @method print edsurveyCor
 #' @export
-print.edsurveyCor <- function(x, digits = getOption("digits"), ...) {
+print.edsurveyCor <- function(x, digits = getOption("digits"), use_es_round=getOption("EdSurvey_round_output"), ...) {
+  if(use_es_round) {
+    x <- es_round(x)
+  }
   class(x) <- "list"
   cat(paste0("Method: ", x$method, "\n"))
   cat(paste0("full data n: ", x$n0, "\n"))
@@ -530,12 +533,12 @@ print.edsurveyCor <- function(x, digits = getOption("digits"), ...) {
   cat(paste0("Confidence Interval: [", paste0(signif(x$confidenceInterval, digits = digits), collapse = ", "), "]\n"))
   if (length(x$order) > 0) {
     cat("\nCorrelation Levels:\n")
-    for (var in 1:length(x$order)) {
+    for (var in seq_along(x$order)) {
       cat(paste0("  Levels for Variable '", x$variables[[var]], "' (Lowest level first):\n"))
-      for (i in 1:length(x$order[[var]])) {
+      for (i in seq_along(x$order[[var]])) {
         cat(paste0("    ", x$order[[var]][i], "\n"))
-      } # end of i in 1:length(x$order[[var]])
-    } # End of for(var in 1:length(x$order))
+      } # end of i in seq_along(x$order[[var]])
+    } # End of for(var in seq_along(x$order))
   } # End of length(x$order)>0
 }
 

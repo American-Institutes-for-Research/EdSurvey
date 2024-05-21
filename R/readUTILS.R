@@ -132,7 +132,7 @@ parseSPSSFileFormat <- function(inSPSSyntax) {
 
   lineChunk <- controlFile[i:j]
   lineChunkRecIndex <- which(lineChunk %in% lineChunk[substr(lineChunk, 1, 1) == "/"]) # record index are defined such as '/2', '/3', etc.  we want to keep these positions as the .dat has multiple rows for one piece of data
-  names(lineChunkRecIndex) <- 1:length(lineChunkRecIndex)
+  names(lineChunkRecIndex) <- seq_along(lineChunkRecIndex)
 
   lineChunk <- lineChunk[trimws(lineChunk, which = "both") != ""]
   lineChunk <- lineChunk[substr(lineChunk, 1, 1) != "."] # remove unneeded rows
@@ -300,7 +300,7 @@ parseSPSSFileFormat <- function(inSPSSyntax) {
   dict$weights <- rep(FALSE, times = length(dict$variableName))
 
   # need to update the position start/end variables as the positions are thrown off by having SPSS tables defined::tables will be removed
-  dict$Start <- c(1, 1 + cumsum(dict$Width))[1:length(dict$Width)]
+  dict$Start <- c(1, 1 + cumsum(dict$Width))[seq_along(dict$Width)]
   dict$End <- cumsum(dict$Width)
 
   return(data.frame(dict, stringsAsFactors = FALSE))
@@ -381,7 +381,7 @@ valueLabel_MakeCategorical <- function(fileFormat, variableNames, data) {
     uniqueVals <- uniqueVals[order(uniqueVals)]
 
     if (length(uniqueVals) > 0 && !is.null(uniqueVals)) {
-      for (ii in 1:length(uniqueVals)) {
+      for (ii in seq_along(uniqueVals)) {
         if (!(uniqueVals[[ii]] %in% key) && !(uniqueVals[[ii]] %in% lbl)) {
           key <- c(key, uniqueVals[ii])
           lbl <- c(lbl, uniqueVals[ii])
@@ -590,7 +590,7 @@ parseTEXTFileFormat_NCES <- function(inTxtFile) {
       dupeIndex <- which(varName %in% dN, arr.ind = TRUE) # find which index the dupes are located in the overall vector
 
       # number the duplicates(1, 2, 3, etc.) in the order they exist in the original vector
-      for (i in 1:length(dupeIndex)) {
+      for (i in seq_along(dupeIndex)) {
         varName[dupeIndex[i]] <- paste0(dN, i)
       }
     }
@@ -639,7 +639,7 @@ parseTEXTFileFormat_NCES <- function(inTxtFile) {
   subChunk <- which(tolower(lineChunk) %in% tolower(dict$variableName), arr.ind = TRUE)
 
   if (length(subChunk) > 0) {
-    for (varIndex in 1:length(subChunk)) {
+    for (varIndex in seq_along(subChunk)) {
       tempVarName <- tolower(lineChunk[subChunk[varIndex]])
 
       nextChunkIndex <- subChunk[varIndex + 1]

@@ -5,17 +5,27 @@
 #' @param x             an \code{edsurvey.data.frame} or an \code{edsurvey.data.frame.list}
 #' @param printColnames a logical value; set to \code{TRUE} to see all column names in the \code{edsurvey.data.frame}
 #'                      or the \code{edsurvey.data.frame.list}
+#' @param use_es_round a logical; round the output per \code{\link{es_round}} function
+#' @param round_n function used to round sample n-sizes. See \code{\link{es_round}}
 #' @param ... these arguments are not passed anywhere and are included only for compatibility
 #'
 #' @author Michael Lee and Paul Bailey
 #' @method print edsurvey.data.frame
 #' @aliases print.edsurvey.data.frame.list
 #' @export
-print.edsurvey.data.frame <- function(x, printColnames = FALSE, ...) {
+print.edsurvey.data.frame <- function(x, printColnames = FALSE, use_es_round=getOption("EdSurvey_round_output"), round_n=getOption("EdSurvey_round_n_function"), ...) {
   if (!inherits(x, "edsurvey.data.frame")) {
     stop(paste0(sQuote("x"), " must be an edsurvey.data.frame"))
-  }
+  } 
   dm <- dim(x)
+  if(use_es_round) {
+    lst <- list(dm1=dm[1])
+    if(missing("round_n")){
+      round_n <- getOption("EdSurvey_round_n_function")
+    }
+    lst <- es_round_with(lst, "dm1", round_n, ...)
+    dm[1] <- lst$dm[1]
+  }
   parenText <- paste0(pasteItems(x$subject))
   if ("gradeLevel" %in% names(x) && length(x$gradeLevel) > 0) {
     parenText <- paste0(parenText, "; ", pasteItems(x$gradeLevel))
@@ -85,14 +95,14 @@ print.edsurvey.data.frame <- function(x, printColnames = FALSE, ...) {
   al <- getAttributes(x, "achievementLevels", errorCheck = FALSE)
   ### Handle more than 1 achievement level scales
   if (is.list(al)) {
-    for (ali in 1:length(al)) {
+    for (ali in seq_along(al)) {
       eout("\nAchievement Levels:\n")
       eout(paste0(names(al)[ali], ": \n"))
       if (length(al[[ali]]) == 0) {
         eout("  Achievement levels for this subject is not defined this year. \n")
       } else {
         noms <- names(al[[ali]])
-        for (i in 1:length(al[[ali]])) {
+        for (i in seq_along(al[[ali]])) {
           post <- paste(rep(" ", 1 + max(nchar(noms)) - nchar(noms[i])), collapse = "")
           eout(paste0("  ", noms[i], ":", post, sprintf("%.2f", al[[ali]][i]), "\n"))
         }
@@ -102,7 +112,7 @@ print.edsurvey.data.frame <- function(x, printColnames = FALSE, ...) {
     if (length(al) > 0) {
       noms <- names(al)
       eout("\nAchievement Levels:\n")
-      for (i in 1:length(al)) {
+      for (i in seq_along(al)) {
         post <- paste(rep(" ", 1 + max(nchar(noms)) - nchar(noms[i])), collapse = "")
         eout(paste0("  ", noms[i], ":", post, al[i], "\n"))
       }

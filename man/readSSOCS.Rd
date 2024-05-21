@@ -61,7 +61,7 @@ esdf <- readSSOCS(sasDataFiles = file.path(rootPath, "SSOCS/2018/pu_ssocs18.sas7
                   verbose = TRUE)
   
 #search for variables in the edsurvey.data.frame containing the word 'bully'
-searchSDF("bully", esdf)
+searchSDF(string="bully", data=esdf)
 }
 }
 \seealso{

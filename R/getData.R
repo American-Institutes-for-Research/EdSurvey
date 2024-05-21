@@ -216,14 +216,14 @@ getData <- function(data,
 
   # getAllPSUVar and getallStratumVar are defined in getData.R to return a vector of all the PSU & Stratum variables associated with the edsurvey.data.frame/light.edsurvey.data.frame
   vars_exclude_omitted <- c(vars_exclude_omitted, getAllPSUVar(sdf), getAllStratumVar(sdf))
-  if (sum(iw) > 0 & returnJKreplicates == TRUE) {
+  if (sum(iw) > 0 & returnJKreplicates) {
     invisible(sapply(varnames[iw], function(x) {
       v <- getWeightJkReplicates(x, sdf)
       vars_exclude_omitted <<- c(vars_exclude_omitted, v[-1])
       vars <<- c(vars, v, x)
     }))
   }
-  if (sum(iw) > 0 & returnJKreplicates == FALSE) {
+  if (sum(iw) > 0 & !returnJKreplicates) {
     vars <- c(vars, varnames[iw])
   }
   # remove any duplicates (e.g. because part of default conditions and requested)
@@ -245,7 +245,7 @@ getData <- function(data,
           vars <- c(vars, varnamesAllConditions[i])
         }
       }
-    } # end for(i in (1:length(varnamesAllConditions)))
+    } # end for(i in (seq_along(varnamesAllConditions)))
     varnamesAllConditions <- vars
     varnamesTotal <- c(varnamesAllConditions, varnames, varRecodes)
   } else { # end if(inherits(sdf, "edsurvey.data.frame"))
@@ -470,7 +470,7 @@ getData <- function(data,
         recode <- userConditions[[i]]
         if (!is.null(recode)) {
           # apply recodes
-          for (i in 1:length(recode)) {
+          for (i in seq_along(recode)) {
             if (names(recode)[i] %in% colnames(data)) {
               ni <- names(recode)[i]
               from <- recode[[i]]$from
@@ -571,7 +571,7 @@ getData <- function(data,
                 ))
               }
             } # end if(names(recode)[i] %in% colnames(data))
-          } # end for (i in 1:length(recode))
+          } # end for (i in seq_along(recode))
         } # end if(!is.null(recode))
       } else { # other userConditions are specified in subset
         condition <- userConditions[[i]]
@@ -585,7 +585,7 @@ getData <- function(data,
     # drop the omitted levels if TRUE
     if (dropOmittedLevels) {
       keep <- rep(0, nrow(data))
-      for (i in 1:length(varnamesTotal)) {
+      for (i in seq_along(varnamesTotal)) {
         vari <- varnamesTotal[i]
         if (!vari %in% vars_exclude_omitted) {
           # omit data at these levels
@@ -601,7 +601,7 @@ getData <- function(data,
 
     # call droplevels on data when dropUnusedLevels=TRUE
     if (dropUnusedLevels) {
-      for (i in 1:length(varnamesTotal)) {
+      for (i in seq_along(varnamesTotal)) {
         if (is.factor(data[ , varnamesTotal[i]])) {
           data[ , varnamesTotal[i]] <- droplevels(data[ , varnamesTotal[i]])
         }
@@ -621,7 +621,7 @@ getData <- function(data,
     if (dropOmittedLevels) {
       lev <- unlist(attributes(sdf)$omittedLevels)
       keep <- rep(0, nrow(data))
-      for (i in 1:length(varnamesTotal)) {
+      for (i in seq_along(varnamesTotal)) {
         vari <- varnamesTotal[i]
         if (!vari %in% vars_exclude_omitted) {
           # omit data at these levels
@@ -637,7 +637,7 @@ getData <- function(data,
     # dropUnusedLevels for a light.edsurvey.data.frame
     if (!missing(dropUnusedLevels)) {
       if (dropUnusedLevels) {
-        for (i in 1:length(varnamesTotal)) {
+        for (i in seq_along(varnamesTotal)) {
           if (is.factor(data[ , varnamesTotal[i]])) {
             data[ , varnamesTotal[i]] <- droplevels(data[ , varnamesTotal[i]])
           }
@@ -1000,11 +1000,31 @@ applyDecimalConversion <- function(dataDF, labelsDF, varNameColumn = "variableNa
     decLen[is.na(decLen)] <- 0 # use a 0 if NA is specified for decimal length (character value)
     decLen <- as.numeric(decLen)
     if (decLen > 0) {
-      mult <- (10^decLen)
-      xCol <- dataDF[ , varn] / mult
-      # if it has a decimal conversion and is in the requested data
-      dataDF[ , varn] <- xCol
-    }
+      xCol <- dataDF[ , varn]
+      
+      #all NA values would cause issue, skip checks instead
+      if (all(is.na(xCol))) {
+        next
+      }
+      
+      #things get a bit tricky here, as a lot of time the decimal precision can be applied
+      #for example the number 4244465 (not defined as 'decimal' per se) is represented as 4244464.9999999981374 floating point
+      #lets round the value, then do a tolerance check using all.equal 
+      zVal <- round(xCol, digits = 0)
+      
+      checkVal <- all.equal(xCol, zVal, check.attributes = FALSE) #use the default tolerance and scale
+      
+      if (!is.logical(checkVal)){
+        checkVal <- FALSE #change value to false if differences are located (as all.equal will return information regarding difference)
+      }
+      #only apply the decimal conversion if no decimals present for any value
+      if (checkVal) {
+        mult <- (10^decLen)
+        xCol <- xCol / mult
+        #reassign back if changed
+        dataDF[ , varn] <- xCol
+      }
+    }#end if (decLen > 0) 
   }
 
   return(dataDF)

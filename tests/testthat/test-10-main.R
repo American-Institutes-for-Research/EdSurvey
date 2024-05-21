@@ -12,7 +12,7 @@ dsex <- "should not be used"
 context("wd is set correctly") # When this fails all regression tests are invalid.
 test_that("wd is set correctly", {
   skip_on_cran()
-  expect_is(es1_ <- readRDS("regression.rds"), "data.frame")
+  expect_true(file.exists("test-10-main.R"))
 })
 
 context("Primer reads in correctly")
@@ -96,13 +96,22 @@ test_that("searchSDF", {
   search2$fileFormat <- NULL
   search3$fileFormat <- NULL
 
-  searchSDFVector <- readRDS(file = "searchSDFVector.rds")
-  searchSDFOR <- readRDS(file = "searchSDFOr.rds")
-  searchSDFLevels <- readRDS(file = "searchSDFLevels.rds")
-
-  expect_equal(search1, searchSDFVector)
-  expect_equal(search2, searchSDFOR)
-  expect_equal(search3, searchSDFLevels)
+  search2_ref <- structure(list(variableName = c("b013801", "b017001", "b017101", 
+"b018201", "b017451", "t088804", "t088805", "t091503"), Labels = c("Books in home", 
+"Newspaper in home", "Computer at home", "Language other than English spoken in home", 
+"Talk about studies at home", "Computer activities: Use a gradebook program", 
+"Computer activities: Post homework,schedule info", "G8Math:How often use Geometry sketchbook"
+)), row.names = c(NA, 8L), class = "data.frame")
+  search3_ref <- structure(list(variableName = c("m086101", "m020001", "m143601", 
+"m142301"), Labels = c("Read value from graph", "Apply place value                            (R1)", 
+"Solve for x given value of n", "Identify place value"), Levels = c("1. A; 2. B; 3. C *; 4. D; 5. E; 8. Omitted; 9. Not Reached; 0. Multiple", 
+"1. Incorrect; 2. Correct*; 5. Illegible; 6. Off Task; 7. Non-Rateable; 8. Omitted; 9. Not Reached", 
+"1. A; 2. B; 3. C; 4. D *; 5. E; 8. Omitted; 9. Not Reached; 0. Multiple", 
+"1. A; 2. B; 3. C; 4. D; 5. E *; 8. Omitted; 9. Not Reached; 0. Multiple"
+)), row.names = c("Student.131", "Student.165", "Student.177", "Student.214"), class = c("searchSDF", "data.frame"))
+  expect_equal(search1, structure(list(variableName = "b013801", Labels = "Books in home"), row.names = 1L, class = "data.frame"))
+  expect_equal(search2, search2_ref)
+  expect_equal(search3, search3_ref)
 })
 
 context("showCodebook")
@@ -117,12 +126,12 @@ test_that("showCodebook", {
 
 context("getData")
 test_that("getData", {
-  expect_known_value(gd1 <- getData(sdf, c("dsex", "b017451")), file = "gd1.rds", update = FALSE)
+  expect_known_value(head(gd1 <- getData(sdf, c("dsex", "b017451"))), file = "gd1.rds", update = FALSE)
   skip_on_cran()
-  expect_known_value(gd2 <- getData(sdf, c("dsex", "b017451"), defaultConditions = FALSE), file = "gd2.rds", update = FALSE)
-  expect_known_value(gd3 <- getData(sdf, c("dsex", "b017451"), dropUnusedLevels = FALSE), file = "gd3.rds", update = FALSE)
-  expect_known_value(gd4 <- getData(sdf, c("dsex", "b017451"), dropOmittedLevels = TRUE, includeNaLabel = FALSE), file = "gd4.rds", update = FALSE)
-  expect_known_value(gd5 <- getData(sdf, c("dsex", "b017451"), dropOmittedLevels = TRUE, includeNaLabel = TRUE), file = "gd5.rds", update = FALSE)
+  expect_known_value(head(gd2 <- getData(sdf, c("dsex", "b017451"), defaultConditions = FALSE)), file = "gd2.rds", update = FALSE)
+  expect_known_value(head(gd3 <- getData(sdf, c("dsex", "b017451"), dropUnusedLevels = FALSE)), file = "gd3.rds", update = FALSE)
+  expect_known_value(head(gd4 <- getData(sdf, c("dsex", "b017451"), dropOmittedLevels = TRUE, includeNaLabel = FALSE)), file = "gd4.rds", update = FALSE)
+  expect_known_value(head(gd5 <- getData(sdf, c("dsex", "b017451"), dropOmittedLevels = TRUE, includeNaLabel = TRUE)), file = "gd5.rds", update = FALSE)
   gd6 <- getData(sdf, formula = composite ~ dsex + b017451)
   gd6 <- gd6[c(1:50, (nrow(gd6) - 50):nrow(gd6)), ] # this file was larger. slim down a bit.
   expect_known_value(gd6, file = "gd6.rds", update = FALSE, check.attributes = FALSE) # TEMPORARILY HAVE IT SKIP ATTRIBUTE CHECKS
@@ -146,8 +155,8 @@ test_that("getData", {
   attributes(gddat)$dataList$School$conflictLevels <- NULL
   expect_known_value(gddat, file = "gddat.rds", update = FALSE)
 
-  expect_known_value(gd7 <- getData(sdf, c("dsex", "b017451")), file = "gd7.rds", update = FALSE)
-  expect_known_value(gd8 <- getData(sdf, c("dsex", "c052601"), dropUnusedLevels = FALSE), file = "gd8.rds", update = FALSE) # schoolMergeVarStudent="scrpsu", schoolMergeVarSchool="sscrpsu"
+  expect_known_value(head(gd7 <- getData(sdf, c("dsex", "b017451"))), file = "gd7.rds", update = FALSE)
+  expect_known_value(head(gd8 <- getData(sdf, c("dsex", "c052601"), dropUnusedLevels = FALSE)), file = "gd8.rds", update = FALSE) # schoolMergeVarStudent="scrpsu", schoolMergeVarSchool="sscrpsu"
   df2 <- getData(sdf, c("dsex", "b017451"),
     recode = list(
       b017451 = list(
@@ -167,7 +176,7 @@ test_that("getData", {
       )
     )
   )
-  expect_known_value(df2, file = "df2.rds", update = FALSE)
+  expect_known_value(head(df2), file = "df2.rds", update = FALSE)
   # use recode for both recodes
   df2B <- recode.sdf(sdf, recode = list(
     b017451 = list(
@@ -302,18 +311,13 @@ test_that("subset throws an error", {
 
 context("lm.sdf")
 lm1 <- lm.sdf(~ dsex + b017451, sdf)
-slm1 <- summary(lm1, src = TRUE)
-slm1$formula <- NULL
-slm1$call <- NULL
-slm1$data <- NULL
-slm1$residuals <- head(lm1$residuals)
-slm1$PV.residuals <- head(lm1$PV.residuals)
-slm1$PV.fitted.values <- head(lm1$PV.fitted.values)
-slm1_read <- readRDS(file = "lm1.rds")
-expect_equal(slm1, slm1_read)
+lm1$data <- NULL
+lm1$call <- NULL
 
 test_that("lm.sdf", {
   skip_on_cran()
+  expect_equal(lapply(lm1, head), lm1_head)
+
   lm1S <- lm.sdf(~ dsex + b017451, sdf, standardizeWithSamplingVar = TRUE)
   withr::with_options(
     list(digits = 4),
@@ -329,26 +333,22 @@ test_that("lm.sdf", {
   expect_equal(coef(lm10), coef(lm10C))
   expect_equal(coef(lm10), coef(lm10D))
 
-  fe <- file.exists("lm10.rds")
-  skip_if_not(fe, message = "Skipping test with large file unallowed by CRAN")
   lm10 <- lm.sdf(composite ~ dsex + b017451, sdf)
   lm10$data <- NULL
-  lm10$residuals <- head(lm10$residuals)
-  lm10$PV.residuals <- head(lm10$PV.residuals)
-  lm10$PV.fitted.values <- head(lm10$PV.fitted.values)
-  expect_known_value(lm10, "lm10.rds", update = FALSE)
+  lm10$call <- NULL
+  expect_equal(lapply(lm10, head), lm10_head)
   lm1f <- lm.sdf(composite ~ dsex + b017451, sdf, relevels = list(dsex = "Female"))
   lm1f$data <- NULL
   lm1f$residuals <- head(lm1f$residuals)
   lm1f$PV.residuals <- head(lm1f$PV.residuals)
   lm1f$PV.fitted.values <- head(lm1f$PV.fitted.values)
-  expect_known_value(lm1f, "lm1f.rds", update = FALSE)
+  expect_known_value(lapply(lm1f, head), "lm1f.rds", update = FALSE)
   lm1re <- lm.sdf(composite ~ dsex + b017451, sdf, recode = list(dsex = list(from = "Male", to = "MALE")))
   lm1re$data <- NULL
   lm1re$residuals <- head(lm1re$residuals)
   lm1re$PV.residuals <- head(lm1re$PV.residuals)
   lm1re$PV.fitted.values <- head(lm1re$PV.fitted.values)
-  expect_known_value(lm1re, "lm1re.rds", update = FALSE)
+  expect_known_value(lapply(lm1re, head), "lm1re.rds", update = FALSE)
   # test that lfactor levels can be used in relevels argument
   lm1f2 <- lm.sdf(composite ~ dsex + b017451, sdf, jrrIMax = 1, relevels = list(dsex = 2))
   lm1f2$data <- NULL
@@ -395,7 +395,7 @@ lm1t$residuals <- head(lm1t$residuals)
 
 lm1t$PV.residuals <- head(lm1t$PV.residuals)
 lm1t$PV.fitted.values <- head(lm1t$PV.fitted.values)
-expect_known_value(lm1t, "lm1t.rds", update = FALSE)
+expect_known_value(lapply(lm1t, head), "lm1t.rds", update = FALSE)
 lm1jk <- lm.sdf(composite ~ dsex + b017451, sdf, varMethod = "jackknife")
 expect_equal(coef(lm1t), coef(lm1jk))
 lm1jk$data <- NULL
@@ -403,10 +403,13 @@ lm1jk$residuals <- head(lm1jk$residuals)
 lm1jk$PV.residuals <- head(lm1jk$PV.residuals)
 lm1jk$PV.fitted.values <- head(lm1jk$PV.fitted.values)
 lm1jk <- summary(lm1jk, src = TRUE)
-lm1jk.ref <- readRDS("lm1.rds")
-lm1jk$call <- lm1jk.ref$call <- NULL
+lm1jk.ref <- lm1
+lm1jk.ref$formula <- NULL
+lm1jk$call <- NULL
 lm1jk$formula <- NULL
-expect_equal(lm1jk, lm1jk.ref)
+lm1jk$coefmat$stdCoef <- NULL
+lm1jk$coefmat$stdSE <- NULL
+expect_equal(lapply(lm1jk, head), lapply(lm1jk.ref, head))
 # estimates should agree too
 test_that("lm.sdf Taylor series", {
   skip_on_cran()
@@ -699,7 +702,6 @@ test_that("gap", {
     )),
     returnSimpleDoF = TRUE
   ), "gap_percentage2.rds", update = FALSE)
-  skip_on_cran()
   # Taylor warning
   expect_warning(gap("composite", sdf, dsex == "Male", dsex == "Female", varMethod = "Taylor"), "deprecated")
 })

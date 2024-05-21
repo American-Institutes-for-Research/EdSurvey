@@ -286,7 +286,7 @@ timssParamTabs <- function(params_use) {
   polyParamTab <- polyParamTab[ , c("TIMSSid", "content_subtest", "cognitive_subtest", "a", "b", ds, "subject", "scorePoints")]
   colnames(polyParamTab) <- c("ItemID", "content_subtest", "cognitive_subtest", "slope", "itemLocation", ds, "test", "scorePoints")
   ss <- is.na(polyParamTab$scorePoints)
-  for (i in 1:length(ds)) {
+  for (i in seq_along(ds)) {
     polyParamTab$scorePoints[ss] <- ifelse(!is.na(polyParamTab[ss, ds[i]]), i, polyParamTab$scorePoints[ss])
   }
   polyParamTab$ItemID <- tolower(polyParamTab$ItemID)

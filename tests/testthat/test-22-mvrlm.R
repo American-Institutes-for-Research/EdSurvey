@@ -5,7 +5,6 @@ require(EdSurvey)
 options(width = 500)
 options(useFancyQuotes = FALSE)
 
-
 sdf <- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
 
 context("Multivariate Regression: 2 DVs (2 non PV)")
@@ -119,32 +118,29 @@ context("mvrlm.sdf Regression tests")
 test_that("mvrlm.sdf results remain the same", {
   skip_on_cran()
 
+  source("REF-13-MVRLM.R")
   # no pv case
   mvrlm.fit <- mvrlm.sdf(mrps51 | mrps22 ~ dsex | m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = TRUE)
-  mvrlm2dvnon <- readRDS("mvrlm2dvnon.rds")
-  expect_equal(mvrlm.fit$coefmat, mvrlm2dvnon$coefmat)
-  expect_equal(mvrlm.fit$residPV, mvrlm2dvnon$residPV)
-  expect_equal(mvrlm.fit$residCov, mvrlm2dvnon$residCov)
+  expect_equal(mvrlm.fit$coefmat, mvrlm_coef_ref1)
+  expect_equal(mvrlm.fit$residPV, NULL)
+  expect_equal(mvrlm.fit$residCov, mvrlm_resid_cov1)
 
   # mixed DV case
   mvrlm.fit <- mvrlm.sdf(composite | mrps22 ~ dsex | m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = TRUE)
-  mvrlm2dvmix <- readRDS("mvrlm2dvmix.rds")
-  expect_equal(mvrlm.fit$coefmat, mvrlm2dvmix$coefmat)
-  expect_equal(mvrlm.fit$residPV, mvrlm2dvmix$residPV)
-  expect_equal(mvrlm.fit$residCov, mvrlm2dvmix$residCov)
+  expect_equal(mvrlm.fit$coefmat, mvrlm_coef_ref2)
+  expect_equal(lapply(mvrlm.fit$residPV, head), mvrlm_residpv2)
+  expect_equal(mvrlm.fit$residCov, mvrlm_resid_cov2)
 
   # 2 PV case
   mvrlm.fit <- mvrlm.sdf(algebra | geometry ~ dsex | m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = TRUE)
-  mvrlm.sdf.2dv <- readRDS("mvrlm2dv.rds")
-  expect_equal(mvrlm.fit$coefmat, mvrlm.sdf.2dv$coefmat)
-  expect_equal(mvrlm.fit$residPV, mvrlm.sdf.2dv$residPV)
-  expect_equal(mvrlm.fit$residCov, mvrlm.sdf.2dv$residCov)
+  expect_equal(mvrlm.fit$coefmat, mvrlm_coef_ref3)
+  expect_equal(lapply(mvrlm.fit$residPV, head), mvrlm_residpv3)
+  expect_equal(mvrlm.fit$residCov, mvrlm_resid_cov3)
   # 3 PV case
   mvrlm.fit <- mvrlm.sdf(algebra | geometry | measurement ~ dsex | m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = TRUE)
-  mvrlm.sdf.3dv <- readRDS("mvrlm3dv.rds")
-  expect_equal(mvrlm.fit$coefmat, mvrlm.sdf.3dv$coefmat)
-  expect_equal(mvrlm.fit$residPV, mvrlm.sdf.3dv$residPV)
-  expect_equal(mvrlm.fit$residCov, mvrlm.sdf.3dv$residCov)
+  expect_equal(mvrlm.fit$coefmat, mvrlm_coef_ref4)
+  expect_equal(lapply(mvrlm.fit$residPV, head), mvrlm_residpv4)
+  expect_equal(mvrlm.fit$residCov, mvrlm_resid_cov4)
 })
 
 context("Wald Test Coefficient restrictions")

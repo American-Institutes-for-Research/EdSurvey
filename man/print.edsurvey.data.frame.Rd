@@ -5,13 +5,23 @@
 \alias{print.edsurvey.data.frame.list}
 \title{EdSurvey Metadata Summary}
 \usage{
-\method{print}{edsurvey.data.frame}(x, printColnames = FALSE, ...)
+\method{print}{edsurvey.data.frame}(
+  x,
+  printColnames = FALSE,
+  use_es_round = getOption("EdSurvey_round_output"),
+  round_n = getOption("EdSurvey_round_n_function"),
+  ...
+)
 }
 \arguments{
 \item{x}{an \code{edsurvey.data.frame} or an \code{edsurvey.data.frame.list}}
 
 \item{printColnames}{a logical value; set to \code{TRUE} to see all column names in the \code{edsurvey.data.frame}
 or the \code{edsurvey.data.frame.list}}
+
+\item{use_es_round}{a logical; round the output per \code{\link{es_round}} function}
+
+\item{round_n}{function used to round sample n-sizes. See \code{\link{es_round}}}
 
 \item{...}{these arguments are not passed anywhere and are included only for compatibility}
 }

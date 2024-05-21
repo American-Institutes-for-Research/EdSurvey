@@ -322,7 +322,7 @@ percentile <- function(variable, percentiles, data,
           resv <- rep(NA, length(thesePercentiles))
           resp <- 100 * cumsum(xpw$w) / WW
           xpw$p <- resp
-          for (ri in 1:length(thesePercentiles)) {
+          for (ri in seq_along(thesePercentiles)) {
             # k + 1 (or, in short hand kp1)
             # which.max returns the index of the first value of TRUE
             kp1 <- which.max(xpw$p >= thesePercentiles[ri])
@@ -398,7 +398,7 @@ percentile <- function(variable, percentiles, data,
           resp <- 100 * kp / nn
           xpw$p <- resp
           # could be larger than max, handle that
-          for (ri in 1:length(thesePercentiles)) {
+          for (ri in seq_along(thesePercentiles)) {
             thisPercentile <- thesePercentiles[ri]
             names(resv)[ri] <- paste0("P", thisPercentile)
             if (thisPercentile > xpw$p[nrow(xpw)]) {
@@ -434,8 +434,8 @@ percentile <- function(variable, percentiles, data,
     }
     if (linkingError) {
       # 2) setup the (x,y,w) data.frame
-      resdf <- data.frame(inst = 1:length(variables))
-      for (i in 1:length(percentiles)) {
+      resdf <- data.frame(inst = seq_along(variables))
+      for (i in seq_along(percentiles)) {
         resdf[paste0("P", percentiles[i])] <- 0
       }
 
@@ -454,8 +454,8 @@ percentile <- function(variable, percentiles, data,
         variable = rep(paste0("P", percentiles), each = nrow(esti$coef)),
         value = rep(NA, nrow(esti$coef) * length(percentiles))
       )
-      for (pcti in 1:length(percentiles)) {
-        for (pctj in 1:length(estVars)) {
+      for (pcti in seq_along(percentiles)) {
+        for (pctj in seq_along(estVars)) {
           varEstInputsPV$value[varEstInputsPV$PV == pctj & varEstInputsPV$variable == names(esti$est)[pcti]] <- esti$coef[pctj, pcti] - mean(esti$coef[ , pcti])
         }
       }
@@ -499,8 +499,8 @@ percentile <- function(variable, percentiles, data,
         variable = rep(paste0("P", percentiles), each = nrow(esti$coef)),
         value = rep(NA, nrow(esti$coef) * length(percentiles))
       )
-      for (pcti in 1:length(percentiles)) {
-        for (pctj in 1:length(variables)) {
+      for (pcti in seq_along(percentiles)) {
+        for (pctj in seq_along(variables)) {
           varEstInputsPV$value[varEstInputsPV$PV == pctj & varEstInputsPV$variable == names(esti$est)[pcti]] <- esti$coef[pctj, pcti] - mean(esti$coef[ , pcti])
         }
       }
@@ -557,7 +557,7 @@ percentile <- function(variable, percentiles, data,
             xpwc$w[1] <- xpwc$w[nrow(xpwc)] <- 0
             xpwc$p <- c(0, resp, 100)
 
-            for (ri in 1:length(thesePercentiles)) {
+            for (ri in seq_along(thesePercentiles)) {
               p <- thesePercentiles[ri]
               rp <- rv[ri]
               nsmall[ri] <- max(0, -1 + min(sum(xpw$x < rv[ri]), sum(xpw$x > rv[ri])))
@@ -565,7 +565,7 @@ percentile <- function(variable, percentiles, data,
               if (jmax) {
                 # k + 1 (or, in short hand kp1)
                 # which.max returns the index of the first value of TRUE
-                jkrp <- sapply(1:length(jkwc), function(jki) {
+                jkrp <- sapply(seq_along(jkwc), function(jki) {
                   # xpw has been reordered, so have to reorder
                   # edf in the same way to use it here
                   # set the bottom and top weight to 0 so the sum is still correct
@@ -619,10 +619,10 @@ percentile <- function(variable, percentiles, data,
         vestj <- as.data.frame(vestj$rprs)
         cols <- paste0("P", percentiles)
         colnames(vestj) <- cols
-        vestj$JKreplicate <- rep(1:length(jkw), jrrIMax)
+        vestj$JKreplicate <- rep(seq_along(jkw), jrrIMax)
         vestj$PV <- rep(1:jrrIMax, each = length(jkw))
         varEstInputsJK <- reshape(vestj, direction = "long", idvar = c("JKreplicate", "PV"), varying = cols, times = cols, timevar = "variable", v.names = "value")
-        rownames(varEstInputsJK) <- paste0(rep(1:length(jkw), length(percentiles)), ".", rep(1:length(percentiles), each = length(jkw)))
+        rownames(varEstInputsJK) <- paste0(rep(seq_along(jkw), length(percentiles)), ".", rep(seq_along(percentiles), each = length(jkw)))
         varEstInputsJK$vs <- varEstInputsJK$value^2
         varm2 <- aggregate(vs ~ PV + variable, varEstInputsJK, sum)
         varEstInputsJK$vs <- NULL
@@ -651,7 +651,7 @@ percentile <- function(variable, percentiles, data,
 
     # get dof, used in confidence inverval too
     dof <- 0 * percentiles
-    for (i in 1:length(dof)) {
+    for (i in seq_along(dof)) {
       dof[i] <- DoFCorrection(varEstA = varEstInputs, varA = paste0("P", percentiles[i]), method = dofMethod)
     }
     # simple dof is #PSUs - # strata. Since 2 PSUs/strata, use that here.
@@ -674,7 +674,7 @@ percentile <- function(variable, percentiles, data,
         belowGen <- function(cutoffs) {
           f <- function(pv, w) {
             res <- rep(NA, length(cutoffs))
-            for (i in 1:length(cutoffs)) {
+            for (i in seq_along(cutoffs)) {
               below <- pv < cutoffs[i]
               res[i] <- sum(w[below]) / sum(w)
             }
@@ -708,9 +708,9 @@ percentile <- function(variable, percentiles, data,
         # Taylor series method for confidence intervals
         r0 <- esti$est
         # We need the pi value, the proportion under the Pth percentile
-        mu0 <- sapply(1:length(percentiles), function(i) {
+        mu0 <- sapply(seq_along(percentiles), function(i) {
           # get the mean of the estimates across pvs
-          mean(sapply(1:length(variables), function(vari) {
+          mean(sapply(seq_along(variables), function(vari) {
             # for an individual PV, get the estimated fraction below r0[i]
             vv <- variables[vari]
             xpw <- data.frame(
@@ -734,7 +734,7 @@ percentile <- function(variable, percentiles, data,
         D <- 1 / sum(Ws)
 
         # calculate the pVjrr (Z) and pVimp together
-        pV <- sapply(1:length(percentiles), function(ri) {
+        pV <- sapply(seq_along(percentiles), function(ri) {
           est <- getEstPcTy(
             data = edf,
             pvEst = variables,
@@ -825,7 +825,10 @@ percentile <- function(variable, percentiles, data,
 
 #' @method print percentile
 #' @export
-print.percentile <- function(x, ...) {
+print.percentile <- function(x, use_es_round=getOption("EdSurvey_round_output"), ...) {
+  if(use_es_round) {
+    x <- es_round(x)
+  }
   cat("Percentile\nCall: ")
   print(attributes(x)$call)
   cat(paste0("full data n: ", attributes(x)$n0, "\n"))
@@ -918,7 +921,7 @@ getPcTy <- function(xpw, D, r0_ri, s0, pVimp = TRUE) {
 getEstPcTy <- function(data, pvEst, stat, wgt, D, r0_ri, s0, psuV, stratV) {
   pVjrrs <- c()
   pVimps <- c()
-  for (n in 1:length(pvEst)) {
+  for (n in seq_along(pvEst)) {
     xpw <- data.frame(
       x = data[ , pvEst[n]],
       w = data[ , wgt],

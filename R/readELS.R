@@ -409,7 +409,7 @@ buildELSWeightList <- function(fileFormat) {
     stringsAsFactors = FALSE
   )
 
-  for (i in 1:length(wgtVars)) {
+  for (i in seq_along(wgtVars)) {
     tempVar <- wgtVars[i] # full variable name of the weight var
     baseWgtVar <- repWgtLookup[repWgtLookup$wgtVar == tempVar, "baseVar", drop = TRUE] # only the base of the weight
 

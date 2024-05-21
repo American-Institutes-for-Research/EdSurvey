@@ -1,6 +1,6 @@
 \dontrun{
 # read in the example data (generated, not real student data)
-sdf <- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
+sdf <- readNAEP(path=system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
 
 # for two categorical variables any of the following work
 c1_pears <- cor.sdf(x="b017451", y="b003501", data=sdf, method="Pearson",

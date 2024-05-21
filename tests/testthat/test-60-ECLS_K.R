@@ -31,13 +31,13 @@ test_that("ECLS_K data reads in correctly", {
 
 context("ECLS_K getData")
 test_that("ECLS_K getData", {
-  dat1 <- getData(eclsk98, c("childid", "gender", "race"))
+  dat1 <- EdSurvey::getData(eclsk98, c("childid", "gender", "race"))
   expect_equal(dim(dat1), c(21357, 3))
   withr::with_options(list(digits = 7), co <- capture.output(summary(dat1)))
   expect_equal(co, dat1Summary.Ref)
 
   # test continuous variable having only omitted levels
-  dat2 <- getData(eclsk98, c("childid", "c1height", "c2height", "c3height", "c4height", "c5height", "c6height", "c7height"), dropOmittedLevels = FALSE)
+  dat2 <- EdSurvey::getData(eclsk98, c("childid", "c1height", "c2height", "c3height", "c4height", "c5height", "c6height", "c7height"), dropOmittedLevels = FALSE)
   expect_equal(dim(dat2), c(21409, 8))
   withr::with_options(list(digits = 7), co <- capture.output(summary(dat2)))
   expect_equal(co, dat2Summary.Ref)

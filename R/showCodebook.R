@@ -42,7 +42,7 @@ showCodebook <- function(data, fileFormat = NULL, labelLevels = FALSE, includeRe
   vars <- data.frame()
   # if fileFormat is NULL, retrieve all available fileFormats from connection via getAttributes and append
   if (is.null(fileFormat)) {
-    for(i in 1:length(dataList)) {
+    for(i in seq_along(dataList)) {
       iVar <- data.frame(dataList[[i]]$fileFormat, fileFormat = names(dataList)[i])
       iVar <- subset(iVar, !iVar$variableName %in% dataList[[i]]$ignoreVars) #remove ignoreVars from result
       vars <- rbind(vars, iVar)
@@ -56,7 +56,7 @@ showCodebook <- function(data, fileFormat = NULL, labelLevels = FALSE, includeRe
     names(dataList) <- tolower(names(dataList))
 
     # retrieve all available fileFormats from connection via getAttributes and append
-    for(i in 1:length(fileFormat)) {
+    for(i in seq_along(fileFormat)) {
       iVar <-  data.frame(dataList[[fileFormat[i]]]$fileFormat, fileFormat = fileFormat[i])
       iVar <- subset(iVar, !iVar$variableName %in% dataList[[fileFormat[i]]]$ignoreVars) #remove ignoreVars from result
       vars <- rbind(vars, iVar)

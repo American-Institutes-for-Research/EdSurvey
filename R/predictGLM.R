@@ -1,3 +1,4 @@
+#' @export
 predict.edsurveyGlm <- function(object,
                                 newdata = NULL,
                                 type = c("link", "response"),

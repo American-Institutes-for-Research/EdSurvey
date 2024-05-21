@@ -75,7 +75,7 @@ getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, sco
       points <- unlist(strsplit(points, ""))
       # scorePoints will be the maxium value as defined by the 'scoring key'
       scorePoints <- max(as.numeric(points))
-      points <- replace(NA * c(1:12), c(1:length(points)), points) # make it length 12 filled with NAs where applicable
+      points <- replace(NA * c(1:12), c(seq_along(points)), points) # make it length 12 filled with NAs where applicable
     } else {
       points <- NA * c(1:12)
       scorePoints <- NA
@@ -95,7 +95,7 @@ getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, sco
     # set points for other types of answers (like omitted, illegible, etc.)
     if (itemId %in% dichotItems) {
       # this is a multiple choice question
-      for (l in 1:length(labels)) {
+      for (l in seq_along(labels)) {
         # find the corresponding point score in dict
         newScore <- scoreDict$pointMult[match(tolower(labels[l]), tolower(scoreDict$resCat))]
         if (!is.na(newScore)) {
@@ -104,7 +104,7 @@ getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, sco
       }
     } else {
       # this is a constructed answer question
-      for (l in 1:length(labels)) {
+      for (l in seq_along(labels)) {
         newScore <- scoreDict$pointConst[match(tolower(labels[l]), tolower(scoreDict$resCat))]
         if (!is.na(newScore)) {
           points[l] <- newScore

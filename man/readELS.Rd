@@ -63,7 +63,7 @@ four distinct separate datasets that cannot be combined:
 \dontrun{
 # read-in student file including weight file as default
 els_df <- readELS("~/ELS/2002") #student level with weights)
-d <- getData(els_df, c("stu_id", "bysex", "bystlang"))
+d <- getData(data=els_df, varnames=c("stu_id", "bysex", "bystlang"))
 summary(d)
 
 

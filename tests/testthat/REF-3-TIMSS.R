@@ -9,12 +9,12 @@ g3dREF <- c(
   "     B       \"default\"      5201  4603",
   "",
   "Percentage:",
-  "     pctA    pctAse pctB pctBse    diffAB covAB  diffABse diffABpValue    dofAB",
-  " 51.31531 0.7879732  100      0 -48.68469     0 0.7879732            0 147.1725",
+  "     pctA  pctAse pctB pctBse  diffAB covAB diffABse diffABpValue  dofAB",
+  " 51.31531 0.78797  100      0 -48.685     0  0.78797    < 2.2e-16 147.17",
   "",
   "Results:",
-  "                        achievementLevel estimateA estimateAse estimateB estimateBse    diffAB    covAB diffABse diffABpValue    dofAB",
-  " At Intermediate International Benchmark  32.68984       1.619  35.19088    1.167849 -2.501043 1.387219  1.10027   0.02635198 64.60927"
+  "                        achievementLevel estimateA estimateAse estimateB estimateBse diffAB  covAB diffABse diffABpValue  dofAB",
+  " At Intermediate International Benchmark     32.69       1.619    35.191      1.1679 -2.501 1.3872   1.1003      0.02635 64.609"
 )
 
 g2pREF <- c(
@@ -28,13 +28,13 @@ g2pREF <- c(
   "     B asbg01 == \"GIRL\"",
   "",
   "Percentage:",
-  "     pctA    pctAse     pctB    pctBse   diffAB      covAB diffABse diffABpValue    dofAB",
-  " 51.31531 0.7879732 48.68469 0.7879732 2.630613 -0.6209017 1.575946   0.09719809 147.1725",
+  "     pctA  pctAse   pctB  pctBse diffAB   covAB diffABse diffABpValue  dofAB",
+  " 51.31531 0.78797 48.685 0.78797 2.6306 -0.6209   1.5759       0.0972 147.17",
   "",
   "Results:",
-  " percentiles estimateA estimateAse estimateB estimateBse    diffAB     covAB diffABse diffABpValue     dofAB",
-  "          50  554.1330    2.372135  544.5890    3.398268  9.543939 0.2097460 4.093380   0.02077607 189.35935",
-  "          90  637.2713    4.882122  624.3219    4.865290 12.949391 0.2570735 6.855072   0.06199803  93.19778"
+  " percentiles estimateA estimateAse estimateB estimateBse  diffAB   covAB diffABse diffABpValue   dofAB",
+  "          50    554.13      2.3721    544.59      3.3983  9.5439 0.20975   4.0934      0.02078 189.359",
+  "          90    637.27      4.8821    624.32      4.8653 12.9494 0.25707   6.8551      0.06200  93.198"
 )
 
 g1alREF <- c(
@@ -48,12 +48,12 @@ g1alREF <- c(
   "     B asbg01 == \"GIRL\"      5201  2242",
   "",
   "Percentage:",
-  "     pctA    pctAse     pctB    pctBse   diffAB      covAB diffABse diffABpValue    dofAB",
-  " 51.31531 0.7879732 48.68469 0.7879732 2.630613 -0.6209017 1.575946   0.09719809 147.1725",
+  "     pctA  pctAse   pctB  pctBse diffAB   covAB diffABse diffABpValue  dofAB",
+  " 51.31531 0.78797 48.685 0.78797 2.6306 -0.6209   1.5759       0.0972 147.17",
   "",
   "Results:",
-  "               achievementLevel estimateA estimateAse estimateB estimateBse   diffAB     covAB diffABse diffABpValue    dofAB",
-  " At Low International Benchmark  12.60369     1.37976  13.96143    1.038967 -1.35774 0.2823037  1.55518    0.3896682 29.59355"
+  "               achievementLevel estimateA estimateAse estimateB estimateBse  diffAB  covAB diffABse diffABpValue  dofAB",
+  " At Low International Benchmark    12.604      1.3798    13.961       1.039 -1.3577 0.2823   1.5552       0.3897 29.594"
 )
 
 g1eqREF <- c(
@@ -66,12 +66,12 @@ g1eqREF <- c(
   "     B asbg01 == \"GIRL\"      5201  2231",
   "",
   "Percentage:",
-  "     pctA    pctAse     pctB    pctBse   diffAB      covAB diffABse diffABpValue    dofAB",
-  " 51.26581 0.7926966 48.73419 0.7926966 2.531625 -0.6283679 1.585393    0.1124621 146.0453",
+  "     pctA pctAse   pctB pctBse diffAB    covAB diffABse diffABpValue  dofAB",
+  " 51.26581 0.7927 48.734 0.7927 2.5316 -0.62837   1.5854       0.1125 146.05",
   "",
   "Results:",
-  " estimateA estimateAse estimateB estimateBse    diffAB        covAB diffABse diffABpValue    dofAB",
-  "  20.82701    1.081211  22.47612     1.02339 -1.649111 2.639739e-05 1.488722     0.270299 114.4178"
+  " estimateA estimateAse estimateB estimateBse  diffAB   covAB diffABse diffABpValue  dofAB",
+  "  20.82701      1.0812    22.476      1.0234 -1.6491 2.6e-05   1.4887       0.2703 114.42"
 )
 
 swREF <- c(
@@ -245,3 +245,4 @@ mmlSumREF <- c(
   "Observations = 10017",
   "Weighted observations = 3752699.01"
 )
+

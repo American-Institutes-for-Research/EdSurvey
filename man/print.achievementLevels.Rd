@@ -4,7 +4,14 @@
 \alias{print.achievementLevels}
 \title{Print AchievementLevels Results}
 \usage{
-\method{print}{achievementLevels}(x, printCall = TRUE, printDiscrete = TRUE, printCumulative = TRUE, ...)
+\method{print}{achievementLevels}(
+  x,
+  printCall = TRUE,
+  printDiscrete = TRUE,
+  printCumulative = TRUE,
+  use_es_round = getOption("EdSurvey_round_output"),
+  ...
+)
 }
 \arguments{
 \item{x}{an \code{achievementLevels} object}
@@ -17,6 +24,8 @@ levels if they are present in \code{x}}
 
 \item{printCumulative}{a logical value; by default (\code{TRUE}), prints cumulative achievement
 levels if they are present in \code{x}}
+
+\item{use_es_round}{a logical value; use the EdSurvey rounding functions before printing}
 
 \item{...}{these arguments are not passed anywhere and are included only for compatibility}
 }

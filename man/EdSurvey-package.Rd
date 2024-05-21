@@ -2,6 +2,7 @@
 % Please edit documentation in R/edsurvey-package.R
 \docType{package}
 \name{EdSurvey-package}
+\alias{EdSurvey}
 \alias{EdSurvey-package}
 \title{Analysis of NCES Education Survey and Assessment Data}
 \description{
@@ -35,4 +36,41 @@ The functions
 can then be used to analyze data.
 For advanced users, \code{\link{getData}} extracts
 the data of interest as a data frame for further processing.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://www.air.org/project/nces-data-r-project-edsurvey}
+  \item Report bugs at \url{https://github.com/American-Institutes-for-Research/EdSurvey/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Paul Bailey \email{pbailey@air.org} (\href{https://orcid.org/0000-0003-0989-8729}{ORCID})
+
+Authors:
+\itemize{
+  \item Ahmad Emad
+  \item Huade Huo (\href{https://orcid.org/0009-0004-5014-646X}{ORCID})
+  \item Michael Lee (\href{https://orcid.org/0009-0006-0959-787X}{ORCID})
+  \item Yuqi Liao (\href{https://orcid.org/0000-0001-9359-6015}{ORCID})
+  \item Alex Lishinski (\href{https://orcid.org/0000-0003-4506-1600}{ORCID})
+  \item Trang Nguyen (\href{https://orcid.org/0009-0001-0167-8775}{ORCID})
+  \item Qingshu Xie
+  \item Jiao Yu
+  \item Ting Zhang (\href{https://orcid.org/0009-0001-1724-6141}{ORCID})
+  \item Eric Buehler (\href{https://orcid.org/0009-0004-6354-2015}{ORCID})
+  \item Sun-joo Lee
+  \item Blue Webb (\href{https://orcid.org/0009-0004-4080-9864}{ORCID})
+}
+
+Other contributors:
+\itemize{
+  \item Emmanuel Sikali \email{Emmanuel.Sikali@ed.gov} [project director]
+  \item Claire Kelley [contributor]
+  \item Jeppe Bundsgaard [contributor]
+  \item Ren C'deBaca [contributor]
+  \item Anders Astrup Christensen [contributor]
+}
+
 }

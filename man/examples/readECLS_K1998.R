@@ -1,7 +1,7 @@
 \dontrun{
 # read-in student file with defaults
 eclsk_df <- readECLS_K1998(path="~/ECLS_K/1998") #using defaults
-d <- getData(eclsk_df, c("childid", "gender", "race"))
+d <- getData(data=eclsk_df, varnames=c("childid", "gender", "race"))
 summary(d)
 }
 

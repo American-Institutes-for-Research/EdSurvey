@@ -33,12 +33,12 @@ test_that("SSOCS data reads in correctly", {
 
 context("SSOCS getData")
 test_that("SSOCS getData", {
-  dat1 <- getData(ssocs16, c("c0014_r", "c0526", "c0528"))
+  dat1 <- EdSurvey::getData(ssocs16, c("c0014_r", "c0526", "c0528"))
   expect_equal(dim(dat1), c(2069, 3))
   withr::with_options(list(digits = 7), co <- capture.output(summary(dat1)))
   expect_equal(co, ssocs_ref1)
 
-  dat2 <- getData(ssocs18, c("c0134", "c0198", "c0534"))
+  dat2 <- EdSurvey::getData(ssocs18, c("c0134", "c0198", "c0534"))
   expect_equal(dim(dat2), c(2762, 3))
   withr::with_options(list(digits = 7), co <- capture.output(summary(dat2)))
 })

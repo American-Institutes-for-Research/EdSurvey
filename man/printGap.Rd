@@ -5,7 +5,12 @@
 \alias{print.gapList}
 \title{Gap Analysis Printing}
 \usage{
-\method{print}{gap}(x, ..., printPercentage = TRUE)
+\method{print}{gap}(
+  x,
+  ...,
+  printPercentage = TRUE,
+  use_es_round = getOption("EdSurvey_round_output")
+)
 
 \method{print}{gapList}(x, ..., printPercentage = TRUE)
 }
@@ -16,6 +21,8 @@
 
 \item{printPercentage}{a logical value set to \code{TRUE} to request printing
 of the percentage in the groups. Defaults to \code{TRUE}.}
+
+\item{use_es_round}{use the EdSurvey rounding methods for gap}
 }
 \description{
 Prints labels and a results vector of a gap analysis.

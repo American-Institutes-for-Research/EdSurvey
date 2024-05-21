@@ -19,7 +19,7 @@ rbind.light.edsurvey.data.frame <- function(..., deparse.level = 1) {
   }
 
   # coerce all light.edsurvey.data.frame to data.frame
-  for (i in 1:length(args)) {
+  for (i in seq_along(args)) {
     if (inherits(args[[i]], "light.edsurvey.data.frame")) {
       args[[i]] <- as.data.frame(args[[i]])
     }

@@ -220,13 +220,18 @@ logit.sdf <- function(formula,
                       relevels = list(),
                       varMethod = c("jackknife", "Taylor"),
                       jrrIMax = 1,
-                      omittedLevels = TRUE,
+                      dropOmittedLevels = TRUE,
                       defaultConditions = TRUE,
                       recode = NULL,
                       returnNumberOfPSU = FALSE,
-                      returnVarEstInputs = FALSE) {
+                      returnVarEstInputs = FALSE,
+                      omittedLevels = deprecated()) {
   call <- match.call()
   checkDataClass(data, c("edsurvey.data.frame", "light.edsurvey.data.frame", "edsurvey.data.frame.list"))
+  if (lifecycle::is_present(omittedLevels)) {
+    lifecycle::deprecate_soft("4.0.0", "glm.sdf(omittedLevels)", "glm.sdf(dropOmittedLevels)")
+    dropOmittedLevels <- omittedLevels
+  }
   # if data is an edsurvey.data.frame.list, simply return a list with results
   # for each edsurvey.data.frame
   if (inherits(data, c("edsurvey.data.frame.list"))) {
@@ -242,7 +247,7 @@ logit.sdf <- function(formula,
       relevels = relevels,
       varMethod = varMethod,
       jrrIMax = jrrIMax,
-      omittedLevels = omittedLevels,
+      omittedLevels = dropOmittedLevels,
       defaultConditions = defaultConditions,
       missingDefaultConditions = missing(defaultConditions),
       recode = recode,
@@ -262,12 +267,18 @@ probit.sdf <- function(formula,
                        relevels = list(),
                        varMethod = c("jackknife", "Taylor"),
                        jrrIMax = 1,
-                       omittedLevels = TRUE,
+                       dropOmittedLevels = TRUE,
                        defaultConditions = TRUE,
                        recode = NULL,
-                       returnVarEstInputs = FALSE) {
+                       returnNumberOfPSU = FALSE,
+                       returnVarEstInputs = FALSE,
+                       omittedLevels = deprecated()) {
   call <- match.call()
   checkDataClass(data, c("edsurvey.data.frame", "light.edsurvey.data.frame", "edsurvey.data.frame.list"))
+  if (lifecycle::is_present(omittedLevels)) {
+    lifecycle::deprecate_soft("4.0.0", "glm.sdf(omittedLevels)", "glm.sdf(dropOmittedLevels)")
+    dropOmittedLevels <- omittedLevels
+  }
   # if data is an edsurvey.data.frame.list, simply return a list with results
   # for each edsurvey.data.frame
   if (inherits(data, c("edsurvey.data.frame.list"))) {
@@ -288,6 +299,7 @@ probit.sdf <- function(formula,
       missingDefaultConditions = missing(defaultConditions),
       recode = recode,
       returnVarEstInputs = returnVarEstInputs,
+      returnNumberOfPSU = returnNumberOfPSU,
       returnLm0 = FALSE,
       call = call
     ))
@@ -443,7 +455,7 @@ calc.glm.sdf <- function(formula,
   # 3) deal with relevels.
   # An argument that allows the user to change the omitted level for a factor variable
   if (length(relevels) > 0) {
-    for (i in 1:length(relevels)) {
+    for (i in seq_along(relevels)) {
       vari <- names(relevels)[i]
       if (!vari %in% names(edf)) {
         stop(paste0(
@@ -472,7 +484,7 @@ calc.glm.sdf <- function(formula,
         ))
       } # End of if statment !relevels[[i]] %in% lvls
       edf[ , vari] <- relevel(edf[ , vari], ref = relevels[[i]])
-    } # end for(i in 1:length(relevels))
+    } # end for(i in seq_along(relevels))
   } # end if(length(relevels) > 0)
 
   # 4) yvar and plausible values
@@ -495,9 +507,9 @@ calc.glm.sdf <- function(formula,
       pp <- getPlausibleValue(yvars[max(pvy)], data)
       suffix <- ifelse(grepl("_imp_", pp, fixed = TRUE), "_imp_", "_est_")
       suffix <- ifelse(grepl("_samp_", pp, fixed = TRUE), "_samp_", suffix)
-      yvars <- paste0("outcome", suffix, 1:length(pp))
+      yvars <- paste0("outcome", suffix, seq_along(pp))
     } else {
-      yvars <- paste0("outcome", 1:length(getPlausibleValue(yvars[max(pvy)], data)))
+      yvars <- paste0("outcome", seq_along(getPlausibleValue(yvars[max(pvy)], data)))
     }
   } else {
     # if not, make sure that this variable is numeric
@@ -514,9 +526,9 @@ calc.glm.sdf <- function(formula,
   # this allows that variable to not be dynamic variable, it is explicitly defined to be yvar0
   if (family$family %in% c("binomial", "quasibinomial")) { # if using binomial set y to 1 only if it has the highest value
     if (any(pvy)) {
-      for (i in 1:length(yvars)) {
+      for (i in seq_along(yvars)) {
         # PV, so we have not evaluated the I() yet (if any)
-        for (yvi in 1:length(pvy)) {
+        for (yvi in seq_along(pvy)) {
           if (pvy[yvi]) {
             edf[ , yvar[yvi]] <- edf[ , getPlausibleValue(yvar[yvi], data)[i]]
           }
@@ -675,7 +687,7 @@ calc.glm.sdf <- function(formula,
         wgt = wgt
       )
       coefm <- est$coef
-      for (mm in 1:length(yvars)) {
+      for (mm in seq_along(yvars)) {
         edf$yvar0 <- as.numeric(edf[ , yvars[mm]])
         y <- edf[ , yvars[mm]]
         suppressWarnings(lmi <- glm2(frm, data = edf, weights = w, family = family, mustart = c2, epsilon = 1e-14))
@@ -803,7 +815,7 @@ calc.glm.sdf <- function(formula,
     resid1 <- Y - fitted1
     colnames(resid1) <- yvars[ye]
   } else {
-    Y <- sapply(1:length(yvars), function(yi) {
+    Y <- sapply(seq_along(yvars), function(yi) {
       as.vector(edf[ , yvars[yi]])
     }, simplify = TRUE)
     resid1 <- Y - fitted1
@@ -927,15 +939,21 @@ calc.glm.sdf <- function(formula,
 
 #' @method print edsurveyGlm
 #' @export
-print.edsurveyGlm <- function(x, ...) {
+print.edsurveyGlm <- function(x, use_es_round=getOption("EdSurvey_round_output"), ...) {
+  if(use_es_round) {
+    x <- es_round(x)
+  }
   print(coef(x), ...)
 }
 
 #' @method print edsurveyGlmList
 #' @export
-print.edsurveyGlmList <- function(x, ...) {
-  for (i in 1:length(x)) {
+print.edsurveyGlmList <- function(x, use_es_round=getOption("EdSurvey_round_output"), ...) {
+  for (i in seq_along(x)) {
     cat("glm", i, "\n")
+    if(use_es_round) {
+      x[[i]] <- es_round(x[[i]])
+    }
     print(coef(x[[i]]), ...)
   }
 }
@@ -951,7 +969,7 @@ summary.edsurveyGlm <- function(object, ...) {
 #' @export
 summary.edsurveyGlmList <- function(object, ...) {
   class(object) <- "summary.edsurveyGlmList"
-  for (i in 1:length(object)) {
+  for (i in seq_along(object)) {
     class(object[[i]]) <- "summary.edsurveyGlm"
   }
   object
@@ -960,7 +978,10 @@ summary.edsurveyGlmList <- function(object, ...) {
 #' @method print summary.edsurveyGlm
 #' @importFrom stats printCoefmat
 #' @export
-print.summary.edsurveyGlm <- function(x, ...) {
+print.summary.edsurveyGlm <- function(x, use_es_round=getOption("EdSurvey_round_output"), ...) {
+  if(use_es_round) {
+    x <- es_round(x)
+  }
   cat(paste0("\nFormula: ", paste(deparse(x$formula), collapse = ""), "\n"))
   cat(paste0("Family: ", x$family$family, " (", x$family$link, ")\n\n"))
   if (x$npv != 1) {
@@ -977,14 +998,17 @@ print.summary.edsurveyGlm <- function(x, ...) {
   }
   cat(paste0("n used: ", x$nUsed, "\n\n"))
   cat(paste0("Coefficients:\n"))
-  printCoefmat(x$coefmat, P.values = TRUE, has.Pvalue = TRUE)
+  printCoefmat(x$coefmat, P.values = TRUE, has.Pvalue = TRUE, ...)
 }
 
 #' @method print summary.edsurveyGlmList
 #' @export
-print.summary.edsurveyGlmList <- function(x, ...) {
-  for (i in 1:length(x)) {
+print.summary.edsurveyGlmList <- function(x, use_es_round=getOption("EdSurvey_round_output"), ...) {
+  for (i in seq_along(x)) {
     cat("glm", i, "\n")
+    if(use_es_round) {
+      x[[i]] <- es_round(x[[i]])
+    }
     print(x[[i]], ...)
   }
 }

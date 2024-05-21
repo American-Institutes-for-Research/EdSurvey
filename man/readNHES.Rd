@@ -65,7 +65,7 @@ esdf <- readNHES(savFiles = path_ates2016, surveyCode = "ATES_2016",
                  forceReread = FALSE, verbose = TRUE)
 
 #search for variables in the edsurvey.data.frame
-searchSDF("sex", esdf)
+searchSDF(string="sex", data=esdf)
 }
 }
 \seealso{

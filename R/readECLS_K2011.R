@@ -233,7 +233,7 @@ processECLS_K2011 <- function(files,
 
     rowChunks <- split(1:maxRows, ceiling(seq_along(1:maxRows) / rowChunkSize)) # break up the number of rows into our chunk size
 
-    for (rci in 1:length(rowChunks)) {
+    for (rci in seq_along(rowChunks)) {
       if (verbose == TRUE) {
         cat(paste0("Processing data, number of columns ", nrow(fileFormat), ", rows ", min(rowChunks[[rci]]), " to ", max(rowChunks[[rci]]), " of ", maxRows, ".\n"))
       }
@@ -284,7 +284,7 @@ processECLS_K2011 <- function(files,
             fileFormat$Width[coli] <- max(nchar(xColChar))
 
             # recalibrate the start/end positions for user
-            fileFormat$Start <- c(1, 1 + cumsum(fileFormat$Width))[1:length(fileFormat$Width)]
+            fileFormat$Start <- c(1, 1 + cumsum(fileFormat$Width))[seq_along(fileFormat$Width)]
             fileFormat$End <- cumsum(fileFormat$Width)
           }
 
@@ -394,7 +394,7 @@ buildECLSK2011WeightList <- function(fileFormat) {
 
   weights <- list()
 
-  for (i in 1:length(wgtVars)) {
+  for (i in seq_along(wgtVars)) {
     tempVar <- wgtVars[i]
     testJKprefix <- substr(tempVar, 1, nchar(tempVar) - 1) # strip the ending '0' from the variable::all the replicates will have the same name but numbered 1-n
 
@@ -493,7 +493,7 @@ parseSPSSFileFormat2 <- function(inSPSSyntax, encoding = "cp1252") {
   dataListLines <- controlFile[(dataList_StartPos + 1):dataList_EndPos] # skip the 'data list' row as it's not needed
 
   recordIndexPos <- which(dataListLines %in% dataListLines[substr(dataListLines, 1, 1) == "/"]) # record index are defined such as '/2', '/3', etc.  we want to keep these positions as the .dat has multiple rows for one piece of data
-  names(recordIndexPos) <- 1:length(recordIndexPos)
+  names(recordIndexPos) <- seq_along(recordIndexPos)
 
   dataListLines <- dataListLines[trimws(dataListLines, which = "both") != ""]
   dataListLines <- dataListLines[substr(dataListLines, 1, 1) != "."] # remove unneeded rows
@@ -647,7 +647,7 @@ parseSPSSFileFormat2 <- function(inSPSSyntax, encoding = "cp1252") {
   dict$weights <- rep(FALSE, times = length(dict$variableName))
 
   # need to update the position start/end variables as the positions are thrown off by having SPSS tables defined::tables will be removed
-  dict$Start <- c(1, 1 + cumsum(dict$Width))[1:length(dict$Width)]
+  dict$Start <- c(1, 1 + cumsum(dict$Width))[seq_along(dict$Width)]
   dict$End <- cumsum(dict$Width)
 
   return(data.frame(dict, stringsAsFactors = FALSE))

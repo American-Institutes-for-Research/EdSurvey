@@ -23,7 +23,7 @@ showWeights <- function(data, verbose = FALSE) {
   helper <- ifelse(length(wgtNames) == 1, "is", "are")
   s <- ifelse(length(wgtNames) == 1, "", "s")
   eout(paste0("There ", helper, " ", length(wgtNames), " full sample weight", s, " in this edsurvey.data.frame:\n"))
-  for (i in 1:length(wgtNames)) {
+  for (i in seq_along(wgtNames)) {
     wgti <- weights[[i]]
     txt <- paste0(sQuote(names(weights)[i]), " with ", length(wgti$jksuffixes), " JK replicate weights")
     if (attributes(weights)$default == wgtNames[i]) {
@@ -41,7 +41,7 @@ showWeights <- function(data, verbose = FALSE) {
       eout(pasteItems(sQuote(jki)), indent = 4, exdent = 4)
     } # end of if statment: if verbrose
     cat("\n")
-  } # End of For loop: for i in 1:length(wgtNames)
+  } # End of For loop: for i in seq_along(wgtNames)
 }
 
 

@@ -1,6 +1,6 @@
 \dontrun{
 # read in NAEP primer data
-sdf <- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
+sdf <- readNAEP(path=system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
 lsdf <- getData(data=sdf, varnames=c("dsex", "b017451"), addAttributes = TRUE)
 df <- data.frame(dsex = c("Male","Female"), dsex2 = c("Boy","Girl"))
 

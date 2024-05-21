@@ -1,6 +1,6 @@
 \dontrun{
 # filepath argument will vary by operating system conventions
-usaG4.15 <- readTIMSS("~/TIMSS/2015", "usa", 4)
+usaG4.15 <- readTIMSS(path="~/TIMSS/2015", "usa", 4)
 d <- getData(usaG4.15, "itsex")
 summary(d) #show details: MALE/FEMALE
 usaG4.15 <- recode.sdf(usaG4.15,

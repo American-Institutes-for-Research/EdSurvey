@@ -25,7 +25,7 @@ showCutPoints <- function(data) {
   cat(paste0("Achievement Levels:\n"))
   als <- getAttributes(data, "achievementLevels")
   if (length(als) > 0) {
-    for (i in 1:length(als)) {
+    for (i in seq_along(als)) {
       cat(paste0("  ", names(als)[i], ":  ", paste(unname(als[[i]]), collapse = ", "), "\n"))
     }
   } else {

@@ -130,7 +130,7 @@ summary2 <- function(data, variable,
       )))$estimate
     }))
     # turn plausible value variables into their member parts
-    ret0 <- lapply(1:length(variable), function(vi) {
+    ret0 <- lapply(seq_along(variable), function(vi) {
       v <- variable[vi]
       if (hasPlausibleValue(v, data)) {
         v <- getPlausibleValue(v, data)
@@ -163,8 +163,11 @@ summary2 <- function(data, variable,
 
 #' @method print summary2
 #' @export
-print.summary2 <- function(x, ...) {
+print.summary2 <- function(x, use_es_round=getOption("EdSurvey_round_output"), ...) {
   call <- x$call
+  if(use_es_round) {
+    x <- es_round(x)
+  }
   if (!"weightVar" %in% names(call)) {
     cat("Estimates are not weighted.\n")
   } else {

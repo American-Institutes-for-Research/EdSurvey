@@ -66,11 +66,11 @@ test_that("PISA showPlausibleValues and showWeights verbose output agrees", {
 
 context("PISA getData")
 test_that("PISA getData", {
-  expect_known_value(gd0 <- getData(usaINT2015, c("st004d01t", "st001d01t")), file = "PISAgd0.rds", update = FALSE)
-  expect_known_value(gd1 <- getData(usaINT2012, c("st04q01", "st20q01")), file = "PISAgd1.rds", update = FALSE)
-  expect_known_value(gd2 <- getData(qcnCBA2012, c("st04q01", "st20q01")), file = "PISAgd2.rds", update = FALSE)
-  expect_known_value(gd3 <- getData(jpn2009, c("s514q03", "bookid")), file = "PISAgd3.rds", update = FALSE)
-  expect_known_value(gd4 <- getData(aus2006, c("isi")), file = "PISAgd4.rds", update = FALSE)
+  expect_known_value(head(gd0 <- EdSurvey::getData(usaINT2015, c("st004d01t", "st001d01t"))), file = "PISAgd0.rds", update = FALSE)
+  expect_known_value(head(gd1 <- EdSurvey::getData(usaINT2012, c("st04q01", "st20q01"))), file = "PISAgd1.rds", update = FALSE)
+  expect_known_value(head(gd2 <- EdSurvey::getData(qcnCBA2012, c("st04q01", "st20q01"))), file = "PISAgd2.rds", update = FALSE)
+  expect_known_value(head(gd3 <- EdSurvey::getData(jpn2009, c("s514q03", "bookid"))), file = "PISAgd3.rds", update = FALSE)
+  expect_known_value(head(gd4 <- EdSurvey::getData(aus2006, c("isi"))), file = "PISAgd4.rds", update = FALSE)
 })
 
 context("PISA subset data")
@@ -160,8 +160,10 @@ test_that("PISA glm", {
 context("PISA cor")
 test_that("PISA cor", {
   usa2000$omittedLevels <- c(usa2000$omittedLevels, "Mis") # add 'Mis' here to match
-  cor1 <- cor.sdf("read", "st21q02", usa2000, method = "Pearson", weightVar = "w_fstuwt_read", jrrIMax = Inf, dropOmittedLevels = FALSE)
-  withr::with_options(list(digits = 7), cor1c <- capture.output(cor1))
+  cor_drop <- cor.sdf("read", "st21q02", usa2000, method = "Pearson", weightVar = "w_fstuwt_read", jrrIMax = Inf, dropOmittedLevels = TRUE)
+  cor_nodrop <- cor.sdf("read", "st21q02", usa2000, method = "Pearson", weightVar = "w_fstuwt_read", jrrIMax = Inf, dropOmittedLevels = FALSE)
+  withr::with_options(list(digits = 7), cor_dropc <- capture.output(cor_drop))
+  withr::with_options(list(digits = 7), cor_nodropc <- capture.output(cor_nodrop))
   cor1REF <- c(
     "Method: Pearson",
     "full data n: 3846",
@@ -176,5 +178,18 @@ test_that("PISA cor", {
     "    1. Yes",
     "    2. No"
   )
-  expect_equal(cor1c, cor1REF)
+  expect_equal(cor_dropc, cor1REF)
+  cor2REF <- c(
+    "Method: Pearson",
+    "full data n: 3846",
+    "n used: 3846",
+    "", 
+    "Correlation: -0.125838",
+    "Standard Error: 0.03567593",
+    "Confidence Interval: [-0.1958661, -0.054533]",
+    "",
+    "Correlation Levels:",
+    "  Levels for Variable 'st21q02' (Lowest level first):", 
+    "    1. Yes", "    2. No", "    3. Mis")
+  expect_equal(cor_nodropc, cor2REF)
 })

@@ -544,7 +544,7 @@ subset.edsurvey.data.frame <- function(x, subset, ..., inside = FALSE) {
 
 #' @method [ edsurvey.data.frame
 #' @export
-"[.edsurvey.data.frame" <- function(x, i, j, ...) {
+"[.edsurvey.data.frame" <- function(x, i, j, ..., repWeights=FALSE) {
   # check for $ calls to list elements
   if (missing(j)) {
     j <- colnames(x)
@@ -562,7 +562,7 @@ subset.edsurvey.data.frame <- function(x, subset, ..., inside = FALSE) {
     z <- getData(x,
       varnames = j,
       dropUnusedLevels = FALSE, dropOmittedLevels = FALSE,
-      addAttributes = TRUE, returnJKreplicates = FALSE
+      addAttributes = TRUE, returnJKreplicates = repWeights
     )
   )
   z[i, ]
@@ -659,7 +659,7 @@ equals.edsurvey.data <- function(e1, e2, notFunction) {
     if (length(d1) != length(d2) & min(c(length(d1), length(d2))) != 1) {
       stop("Objects do not have the same number of elements in them.")
     }
-    return(notFunction(unlist(lapply(1:length(d1), function(x) {
+    return(notFunction(unlist(lapply(seq_along(d1), function(x) {
       sameSurvey(d1[[x]], d2[[x]])
     }))))
   }
@@ -705,7 +705,7 @@ matchESDF <- function(x, table, nomatch = NA_integer_, uncomparables = NULL) {
   }
   if (inherits(table, "edsurvey.data.frame.list")) {
     dlist <- table$datalist
-    for (i in 1:length(dlist)) {
+    for (i in seq_along(dlist)) {
       if (sameSurvey(x, dlist[[i]])) {
         return(TRUE)
       }
@@ -721,14 +721,14 @@ matchESDFL <- function(x, table, nomatch = NA_integer_, uncomparables = NULL) {
   dlistx <- x$datalist
   res <- rep(FALSE, length(dlistx))
   if (inherits(table, "edsurvey.data.frame")) {
-    for (j in 1:length(dlistx)) {
+    for (j in seq_along(dlistx)) {
       res[j] <- sameSurvey(dlistx[[j]], table)
     }
   }
   if (inherits(table, "edsurvey.data.frame.list")) {
     dlist <- table$datalist
-    for (i in 1:length(dlist)) {
-      for (j in 1:length(dlistx)) {
+    for (i in seq_along(dlist)) {
+      for (j in seq_along(dlistx)) {
         res[j] <- res[j] || sameSurvey(dlistx[[j]], dlist[[i]])
       }
     }

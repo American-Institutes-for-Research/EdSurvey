@@ -327,7 +327,7 @@ readPIRLS <- function(path,
       testJKprefix <- c("JK", "JK.TCHWGT") # have any jk prefix values here that are applicable for this dataset
       weights <- NULL # default value
 
-      for (i in 1:length(testJKprefix)) {
+      for (i in seq_along(testJKprefix)) {
         ujkz <- unique(tolower(grep(paste0("^", "(", testJKprefix[i], ")", "[1-9]"), c(names(processedData$dataList$student), names(processedData$dataList$teacher)), value = TRUE, ignore.case = TRUE)))
         ujkz <- gsub(tolower(testJKprefix[i]), "", ujkz, fixed = TRUE) # remove jk to leave the numeric values
 
@@ -1093,7 +1093,7 @@ exportPIRLSToCSV <- function(folderPath, exportPath, cntryCodes, ...) {
   sdfList <- readPIRLS(folderPath, cntryCodes, ...)
 
   if (inherits(sdfList, "edsurvey.data.frame.list")) {
-    for (i in 1:length(sdfList$datalist)) {
+    for (i in seq_along(sdfList$datalist)) {
       sdf <- sdfList$datalist[[i]]
       cntry <- sdf$country
 
@@ -1124,7 +1124,7 @@ dropTibbleDupes <- function(a) {
   cols <- names(ab)
   abt <- as_tibble(ab)
 
-  for (i in 1:length(cols)) {
+  for (i in seq_along(cols)) {
     coli <- cols[i]
     abcoli <- abt[[coli]]
     if (coli %in% names(a)) {
@@ -1134,7 +1134,7 @@ dropTibbleDupes <- function(a) {
       oldAnames <- names(attributes(abcoli))
       transname <- names(newAtrs)
       transname <- transname[!transname %in% oldAnames]
-      for (tri in 1:length(transname)) {
+      for (tri in seq_along(transname)) {
         if ((!is.null(transname[tri])) && (!is.na(transname[tri])) && (length(transname[tri]) > 0)) {
           attr(abcoli, transname[tri]) <- newAtrs[[transname[tri]]]
         }
@@ -1203,7 +1203,7 @@ getPIRLSCountryName <- function(countryCode) {
 
   lookupNames <- vector(mode = "character", length = length(countryCode))
 
-  for (i in 1:length(countryCode)) {
+  for (i in seq_along(countryCode)) {
     testName <- cntryCodeDF[cntryCodeDF$cntryCode == countryCode[i], "cntryName"]
 
     if (length(testName) == 0) { # test if no value found

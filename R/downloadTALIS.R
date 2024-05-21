@@ -58,7 +58,7 @@ downloadTALIS <- function(root, years = c(2008, 2013, 2018), cache = FALSE, verb
 
   d <- get(paste0("d", year))
 
-  for (di in 1:length(d)) {
+  for (di in seq_along(d)) {
     bn <- basename(d[di]) # name of the file (without the path)
     if (!file.exists(file.path(yroot, bn))) {
       # download zip and catch any errors
@@ -93,7 +93,7 @@ downloadTALIS <- function(root, years = c(2008, 2013, 2018), cache = FALSE, verb
         }
       }
     } # end for(i in 1:nrow(lst))
-  } # end for(di in 1:length(d))
+  } # end for(di in seq_along(d))
 
   if (cache) {
     if (year == 2008) {

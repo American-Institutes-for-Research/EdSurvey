@@ -197,7 +197,7 @@ processECLS_K1998 <- function(files,
 
     rowChunks <- split(1:maxRows, ceiling(seq_along(1:maxRows) / rowChunkSize)) # break up the number of rows into our chunk size
 
-    for (rci in 1:length(rowChunks)) {
+    for (rci in seq_along(rowChunks)) {
       if (verbose == TRUE) {
         cat(paste0("Processing Data, n columns ", nrow(fileFormat), ", rows ", min(rowChunks[[rci]]), " to ", max(rowChunks[[rci]]), " of ", maxRows, ".\n"))
       }
@@ -248,7 +248,7 @@ processECLS_K1998 <- function(files,
             fileFormat$Width[coli] <- max(nchar(xColChar))
 
             # recalibrate the start/end positions for user
-            fileFormat$Start <- c(1, 1 + cumsum(fileFormat$Width))[1:length(fileFormat$Width)]
+            fileFormat$Start <- c(1, 1 + cumsum(fileFormat$Width))[seq_along(fileFormat$Width)]
             fileFormat$End <- cumsum(fileFormat$Width)
           }
 
@@ -339,7 +339,7 @@ buildECLSKWeightList <- function(fileFormat) {
 
   weights <- list()
 
-  for (i in 1:length(wgtVars)) {
+  for (i in seq_along(wgtVars)) {
     tempVar <- wgtVars[i]
     testJKprefix <- substr(tempVar, 1, nchar(tempVar) - 1) # strip the ending '0' from the variable::all the replicates will have the same name but numbered 1-n
     testJKprefix2 <- substr(tempVar, 1, nchar(tempVar) - 2) # strip the ending '[w]0' from the variable

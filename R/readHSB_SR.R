@@ -120,7 +120,7 @@ readHSB_Senior <- function(HSR8086_PRI_FilePath,
     rownames(fileFormat) <- 1:nrow(fileFormat)
 
     # recalibrate the start/end positions so they are correct
-    fileFormat$Start <- c(1, 1 + cumsum(fileFormat$Width))[1:length(fileFormat$Width)]
+    fileFormat$Start <- c(1, 1 + cumsum(fileFormat$Width))[seq_along(fileFormat$Width)]
     fileFormat$End <- cumsum(fileFormat$Width)
 
     lafObj <- laf_open_fwf(HSR8086_PRI_FilePath, fileFormat$dataType, fileFormat$Width, fileFormat$variableName)
@@ -271,7 +271,7 @@ writeCacheWithRepWgt_HSB <- function(dataLaF, fileFormat, stratumVar, psuVar, ca
   newFF <- rbind(fileFormat, newFF)
 
   # recalibrate the start/end positions so they are correct
-  newFF$Start <- c(1, 1 + cumsum(newFF$Width))[1:length(newFF$Width)]
+  newFF$Start <- c(1, 1 + cumsum(newFF$Width))[seq_along(newFF$Width)]
   newFF$End <- cumsum(newFF$Width)
 
   if (verbose) {
@@ -296,7 +296,7 @@ buildHSB_SRWeightList <- function(fileFormat) {
 
   weights <- list()
 
-  for (i in 1:length(wgtVars)) {
+  for (i in seq_along(wgtVars)) {
     tempVar <- wgtVars[i] # full variable name of the weight var
     baseWgtVar <- paste0(tempVar, "_jk2_")
     wgtPattern <- paste0("^", baseWgtVar, "\\d+$")

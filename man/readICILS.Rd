@@ -56,14 +56,14 @@ Data files require the SPSS data file (.sav) format using the default filenames.
 \examples{
 \dontrun{
 pol <- readICILS("~/ICILS/2013", countries = "pol", dataSet = "student")
-gg <- getData(pol, c("idstud", "cil", "is1g18b"))
+gg <- getData(data=pol, varnames=c("idstud", "cil", "is1g18b"))
 head(gg)
-edsurveyTable(cil ~ is1g18b, pol)
+edsurveyTable(formula=cil ~ is1g18b, pol)
 }
 }
 \seealso{
 \code{\link{readNAEP}}, \code{\link{readTIMSS}}, and \code{\link{getData}}
 }
 \author{
-Tom Fink and Jeppe Bundsgaard (updated for 2018)
+Tom Fink and Jeppe Bundsgaard (updated for 2018 and 2023)
 }

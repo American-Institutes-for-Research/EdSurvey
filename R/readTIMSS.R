@@ -454,7 +454,7 @@ readTIMSS <- function(path,
       testJKprefix <- c("JK", "JK.TCHWGT", "JK.MATWGT", "JK.SCIWGT") # have any jk prefix values here that are applicable for this dataset
       weights <- NULL # default value
 
-      for (i in 1:length(testJKprefix)) {
+      for (i in seq_along(testJKprefix)) {
         ujkz <- unique(tolower(grep(paste0("^", "(", testJKprefix[i], ")", "[1-9]"), c(names(processedData$dataList$student), names(processedData$dataList$teacher)), value = TRUE, ignore.case = TRUE)))
         ujkz <- gsub(tolower(testJKprefix[i]), "", ujkz, fixed = TRUE) # remove jk to leave the numeric values
 
@@ -1454,7 +1454,7 @@ mergeTibble <- function(a, b, by, ..., suffixes = c("", ".junk")) {
   cols <- names(ab)
   abt <- as_tibble(ab)
 
-  for (i in 1:length(cols)) {
+  for (i in seq_along(cols)) {
     coli <- cols[i]
     abcoli <- abt[[coli]]
     if (coli %in% names(a) | coli %in% names(b)) {
@@ -1467,7 +1467,7 @@ mergeTibble <- function(a, b, by, ..., suffixes = c("", ".junk")) {
       oldAnames <- names(attributes(abcoli))
       transname <- names(newAtrs)
       transname <- transname[!transname %in% oldAnames]
-      for (tri in 1:length(transname)) {
+      for (tri in seq_along(transname)) {
         if ((!is.null(transname[tri])) && (!is.na(transname[tri])) && (length(transname[tri]) > 0)) {
           attr(abcoli, transname[tri]) <- newAtrs[[transname[tri]]]
         }
@@ -1502,7 +1502,7 @@ writeTibbleToFWFReturnFileFormat <- function(spssDF, outF, jkType = c("JK2", "JK
   jkvars <- c() # holder for all JK vars added
 
   # loop through enough times to search for totwgt, tchwgt, matwgt, or sciwgt and build their JK weights
-  for (iWgt in 1:length(testWgt)) {
+  for (iWgt in seq_along(testWgt)) {
     wgtc <- grep(testWgt[iWgt], fileFormat$variableName, ignore.case = TRUE, value = TRUE)
     jkrepc <- grep(testJKRep[iWgt], fileFormat$variableName, ignore.case = TRUE, value = TRUE)
     jkzonec <- grep(testJKZone[iWgt], fileFormat$variableName, ignore.case = TRUE, value = TRUE)
@@ -1619,7 +1619,7 @@ writeTibbleToFWFReturnFileFormat <- function(spssDF, outF, jkType = c("JK2", "JK
   #
 
   # be sure to mark all of the weight vars as TRUE in the fileFormat
-  for (i in 1:length(testWgt)) {
+  for (i in seq_along(testWgt)) {
     wgtVar <- grepl(testWgt[i], fileFormat$variableName, ignore.case = TRUE)
     fileFormat$weights[wgtVar == TRUE] <- TRUE
   }
@@ -1638,7 +1638,7 @@ exportTIMSSToCSV <- function(folderPath, exportPath, cntryCodes, gradeLvl, ...) 
   sdfList <- readTIMSS(folderPath, cntryCodes, gradeLvl, ...)
 
   if (inherits(sdfList, "edsurvey.data.frame.list")) {
-    for (i in 1:length(sdfList$datalist)) {
+    for (i in seq_along(sdfList$datalist)) {
       sdf <- sdfList$datalist[[i]]
       cntry <- sdf$country
 
@@ -2219,7 +2219,7 @@ getTIMSSCountryName <- function(countryCode) {
 
   lookupNames <- vector(mode = "character", length = length(countryCode))
 
-  for (i in 1:length(countryCode)) {
+  for (i in seq_along(countryCode)) {
     testName <- cntryCodeDF[cntryCodeDF$cntryCode == countryCode[i], "cntryName"]
 
     if (length(testName) == 0) { # test if no value found
@@ -2250,7 +2250,7 @@ rBindTibble <- function(tbl1, tbl2) {
   xTbl <- rbind(xTbl, tblB)
 
   cols <- names(xTbl) # reapply the attributes from the source tibbles
-  for (i in 1:length(cols)) {
+  for (i in seq_along(cols)) {
     coli <- cols[i]
     abcoli <- xTbl[[coli]]
     if (coli %in% names(tbl1) || coli %in% names(tbl2)) {
@@ -2263,7 +2263,7 @@ rBindTibble <- function(tbl1, tbl2) {
       oldAnames <- names(attributes(abcoli))
       transname <- names(newAtrs)
       transname <- transname[!transname %in% oldAnames]
-      for (tri in 1:length(transname)) {
+      for (tri in seq_along(transname)) {
         if ((!is.null(transname[tri])) && (!is.na(transname[tri])) && (length(transname[tri]) > 0)) {
           attr(abcoli, transname[tri]) <- newAtrs[[transname[tri]]]
         }
@@ -2356,14 +2356,14 @@ appendIRTAttributes_TIMSS <- function(path, esdf) {
     sceiSubtests <- c(NA, sceiSubtests[!sceiSubtests %in% c("", NA)])
     mathValues <- testData[testData$test == "Mathematics", c("location", "scale"), drop = FALSE][1, ]
     sceiValues <- testData[testData$test == "Science", c("location", "scale"), drop = FALSE][1, ]
-    for (i in 1:length(mathSubtests)) {
+    for (i in seq_along(mathSubtests)) {
       nextTDrow <- nrow(testData) + 1
       testData[nextTDrow, "test"] <- "mmat"
       testData[nextTDrow, "subtest"] <- mathSubtests[i]
       testData[nextTDrow, "location"] <- mathValues$location
       testData[nextTDrow, "scale"] <- mathValues$scale
     }
-    for (i in 1:length(sceiSubtests)) {
+    for (i in seq_along(sceiSubtests)) {
       nextTDrow <- nrow(testData) + 1
       testData[nextTDrow, "test"] <- "ssci"
       testData[nextTDrow, "subtest"] <- sceiSubtests[i]

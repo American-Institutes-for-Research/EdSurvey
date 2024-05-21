@@ -636,7 +636,7 @@ gap <- function(variable, data, groupA = "default", groupB = "default",
           } else {
             resi$results$statisticsLevel <- NULL
           }
-          for (ii in 1:length(resi$results)) {
+          for (ii in seq_along(resi$results)) {
             resdf[i, names(resi$results)[ii]] <- resi$results[[ii]]
           }
           skipB <- is.null(resi$labels$B) # a boolean to indicate whether groupB estimates are available in the results of gapHelper
@@ -681,7 +681,7 @@ gap <- function(variable, data, groupA = "default", groupB = "default",
                   }
                 }
                 covvars <- c("covAA", "covBB", "covABAB")
-                for (cvi in 1:length(covvars)) {
+                for (cvi in seq_along(covvars)) {
                   if (covvars[cvi] %in% colnames(resdf)) {
                     resdf[i, covvars[cvi]] <- -1 / 2 * linke^2
                   }
@@ -1986,11 +1986,15 @@ calLinkingError <- function(X,
 #' @param printPercentage a logical value set to \code{TRUE} to request printing
 #'                        of the percentage in the groups. Defaults to \code{TRUE}.
 #' @param ... these arguments are not passed anywhere and are included only for compatibility
+#' @param use_es_round use the EdSurvey rounding methods for gap
 #' @method print gap
 #' @author Paul Bailey
 #' @aliases print.gapList
 #' @export
-print.gap <- function(x, ..., printPercentage = TRUE) {
+print.gap <- function(x, ..., printPercentage = TRUE, use_es_round=getOption("EdSurvey_round_output")) {
+  if(use_es_round) {
+  	x <- es_round(x)
+  }
   cat("Call: ")
   print(x$call)
   cat("\nLabels:\n")
@@ -2005,12 +2009,50 @@ print.gap <- function(x, ..., printPercentage = TRUE) {
     lab$nPSU <- c(x$labels$nPSUA, x$labels$nPSUB)
   }
   print(lab, row.names = FALSE)
+  cl_print <- match.call()
   if (printPercentage) {
     cat("\nPercentage:\n")
-    print(x$percentage, row.names = FALSE)
+    pct <- data.frame(x$percentage, stringsAsFactors = FALSE)
+    res <- prepGapDf(pct)
+    res$df <- roundLikePrintCoefmat(res$df, cs=res$cs, tst=res$tst, cl_print)
+    print(res$df, row.names = FALSE, cs.ind = res$cs, tst.ind = res$tst, ...)
   }
   cat("\nResults:\n")
-  print(x$results, row.names = FALSE, ...)
+  attributes(x$results)$row.names <- rep("", nrow(x$results))
+  inds = 1:ncol(x$results)
+  tst <- inds[grepl("pValue", colnames(x$results))]
+  cs <- inds[!grepl("pValue", colnames(x$results))]
+  ind0 <- -1 + which.max(colnames(x$results) == "estimateA")
+  tst <- tst[!tst %in% (1:ind0)]
+  cs <- cs[!cs %in% (1:ind0)]
+  cl_print <- match.call()
+  x$results <- roundLikePrintCoefmat(x$results, cs=cs, tst=tst, cl_print)
+  print(x$results)
+}
+
+roundLikePrintCoefmat <- function(x, cs, tst, cl_print) {
+  # round like printCoefmat
+  absvec <- abs(x[ , cs])
+  absvec <- absvec[absvec > 0 & !is.na(absvec)]
+  if("digits" %in% names(cl_print)) {
+    digits <- cl_print["digits"]
+  } else {
+  	digits <- max(3, getOption("digits") - 2)
+  }
+  if("eps.Pvalue" %in% names(cl_print)) {
+    eps.Pvalue <- cl_print["eps.Pvalue"]
+  } else {
+    eps.Pvalue <- .Machine$double.eps
+  }
+  if("dig.tst" %in% names(cl_print)) {
+  	dig.tst <- cl_print["dig.tst"]
+  } else {
+  	dig.tst <- max(1, min(5, digits-1))
+  }
+  new_digits <- max(1, digits - 1+floor(log10(max(absvec))))
+  x[,cs] <- format(round(x[ , cs], new_digits), digits=digits)
+  x[,tst] <- format.pval(x[ , tst], digits= dig.tst, eps= eps.Pvalue)
+  return(x)
 }
 
 #' @rdname printGap
@@ -2027,14 +2069,31 @@ print.gapList <- function(x, ..., printPercentage = TRUE) {
     definition = c(deparse(x$labels$A), deparse(x$labels$B))
   )
   print(lab, row.names = FALSE)
+  cl_print <- match.call()
   if (printPercentage) {
     cat("\nPercentage:\n")
     pct <- data.frame(x$percentage, stringsAsFactors = FALSE)
-    print(pct, row.names = FALSE)
+    res <- prepGapDf(pct)
+    res$df <- roundLikePrintCoefmat(res$df, cs=res$cs, tst=res$tst, cl_print)
+    print(res$df, row.names = FALSE, cs.ind = res$cs, tst.ind = res$tst, ...)
   }
   cat("\nResults:\n")
-  print(x$results, row.names = FALSE)
+  res <- prepGapDf(x$results)
+  res$df <- roundLikePrintCoefmat(res$df, cs=res$cs, tst=res$tst, cl_print)
+  print(res$df)
 }
+
+prepGapDf <- function(df) {
+  attributes(df)$row.names <- rep("", nrow(df))
+  inds = 1:ncol(df)
+  tst <- inds[grepl("pValue", colnames(df))]
+  cs <- inds[!grepl("pValue", colnames(df))]
+  ind0 <- -1 + which.max(colnames(df) %in% c("estimateA", "pctA"))
+  tst <- tst[!tst %in% (1:ind0)]
+  cs <- cs[!cs %in% (1:ind0)]
+  return(list(df=df, tst=tst, cs=cs))
+}
+
 
 # helper that identifies variables in a call
 # ccall is the call to parse
@@ -2046,7 +2105,7 @@ parseVars <- function(ccall, x) {
   if (typeof(ccall) == "symbol") {
     return(vars)
   }
-  for (i in 1:length(ccall)) {
+  for (i in seq_along(ccall)) {
     # if it is a name
     if (inherits(ccall[[i]], "name")) {
       ccall_c <- as.character(ccall[[i]])
@@ -2063,7 +2122,7 @@ parseVars <- function(ccall, x) {
       # if this is a call, recursively parse that
       vars <- c(vars, parseVars(ccall[[i]], x))
     } # end of if statment: if class(ccall[[i]]) %in% "call"
-  } # end of for loop: i in 1:length(ccall)
+  } # end of for loop: i in seq_along(ccall)
   vars
 } # End of fucntion: parseVars
 
@@ -2098,8 +2157,8 @@ gmatchAttr <- function(strings, achievementLevelNames) {
   strings <- trimws(substr(strings, nchar(prefix) + 1, nchar(strings)))
   out <- rep("", length(strings))
   error <- rep("", length(strings))
-  for (i in 1:length(out)) {
-    for (j in 1:length(alN)) {
+  for (i in seq_along(out)) {
+    for (j in seq_along(alN)) {
       update <- grepl(strings[i], alN[j], fixed = TRUE)
       if (update) {
         if (nchar(out[i]) == 0) {

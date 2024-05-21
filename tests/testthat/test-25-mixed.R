@@ -10,7 +10,7 @@ source("REF-mixed.R")
 
 test_that("mixed.sdf", {
   usa8 <- readTIMSS(file.path(edsurveyHome, "TIMSS/2003"), countries = c("usa"), gradeLvl = 8, verbose = FALSE)
-  usa8dat <- getData(data = usa8, c("mmat", "idclass", "totwgt", "schwgt", "itsex"), returnJKreplicates = FALSE, addAttributes = TRUE)
+  usa8dat <- EdSurvey::getData(data = usa8, c("mmat", "idclass", "totwgt", "schwgt", "itsex"), returnJKreplicates = FALSE, addAttributes = TRUE)
   usa8dat$wsum <- ave(usa8dat$totwgt, usa8dat$idclass, FUN = mean)
   usa8dat$w1 <- usa8dat$totwgt / usa8dat$wsum * usa8dat$schwgt
   usa8dat$w2 <- usa8dat$schwgt
@@ -25,7 +25,7 @@ test_that("mixed.sdf", {
 context("Interactions in REs")
 test_that("Interactions in REs", {
   usa8 <- readTIMSS(file.path(edsurveyHome, "TIMSS/2003"), countries = c("usa"), gradeLvl = 8, verbose = FALSE)
-  usa8dat <- getData(data = usa8, c("mmat", "idclass", "totwgt", "schwgt", "itsex", "bsbgfbrn"), returnJKreplicates = FALSE, addAttributes = TRUE)
+  usa8dat <- EdSurvey::getData(data = usa8, c("mmat", "idclass", "totwgt", "schwgt", "itsex", "bsbgfbrn"), returnJKreplicates = FALSE, addAttributes = TRUE)
   usa8dat$wsum <- ave(usa8dat$totwgt, usa8dat$idclass, FUN = mean)
   usa8dat$w1 <- usa8dat$totwgt / usa8dat$wsum * usa8dat$schwgt
   usa8dat$w2 <- usa8dat$schwgt
@@ -42,7 +42,7 @@ test_that("mixed.sdf Wald test", {
   cntl <- readPISA(file.path(edsurveyHome, "PISA/2012"), countries = "USA", verbose = FALSE)
   # model with one random effect
   m1 <- mixed.sdf(math ~ st29q03 + sc14q02 + st04q01 + escs + (1 | schoolid), data = cntl)
-  wt <- waldTest(m1, coef = 2:4)
+  wt <- EdSurvey::waldTest(m1, coef = 2:4)
   expect_is(wt, "edsurveyWaldTest")
   # the estimates vary from computer to computer
   expect_equal(unname(wt$result$chi2["chi2"]), 30.2097969661517, tol = 0.01)

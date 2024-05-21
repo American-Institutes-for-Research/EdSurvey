@@ -115,6 +115,9 @@
     <loc>/reference/edsurveyTable2pdf.html</loc>
   </url>
   <url>
+    <loc>/reference/es_round.html</loc>
+  </url>
+  <url>
     <loc>/reference/gap.html</loc>
   </url>
   <url>
@@ -262,6 +265,12 @@
     <loc>/reference/rename.sdf.html</loc>
   </url>
   <url>
+    <loc>/reference/roundn.html</loc>
+  </url>
+  <url>
+    <loc>/reference/roundNCES.html</loc>
+  </url>
+  <url>
     <loc>/reference/rq.sdf.html</loc>
   </url>
   <url>
@@ -311,5 +320,8 @@
   </url>
   <url>
     <loc>/reference/waldTest.html</loc>
+  </url>
+  <url>
+    <loc>/STYLE_GUIDE.html</loc>
   </url>
 </urlset>

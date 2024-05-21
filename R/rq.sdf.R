@@ -275,7 +275,7 @@ calc.rq.sdf <- function(formula,
   # 3) deal with relevels.
   # An argument that allows the user to change the omitted level for a factor variable
   if (length(relevels) > 0) {
-    for (i in 1:length(relevels)) {
+    for (i in seq_along(relevels)) {
       vari <- names(relevels)[i]
       if (!vari %in% names(edf)) {
         stop(paste0(
@@ -304,7 +304,7 @@ calc.rq.sdf <- function(formula,
         ))
       } # End of if statment !relevels[[i]] %in% lvls
       edf[ , vari] <- relevel(edf[ , vari], ref = relevels[[i]])
-    } # end for(i in 1:length(relevels))
+    } # end for(i in seq_along(relevels))
   } # end if(length(relevels) > 0)
 
   # 4) deal with yvar having plausible values
@@ -316,7 +316,7 @@ calc.rq.sdf <- function(formula,
     pvs <- getPlausibleValue(yvars[max(pvy)], data)
     yvars <- paste0(
       "outcome",
-      1:length(pvs),
+      seq_along(pvs),
       ifelse(grepl("_imp_", pvs), "_imp",
         ifelse(grepl("_samp_", pvs), "_samp", "_est")
       )
@@ -331,10 +331,10 @@ calc.rq.sdf <- function(formula,
   yvar0 <- yvars[1]
   # this allows that variable to not be dynamic variable, it is explicitly defined to be yvar0
   if (any(pvy)) {
-    for (i in 1:length(yvars)) {
+    for (i in seq_along(yvars)) {
       # PV, so we have not evaluated the I() yet (if any)
       # first, by PV, rename the ith PVs to be e.g. composite
-      for (yvi in 1:length(pvy)) {
+      for (yvi in seq_along(pvy)) {
         if (pvy[yvi]) {
           edf[ , yvar[yvi]] <- edf[ , getPlausibleValue(yvar[yvi], data)[i]]
         }
@@ -527,7 +527,7 @@ calc.rq.sdf <- function(formula,
   # Deal with estimates with no sampling variance, make sure they return NA for SE
   Vjrr[Vjrr == 0] <- NA
   V <- Vjrr + Vimp
-  coef <- coef[1:length(coef(lm0))]
+  coef <- coef[seq_along(coef(lm0))]
   names(coef) <- names(coef(lm0))
   se <- sqrt(V)
   names(se) <- names(coef(lm0))
@@ -537,11 +537,11 @@ calc.rq.sdf <- function(formula,
   fitted1 <- as.vector(X %*% coef)
   if (linkingError) {
     yve <- yvars[grep("_est", yvars)]
-    Y <- sapply(1:length(yve), function(yi) {
+    Y <- sapply(seq_along(yve), function(yi) {
       as.vector(edf[ , yve[yi]])
     }, simplify = TRUE)
   } else {
-    Y <- sapply(1:length(yvars), function(yi) {
+    Y <- sapply(seq_along(yvars), function(yi) {
       as.vector(edf[ , yvars[yi]])
     }, simplify = TRUE)
   }
@@ -562,7 +562,7 @@ calc.rq.sdf <- function(formula,
       coefm <- t(as.matrix(coefm))
     }
     # remove r-sq, if present
-    coefm <- coefm[ , 1:length(coef)]
+    coefm <- coefm[ , seq_along(coef)]
     fitted2 <- as.matrix(X %*% t(coefm))
     resid2 <- Y - fitted2
   }
@@ -655,15 +655,21 @@ calc.rq.sdf <- function(formula,
 
 #' @method print edsurveyRq
 #' @export
-print.edsurveyRq <- function(x, ...) {
+print.edsurveyRq <- function(x, use_es_round=getOption("EdSurvey_round_output"), ...) {
+  if(use_es_round) {
+    x <- es_round(x)
+  }
   print(coef(x), ...)
 }
 
 #' @method print edsurveyRqList
 #' @export
-print.edsurveyRqList <- function(x, ...) {
-  for (i in 1:length(x)) {
+print.edsurveyRqList <- function(x, use_es_round=getOption("EdSurvey_round_output"), ...) {
+  for (i in seq_along(x)) {
     cat("rq", i, "\n")
+    if(use_es_round) {
+      x[[i]] <- es_round(x[[i]])
+    }
     print(coef(x[[i]]), ...)
   }
 }
@@ -679,7 +685,7 @@ summary.edsurveyRq <- function(object, ...) {
 #' @export
 summary.edsurveyRqList <- function(object, ...) {
   class(object) <- "summary.edsurveyRqList"
-  for (i in 1:length(object)) {
+  for (i in seq_along(object)) {
     class(object[[i]]) <- "summary.edsurveyRq"
   }
   object
@@ -688,7 +694,10 @@ summary.edsurveyRqList <- function(object, ...) {
 #' @method print summary.edsurveyRq
 #' @importFrom stats printCoefmat
 #' @export
-print.summary.edsurveyRq <- function(x, ...) {
+print.summary.edsurveyRq <- function(x, use_es_round=getOption("EdSurvey_round_output"), ...) {
+  if(use_es_round) {
+    x <- es_round(x)
+  }
   cat(paste0("\nFormula: ", paste(deparse(x$formula), collapse = ""), "\n\n"))
   cat(paste0("tau: ", x$tau, "\n"))
   if (x$npv != 1) {
@@ -711,9 +720,12 @@ print.summary.edsurveyRq <- function(x, ...) {
 
 #' @method print summary.edsurveyRqList
 #' @export
-print.summary.edsurveyRqList <- function(x, ...) {
-  for (i in 1:length(x)) {
+print.summary.edsurveyRqList <- function(x, use_es_round=getOption("EdSurvey_round_output"), ...) {
+  for (i in seq_along(x)) {
     cat("rq", i, "\n")
+    if(use_es_round) {
+      x[[i]] <- es_round(x[[i]])
+    }
     print(x[[i]], ...)
   }
 }

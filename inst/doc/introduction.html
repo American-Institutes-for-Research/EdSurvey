@@ -11,7 +11,7 @@
 
 <meta name="author" content="Developed by Paul Bailey, Charles Blankenship, Eric Buehler, Ren C’deBaca, Nancy Collins, Ahmad Emad, Thomas Fink, Huade Huo, Frank Fonseca, Julian Gerez, Sun-joo Lee, Michael Lee, Jiayi Li, Yuqi Liao, Alex Lishinski, Thanh Mai, Trang Nguyen, Emmanuel Sikali, Qingshu Xie, Sinan Yavuz, Jiao Yu, and Ting Zhang" />
 
-<meta name="date" content="2023-11-01" />
+<meta name="date" content="2024-05-21" />
 
 <title>Introduction to Analyzing NCES Data Using EdSurvey</title>
 
@@ -357,7 +357,7 @@ Buehler, Ren C’deBaca, Nancy Collins, Ahmad Emad, Thomas Fink, Huade
 Huo, Frank Fonseca, Julian Gerez, Sun-joo Lee, Michael Lee, Jiayi Li,
 Yuqi Liao, Alex Lishinski, Thanh Mai, Trang Nguyen, Emmanuel Sikali,
 Qingshu Xie, Sinan Yavuz, Jiao Yu, and Ting Zhang</h4>
-<h4 class="date">November 01, 2023</h4>
+<h4 class="date">May 21, 2024</h4>
 
 </div>
 
@@ -379,147 +379,18 @@ write special code to read in just the appropriate variables. This is
 all addressed directly in the <code>EdSurvey</code> package—behind the
 scenes and without additional work by the user.</p>
 </div>
-<div id="technical-papers" class="section level1">
-<h1>Technical Papers</h1>
-<div id="book-and-journal-publication" class="section level2">
-<h2>Book and Journal Publication</h2>
+<div id="book" class="section level1">
+<h1>Book</h1>
+<p>Please see our book, <a href="https://naep-research.airprojects.org/portals/0/edsurvey_a_users_guide/_book/index.html">Analyzing
+NCES Data Using EdSurvey: A User’s Guide</a>. Please refer to the book
+for further information about installing, using, and understanding the
+statistical methodology in EdSurvey.</p>
+</div>
+<div id="journal-publications" class="section level1">
+<h1>Journal Publications</h1>
 <p>Bailey, P., Lee, M., Nguyen, T., &amp; Zhang, T. (2020). <a href="https://link.springer.com/content/pdf/10.1007/978-3-030-47515-4_9.pdf"><em>Using
 EdSurvey to Analyse PIAAC Data</em></a>. In <em>Large-Scale Cognitive
 Assessment</em> (pp. 209-237). Springer, Cham.</p>
-</div>
-<div id="data-set-specific-overviews" class="section level2">
-<h2>Data Set Specific Overviews</h2>
-<p>Documents that describe the analysis of specific survey data in the
-EdSurvey package include the following:</p>
-<ul>
-<li><p><a href="https://www.air.org/sites/default/files/EdSurvey-ECLS.pdf"><em>Using
-EdSurvey to Analyze ECLS-K:2011 Data</em></a> is an introduction to the
-methods used in the analysis of the large-scale child development study
-Early Childhood Longitudinal Study, Kindergarten Class of 2010-11
-(ECLS-K:2011) using the <code>EdSurvey</code> package. The vignette
-covers topics such as preparing the R environment for processing,
-creating summary tables, running linear regression models, and
-correlating variables.</p></li>
-<li><p><a href="https://www.air.org/sites/default/files/Edsurvey.pdf"><em>Using
-EdSurvey to Analyze NCES Data: An Illustration of Analyzing NAEP
-Primer</em></a> is an introduction to the basics of using the
-<code>EdSurvey</code> package for analyzing NCES data, using the NAEP
-Primer as an example. The vignette covers topics such as preparing the R
-environment for processing, creating summary tables, running linear
-regression models, and correlating variables.</p></li>
-<li><p><a href="https://www.air.org/sites/default/files/edsurvey-TIMSS-pdf.pdf"><em>Using
-EdSurvey to Analyze TIMSS Data</em></a> is an introduction to the
-methods used in analysis of large-scale educational assessment programs
-such as Trends in International Mathematics and Science Study (TIMSS)
-using the <code>EdSurvey</code> package. The vignette covers topics such
-as preparing the R environment for processing, creating summary tables,
-running linear regression models, and correlating variables.</p></li>
-<li><p><a href="https://www.air.org/sites/default/files/EdSurvey-Accommodations.pdf"><em>Using
-EdSurvey to Analyze NAEP Data With and Without Accommodations</em></a>
-provides an overview of the use of NAEP data with accommodations and
-describes methods used to analyze this data.</p></li>
-</ul>
-</div>
-<div id="task-specific-walkthroughs" class="section level2">
-<h2>Task Specific Walkthroughs</h2>
-<p>Documents providing an overview of functions developed in the
-EdSurvey package include the following:</p>
-<ul>
-<li><p><a href="https://www.air.org/sites/default/files/2021-07/EdSurvey-linkingerror.pdf"><em>NAEP
-DBA-PBA Linking Error With EdSurvey</em></a> describes using EdSurvey to
-calculate the linking error in NAEP assessments that have combined PBA
-and DBA formats, and the NCES method that EdSurvey uses to calculate the
-linking error.</p></li>
-<li><p><a href="https://www.air.org/sites/default/files/EdSurvey-RUDInstall.pdf"><em>Installing
-the EdSurvey Package on a Restricted-Use Data Computer</em></a> provides
-guidance for how to install EdSurvey on a restricted-use data (RUD)
-computer without an Internet connection.</p></li>
-<li><p><a href="https://www.air.org/sites/default/files/EdSurvey-SPSSConversion.pdf"><em>Converting
-Text Data File(s) With Companion SPSS Script to SPSS Data File
-Format</em></a> details the process of converting a data file and SPSS
-script to an SPSS Data File for use with EdSurvey.</p></li>
-<li><p><a href="https://www.air.org/sites/default/files/EdSurvey-getData.pdf"><em>Using
-the <code>getData</code> Function in EdSurvey</em></a> describes the use
-of the <code>EdSurvey</code> package when extensive data manipulation is
-required before analysis.</p></li>
-<li><p><a href="https://www.air.org/sites/default/files/EdSurvey-Trend.pdf"><em>Using
-EdSurvey for Trend Analysis</em></a> describes the methods used in the
-<code>EdSurvey</code> package to conduct analyses of statistics that
-change over time in large-scale educational studies.</p></li>
-<li><p><a href="https://www.air.org/sites/default/files/EdSurvey-EDA.pdf"><em>Exploratory
-Data Analysis on NCES Data</em></a> provides examples of conducting
-exploratory data analysis on NAEP data.</p></li>
-<li><p><a href="https://www.air.org/sites/default/files/EdSurvey-pvalues.pdf"><em>Calculating
-Adjusted</em> p<em>-Values From EdSurvey Results</em></a> describes the
-basics of adjusting <em>p</em>-values to account for multiple
-comparisons.</p></li>
-<li><p><a href="https://www.air.org/sites/default/files/EdSurvey-LaTeXtables.pdf"><em>Producing
- Tables From edsurveyTable Results With edsurveyTable2pdf</em></a>
-details the creation of pdf summary tables from summary results using
-the <code>edsurveyTable2pdf</code> function.</p></li>
-</ul>
-</div>
-<div id="methodology-resources" class="section level2">
-<h2>Methodology Resources</h2>
-<p>Documents that describe the statistical methodology used in the
-<code>EdSurvey</code> package include the following:</p>
-<ul>
-<li><p><a href="https://www.air.org/sites/default/files/EdSurvey-Statistics.pdf"><em>Statistical
-Methods Used</em></a> details the estimation of the statistics in the
-<code>lm.sdf</code>, <code>achievementLevel</code>, and
-<code>edsurveyTable</code> functions.</p></li>
-<li><p><a href="https://www.air.org/resource/analyses-using-achievement-levels-based-plausible-values"><em>Analyses
-Using Achievement Levels Based on Plausible Values</em></a> describes
-the methodological approaches for analyses using NAEP achievement
-levels.</p></li>
-<li><p><a href="https://www.air.org/sites/default/files/EdSurvey-Gap.pdf"><em>Gap
-Analysis</em></a> covers the methods comparing the gap analysis results
-of the <code>EdSurvey</code> package to the NAEP Data Explorer.</p></li>
-<li><p><a href="https://www.air.org/sites/default/files/EdSurvey-Percentiles.pdf"><em>Estimating
-Percentiles</em></a> describes the methods used to estimate
-percentiles.</p></li>
-<li><p><a href="https://www.air.org/sites/default/files/EdSurvey-Mixed_Models.pdf"><em>Estimating
-Mixed-Effects Models</em></a> describes the methods used to estimate
-mixed-effects models with plausible values and survey weights, and how
-to fit different types of mixed-effects models using the EdSurvey
-package.</p></li>
-<li><p><a href="https://www.air.org/sites/default/files/EdSurvey-Multivariate_Regression.pdf"><em>Multivariate
-Regression</em></a> details the estimation of multivariate regression
-models using <code>mvrlm.sdf</code>.</p></li>
-<li><p><a href="https://www.air.org/sites/default/files/EdSurvey-WaldTest.pdf"><em>Running
-Wald Tests</em></a> describes the use of the Wald test to jointly test
-regression coefficients estimated using <code>lm.sdf</code> and
-<code>glm.sdf</code>.</p></li>
-<li><p><a href="https://www.air.org/resource/report/weighted-and-unweighted-correlation-methods-large-scale-educational-assessment"><em>Weighted
-and Unweighted Correlation Methods for Large-Scale Educational
-Assessment: wCorr Formulas</em></a> introduces the methodology used by
-the wCorr R package for computing the Pearson, Spearman, polyserial,
-polyserial, polychoric and tetrachoric correlations, with and without
-weights applied. Simulation evidence is presented to show correctness of
-the methods, including an examination of the bias and
-consistency.</p></li>
-</ul>
-<hr />
-</div>
-<div id="software-requirements" class="section level2">
-<h2>Software Requirements</h2>
-<p>Unless you already have R version 3.2.0 or later, install the latest
-R version—which is available online at <a href="https://cran.r-project.org/">https://cran.r-project.org/</a>.
-Users also may want to install RStudio desktop, which has an interface
-that many find easier to follow. RStudio is available online at <a href="https://posit.co/download/rstudio-desktop/">https://posit.co/download/rstudio-desktop/</a>.</p>
-</div>
-</div>
-<div id="setting-up-the-environment-for-analyzing-nces-data" class="section level1">
-<h1>Setting Up the Environment for Analyzing NCES Data</h1>
-<div id="installing-and-loading-edsurvey" class="section level2">
-<h2>Installing and Loading <code>EdSurvey</code></h2>
-<p>Inside R, run the following command to install <code>EdSurvey</code>
-as well as its package dependencies:</p>
-<pre class="r"><code>install.packages(&quot;EdSurvey&quot;)</code></pre>
-<p>Once the package is successfully installed, <code>EdSurvey</code> can
-be loaded with the following command:</p>
-<pre class="r"><code>library(EdSurvey)</code></pre>
-</div>
 </div>
 
 

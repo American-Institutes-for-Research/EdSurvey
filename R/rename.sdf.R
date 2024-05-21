@@ -80,7 +80,7 @@ rename.sdf <- function(x,
     if (any(grepl("_linking", newnames, fixed = TRUE))) {
       stop("Cannot rename a PV variable with _linking in the name. These are reserved for linking error.")
     }
-    for (vari in 1:length(oldnames)) {
+    for (vari in seq_along(oldnames)) {
       # to avoid duplicates after the operation
       if (newnames[vari] %in% c(varnames, names(weights), names(pvvars))) {
         if (avoid_duplicated) {
@@ -96,14 +96,14 @@ rename.sdf <- function(x,
 
       # change variable name in userConditions list
       if (!is.null(userConditions) && length(userConditions) > 0) {
-        for (i in 1:length(userConditions)) {
+        for (i in seq_along(userConditions)) {
           if (!is.null(names(userConditions)[i]) && names(userConditions)[i] %in% "recode") {
             names(userConditions[[i]]) <- gsub(paste0("\\b", oldnames[vari], "\\b"), newnames[vari], names(userConditions[[i]]))
           } else {
             condition <- userConditions[[i]]
             userConditions[[i]] <- replaceVars(condition, oldnames[vari], newnames[vari])
           }
-        } # end (for(i in 1:length(userConditions)))
+        } # end (for(i in seq_along(userConditions)))
       } # end if (!is.null(userConditons))
 
       # change pvvars
@@ -150,7 +150,7 @@ rename.sdf <- function(x,
 
       ## change name in LaF Objects as well as the LaF 'column_names' attribute which is used when the file connection is open/closed
       if (!is.null(lafObj) && length(lafObj) > 0) {
-        for (i in 1:length(lafObj)) {
+        for (i in seq_along(lafObj)) {
           if (varn %in% names(lafObj[[i]])) {
             names(lafObj[[i]])[names(lafObj[[i]]) == oldnames[vari]] <- newnames[vari]
             attr(lafObj[[i]], "column_names") <- names(lafObj[[i]]) # ensure the column_names is changed as well or if connection reopened/closed the col name will be lost!
@@ -162,14 +162,14 @@ rename.sdf <- function(x,
 
       # if the name is one of the plausible values
       if (!is.null(pvvars) & length(pvvars) > 0) {
-        for (pvi in 1:length(pvvars)) {
+        for (pvi in seq_along(pvvars)) {
           pvvars[[pvi]]$varnames <- gsub(paste0("\\b", oldnames[vari], "\\b"), newnames[vari], pvvars[[pvi]]$varnames)
         }
       }
 
       #
       if (!is.null(fileFormat) && length(fileFormat) > 0) {
-        for (i in 1:length(fileFormat)) {
+        for (i in seq_along(fileFormat)) {
           if (varn %in% fileFormat[[i]]$variableName) {
             fileFormat[[i]]$variableName[fileFormat[[i]]$variableName == varn] <- newnames[vari]
           }
@@ -178,25 +178,25 @@ rename.sdf <- function(x,
 
       ## update parentMergeVars
       if (!is.null(parentMergeVars) && length(parentMergeVars) > 0) {
-        for (i in 1:length(parentMergeVars)) {
+        for (i in seq_along(parentMergeVars)) {
           parentMergeVars[[i]] <- gsub(paste0("\\b", oldnames[vari], "\\b"), newnames[vari], parentMergeVars[[i]])
         }
       }
 
       # update the mergeVars
       if (!is.null(mergeVars) && length(mergeVars) > 0) {
-        for (i in 1:length(mergeVars)) {
+        for (i in seq_along(mergeVars)) {
           mergeVars[[i]] <- gsub(paste0("\\b", oldnames[vari], "\\b"), newnames[vari], mergeVars[[i]])
         }
       }
 
       # update the ignoreVars
       if (!is.null(ignoreVars) && length(ignoreVars) > 0) {
-        for (i in 1:length(ignoreVars)) {
+        for (i in seq_along(ignoreVars)) {
           ignoreVars[[i]] <- gsub(paste0("\\b", oldnames[vari], "\\b"), newnames[vari], ignoreVars[[i]])
         }
       }
-    } # end (for(vari in 1:length(oldnames)))
+    } # end (for(vari in seq_along(oldnames)))
 
     # replace all of attributes
     if (inherits(x, "light.edsurvey.data.frame")) {
@@ -207,7 +207,7 @@ rename.sdf <- function(x,
     newDataList <- x$dataList
 
     if (!is.null(newDataList) && length(newDataList) > 0) {
-      for (i in 1:length(newDataList)) {
+      for (i in seq_along(newDataList)) {
         newDataList[[i]]$lafObject <- lafObj[[i]]
         names(newDataList[[i]]$lafObject) <- names(lafObj[[i]])
 
@@ -235,7 +235,7 @@ rename.sdf <- function(x,
     return(x)
   } else if (inherits(x, "edsurvey.data.frame.list")) {
     # assuming that variable names are consistent through the data list
-    for (i in 1:length(x$datalist)) {
+    for (i in seq_along(x$datalist)) {
       x$data[[i]] <- rename.sdf(x$data[[i]], oldnames, newnames)
       x$datalist[[i]] <- x$data[[i]]
     }
@@ -244,13 +244,13 @@ rename.sdf <- function(x,
 }
 
 replaceVars <- function(condition, oldname, newname) {
-  for (ci in 1:length(condition)) {
+  for (ci in seq_along(condition)) {
     if (class(condition[[ci]]) %in% "name" && length(condition[[ci]]) == 1 && as.character(condition[[ci]]) %in% oldname) {
       condition[[ci]] <- as.name(newname)
     }
     if (class(condition[[ci]]) %in% "call" || length(condition[[ci]]) > 1) {
       condition[[ci]] <- replaceVars(condition[[ci]], oldname, newname)
     }
-  } # end for(ci in 1:length(conditon))
+  } # end for(ci in seq_along(conditon))
   condition
 }

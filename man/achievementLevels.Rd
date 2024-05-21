@@ -148,7 +148,7 @@ The \code{achievementLevels} function applies appropriate weights
 \examples{
 \dontrun{
 # read in the example data (generated, not real student data)
-sdf <- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package="NAEPprimer"))
+sdf <- readNAEP(path=system.file("extdata/data", "M36NT2PM.dat", package="NAEPprimer"))
 
 # discrete achievement levels
 achievementLevels(achievementVars=c("composite"), aggregateBy=NULL, data=sdf)

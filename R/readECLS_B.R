@@ -192,7 +192,7 @@ processECLS_B <- function(files,
           break
         }
         # all lines have width of 4999 (with extra spaces)
-        linePart <- sapply(1:length(linePart), function(i) {
+        linePart <- sapply(seq_along(linePart), function(i) {
           substr(linePart[i], 1, lineWidth[i])
         })
         writeStr <- paste0(linePart, collapse = "")
@@ -214,7 +214,7 @@ processECLS_B <- function(files,
 
     rowChunks <- split(1:maxRows, ceiling(seq_along(1:maxRows) / rowChunkSize)) # break up the number of rows into our chunk size
 
-    for (rci in 1:length(rowChunks)) {
+    for (rci in seq_along(rowChunks)) {
       if (verbose == TRUE) {
         cat(paste0("Processing data, number of columns ", nrow(fileFormat), ", rows ", min(rowChunks[[rci]]), " to ", max(rowChunks[[rci]]), " of ", maxRows, ".\n"))
       }
@@ -266,7 +266,7 @@ processECLS_B <- function(files,
             fileFormat$Width[coli] <- max(nchar(xColChar))
 
             # recalibrate the start/end positions for user
-            fileFormat$Start <- c(1, 1 + cumsum(fileFormat$Width))[1:length(fileFormat$Width)]
+            fileFormat$Start <- c(1, 1 + cumsum(fileFormat$Width))[seq_along(fileFormat$Width)]
             fileFormat$End <- cumsum(fileFormat$Width)
           }
 
@@ -365,7 +365,7 @@ buildECLSBWeightList <- function(fileFormat) {
 
   weights <- list()
 
-  for (i in 1:length(wgtVars)) {
+  for (i in seq_along(wgtVars)) {
     tempVar <- wgtVars[i]
     # strip the ending '0' from the variable::all the replicates will have the same name but numbered 1-n
     testJKprefix <- substr(tempVar, 1, nchar(tempVar) - 1)

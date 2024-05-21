@@ -368,9 +368,9 @@ iparse <- function(iparseCall, iparseDepth = 1, x) {
     return(iparseCall)
   }
   # for each element
-  for (iparseind in 1:length(iparseCall)) {
+  unlistOnExit <- FALSE
+  for (iparseind in seq_along(iparseCall)) {
     # if it is a name
-    unlistOnExit <- FALSE
     if (inherits(iparseCall, "name")) {
       unlistOnExit <- TRUE
       iparseCall <- list(iparseCall)
@@ -428,7 +428,7 @@ iparse <- function(iparseCall, iparseDepth = 1, x) {
         iparseCall[[iparseind]] <- iparseTryResult
       }
     } # end of if statment: if inherits(iparseCall[[i]], "call")
-  } # end of for loop: i in 1:length(iparseCall)
+  } # end of for loop: i in seq_along(iparseCall)
   if (unlistOnExit) {
     iparseCall <- as.character(iparseCall[[1]])
   }

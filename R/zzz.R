@@ -1,6 +1,21 @@
 # @author Paul Bailey
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(paste0("EdSurvey v", utils::packageDescription("EdSurvey")$Version, "\n"))
+  setOptionIfNotNull("EdSurvey_round_output", FALSE)
+  setOptionIfNotNull("EdSurvey_round_n_function", roundNCES)
+  setOptionIfNotNull("EdSurvey_round_pop_n_function", roundNCES)
+  setOptionIfNotNull("EdSurvey_round_est_function", roundn(3))
+  setOptionIfNotNull("EdSurvey_round_est_se_function", roundn(4))
+  setOptionIfNotNull("EdSurvey_round_pct_function", roundn(0))
+  setOptionIfNotNull("EdSurvey_round_pct_se_function", roundn(1))
+}
+
+setOptionIfNotNull <- function(option, value) {
+  if(is.null(getOption(option))) {
+    cl <- list(value)
+    names(cl) <- option
+    do.call(options, cl)
+  }
 }
 
 globalVariables(c(

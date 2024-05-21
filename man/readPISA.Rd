@@ -92,7 +92,7 @@ gg <- getData(sgp2012, c("cnt","read","w_fstuwt"))
 head(gg)
 
 # conduct an analysis on the edsurvey.data.frame
-edsurveyTable(read ~ st04q01 + st20q01, data = sgp2012)
+edsurveyTable(formula=read ~ st04q01 + st20q01, data = sgp2012)
 }
 }
 \references{

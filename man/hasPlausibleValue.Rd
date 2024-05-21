@@ -28,7 +28,7 @@ This function returns \code{TRUE} only when the variable passed to it is the nam
 \examples{
 \dontrun{
 # read in the example data (generated, not real student data)
-sdf <- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
+sdf <- readNAEP(path=system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
 
 # TRUE
 hasPlausibleValue(var="composite", data=sdf)

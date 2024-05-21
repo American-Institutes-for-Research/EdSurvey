@@ -318,8 +318,8 @@ checkPsuStrata <- function(data) {
     }
     if (!psuVar %in% colnames(data)) {
       stop(paste0(
-        "Missing strataVar, ", sQuote(strataVar), ". Please include",
-        sQuote(strataVar), "in your getData() call."
+        "Missing psuVar, ", sQuote(psuVar), ". Please include",
+        sQuote(psuVar), "in your getData() call."
       ))
     }
   }
@@ -473,7 +473,7 @@ checkParamTabAgainstItems <- function(data, scoreInfo) {
   return(scoreInfo)
 }
 
-filterOutIncompleteZeroWeight <- function(edf, indepVars, weightVar, verbose) {
+filterOutIncompleteZeroWeight <- function(edf, indepVars, weightVar, verbose = FALSE) {
   incomplete <- !complete.cases(edf[ , c(indepVars, weightVar)])
   if (any(incomplete)) {
     if (verbose) {

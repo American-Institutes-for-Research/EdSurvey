@@ -71,9 +71,9 @@ Calling the \code{dim} function for a CivED 1999 Grade 8 \code{edsurvey.data.fra
 \dontrun{
 eng <- readCivEDICCS("~/ICCS/2009/", countries = c("eng"),
                      gradeLvl = 8, dataSet = "student")
-gg <- getData(eng, c("famstruc", "totwgts", "civ"))
+gg <- getData(getData=eng, varnames=c("famstruc", "totwgts", "civ"))
 head(gg)
-edsurveyTable(civ ~ famstruc, eng)
+edsurveyTable(formula=civ ~ famstruc, data=eng)
 }
 }
 \seealso{

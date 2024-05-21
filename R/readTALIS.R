@@ -103,7 +103,7 @@ readTALIS <- function(path,
     if (length(metaCacheFP) == 0) {
       runProcessing <- TRUE
     } else {
-      for (i in 1:length(metaCacheFP)) {
+      for (i in seq_along(metaCacheFP)) {
         cacheFile <- tryCatch(readRDS(file.path(filepath, unlist(metaCacheFP)[i])),
           error = function(err) {
             return(NULL)
@@ -450,7 +450,7 @@ returnFF <- function(spssDF) {
     "NEW ZEALAND" = 554,
     "RUSSIA" = 643
   )
-  for (ei in 1:length(exception)) {
+  for (ei in seq_along(exception)) {
     if (exception[ei] %in% spssDF$IDCNTRY) {
       if (!grepl(paste0(exception[ei], "="), ff$labelValues[ff$variableName == "IDCNTRY"])) {
         ff$labelValues[ff$variableName == "IDCNTRY"] <- paste0(ff$labelValues[ff$variableName == "IDCNTRY"], paste0("^", exception[ei], "=", names(exception)[ei]))

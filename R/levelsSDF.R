@@ -64,15 +64,15 @@ levelsSDF <- function(varnames, data, showOmitted = TRUE, showN = TRUE) {
   if (length(recode) > 0) {
     # if a variable level has been recoded, need to remove the label used to identify it when printing the updated result
     levelsDataRecode <- list()
-    for (i in 1:length(recode)) {
+    for (i in seq_along(recode)) {
       ni <- toupper(names(recode[i]))
       levs <- c()
-      for (j in 1:length(unlist(levelsData[ni]))) {
+      for (j in seq_along(unlist(levelsData[ni]))) {
         levs <- c(levs, strsplit(levelsData[[ni]], "=")[[j]][1])
       }
 
       labs <- c()
-      for (j in 1:length(unlist(levelsData[ni]))) {
+      for (j in seq_along(unlist(levelsData[ni]))) {
         labs <- c(labs, strsplit(levelsData[[ni]], "=")[[j]][2])
       }
 
@@ -128,7 +128,7 @@ levelsSDF <- function(varnames, data, showOmitted = TRUE, showN = TRUE) {
 
       # if variable is in the list of recode, need to change the level result
       levelsData[[ni]] <- c(varLevels)
-    } # for (i in 1:length(recode))
+    } # for (i in seq_along(recode))
   } # if (length(recode) > 0)
   names(levelsData) <- tolower(names(levelsData))
 
@@ -196,9 +196,12 @@ levelsSDF <- function(varnames, data, showOmitted = TRUE, showN = TRUE) {
 # @author Michael Lee and Paul Bailey
 #' @method print levelsSDF
 #' @export
-print.levelsSDF <- function(x, ...) {
+print.levelsSDF <- function(x, ..., use_es_round=getOption("EdSurvey_round_output")) {
+  if(use_es_round) {
+    x <- es_round(x, ...)
+  }
   if (length(x) > 0) {
-    for (i in 1:length(x)) {
+    for (i in seq_along(x)) {
       cat(paste0("Levels for Variable '", tolower(names(x[i])), "' (Lowest level first):\n"))
       if (nrow(x[[i]]) == 0) {
         # if there is no level info return an NA
@@ -227,6 +230,6 @@ print.levelsSDF <- function(x, ...) {
           }
         }
       } # End of if/else: nrow(x[[i]]) == 0
-    } # End of loop: i in 1:length(x)
+    } # End of loop: i in seq_along(x)
   } # End of If statment: if legth of x is greater than 0
 }

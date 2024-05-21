@@ -78,7 +78,7 @@ downloadPIRLS <- function(root, years = c(2001, 2006, 2011, 2016, 2021), cache =
 
 
   d <- get(paste0("d", year))
-  for (di in 1:length(d)) {
+  for (di in seq_along(d)) {
     bn <- basename(d[di]) # name of the file (without the path)
     if (!file.exists(file.path(yroot, bn))) {
       # download

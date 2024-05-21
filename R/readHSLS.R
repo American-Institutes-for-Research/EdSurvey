@@ -332,7 +332,7 @@ buildHSLSWeightList <- function(fileFormat1, fileFormat2) {
 
   weights <- list()
 
-  for (i in 1:length(wgtVars)) {
+  for (i in seq_along(wgtVars)) {
     tempVar <- wgtVars[i]
     # testJKprefix <- substr(tempVar, 1, nchar(tempVar)-1) #strip the ending '0' from the variable::all the replicates will have the same name but numbered 1-n
 

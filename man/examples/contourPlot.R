@@ -1,6 +1,6 @@
 \dontrun{
-sdf <- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
-lm1 <- lm.sdf(composite ~ pared * dsex + sdracem, sdf)
+sdf <- readNAEP(path=system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
+lm1 <- lm.sdf(formula=composite ~ pared * dsex + sdracem, data=sdf)
 # plot the results
 contourPlot(x=lm1$fitted.values,
 	          y=lm1$residuals[,1], # use only the first plausible value

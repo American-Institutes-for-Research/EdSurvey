@@ -113,10 +113,10 @@ variances are correctly handled, see \code{\link{lm.sdf}} or the vignette titled
 \examples{
 \dontrun{
 # read in the example data (generated, not real student data)
-sdf <- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
+sdf <- readNAEP(path=system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
 
 # conduct quantile regression at a given tau value (by default, tau is set to be 0.5) 
-rq1 <- rq.sdf(composite ~ dsex + b017451, data=sdf, tau = 0.8)
+rq1 <- rq.sdf(formula=composite ~ dsex + b017451, data=sdf, tau = 0.8)
 summary(rq1)
 }
 }

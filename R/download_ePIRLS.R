@@ -28,7 +28,7 @@ download_ePIRLS <- function(root, years = c(2016), cache = FALSE, verbose = TRUE
     stop(paste0("The argument ", sQuote("root"), " must be of length 1."))
   }
 
-  # normalize path before testing:: file.path will remove trailing seperator if present
+  # normalize path before testing file.path will remove trailing seperator if present
   root <- suppressWarnings(file.path(normalizePath(root, winslash = "/")))
   if (!dir.exists(root)) {
     stop(paste0("The argument ", sQuote("root"), " must be a valid path."))
@@ -64,7 +64,7 @@ download_ePIRLS <- function(root, years = c(2016), cache = FALSE, verbose = TRUE
   d <- get(paste0("d", year))
 
   # loop through each defined .zip file defined for the year
-  for (di in 1:length(d)) {
+  for (di in seq_along(d)) {
     bn <- basename(d[di]) # name of the file (without the path)
 
     if (!file.exists(file.path(yroot, bn))) {

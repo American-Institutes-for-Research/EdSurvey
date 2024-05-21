@@ -156,7 +156,7 @@ buildBTLSWeightList <- function(fileFormat) {
   wgtLookupDF[wgtLookupDF$wgt == "w5lwgt", "repVar"] <- "w5lrwgt"
   wgtLookupDF[wgtLookupDF$wgt == "w5rlwgt", "repVar"] <- "w5rlrwgt"
 
-  for (i in 1:length(wgtVars)) {
+  for (i in seq_along(wgtVars)) {
     tempVar <- wgtVars[i] # full variable name of the weight var
 
     repVar <- wgtLookupDF$repVar[wgtLookupDF$wgt == tempVar]

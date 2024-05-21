@@ -64,7 +64,7 @@ downloadELS <- function(root, years = c(2002), cache = FALSE, verbose = TRUE) {
   }
 
   d <- get(paste0("d", year))
-  for (di in 1:length(d)) {
+  for (di in seq_along(d)) {
     bn <- basename(d[di]) # name of the file (without the path)
     if (!file.exists(file.path(yroot, bn))) {
       # download
@@ -102,7 +102,7 @@ downloadELS <- function(root, years = c(2002), cache = FALSE, verbose = TRUE) {
         }
       } # end for(i in 1:nrow(lst))
     } # end if(grepl("\\.zip$", bn, ignore.case = TRUE))
-  } # end for(di in 1:length(d))
+  } # end for(di in seq_along(d))
 
   if (cache) {
     if (verbose) {

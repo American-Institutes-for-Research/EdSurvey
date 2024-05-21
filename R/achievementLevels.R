@@ -381,7 +381,7 @@ calAL <- function(achievementVars = NULL,
     return(x[1:npv])
   })
   discreteDT <- edfDT
-  for (i in 1:length(pvs)) {
+  for (i in seq_along(pvs)) {
     discreteDT <- recodeEdf(discreteDT, pvs[[i]], alsCutpoints[[i]], returnCumulative = FALSE)
   }
   discreteOrder <- lapply(alsCutpoints, function(x) {
@@ -399,6 +399,11 @@ calAL <- function(achievementVars = NULL,
       for (byVar_i in aggregateBy2) {
         if (is.null(levels(data[ , get(byVar_i)]))) {
           stop(paste0(sQuote(byVar_i), " is continuous. You must use only factors, or character variables, and scores with plausible values with achievementLevels. Consider recasting ", sQuote(byVar_i), " as a factor and trying again."))
+        }
+      }
+      for (achiVar_i in achievementVars) {
+        if (is.null(levels(data[ , get(achiVar_i)]))) {
+          stop(paste0(sQuote(achiVar_i), " is continuous. You must use only factors, or character variables, and scores with plausible values with achievementLevels. Consider recasting ", sQuote(achiVar_i), " as a factor and trying again."))
         }
       }
       byVars <- unique(c(pv, achievementVars, aggregateBy2))
@@ -543,7 +548,7 @@ calAL <- function(achievementVars = NULL,
     if (returnDiscrete) {
       if (linkingError) {
         T0 <- discreteEst$est$Percent
-        names(T0) <- paste0("Row", 1:length(T0))
+        names(T0) <- paste0("Row", seq_along(T0))
         dimpVar <- getLinkingImpVar(
           data = NULL,
           pvImp = impAL[[1]],
@@ -583,7 +588,7 @@ calAL <- function(achievementVars = NULL,
     if (returnCumulative) {
       if (linkingError) {
         T0 <- cumEst$est$Percent
-        names(T0) <- paste0("Row", 1:length(T0))
+        names(T0) <- paste0("Row", seq_along(T0))
         cimpVar <- getLinkingImpVar(
           data = NULL,
           pvImp = impAL[[1]],
@@ -855,7 +860,7 @@ assertArgument <- function(arguments, data) {
 sortALResults <- function(als, returnCumulative) {
   sortList <- paste0("Below ", names(als)[1])
   if (!returnCumulative) {
-    for (i in 1:length(als)) {
+    for (i in seq_along(als)) {
       sortList <- c(sortList, paste0("At ", names(als)[i]))
     }
   } else {
@@ -909,11 +914,15 @@ recodeEdf <- function(edfDT, pvs, als, returnCumulative, cumulativeLevel = 0) {
 #'                      levels if they are present in \code{x}
 #' @param printCumulative a logical value; by default (\code{TRUE}), prints cumulative achievement
 #'                        levels if they are present in \code{x}
+#' @param use_es_round a logical value; use the EdSurvey rounding functions before printing
 #' @param ... these arguments are not passed anywhere and are included only for compatibility
 #' @method print achievementLevels
 #' @author Huade Huo and Ahmad Emad
 #' @export
-print.achievementLevels <- function(x, printCall = TRUE, printDiscrete = TRUE, printCumulative = TRUE, ...) {
+print.achievementLevels <- function(x, printCall = TRUE, printDiscrete = TRUE, printCumulative = TRUE, use_es_round=getOption("EdSurvey_round_output"), ...) {
+  if(use_es_round) {
+    x <- es_round(x)
+  }
   if ("callVars" %in% names(x)) {
     ll <- "1"
   } else {
@@ -992,7 +1001,7 @@ getEstAL <- function(pvEst, stat, wgt, longReturn = TRUE) {
     x[1]
   }))
   T_0 <- stat(pv = pv0, w = wgt, short = FALSE)
-  for (i in 1:length(pvEst)) {
+  for (i in seq_along(pvEst)) {
     colnames(T_0)[i] <- paste0(names(pvEst)[i], "_Level")
   }
   T_n <- matrix(0, ncol = nrow(T_0), nrow = length(pvEst[[1]]))
@@ -1025,7 +1034,7 @@ getEstAL <- function(pvEst, stat, wgt, longReturn = TRUE) {
   Ta <- T_0$Percent
   colnames(T_n) <- paste0("Row", 1:ncol(T_n))
   names(Ta) <- paste0("Row", 1:ncol(T_n))
-  for (i in 1:length(pvEst)) {
+  for (i in seq_along(pvEst)) {
     colnames(T_0)[colnames(T_0) == names(pvEst)[i]] <- paste0(names(pvEst)[i], "_Level")
   }
   T_n <- -1 * t(t(T_n) - T_0$Percent)

@@ -86,7 +86,7 @@ edsurveyTable2pdf <- function(data,
   }
 
   # Paste estimates and SEs
-  for (i in 1:length(edsurveyTableDF)) {
+  for (i in seq_along(edsurveyTableDF)) {
     if (returnMeans) {
       edsurveyTableDF$textValue[i] <- paste(
         formatC(
@@ -130,7 +130,7 @@ edsurveyTable2pdf <- function(data,
   edsurveyTableDF <- dcast(as.data.table(edsurveyTableDF), formula, value.var = "textValue")
 
   # Replace variable names to variable labels
-  for (i in 1:length(names(edsurveyTableDF))) {
+  for (i in seq_along(names(edsurveyTableDF))) {
     if (!is.null(attr(data$data[[names(edsurveyTableDF)[i]]], "label"))) {
       names(edsurveyTableDF)[i] <- attr(data$data[[names(edsurveyTableDF)[i]]], "label")
     }

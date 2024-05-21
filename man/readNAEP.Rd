@@ -61,7 +61,7 @@ A table outlining the differences can be found on the \href{https://nces.ed.gov/
 \examples{
 \dontrun{
 # read in the example data (generated, not real student data)
-sdf <- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
+sdf <- readNAEP(path=system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
 sdf
 
 # To read in an NCES file first set the directory to the /Data subfolder,

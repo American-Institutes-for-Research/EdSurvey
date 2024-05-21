@@ -17,7 +17,7 @@ recode.sdf <- function(x, recode) {
   checkDataClass(x, c("edsurvey.data.frame.list", "edsurvey.data.frame", "light.edsurvey.data.frame"))
 
   if (inherits(x, "edsurvey.data.frame.list")) {
-    for (i in 1:length(x$data)) {
+    for (i in seq_along(x$data)) {
       newUserConditions <- getAttributes(x$datalist[[i]], "userConditions", errorCheck = FALSE)
       if (is.null(newUserConditions)) {
         newUserConditions <- list()
@@ -35,7 +35,7 @@ recode.sdf <- function(x, recode) {
     checkRecode(x, recode) # print out warnings if need be
     x <- setAttributes(x, "userConditions", newUserConditions)
   } else if (inherits(x, "light.edsurvey.data.frame")) {
-    for (i in 1:length(recode)) {
+    for (i in seq_along(recode)) {
       ni <- names(recode)[i]
       from <- recode[[i]]$from
       to <- recode[[i]]$to
@@ -134,13 +134,13 @@ recode.sdf <- function(x, recode) {
           " in the variable ", dQuote(ni), "."
         ))
       }
-    } # for (i in 1:length(recode))
+    } # for (i in seq_along(recode))
   } # ends else if (inherits(x, "light.edsurvey.data.frame"))
   invisible(x)
 } # end of fuction recode.sdf
 
 checkRecode <- function(x, recode) {
-  for (vi in 1:length(recode)) {
+  for (vi in seq_along(recode)) {
     v <- names(recode)[vi]
     from <- recode[[vi]]$from # can have multiple values
     to <- recode[[vi]]$to # can only have one value

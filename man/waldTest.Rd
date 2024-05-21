@@ -49,10 +49,10 @@ in the vignette titled
 \examples{
 \dontrun{
 # read in the example data (generated, not real student data)
-sdf <- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
+sdf <- readNAEP(path=system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
 
 # example with glm model
-myLogit <- logit.sdf(dsex ~ b017451 + b003501, data = sdf, returnVarEstInputs = T)
+myLogit <- logit.sdf(formula=dsex ~ b017451 + b003501, data = sdf, returnVarEstInputs = T)
 
 # single coefficient integer
 waldTest(model = myLogit, coefficients = 2)
@@ -67,7 +67,7 @@ waldTest(myLogit, c("b017451Every day", "b017451About once a week"))
 waldTest(myLogit, "b017451")
 
 # example with lm model
-fit <- lm.sdf(composite ~ dsex + b017451, data = sdf, returnVarEstInputs = T)
+fit <- lm.sdf(formula=composite ~ dsex + b017451, data = sdf, returnVarEstInputs = T)
 
 waldTest(model = fit, coefficients = "b017451")
 

@@ -225,7 +225,7 @@ readTIMSSAdv <- function(path,
       testJKprefix <- c("JK", "JK.MATWGT", "JK.PHYWGT") # have any jk prefix values here that are applicable for this dataset
       weights <- NULL # default value
 
-      for (i in 1:length(testJKprefix)) {
+      for (i in seq_along(testJKprefix)) {
         ujkz <- unique(tolower(grep(paste0("^", "(", testJKprefix[i], ")", "[1-9]"), c(names(processedData$dataList$student), names(processedData$dataList$teacher)), value = TRUE, ignore.case = TRUE)))
         ujkz <- gsub(tolower(testJKprefix[i]), "", ujkz, fixed = TRUE) # remove jk to leave the numeric values
 
@@ -607,7 +607,7 @@ exportTIMSSAdvToCSV <- function(folderPath, exportPath, cntryCodes, subject, ...
   sdfList <- readTIMSSAdv(folderPath, cntryCodes, subject, ...)
 
   if (inherits(sdfList, "edsurvey.data.frame.list")) {
-    for (i in 1:length(sdfList$datalist)) {
+    for (i in seq_along(sdfList$datalist)) {
       sdf <- sdfList$datalist[[i]]
       cntry <- sdf$country
 
@@ -668,7 +668,7 @@ getTIMSSAdvCountryName <- function(countryCode) {
 
   lookupNames <- vector(mode = "character", length = length(countryCode))
 
-  for (i in 1:length(countryCode)) {
+  for (i in seq_along(countryCode)) {
     testName <- cntryCodeDF[cntryCodeDF$cntryCode == countryCode[i], "cntryName"]
 
     if (length(testName) == 0) { # test if no value found

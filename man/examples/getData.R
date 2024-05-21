@@ -1,6 +1,6 @@
 \dontrun{
 # read in the example data (generated, not real student data)
-sdf <- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
+sdf <- readNAEP(path=system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
 
 # get two variables, without weights
 df <- getData(data=sdf, varnames=c("dsex", "b017451"))
@@ -31,9 +31,9 @@ table(df2)
 
 # omittedLevels can also be edited with setAttributes()
 # here, the omitted level "Multiple" is removed from the list
-sdfIncludeMultiple <- setAttributes(sdf, "omittedLevels", c(NA, "Omitted"))
+sdfIncludeMultiple <- setAttributes(data=sdf, attribute="omittedLevels", value=c(NA, "Omitted"))
 # check that it was set
-getAttributes(sdfIncludeMultiple, "omittedLevels")
+getAttributes(data=sdfIncludeMultiple, attribute="omittedLevels")
 # notice that omittedLevels is TRUE, removing NA and "Omitted" still
 dfIncludeMultiple <- getData(data=sdfIncludeMultiple, varnames=c("dsex", "b017451"))
 table(dfIncludeMultiple)
@@ -49,11 +49,11 @@ head(gddat)
 
 # get a selection of variables, recode using ifelse, and reappend attributes
 # with rebindAttributes so that it can be used with EdSurvey analysis functions
-df0 <- getData(sdf, c("composite", "dsex", "b017451", "origwt"))
+df0 <- getData(data=sdf, varnames=c("composite", "dsex", "b017451", "origwt"))
 df0$sex <- ifelse(df0$dsex=="Male", "boy", "girl")
-df0 <- rebindAttributes(df0, sdf)
+df0 <- rebindAttributes(data=df0, attributeData=sdf)
 
 # getting all the data can use up all the memory and is generally a bad idea
-df0 <- getData(sdf, varnames=colnames(sdf),
+df0 <- getData(data=sdf, varnames=colnames(sdf),
                omittedLevels=FALSE, defaultConditions=FALSE)
 }

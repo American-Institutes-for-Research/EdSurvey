@@ -114,8 +114,74 @@ readPISA <- function(path,
   sdf <- list() # list to contain all edsurvey.data.frame elements
   icntry <- 0 # index of each edsurvey.data.frame in the list
   for (filepath in path) { # loop through different data paths
-    # check to see whether it's 2018, 2015, or older data
-    if (length(list.files(filepath, pattern = "cy07.*\\.sav", ignore.case = TRUE, full.names = FALSE)) > 0) {
+    # check to see whether it's 2022, 2018, 2015, or older data
+    #===2022 block
+    if (length(list.files(filepath, pattern = "cy08.*\\.sav", ignore.case = TRUE, full.names = FALSE)) > 0) {
+      year <- 2022
+      if ("CBA" %in% database) {
+        warning("Seperate CBA data is only available in 2012, switching to INT database.")
+        database <- "INT"
+      }
+      
+      # check for meta file
+      runProcessing <- FALSE
+      metaCacheFile <- list.files(filepath, pattern = paste0("^", database, ".*\\.meta$"), ignore.case = TRUE)
+      if (length(metaCacheFile) < 1 || forceReread) {
+        runProcessing <- TRUE
+      } else {
+        cacheFile <- tryCatch(readRDS(file.path(filepath, metaCacheFile[1])),
+                              warning = function(w) {
+                                runProcessing <<- TRUE
+                                cat("Cache corrupt. Reprocessing PISA files\n")
+                                return(NULL)
+                              },
+                              error = function(err) {
+                                runProcessing <<- TRUE
+                                cat("Cache corrupt. Reprocessing PISA files\n")
+                                return(NULL)
+                              }
+        )
+        if (!is.null(cacheFile)) {
+          if (cacheMetaReqUpdate(cacheFile$cacheFileVer, "PISA")) {
+            runProcessing <- TRUE
+            cat("Cache files are outdated. Reprocessing PISA files.\n")
+          }
+        }
+      }
+      if (runProcessing) {
+        # for testing you can just pass 'countries' as the argument, otherwise ensure (*) all countries
+        # are reprocessed at the same time for release as only one copy of the fileFormat is cached.
+        if (database == "INT") {
+          cacheFile <- processPISA2015(filepath, verbose, "*", year)
+        } else if (database == "FIN") {
+          # process FIN data for 2018 All countries must be processed together as only one fileFormat object is cached to ensure consistancy across countries #YL: note that I didn't change it for 2022 yet as the PISA 2022 Fin Lit data is not yet available
+          cacheFile <- processPISA2018_FIN(filepath, verbose, "*", year)
+        } else {
+          stop("Only INT and FIN databases are supported for year 2018.")
+        }
+      } # end if (runProcessing)
+      
+      ff <- list(fileFormat = cacheFile$dict)
+      all_countries <- cacheFile$countryDict$cnt[cacheFile$countryDict$available]
+      if (any(countries == "*")) {
+        countries <- all_countries
+      }
+      countries <- tolower(countries)
+      
+      if (database == "INT") {
+        processedValue <- list(
+          datbasename = "M_DAT_CY8_MS_CMB_STU",
+          countries = countries
+        )
+      } else if (database == "FIN") {
+        processedValue <- list(
+          datbasename = "M_DAT_CY7_FIN",
+          countries = countries
+        )
+      }
+      
+      # ====END 2018 Block====
+    } else if (length(list.files(filepath, pattern = "cy07.*\\.sav", ignore.case = TRUE, full.names = FALSE)) > 0) {
       year <- 2018
       if ("CBA" %in% database) {
         warning("Seperate CBA data is only available in 2012, switching to INT database.")
@@ -270,7 +336,7 @@ readPISA <- function(path,
       # controlFilenames is a vector of all SPSS syntax files
       # now we need to attach each SPSS syntax file to its right label (one of `filebasenames` above)
       labelFiles <- c()
-      for (i in 1:length(controlFilenames)) {
+      for (i in seq_along(controlFilenames)) {
         labelFiles[i] <- filebasenames[which(sapply(filebasenames, function(x) {
           # we need to match against the whole string i.e. SPSS_student because cognitive files
           # might be in SPSS_cognitvie_student which also has the word "student"
@@ -370,7 +436,7 @@ readPISA <- function(path,
           mergeSuffixes = cognitive
         )
       } else { # end if (length(mergeFFmeta) == 0 || forceReread)
-        for (i in 1:length(mergeFFmeta)) {
+        for (i in seq_along(mergeFFmeta)) {
           ff <- tryCatch(readRDS(file.path(filepath, mergeFFmeta[i])),
             error = function(err) {
               cat(err, ". Reprocessing the meta file. \n")
@@ -428,7 +494,7 @@ readPISA <- function(path,
     weight_var <- weight_var[!grepl("sum$", weight_var, ignore.case = TRUE)]
     weights <- list()
     for (w in weight_var) {
-      if (year %in% c(2015, 2018)) {
+      if (year %in% c(2015, 2018, 2022)) {
         weights[[w]] <- list(jkbase = "w_fsturwt", jksuffixes = jksuffix)
       } else {
         weights[[w]] <- list(jkbase = paste0("w_fstr", gsub("w_fstuwt", "", w)), jksuffixes = jksuffix)
@@ -471,7 +537,7 @@ readPISA <- function(path,
     }
 
     # Read text files and return output ===========================
-    if (!(year %in% c(2015, 2018))) {
+    if (!(year %in% c(2015, 2018, 2022))) {
       countryDict <- read.csv(file.path(filepath, paste0(database, "_all-countries.txt")), stringsAsFactors = FALSE)
     } else {
       countryDict <- cacheFile$countryDict
@@ -493,7 +559,7 @@ readPISA <- function(path,
       psuVar <- "var_unit"
       stratumVar <- "wvarstrr"
 
-      if (year %in% c(2003, 2015, 2018)) {
+      if (year %in% c(2003, 2015, 2018, 2022)) {
         psuVar <- "unit"
       }
       if (year %in% c(2006, 2009)) {
@@ -1029,7 +1095,7 @@ processMergeTxt <- function(filepath, LafDictList, countries, ff, database, forc
     if (verbose) {
       cat(paste0("Processing data for country code ", dQuote(cntry), "\n"))
     }
-    for (li in 1:length(LafDictList)) {
+    for (li in seq_along(LafDictList)) {
       x <- LafDictList[[li]]
       dict <- x$dict
 
@@ -1387,6 +1453,8 @@ processPISA2015 <- function(filepath, verbose, countries, year) {
       outf <- file.path(filepath, paste0("M_DAT_CY6_MS_CMB_STU_", cntry, ".txt"))
     } else if (year == 2018) {
       outf <- file.path(filepath, paste0("M_DAT_CY7_MS_CMB_STU_", cntry, ".txt"))
+    } else if (year == 2022){
+      outf <- file.path(filepath, paste0("M_DAT_CY8_MS_CMB_STU_", cntry, ".txt"))
     }
 
     if (file.exists(outf)) {

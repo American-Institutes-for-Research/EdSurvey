@@ -21,7 +21,7 @@ Prints a summary of the subject scale or subscale and the associated variables f
 \examples{
 \dontrun{
 # read in the example data (generated, not real student data)
-sdf <- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package="NAEPprimer"))
+sdf <- readNAEP(path=system.file("extdata/data", "M36NT2PM.dat", package="NAEPprimer"))
 
 # show the plausible values
 showPlausibleValues(data=sdf, verbose=TRUE)

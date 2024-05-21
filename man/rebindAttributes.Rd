@@ -44,19 +44,19 @@ PISA2012_ledf <- ledf \%>\%
   rowwise() \%>\% 
   mutate(avg_3 = mean(c(st62q04, st62q11, st62q13), na.rm = TRUE)) \%>\% 
   ungroup() \%>\%
-  rebindAttributes(PISA2012) # could also be called with ledf
+  rebindAttributes(data=PISA2012) # could also be called with ledf
 class(PISA2012_ledf) 
 # again, a light.edsurvey.data.frame
-lma <- lm.sdf(math ~ avg_3,data=PISA2012_ledf)
+lma <- lm.sdf(formula=math ~ avg_3, data=PISA2012_ledf)
 summary(lma)
 
 PISA2012_ledf <- ledf \%>\%        
   rowwise() \%>\% 
   mutate(avg_3 = mean(c(st62q04, st62q11, st62q13), na.rm = TRUE)) \%>\% 
   ungroup() \%>\%
-  rebindAttributes(ledf) # return attributes and make a light.edsurvey.data.frame 
+  rebindAttributes(data=ledf) # return attributes and make a light.edsurvey.data.frame 
 # again a light.edsurvey.data.frame
-lma <- lm.sdf(math ~ avg_3,data=PISA2012_ledf)
+lma <- lm.sdf(formula=math ~ avg_3, data=PISA2012_ledf)
 summary(lma)
 }
 }

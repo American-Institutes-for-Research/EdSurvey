@@ -41,7 +41,7 @@ Reads in the unzipped files downloaded from the ECLS--K 2010--11 longitudinal da
 \dontrun{
 # read-in student file with defaults
 eclsk_df <- readECLS_K2011(path="~/ECLS_K/2011") #using defaults
-d <- getData(eclsk_df, c("childid", "c1hgt1", "c1wgt1"))
+d <- getData(data=eclsk_df, varnames=c("childid", "c1hgt1", "c1wgt1"))
 summary(d)
 }
 

@@ -32,4 +32,4 @@
 #'
 #' @docType package
 #' @name EdSurvey-package
-NULL
+"_PACKAGE"

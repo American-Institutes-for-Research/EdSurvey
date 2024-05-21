@@ -59,8 +59,8 @@ section \dQuote{Estimation of Degrees of Freedom.}
 }
 \examples{
 \dontrun{
-sdf <- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package="NAEPprimer"))
-lm1 <- lm.sdf(composite ~ dsex + b017451, sdf, returnVarEstInputs=TRUE)
+sdf <- readNAEP(path=system.file("extdata/data", "M36NT2PM.dat", package="NAEPprimer"))
+lm1 <- lm.sdf(formula=composite ~ dsex + b017451, data=sdf, returnVarEstInputs=TRUE)
 summary(lm1)
 # this output agrees with summary of lm1 coefficient for dsex
 DoFCorrection(lm1$varEstInputs,
@@ -72,7 +72,8 @@ DoFCorrection(lm1$varEstInputs,
 covFEveryDay <- varEstToCov(lm1$varEstInputs,
                             varA="dsexFemale",
                             varB="b017451Every day",
-                            jkSumMultiplier=EdSurvey:::getAttributes(sdf, "jkSumMultiplier"))
+                            jkSumMultiplier=
+                            EdSurvey:::getAttributes(data=sdf, attribute="jkSumMultiplier"))
 # second, find the difference and the SE of the difference
 se <- lm1$coefmat["dsexFemale","se"] + lm1$coefmat["b017451Every day","se"] +
       -2*covFEveryDay

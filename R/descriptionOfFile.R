@@ -95,7 +95,9 @@ descriptionOfFile <- function(filename) {
     "Total Sample" = "AT",
     "Modified Sample" = "RT",
     "Primer" = "PM",
-    "Simulated" = "SM"
+    "Simulated" = "SM",
+    "COVID Data Hub School Linking Study" = "HB",
+    "Monthly School Survey Linking Study" = "SS"
   )
 
   assessSample <- names(validAssessSample[assessSampC == validAssessSample])
@@ -103,6 +105,12 @@ descriptionOfFile <- function(filename) {
     assessSample <- ""
   }
 
+  #will this have a companion School level data file we should check for?
+  hasSchoolFile <- TRUE
+  if(assessCodeC == "L" || assessSampC %in% c("HB", "SS")){
+    hasSchoolFile <- FALSE
+  }
+  
   # output list object
   res <- list(
     Subject = subjName,
@@ -111,7 +119,8 @@ descriptionOfFile <- function(filename) {
     Data_Type = dataType,
     Grade_Level = gradeLvlDesc,
     Assessment_Sample = assessSample,
-    filename = filename0
+    filename = filename0,
+    CheckSchoolFile = hasSchoolFile
   )
   return(res)
 }

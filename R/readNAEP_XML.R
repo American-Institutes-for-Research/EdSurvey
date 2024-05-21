@@ -391,7 +391,7 @@ parseNAEP_XML_DataFormats <- function(formatList) {
     nCodes <- length(rec)
     val <- character(nCodes)
     lbl <- character(nCodes)
-    nCodes <- 1:length(rec)
+    nCodes <- seq_along(rec)
 
     for (ii in nCodes) {
       fmt <- rec[[ii]]

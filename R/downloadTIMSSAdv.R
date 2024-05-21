@@ -27,7 +27,7 @@ downloadTIMSSAdv <- function(root, years = c(1995, 2008, 2015), cache = FALSE, v
     stop(paste0("The argument ", sQuote("root"), " must be of length 1."))
   }
 
-  # normalize path before testing:: file.path will remove trailing seperator if present
+  # normalize path before testing file.path will remove trailing seperator if present
   root <- suppressWarnings(file.path(normalizePath(root, winslash = "/")))
   if (!dir.exists(root)) {
     stop(paste0("The argument ", sQuote("root"), " must be a valid path."))
@@ -60,7 +60,7 @@ downloadTIMSSAdv <- function(root, years = c(1995, 2008, 2015), cache = FALSE, v
   }
 
   d <- get(paste0("d", year))
-  for (di in 1:length(d)) {
+  for (di in seq_along(d)) {
     bn <- basename(d[di]) # name of the file (without the path)
     if (!file.exists(file.path(yroot, bn))) {
       # download

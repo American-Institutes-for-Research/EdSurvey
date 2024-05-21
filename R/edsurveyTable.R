@@ -237,7 +237,7 @@ edsurveyTable <- function(formula,
     cmbDi <- cmbD0 <- cmbD <- cmbD[ , cnames]
     # we need these for NULL data
     rhs_vars <- all.vars(formula[[3]])
-    for (listi in 1:length(labels)) {
+    for (listi in seq_along(labels)) {
       if (!is.null(res2[[labels[listi]]])) {
         cmbDi <- (res2[[labels[listi]]])$data
         for (i in 1:ncol(data$covs)) {
@@ -562,7 +562,7 @@ calcEdsurveyTable <- function(formula,
       wgtl <- getAttributes(data, "weights")[[wgt]]
       if (varMethod == "j") {
         # see statistics vignette for the formulas used here
-        for (jki in 1:length(wgtl$jksuffixes)) {
+        for (jki in seq_along(wgtl$jksuffixes)) {
           # recalculate the percent with every JK replicate weight
           wgti <- paste0(wgtl$jkbase, wgtl$jksuffixes[jki])
           wtdn <- fastAgg(formula(paste0(wgti, " ~ ", paste(rhs_vars, collapse = " + "))), data = edf, FUN = sumna)
@@ -586,7 +586,7 @@ calcEdsurveyTable <- function(formula,
           if (returnVarEstInputs) {
             if (jki == 1) {
               wtdn_ <- wtdn
-              for (ii in 1:length(rhs_vars)) {
+              for (ii in seq_along(rhs_vars)) {
                 wtdn_[ , rhs_vars[ii]] <- as.character(wtdn[ , rhs_vars[ii]])
               }
               level_ <- c()
@@ -657,7 +657,7 @@ calcEdsurveyTable <- function(formula,
             # make \tilde{W} where i,jth entry is weight of unit i
             wtilde <- w <- matrix(0, ncol = n, nrow = nrow(datai))
             units <- sort(unique(datai$unit))
-            for (j in 1:length(units)) { # this could be 1:n but this way it is robust to levels with 0 units in them
+            for (j in seq_along(units)) { # this could be 1:n but this way it is robust to levels with 0 units in them
               ss <- datai$unit %in% units[j]
               w[ss, j] <- datai[ss, wgt]
             }
@@ -699,7 +699,7 @@ calcEdsurveyTable <- function(formula,
             }
             repu <- unique(uhiw_$stratV)
             S <- matrix(0, nrow = nrow(res_no0i), ncol = nrow(res_no0i))
-            for (repi in 1:length(repu)) {
+            for (repi in seq_along(repu)) {
               # see AM documentaiton
               dataii <- uhiw_[uhiw_$stratV == repu[repi], ]
               jku <- unique(dataii$psuV)
@@ -750,7 +750,7 @@ calcEdsurveyTable <- function(formula,
       for (i in 1:nrow(res)) {
         dsdf <- edf
         # for this row, subset it on each dimenstion
-        for (j in 1:length(rhs_vars)) {
+        for (j in seq_along(rhs_vars)) {
           if (returnVarEstInputs) {
             if (j == 1) {
               label <- paste0(rhs_vars[j], "=", res[i, rhs_vars[j]])
@@ -764,7 +764,7 @@ calcEdsurveyTable <- function(formula,
           } else {
             dsdf <- dsdf[dsdf[ , rhs_vars[j]] %in% res[i, rhs_vars[j]], ] # subset to just those values at level i of the first X variable
           }
-        } # ends for(j in 1:length(rhs_vars))
+        } # ends for(j in seq_along(rhs_vars))
         if (nrow(dsdf) > 0) {
           # fit an lm to get a mean and SE estimate and add those to the res
           # also keep track of var est inputs
@@ -852,7 +852,7 @@ calcEdsurveyTable <- function(formula,
 
   # Add variable labels as an attribute
   if (inherits(data, c("edsurvey.data.frame", "light.edsurvey.data.frame"))) {
-    for (i in 1:length(names(res))) {
+    for (i in seq_along(names(res))) {
       if (names(res)[i] %in% all.vars(formula)) {
         # not every variable on a light.edsurvey.data.frame will return here.
         # some will return a NULL
@@ -905,14 +905,17 @@ fastAgg <- function(formula, data, FUN) {
 # @author Paul Bailey and Howard Huo
 # @aliases print.edsurveyTable
 #' @export
-print.edsurveyTableList <- function(x, digits = getOption("digits"), ...) {
-  print.edsurveyTable(x, digits = digits, ...)
+print.edsurveyTableList <- function(x, digits = getOption("digits"), use_es_round=getOption("EdSurvey_round_output"), ...) {
+  print.edsurveyTable(x, digits = digits, use_es_round = use_es_round, ...)
 }
 
 #' @method print edsurveyTable
 # @author Paul Bailey and Howard Huo
 #' @export
-print.edsurveyTable <- function(x, digits = getOption("digits"), ...) {
+print.edsurveyTable <- function(x, digits = getOption("digits"), use_es_round=getOption("EdSurvey_round_output"), ...) {
+  if(use_es_round) {
+    x <- es_round(x)
+  }
   cat(paste0("\nFormula: ", paste(deparse(x$formula), "\n", collapse = ""), "\n"))
 
   if (x$npv > 1) {
@@ -937,7 +940,7 @@ print.edsurveyTable <- function(x, digits = getOption("digits"), ...) {
   co <- capture.output(print(x$data, digits = digits, row.names = TRUE, ...))
   # it it wraps, that will make the length of co more than the number
   # of rows in data plus a header row, so include row names to help the user
-  print(x$data, digits = digits, row.names = length(co) > nrow(x$data) + 1, ...)
+  print(x$data, digits = digits, row.names = length(co) > (nrow(x$data) + 1), ...)
 }
 
 sumna <- function(x) {

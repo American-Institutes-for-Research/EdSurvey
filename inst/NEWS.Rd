@@ -1,11 +1,23 @@
 \name{NEWS}
 \title{NEWS for EdSurvey}
 
-\section{Changes in version 4.0.5}{
+\section{Changes in version 4.0.6}{
   \subsection{UPDATES}{
     \itemize{
+      \item allow rounding by default when printing results after the user either set \code{options(EdSurvey_round_output=TRUE)} or calls the \code{print} function on an EdSurvey object with the argument \code{use_es_round=TRUE}. See \code{?es_round} for details. 
+      \item added support for PISA 2022, this support was contributed and not tested by the EdSurvey team.
+      \item added support for ICILS 2023, this support was contributed and not tested by the EdSurvey team. Thanks to Jeppe Bundsgaard for the contirbution!
+      \item in every EdSurvey function \code{omittedLevels} is deprecated. It is replacted by \code{dropOmittedLevels} which works in the same way. 
       \item allow Matrix 1-5-4.1 after testing to allower older R versions on Mac OS.
-      \item reduce complexity of mergev without changing functionality
+   }
+  }
+  \subsection{MINOR}{
+    \itemize{
+      \item in example code, all arguments are now named
+      \item the vignette now sends users directly to the EdSurvey book [Analyzing NCES Data Using EdSurvey: A User's Guide](https://naep-research.airprojects.org/portals/0/edsurvey_a_users_guide/_book/index.html).
+      \item replace \code{1:length(object)} with \code{seq_along(object)} in the entire package
+      \item decreased size of file by removing unused files, such as unused files from old tests
+      \item the test file size is decreased on many larger files
     }
   }
 }
@@ -15,7 +27,6 @@
     \itemize{
       \item upated to pass CRAN checks, \code{cbind} and \code{rbind} are nolonger explicitly exported. Apparently this changed in R 4.0.0 and we were behind the times. The load message is not shorter because we do not export these functions.
       \item similarly \code{subset} is nolonger exported but is instead implemented. Becuase of that there is no documentation for it now, but it works as the original \code{subset} works and adds an \code{inside} argument that prevents \code{substitute} from being called on the \code{subset} argument as recomended in Advanced R (Wickham, 2014).
-      \item 
       \item `downloadPIRLS` and `readPIRLS` were updated to include PIRLS 2021 data
       \item updated subscale mappings for TIMSS to allow for four-character subscale names to be used with \code{mml.sdf} for all subscales across grade, subject, and year
       \item exported \code{readHSTS}
@@ -232,6 +243,7 @@
       \item Some IEA datasets have convenience variables that EdSurvey incorrectly identified as plausible value variables that are discretized plausible values. EdSurvey already internally generates similar convenience variables based on the existing plausible values and does not use the IEA variables. As of 2.6.0, these columns are not linked as plausible variables and are ignored. Affected datasets include TIMSS, TIMSS Advanced, PIRLS, and ePIRLS.
     }
   }
+
   \subsection{STATISTICS}{
     \itemize{
       \item \code{cor.sdf} now reports standard errors linearized back to the correlation space in the result value \code{se}. It also reports the confidence interval in the Fisher-Z space as \code{ZconfidenceInterval} and a confidence interval mapped back to the correlation space (without linearization) as \code{confidenceInterval}.

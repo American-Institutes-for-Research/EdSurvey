@@ -197,7 +197,10 @@ waldDof <- function(data, stratumVar, psuVar) {
 
 #' @method print edsurveyWaldTest
 #' @export
-print.edsurveyWaldTest <- function(x, digits = 2, ...) {
+print.edsurveyWaldTest <- function(x, digits = 2, use_es_round=getOption("EdSurvey_round_output"), ...) {
+  if(use_es_round) {
+    x <- es_round(x)
+  }
   coefficients <- x$coefficients
   b <- x$b
   H0 <- x$H0
@@ -208,7 +211,7 @@ print.edsurveyWaldTest <- function(x, digits = 2, ...) {
   eout("Wald test:\n")
   eout("----------\n")
   eout("H0:")
-  for (i in 1:length(coef_names)) {
+  for (i in seq_along(coef_names)) {
     eout(paste0(coef_names[i], " = ", H0[i], "\n"))
   }
   eout("\n")

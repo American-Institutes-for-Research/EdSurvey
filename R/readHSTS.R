@@ -536,7 +536,7 @@ linkVarAugmentAB <- function(data, linkingErrorSpecs, subscaleWeights, subscales
   PVVarsDefault <- attributes(PVVars)$default
   # actual variables
   scaledPVs <- list()
-  for(i in 1:length(subscales)) {
+  for(i in seq_along(subscales)) {
     scaledPVs <- c(scaledPVs, list(getPlausibleValue(subscales[i], data = data)))
   }
   names(scaledPVs) <- subscales
@@ -575,7 +575,7 @@ linkVarAugmentAB <- function(data, linkingErrorSpecs, subscaleWeights, subscales
   # for each PV (column in the RAM)
   scaledPV <- data[ , unlist(scaledPVs)]
   
-  for(i in 1:length(repWs)) {
+  for(i in seq_along(repWs)) {
     # y1 is for DBA
     y1 <- rep(0, nDBA)
     # z1 is for PBA
@@ -638,7 +638,7 @@ linkVarAugmentAB <- function(data, linkingErrorSpecs, subscaleWeights, subscales
   # construct composite PV var
   newPV <- list(list(estVarnames=PVs,
                      impVarnames=paste0(composite,"_linking_imp_",1:100),
-                     sampVarnames=paste0(composite,"_linking_samp_",1:length(repWs)),
+                     sampVarnames=paste0(composite,"_linking_samp_",seq_along(repWs)),
                      achievementLevel=data[["pvvars"]][[composite]][["achievementLevel"]]))
   names(newPV) <- paste0(composite, "_linking")
   for(k in 1:K) {
@@ -646,7 +646,7 @@ linkVarAugmentAB <- function(data, linkingErrorSpecs, subscaleWeights, subscales
     if(subscales[k] != composite) {
       newPVi <- list(estVarnames=scaledPVs[[k]],
                      impVarnames=paste0(subscales[k],"_linking_imp_",1:100),
-                     sampVarnames=paste0(subscales[k],"_linking_samp_",1:length(repWs)))
+                     sampVarnames=paste0(subscales[k],"_linking_samp_",seq_along(repWs)))
       newPV[[paste0(subscales[k], "_linking")]] <- newPVi
     }
   }

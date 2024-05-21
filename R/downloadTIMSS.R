@@ -106,7 +106,7 @@ downloadTIMSS <- function(root, years = c(2003, 2007, 2011, 2015, 2019), cache =
     dir.create(yroot)
   }
   d <- get(paste0("d", year))
-  for (di in 1:length(d)) {
+  for (di in seq_along(d)) {
     bn <- basename(d[di]) # name of the file (without the path)
     if (!file.exists(file.path(yroot, bn))) {
       # download zip and catch any errors

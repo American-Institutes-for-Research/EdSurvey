@@ -57,7 +57,7 @@ talis18 <- readTALIS(path = "~/TALIS/2018",
                      countries = "*")
 
 #unweighted summary
-result <- summary2(talis18, "tc3g01", weightVar = "")
+result <- summary2(data=talis18, variable="tc3g01", weightVar = "")
 
 #print usa results to console
 result$usa
@@ -72,7 +72,7 @@ gg <- getData(usa2013, c("tt2g05b", "tt2g01"))
 head(gg)
 
 # conduct an analysis on the edsurvey.data.frame
-edsurveyTable(tt2g05b ~ tt2g01, data = usa2013) 
+edsurveyTable(formula=tt2g05b ~ tt2g01, data = usa2013) 
 }
 }
 \references{

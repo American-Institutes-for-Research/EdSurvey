@@ -228,9 +228,9 @@ mixed.sdf <- function(formula,
   # this allows that variable to not be dynamic variable, it is explicitly defined to be yvar0
   if (!is.null(family) && family$family %in% c("binomial")) { # if using binomial set y to 1 only if it has the highest value
     if (any(pvy)) {
-      for (i in 1:length(yvars)) {
+      for (i in seq_along(yvars)) {
         # PV, so we have not evaluated the I() yet (if any)
-        for (yvi in 1:length(pvy)) {
+        for (yvi in seq_along(pvy)) {
           if (pvy[yvi]) {
             edf[ , yvar[yvi]] <- edf[ , getPlausibleValue(yvar[yvi], data)[i]]
           }
@@ -281,7 +281,7 @@ mixed.sdf <- function(formula,
   # The standardization method varies across different surveys
   if (!weightTransformation) {
     # no weight transformations
-    for (wi in 1:length(weightVars)) {
+    for (wi in seq_along(weightVars)) {
       edf[[paste0("pwt", wi)]] <- edf[ , weightVars[wi]]
     }
   } else {
@@ -353,7 +353,7 @@ mixed.sdf <- function(formula,
     groupSum <- varsmat0[!duplicated(varsmat0$Level), c("Level", "Group")]
     groupSum$Group[groupSum$Level == 1] <- "Obs"
     groupSum$"n size" <- rev(res$ngroups)
-    for (i in 1:length(res$wgtStats)) {
+    for (i in seq_along(res$wgtStats)) {
       groupSum$"mean wgt"[groupSum$Level == i] <- res$wgtStats[[i]]$mean
       groupSum$"sum wgt"[groupSum$Level == i] <- res$wgtStats[[i]]$sum
     }
@@ -417,7 +417,7 @@ mixed.sdf <- function(formula,
     groupSum <- varsmat0[!duplicated(varsmat0$Level), c("Level", "Group")]
     groupSum$Group[groupSum$Level == 1] <- "Obs"
     groupSum$"n size" <- rev(res$ngroups)
-    for (i in 1:length(res$wgtStats)) {
+    for (i in seq_along(res$wgtStats)) {
       groupSum$"mean wgt"[groupSum$Level == i] <- res$wgtStats[[i]]$mean
       groupSum$"sum wgt"[groupSum$Level == i] <- res$wgtStats[[i]]$sum
     }
@@ -476,7 +476,7 @@ mixed.sdf <- function(formula,
     names(sampling_var) <- c(names(avg_coef), names(results[[1]]$vars))
 
     # total se is sqrt of sampling + imputation variance
-    res$se <- sqrt(sampling_var[1:length(imputation_var)] + imputation_var)
+    res$se <- sqrt(sampling_var[seq_along(imputation_var)] + imputation_var)
     # ICC is mean ICC
     res$ICC <- tryCatch(
       sum(sapply(results, function(x) {
@@ -571,7 +571,7 @@ mixed.sdf <- function(formula,
     "ranefs", "theta", "invHessian", "is_adaptive", "sigma", "cov_mat",
     "varDF", "varVC", "var_theta", "PVresults", "SE"
   )
-  for (ni in 1:length(nullOut)) {
+  for (ni in seq_along(nullOut)) {
     res[[nullOut[ni]]] <- NULL
   }
 
@@ -633,7 +633,7 @@ run_mix <- function(nQuad, call, formula, edf, verbose, tolerance, family, cente
 #' @export
 summary.mixedSdfResults <- function(object, ...) {
   # in the plausible values case there is no lnl and variance is already calcuated
-  object$coef <- cbind(Estimate = object$coef, "Std. Error" = object$se[1:length(object$coef)], "t value" = object$coef / object$se[1:length(object$coef)])
+  object$coef <- cbind(Estimate = object$coef, "Std. Error" = object$se[seq_along(object$coef)], "t value" = object$coef / object$se[seq_along(object$coef)])
   object$vars <- object$varmatSum
   class(object) <- "summary.mixedSdfResults"
   return(object)
@@ -642,7 +642,10 @@ summary.mixedSdfResults <- function(object, ...) {
 
 #' @method print summary.mixedSdfResults
 #' @export
-print.summary.mixedSdfResults <- function(x, digits = max(3, getOption("digits") - 3), nsmall = 2, ...) {
+print.summary.mixedSdfResults <- function(x, digits = max(3, getOption("digits") - 3), nsmall = 2, use_es_round=getOption("EdSurvey_round_output"), ...) {
+  if(use_es_round) {
+    x <- es_round(x)
+  }
   eout("Call:")
   print(x$call)
   cat("\n")

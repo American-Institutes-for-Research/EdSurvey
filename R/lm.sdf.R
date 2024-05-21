@@ -398,7 +398,7 @@ calc.lm.sdf <- function(formula,
   # 3) deal with relevels.
   # An argument that allows the user to change the omitted level for a factor variable
   if (length(relevels) > 0) {
-    for (i in 1:length(relevels)) {
+    for (i in seq_along(relevels)) {
       vari <- names(relevels)[i]
       if (!vari %in% names(edf)) {
         stop(paste0(
@@ -427,7 +427,7 @@ calc.lm.sdf <- function(formula,
         ))
       } # End of if statment !relevels[[i]] %in% lvls
       edf[ , vari] <- relevel(edf[ , vari], ref = relevels[[i]])
-    } # end for(i in 1:length(relevels))
+    } # end for(i in seq_along(relevels))
   } # end if(length(relevels) > 0)
 
   # droplevel on covariates to avoid problems with X is formed later.
@@ -464,7 +464,7 @@ calc.lm.sdf <- function(formula,
       pvs <- getPlausibleValue(yvars[max(pvy)], data)
       yvars <- paste0(
         "outcome",
-        1:length(pvs),
+        seq_along(pvs),
         ifelse(grepl("_imp_", pvs), "_imp",
           ifelse(grepl("_samp_", pvs), "_samp", "_est")
         )
@@ -473,7 +473,7 @@ calc.lm.sdf <- function(formula,
         stop("Taylor series variance estimation not supported with NAEP linking error.")
       }
     } else { # end if linkingError
-      yvars <- paste0("outcome", 1:length(getPlausibleValue(yvars[max(pvy)], data)))
+      yvars <- paste0("outcome", seq_along(getPlausibleValue(yvars[max(pvy)], data)))
     } # end if(any(pvy))
   } else {
     # no PVs, just make sure that this variable is numeric
@@ -485,10 +485,10 @@ calc.lm.sdf <- function(formula,
   yvar0 <- yvars[1]
   # this allows that variable to not be dynamic variable, it is explicitly defined to be yvar0
   if (any(pvy)) {
-    for (i in 1:length(yvars)) {
+    for (i in seq_along(yvars)) {
       # PV, so we have not evaluated the I() yet (if any)
       # first, by PV, rename the ith PVs to be e.g. composite
-      for (yvi in 1:length(pvy)) {
+      for (yvi in seq_along(pvy)) {
         if (pvy[yvi]) {
           edf[ , yvar[yvi]] <- edf[ , getPlausibleValue(yvar[yvi], data)[i]]
         }
@@ -671,7 +671,7 @@ calc.lm.sdf <- function(formula,
       dofDenom <- matrix(0, nrow = nrow(D), ncol = length(yvars))
       warnDrop <- 0 # warn if a stratum is too thin to estimate variance on it
       # variance and warning per yvar
-      for (mm in 1:length(yvars)) {
+      for (mm in seq_along(yvars)) {
         # for each PV, run the regression, form the coefficients and variance components
         Y <- as(edf[ , yvars[mm], drop = FALSE], "Matrix")
         YW <- Y * sqrt(edf[ , wgt, drop = TRUE])
@@ -817,7 +817,7 @@ calc.lm.sdf <- function(formula,
 
   # get fitted and resid based on overall coef
   fitted1 <- as.vector(X %*% coef)
-  Y <- do.call(cbind, lapply(1:length(yvars), function(yi) {
+  Y <- do.call(cbind, lapply(seq_along(yvars), function(yi) {
     as.vector(edf[ , yvars[yi]])
   }))
   resid1 <- Y - fitted1
@@ -943,7 +943,7 @@ calc.lm.sdf <- function(formula,
   # fix factor/character 3/4 issue
   if (version$major %in% "3") {
     if ("varSummary" %in% names(res)) {
-      for (i in 1:length(res$varSummary)) {
+      for (i in seq_along(res$varSummary)) {
         if ("Variable" %in% colnames(res$varSummary[[i]]$summary)) {
           res$varSummary[[i]]$summary$Variable <- as.character(res$varSummary[[i]]$summary$Variable)
         }
@@ -956,15 +956,21 @@ calc.lm.sdf <- function(formula,
 
 #' @method print edsurveyLm
 #' @export
-print.edsurveyLm <- function(x, ...) {
+print.edsurveyLm <- function(x, ..., use_es_round=getOption("EdSurvey_round_output")) {
+  if(use_es_round) {
+    x <- es_round(x)
+  }
   print(coef(x), ...)
 }
 
 #' @method print edsurveyLmList
 #' @export
-print.edsurveyLmList <- function(x, ...) {
-  for (i in 1:length(x)) {
+print.edsurveyLmList <- function(x, ..., use_es_round=getOption("EdSurvey_round_output")) {
+  for (i in seq_along(x)) {
     cat("lm", i, "\n")
+    if(use_es_round) {
+      x[[i]] <- es_round(x[[i]])
+    }
     print(coef(x[[i]]), ...)
   }
 }
@@ -1004,7 +1010,7 @@ summary.edsurveyLm <- function(object, src = FALSE, ...) {
 #' @export
 summary.edsurveyLmList <- function(object, smd = FALSE, ...) {
   class(object) <- "summary.edsurveyLmList"
-  for (i in 1:length(object)) {
+  for (i in seq_along(object)) {
     object[[i]] <- summary.edsurveyLm(object[[i]], smd)
   }
   object
@@ -1013,7 +1019,10 @@ summary.edsurveyLmList <- function(object, smd = FALSE, ...) {
 #' @method print summary.edsurveyLm
 #' @importFrom stats printCoefmat
 #' @export
-print.summary.edsurveyLm <- function(x, ...) {
+print.summary.edsurveyLm <- function(x, ..., use_es_round=getOption("EdSurvey_round_output")) {
+  if(use_es_round) {
+    x <- es_round(x)
+  }
   cat(paste0("\nFormula: ", paste(deparse(x$formula), collapse = ""), "\n\n"))
   cat(paste0("Weight variable: ", sQuote(x$weight), "\n"))
   cat(paste0("Variance method: ", x$varMethod, "\n"))
@@ -1033,17 +1042,17 @@ print.summary.edsurveyLm <- function(x, ...) {
   cat(paste0("Coefficients:\n"))
   csind <- which(colnames(x$coefmat) %in% c("coef", "se", "stdCoef", "stdSE"))
   # with standardized coefficients it produces a bogus warning for the intercept
-  suppressWarnings(printCoefmat(x$coefmat, P.values = TRUE, has.Pvalue = TRUE, cs.ind = csind))
+  suppressWarnings(printCoefmat(x = x$coefmat, P.vlaues=TRUE, has.Pvalue=TRUE, cs.ind=csind, ...))
   cat("\n")
   cat(paste0("Multiple R-squared: ", round(x$r.squared, 4), "\n\n"))
 }
 
 #' @method print summary.edsurveyLmList
 #' @export
-print.summary.edsurveyLmList <- function(x, ...) {
-  for (i in 1:length(x)) {
+print.summary.edsurveyLmList <- function(x, ..., use_es_round=getOption("EdSurvey_round_output")) {
+  for (i in seq_along(x)) {
     cat("lm", i, "\n")
-    print(x[[i]], ...)
+    print(x[[i]], ..., use_es_round = use_es_round)
   }
 }
 
@@ -1130,7 +1139,7 @@ standardizeCoef <- function(coef, std) {
   if (length(names(coef)) == 0) {
     stop("coef must have names.")
   }
-  for (si in 1:length(coef)) {
+  for (si in seq_along(coef)) {
     coefName <- names(coef)[si]
     if (std[[coefName]] > 0) {
       # standardize regression coef = sdX_i/sdY * coef_i
@@ -1185,7 +1194,7 @@ getLinkingImpVar <- function(data, pvImp, ramCols, stat, wgt, T0, T0Centered, jk
       # use reported statistic centering (jackknife MSE estimation)
       center <- T0
     }
-    for (i in 1:length(center)) {
+    for (i in seq_along(center)) {
       V_n[n, i] <- (1 + 1 / 20) * sum((T_jn[ , i] - center[i])^2) / (20 - 1)
     }
     if (n == 1) {
@@ -1250,7 +1259,7 @@ getLinkingSampVar <- function(data, pvSamp, stat, rwgt, T0, T0Centered, jkSumMul
   })
   # for each coefficient, build varEstInputs (vei) for that coefficient
   # skip r-squared with length(T0)-1
-  veiList <- lapply(1:length(T0), function(i) {
+  veiList <- lapply(seq_along(T0), function(i) {
     if (!"r.squared" %in% names(T0)[i]) {
       data.frame(
         PV = rep(1, nrow(resi)),
@@ -1439,7 +1448,7 @@ getVarEstJKStandard <- function(stat, yvar, wgtM, co0, jkSumMult, pvName, stdev,
 #           nums2      vector for this yvar's dofDenum
 getVarTaylor <- function(uhij, edf, D, wgt, psuVar, stratumVar) {
   coefNames <- colnames(uhij)
-  uhil <- lapply(1:length(coefNames), function(j) {
+  uhil <- lapply(seq_along(coefNames), function(j) {
     # get the stratum/PSU based sum
     edf$bb <- uhij[ , j] * edf[ , wgt]
     res_sp <- aggregate(formula(paste0("bb ~ ", psuVar, " + ", stratumVar)), edf, sum)
@@ -1462,7 +1471,7 @@ getVarTaylor <- function(uhij, edf, D, wgt, psuVar, stratumVar) {
   for (ii in unique(uhi[ , stratumVar])) {
     unkj <- unique(uhi[uhi[ , stratumVar] == ii, psuVar, drop = TRUE])
     if (length(unkj) > 1) {
-      v <- do.call(cbind, lapply(1:length(unkj), function(jj) as.numeric(t(uhi[uhi[ , stratumVar] == ii & uhi[ , psuVar] == unkj[jj], paste0("dx", coefNames), drop = FALSE]))))
+      v <- do.call(cbind, lapply(seq_along(unkj), function(jj) as.numeric(t(uhi[uhi[ , stratumVar] == ii & uhi[ , psuVar] == unkj[jj], paste0("dx", coefNames), drop = FALSE]))))
       vvj <- v %*% t(v)
       vvj <- vvj * ((length(unkj)) / (length(unkj) - 1))
       num <- diag(D %*% vvj %*% D)

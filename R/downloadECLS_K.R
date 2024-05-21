@@ -75,7 +75,7 @@ downloadECLS_K <- function(root, years = c(1998, 2011), cache = FALSE, verbose =
   d <- get(paste0("d", year))
 
   # loop through each defined .zip file defined for the year
-  for (di in 1:length(d)) {
+  for (di in seq_along(d)) {
     bn <- basename(d[di]) # name of the file (without the path)
     if (!file.exists(file.path(yroot, bn))) {
       # download
@@ -123,7 +123,7 @@ downloadECLS_K <- function(root, years = c(1998, 2011), cache = FALSE, verbose =
         }
       }
     } # end if(grepl("\\.zip$", bn, ignore.case = TRUE))
-  } # end for(di in 1:length(d))
+  } # end for(di in seq_along(d))
 
   if (cache) {
     if (verbose) {

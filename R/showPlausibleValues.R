@@ -30,7 +30,7 @@ showPlausibleValues <- function(data, verbose = FALSE) {
   if (length(pvNames) == 0) {
     return(invisible(NULL))
   }
-  for (i in 1:length(pvNames)) {
+  for (i in seq_along(pvNames)) {
     pvi <- pvvars[[i]]
     pvn <- lapply(names(pvi)[grep("[Vv]arnames", names(pvi))], function(name) {
       length(pvi[[name]])
@@ -60,7 +60,7 @@ showPlausibleValues <- function(data, verbose = FALSE) {
       eout(txt, indent = 2)
     } # end of is statment: if verbrose
     cat("\n")
-  } # End of loop for i in 1:length(pvNames)
+  } # End of loop for i in seq_along(pvNames)
 }
 
 #' @title Get Plausible Value Variables

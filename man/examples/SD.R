@@ -1,6 +1,6 @@
 \dontrun{
 # read in the example data (generated, not real student data)
-sdf <- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package="NAEPprimer"))
+sdf <- readNAEP(path=system.file("extdata/data", "M36NT2PM.dat", package="NAEPprimer"))
 
 # get standard deviation for Male's composite score
 SD(data = subset(sdf, dsex == "Male"), variable = "composite")
@@ -13,7 +13,7 @@ sdfB <- subset(sdf, scrpsu %in% c(75,76,78))
 sdfC <- subset(sdf, scrpsu %in% 100:200)
 sdfD <- subset(sdf, scrpsu %in% 201:300)
 
-sdfl <- edsurvey.data.frame.list(list(sdfA, sdfB, sdfC, sdfD),
+sdfl <- edsurvey.data.frame.list(datalist=list(sdfA, sdfB, sdfC, sdfD),
                                  labels=c("A locations",
                                           "B locations",
                                           "C locations",

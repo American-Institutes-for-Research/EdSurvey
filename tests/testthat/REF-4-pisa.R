@@ -34,12 +34,12 @@ pgap1REF <- c(
   "     B st04q01 == \"Female\"      4978  2453",
   "",
   "Percentage:",
-  "     pctA    pctAse     pctB    pctBse   diffAB      covAB diffABse diffABpValue    dofAB",
-  " 50.98087 0.7182871 49.01913 0.7182871 1.961734 -0.5159363 1.436574     0.174861 110.0328",
+  "     pctA  pctAse   pctB  pctBse diffAB    covAB diffABse diffABpValue  dofAB",
+  " 50.98087 0.71829 49.019 0.71829 1.9617 -0.51594   1.4366       0.1749 110.03",
   "",
   "Results:",
-  " estimateA estimateAse estimateB estimateBse   diffAB    covAB diffABse diffABpValue    dofAB",
-  "   483.647    3.800262  478.9953     3.92109 4.651662 11.01904 2.789059   0.09911296 83.14098"
+  " estimateA estimateAse estimateB estimateBse diffAB  covAB diffABse diffABpValue  dofAB",
+  "   483.647      3.8003       479      3.9211 4.6517 11.019   2.7891      0.09911 83.141"
 )
 
 al1REF <- c(
@@ -89,13 +89,13 @@ pgap2REF <- c(
   "     B st04q01 == \"Female\"",
   "",
   "Percentage:",
-  "     pctA    pctAse     pctB    pctBse   diffAB      covAB diffABse diffABpValue    dofAB",
-  " 50.98087 0.7182871 49.01913 0.7182871 1.961734 -0.5159363 1.436574     0.174861 110.0328",
+  "     pctA  pctAse   pctB  pctBse diffAB    covAB diffABse diffABpValue  dofAB",
+  " 50.98087 0.71829 49.019 0.71829 1.9617 -0.51594   1.4366       0.1749 110.03",
   "",
   "Results:",
-  " percentiles estimateA estimateAse estimateB estimateBse   diffAB     covAB diffABse diffABpValue    dofAB",
-  "          50  480.7124    4.075956  474.6266    4.498829 6.085824 11.494158 3.723515    0.1064350 73.66955",
-  "          90  605.1735    3.942558  595.3941    8.603019 9.779404  7.893203 8.588906    0.2579161 89.16957"
+  " percentiles estimateA estimateAse estimateB estimateBse diffAB   covAB diffABse diffABpValue dofAB",
+  "          50    480.71      4.0760    474.63      4.4988 6.0858 11.4942   3.7235       0.1064 73.67",
+  "          90    605.17      3.9426    595.39      8.6030 9.7794  7.8932   8.5889       0.2579 89.17"
 )
 
 pvREF <- c(

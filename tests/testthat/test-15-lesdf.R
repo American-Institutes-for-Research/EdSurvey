@@ -10,17 +10,17 @@ dsex <- "should not be used"
 
 test_that("read LESDF", {
   sdf <<- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
-  lsdf <<- getData(sdf, c(all.vars(composite ~ dsex + b017451), "origwt", "jkunit", "repgrp1"), addAttributes = TRUE)
-  suppressWarnings(lsdf0 <<- getData(sdf, colnames(sdf), addAttributes = TRUE, dropOmittedLevels = FALSE, defaultConditions = FALSE))
+  lsdf <<- EdSurvey::getData(sdf, c(all.vars(composite ~ dsex + b017451), "origwt", "jkunit", "repgrp1"), addAttributes = TRUE)
+  suppressWarnings(lsdf0 <<- EdSurvey::getData(sdf, colnames(sdf), addAttributes = TRUE, dropOmittedLevels = FALSE, defaultConditions = FALSE))
   expect_is(lsdf, "light.edsurvey.data.frame")
 })
 
 context("LESDF cbind function")
 test_that("LESDF cbind function", {
-  sm1 <- getData(sdf, c("composite", "dsex", "origwt"), dropUnusedLevels = FALSE, defaultConditions = FALSE, dropOmittedLevels = FALSE, addAttributes = TRUE)
-  sm2 <- getData(sdf, c("b017451"), dropUnusedLevels = FALSE, defaultConditions = FALSE, dropOmittedLevels = FALSE)
+  sm1 <- EdSurvey::getData(sdf, c("composite", "dsex", "origwt"), dropUnusedLevels = FALSE, defaultConditions = FALSE, dropOmittedLevels = FALSE, addAttributes = TRUE)
+  sm2 <- EdSurvey::getData(sdf, c("b017451"), dropUnusedLevels = FALSE, defaultConditions = FALSE, dropOmittedLevels = FALSE)
   sm3 <- cbind(b017451 = sm2$b017451, sm1)
-  sm4 <- getData(sdf, c("composite", "b017451", "dsex", "origwt"), dropUnusedLevels = FALSE, defaultConditions = FALSE, dropOmittedLevels = FALSE, addAttributes = TRUE)
+  sm4 <- EdSurvey::getData(sdf, c("composite", "b017451", "dsex", "origwt"), dropUnusedLevels = FALSE, defaultConditions = FALSE, dropOmittedLevels = FALSE, addAttributes = TRUE)
   expect_equal(attributes(sm4)$names, attributes(sm3)$names) # test just attribute names
   expect_equal(sm4, sm3) # test everything
 
@@ -40,9 +40,9 @@ skip_on_cran()
 context("LESDF rbind function")
 test_that("LESDF cbind function", {
   skip_on_cran()
-  sm1 <- getData(sdf, c("composite", "dsex", "origwt"), dropUnusedLevels = FALSE, defaultConditions = FALSE, dropOmittedLevels = FALSE, addAttributes = TRUE)
+  sm1 <- EdSurvey::getData(sdf, c("composite", "dsex", "origwt"), dropUnusedLevels = FALSE, defaultConditions = FALSE, dropOmittedLevels = FALSE, addAttributes = TRUE)
   smF <- subset(sm1, dsex %in% "Female")
-  dfM <- getData(subset(sm1, dsex %in% "Male"), c("composite", "dsex", "origwt"), dropUnusedLevels = FALSE, dropOmittedLevels = FALSE)
+  dfM <- EdSurvey::getData(subset(sm1, dsex %in% "Male"), c("composite", "dsex", "origwt"), dropUnusedLevels = FALSE, dropOmittedLevels = FALSE)
   sm2 <- rbind(smF, dfM)
   expect_equal(dim(sm2), dim(sm1))
   expect_equal(dim(rbind(dfM, smF)), dim(sm1))
@@ -55,7 +55,7 @@ test_that("LESDF cbind function", {
 context("LESDF merge function")
 test_that("LESDF merge function", {
   skip_on_cran()
-  sm1 <- getData(data = sdf, varnames = c("dsex", "b017451"), addAttributes = TRUE)
+  sm1 <- EdSurvey::getData(data = sdf, varnames = c("dsex", "b017451"), addAttributes = TRUE)
   attr_sm1 <- attributes(sm1)[!names(attributes(sm1)) %in% c("names", "row.names")]
   df <- data.frame(dsex = c("Male", "Female", "extra"), dsex2 = c("Boy", "Girl", "extra"), stringsAsFactors = TRUE)
   merged_lsdf <- merge(sm1, df, by = "dsex")
@@ -80,14 +80,14 @@ test_that("getData addAttributesTRUE returns a LESDF", {
 context("getData ignores defaultConditions when applied twice")
 test_that("getData ignores defaultConditions when applied twice", {
   skip_on_cran()
-  lsdf1 <- getData(sdf, c("composite", "dsex", "b017451", "origwt"), addAttributes = TRUE, defaultConditions = FALSE)
-  expect_equal(lsdf1, suppressWarnings(lsdf2 <- getData(lsdf1, c("composite", "dsex", "b017451", "origwt"))))
-  expect_equal(lsdf1, suppressWarnings(lsdf3 <- getData(lsdf1, c("composite", "dsex", "b017451", "origwt"), defaultConditions = FALSE)))
-  expect_equal(lsdf1, suppressWarnings(lsdf4 <- getData(lsdf1, c("composite", "dsex", "b017451", "origwt"), defaultConditions = TRUE)))
-  lsdf2 <- getData(sdf, c("composite", "dsex", "b017451", "origwt"), addAttributes = TRUE, defaultConditions = TRUE)
-  expect_equal(lsdf2, suppressWarnings(lsdf2 <- getData(lsdf2, c("composite", "dsex", "b017451", "origwt"))))
-  expect_equal(lsdf2, suppressWarnings(lsdf3 <- getData(lsdf2, c("composite", "dsex", "b017451", "origwt"), defaultConditions = FALSE)))
-  expect_equal(lsdf2, suppressWarnings(lsdf4 <- getData(lsdf2, c("composite", "dsex", "b017451", "origwt"), defaultConditions = TRUE)))
+  lsdf1 <- EdSurvey::getData(sdf, c("composite", "dsex", "b017451", "origwt"), addAttributes = TRUE, defaultConditions = FALSE)
+  expect_equal(lsdf1, suppressWarnings(lsdf2 <- EdSurvey::getData(lsdf1, c("composite", "dsex", "b017451", "origwt"))))
+  expect_equal(lsdf1, suppressWarnings(lsdf3 <- EdSurvey::getData(lsdf1, c("composite", "dsex", "b017451", "origwt"), defaultConditions = FALSE)))
+  expect_equal(lsdf1, suppressWarnings(lsdf4 <- EdSurvey::getData(lsdf1, c("composite", "dsex", "b017451", "origwt"), defaultConditions = TRUE)))
+  lsdf2 <- EdSurvey::getData(sdf, c("composite", "dsex", "b017451", "origwt"), addAttributes = TRUE, defaultConditions = TRUE)
+  expect_equal(lsdf2, suppressWarnings(lsdf2 <- EdSurvey::getData(lsdf2, c("composite", "dsex", "b017451", "origwt"))))
+  expect_equal(lsdf2, suppressWarnings(lsdf3 <- EdSurvey::getData(lsdf2, c("composite", "dsex", "b017451", "origwt"), defaultConditions = FALSE)))
+  expect_equal(lsdf2, suppressWarnings(lsdf4 <- EdSurvey::getData(lsdf2, c("composite", "dsex", "b017451", "origwt"), defaultConditions = TRUE)))
 })
 
 context("LESDF subset")
@@ -98,11 +98,11 @@ test_that("LESDF subset", {
   s1 <- EdSurvey:::subset(lsdf, dsex == i, verbose = FALSE)
   expect_equal(s2 <- base::subset(lsdf, dsex == "Male"), s1)
 
-  sdfb12 <- getData(subset(sdf, b017451 %in% c(1, 2), verbose = FALSE), c("b017451", "dsex"), dropUnusedLevels = FALSE)
+  sdfb12 <- EdSurvey::getData(subset(sdf, b017451 %in% c(1, 2), verbose = FALSE), c("b017451", "dsex"), dropUnusedLevels = FALSE)
   lsdfb12 <- subset(getData(sdf, c("b017451", "dsex"), dropUnusedLevels = FALSE), b017451 %in% c(1, 2))
   expect_equal(sdfb12, lsdfb12)
 
-  sdfb12 <- getData(subset(sdf, b017451 %in% c("Never or hardly ever", "Once every few weeks"), verbose = FALSE), c("b017451", "dsex"), dropUnusedLevels = FALSE)
+  sdfb12 <- EdSurvey::getData(subset(sdf, b017451 %in% c("Never or hardly ever", "Once every few weeks"), verbose = FALSE), c("b017451", "dsex"), dropUnusedLevels = FALSE)
   lsdfb12 <- subset(getData(sdf, c("b017451", "dsex"), dropUnusedLevels = FALSE), b017451 %in% c("Never or hardly ever", "Once every few weeks"))
   expect_equal(sdfb12, lsdfb12)
 
@@ -116,9 +116,9 @@ test_that("LESDF subset", {
 
   expect_equal(
     as.data.frame(getData(lsdf_recode, c(all.vars(composite ~ dsex + b017451), "origwt"))),
-    getData(sdf, c(all.vars(composite ~ dsex + b017451), "origwt"), recode = list(dsex = list(from = "Female", to = "Girl")))
+    EdSurvey::getData(sdf, c(all.vars(composite ~ dsex + b017451), "origwt"), recode = list(dsex = list(from = "Female", to = "Girl")))
   )
-  norecode <- getData(sdf, c(all.vars(composite ~ dsex + b017451), "origwt"))
+  norecode <- EdSurvey::getData(sdf, c(all.vars(composite ~ dsex + b017451), "origwt"))
   expect_equal(nrow(s2), as.numeric(table(norecode$dsex)["Female"]))
 })
 
@@ -147,13 +147,13 @@ test_that("LESDF recode.sdf", {
   expect_equal(sum(table(lsdf$b017451)[1:4]), as.numeric(table(lsdf_recode2$b017451)[1]))
 })
 
-context("LESDF getData warnings")
-test_that("LESDF getData warnings", {
+context("LESDF EdSurvey::getData warnings")
+test_that("LESDF EdSurvey::getData warnings", {
   skip_on_cran()
-  co <- evaluate_promise(getData(sdf, c("composite", "dsex", "b017451", "origwt"), dropUnusedLevels = FALSE, defaultConditions = FALSE, addAttributes = TRUE, dropOmittedLevels = FALSE))
+  co <- evaluate_promise(EdSurvey::getData(data=sdf, c("composite", "dsex", "b017451", "origwt"), dropUnusedLevels = FALSE, defaultConditions = FALSE, addAttributes = TRUE, dropOmittedLevels = FALSE))
   expect_equal(unique(co$warnings), character(0))
   expect_warning(
-    co <- getData(sdf,
+    co <- EdSurvey::getData(sdf,
       c("composite", "dsex", "b017451", "m144901", "origwt"),
       dropUnusedLevels = FALSE,
       defaultConditions = FALSE,
@@ -208,7 +208,7 @@ test_that("LESDF gap", {
 context("LESDF achievementLevels")
 test_that("LESDF achievementLevels", {
   skip_on_cran()
-  lsdf1l <- getData(sdf, c("composite", "origwt"), addAttributes = TRUE)
+  lsdf1l <- EdSurvey::getData(sdf, c("composite", "origwt"), addAttributes = TRUE)
   expect_known_value(test1l <- achievementLevels(returnCumulative = TRUE, data = lsdf1l), file = "aLevels_test1.rds", update = FALSE)
   a1 <- achievementLevels(c("composite", "dsex", "b017451"),
     aggregateBy = "dsex", sdf,
@@ -250,13 +250,13 @@ context("LESDF cor.sdf")
 test_that("LESDF cor.sdf", {
   skip_on_cran()
   b3 <- cor.sdf("m815401", "b017451", method = "Pearson", sdf, weightVar = "origwt")
-  lsdf2 <- getData(sdf, c("m815401", "m815701", "b017451", "origwt"), addAttributes = TRUE, dropOmittedLevels = FALSE)
+  lsdf2 <- EdSurvey::getData(sdf, c("m815401", "m815701", "b017451", "origwt"), addAttributes = TRUE, dropOmittedLevels = FALSE)
   b4 <- cor.sdf("m815401", "b017451", method = "Pearson", lsdf2, weightVar = "origwt", dropOmittedLevels = TRUE) # dropUnusedLevels nolonger revealed, not set
   expect_equal(b3, b4)
-  # cor passes dropOmittedLevels to getData
-  # in some ways this is maybe more of a test of getData
+  # cor passes dropOmittedLevels to EdSurvey::getData
+  # in some ways this is maybe more of a test of EdSurvey::getData
   b1 <- cor.sdf("m815401", "b017451", method = "Pearson", sdf, weightVar = "origwt")
-  lsdf3 <- getData(sdf, c("m815401", "b017451", "origwt"), addAttributes = TRUE, dropOmittedLevels = TRUE)
+  lsdf3 <- EdSurvey::getData(sdf, c("m815401", "b017451", "origwt"), addAttributes = TRUE, dropOmittedLevels = TRUE)
   b2 <- cor.sdf("m815401", "b017451", method = "Pearson", lsdf3, weightVar = "origwt")
   expect_equal(b2, b4)
   expect_equal(b1, b2)
@@ -325,13 +325,13 @@ test_that("LESDF edsurveyTable", {
 context("LESDF lm.sdf correctly returns errors")
 test_that("LESDF lm.sdf correctly returns errors", {
   skip_on_cran()
-  sm1 <- getData(sdf, c(all.vars(composite ~ dsex + b017451), "origwt"), addAttributes = TRUE)
+  sm1 <- EdSurvey::getData(sdf, c(all.vars(composite ~ dsex + b017451), "origwt"), addAttributes = TRUE)
   sm1 <- subset(sm1, dsex == "Male")
   sm1 <- subset(sm1, dsex == "Female")
   expect_error(suppressWarnings(lm.sdf(composite ~ dsex + b017451, sm1, jrrIMax = Inf)))
   # LESDF lm.sdf function returns error with contradicting subset and relevel
   skip_on_cran()
-  sm1 <- getData(sdf, c(all.vars(composite ~ dsex + b017451), "origwt"), addAttributes = TRUE)
+  sm1 <- EdSurvey::getData(sdf, c(all.vars(composite ~ dsex + b017451), "origwt"), addAttributes = TRUE)
   # no error with relevel calls
   expect_is(lm.sdf(composite ~ dsex + b017451, relevels = list(dsex = "Male"), sm1, jrrIMax = Inf), "edsurveyLm")
   expect_is(lm.sdf(composite ~ dsex + b017451, relevels = list(b017451 = "Once every few weeks"), sm1, jrrIMax = Inf), "edsurveyLm")
@@ -339,8 +339,8 @@ test_that("LESDF lm.sdf correctly returns errors", {
   sm2 <- subset(sm2, b017451 != "Once every few weeks")
   expect_error(lm.sdf(composite ~ dsex + b017451, relevels = list(dsex = "Male"), sm2, jrrIMax = Inf))
   expect_error(lm.sdf(composite ~ dsex + b017451, relevels = list(b017451 = "Once every few weeks"), sm2, jrrIMax = Inf))
-  # return error when variable not in getData call
-  sm1 <- getData(sdf, c(all.vars(composite ~ dsex + b017451), "origwt"), addAttributes = TRUE)
+  # return error when variable not in EdSurvey::getData call
+  sm1 <- EdSurvey::getData(sdf, c(all.vars(composite ~ dsex + b017451), "origwt"), addAttributes = TRUE)
   expect_error(lm.sdf(composite ~ dsex + b017451 + iep, sm1, jrrIMax = Inf))
 })
 
@@ -381,7 +381,7 @@ context("LESDF use returnNumberOfPSU=TRUE")
 test_that("use returnNumberOfPSU", {
   skip_on_cran()
   # percentile
-  lsdf2 <- getData(sdf, c("composite", "dsex", "origwt", getAttributes(sdf, "psuVar"), getAttributes(sdf, "stratumVar")), addAttributes = TRUE)
+  lsdf2 <- EdSurvey::getData(sdf, c("composite", "dsex", "origwt", getAttributes(sdf, "psuVar"), getAttributes(sdf, "stratumVar")), addAttributes = TRUE)
   pctPSU <- percentile("composite", percentiles = c(10, 50), data = lsdf2, returnNumberOfPSU = TRUE)
   expect_equal(attr(pctPSU, "nPSU"), 124)
 

@@ -1,14 +1,14 @@
 \dontrun{
 # read in the example data (generated, not real student data)
-sdf <- readNAEP(system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
+sdf <- readNAEP(path=system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
 
 # table to compare to subsequent tables with subsets
-edsurveyTable(composite ~ dsex, data=sdf, returnMeans=FALSE, returnSepct=FALSE)
+edsurveyTable(formula=composite ~ dsex, data=sdf, returnMeans=FALSE, returnSepct=FALSE)
 
 # subset to just males
 newsdf <-  subset(x=sdf, subset= dsex == "Male") 
 # table of dsex after subset
-edsurveyTable(composite ~ dsex, data=newsdf, returnMeans=FALSE, returnSepct=FALSE)
+edsurveyTable(formula=composite ~ dsex, data=newsdf, returnMeans=FALSE, returnSepct=FALSE)
 
 # Variable names that are not in the sdf get resolved in the parent frame.
 # practically, that means that the following two subset 
@@ -59,7 +59,7 @@ sdfC <- subset(sdf, scrpsu %in% 100:200)
 sdfD <- subset(sdf, scrpsu %in% 201:300)
 
 # construct an edsurvey.data.frame.list from these four datasets
-sdfl <- edsurvey.data.frame.list(list(sdfA, sdfB, sdfC, sdfD),
+sdfl <- edsurvey.data.frame.list(datalist=list(sdfA, sdfB, sdfC, sdfD),
                                  labels=c("A locations",
                                            "B locations",
                                            "C locations",
@@ -67,7 +67,7 @@ sdfl <- edsurvey.data.frame.list(list(sdfA, sdfB, sdfC, sdfD),
 
 sdfl2 <- subset(sdfl, dsex=="Male")
 # the number of rows in each element of the sdfl
-nrow(sdfl)
+nrow(x=sdfl)
 # the number of rows after subsetting each element to just the Males
-nrow(sdfl2)
+nrow(x=sdfl2)
 }

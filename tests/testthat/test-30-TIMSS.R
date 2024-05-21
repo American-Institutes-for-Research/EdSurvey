@@ -85,7 +85,7 @@ test_that("TIMSS esdfl", {
 context("TIMSS $ assign")
 test_that("TIMSS edsurveyTable", {
   kwt4.15$testVar1 <- ifelse(kwt4.15$idstud %% 2 == 0, 1, 0) # create a 'cache' var:: works good
-  # veryify that the raw cache agrees with the getData results
+  # veryify that the raw cache agrees with the EdSurvey::getData results
   tab0 <- table(kwt4.15$cache$testVar1)
   tab1 <- table(kwt4.15$testVar1)
   expect_equal(tab0, tab1)
@@ -160,21 +160,21 @@ test_that("TIMSS lm.sdf", {
     "364.9699220 -12.4878760  -0.5142928 "
   )
   expect_equal(co1, co.ref)
-  expect_is(waldTest(lm1t, "asbgssb"), "edsurveyWaldTest")
+  expect_is(EdSurvey::waldTest(lm1t, "asbgssb"), "edsurveyWaldTest")
   expect_equal(unname(sqrt(diag(vcov(lm1t)))), lm1t$coefmat$se)
 
 
 
   expect_equal(unname(sqrt(diag(vcov(lm1j)))), lm1j$coefmat$se)
-  expect_is(waldTest(lm1j, "asbgssb"), "edsurveyWaldTest")
+  expect_is(EdSurvey::waldTest(lm1j, "asbgssb"), "edsurveyWaldTest")
 
 
   expect_equal(unname(sqrt(diag(vcov(lm2t)))), lm2t$coefmat$se)
-  expect_is(waldTest(lm2t, "asbgssb"), "edsurveyWaldTest")
+  expect_is(EdSurvey::waldTest(lm2t, "asbgssb"), "edsurveyWaldTest")
 
 
   expect_equal(unname(sqrt(diag(vcov(lm2j)))), lm2j$coefmat$se)
-  expect_is(waldTest(lm2j, "asbgssb"), "edsurveyWaldTest")
+  expect_is(EdSurvey::waldTest(lm2j, "asbgssb"), "edsurveyWaldTest")
 
 
   co.ref1 <- c(
@@ -247,12 +247,12 @@ test_that("TIMSS showPlausibleValues and showWeights verbose output agrees", {
 
 context("TIMSS getData")
 test_that("TIMSS getData", {
-  expect_known_value(gd1 <- getData(fin4.11, c("asbg01", "mmat")), file = "TIMSSgd1.rds", update = FALSE)
-  expect_known_value(gd2 <- getData(usa4.07, c("as4gth03", "idschool", "ssci", "totwgt"), defaultConditions = FALSE), file = "TIMSSgd2.rds", update = FALSE)
+  expect_known_value(head(EdSurvey::getData(fin4.11, c("asbg01", "mmat"))), file = "TIMSSgd1.rds", update = FALSE)
+  expect_known_value(head(EdSurvey::getData(usa4.07, c("as4gth03", "idschool", "ssci", "totwgt"), defaultConditions = FALSE)[,1:10]), file = "TIMSSgd2.rds", update = FALSE)
 
   # test a getData call with teacher level variable ensure warning is returned
-  tchWrn <- capture_warnings(gd3 <- getData(kwt4.15, c("mgeo", "idstud", "atbg10f"), dropUnusedLevels = FALSE))
-  expect_known_value(gd3, file = "TIMSSgd3.rds", update = FALSE, check.attributes = FALSE)
+  tchWrn <- capture_warnings(gd3 <- EdSurvey::getData(kwt4.15, c("mgeo", "idstud", "atbg10f"), dropUnusedLevels = FALSE))
+  expect_known_value(head(gd3), file = "TIMSSgd3.rds", update = FALSE, check.attributes = FALSE)
 
   kwt4_males <- EdSurvey:::subset(kwt4.15, asbg01 %in% "BOY", verbose = FALSE)
   expect_equal(dim(kwt4_males), c(5252, 2262))
@@ -286,7 +286,7 @@ test_that("TIMSS userConditions", {
   ))
   # the rename variable has NA but it shouldn't affect getData
   expect_equal(dim(usa4.07), dim(usa4.07.cleaned))
-  expect_equal(getData(usa4.07, "itsex"), getData(usa4.07.cleaned, "itsex"))
+  expect_equal(EdSurvey::getData(usa4.07, "itsex"), EdSurvey::getData(usa4.07.cleaned, "itsex"))
 
   expect_equal(gap("mmat", usa4.07.cleaned)$results, gap("mmat", usa4.07)$results)
 })
@@ -302,7 +302,7 @@ test_that("TIMSS percentile", {
 context("TIMSS glm")
 test_that("TIMSS glm", {
   # varEstInputs
-  usa4recode <- getData(usa4.07, varnames = c("as4srbsc", "itsex", "at4gsex", "tchwgt"), addAttributes = TRUE, returnJKreplicates = TRUE)
+  usa4recode <- EdSurvey::getData(usa4.07, varnames = c("as4srbsc", "itsex", "at4gsex", "tchwgt"), addAttributes = TRUE, returnJKreplicates = TRUE)
   usa4recode$readSciOften <- ifelse(usa4recode$as4srbsc %in% c("AT LEAST ONCE A WEEK", "ONCE OR TWICE A MONTH"), 1, 0)
   logit1 <- logit.sdf(readSciOften ~ itsex + at4gsex, data = usa4recode, weight = "tchwgt")
 
@@ -341,18 +341,18 @@ context("TIMSS gap")
 test_that("TIMSS gap", {
   withr::with_options(list(digits = 7, scipen = 0), {
     # varEstInputs
-    g3d <- gap("mmat", fin4.11, asbg01 == "BOY", returnVarEstInputs = TRUE, achievementLevel = c("Intermediate International Benchmark"), achievementDiscrete = TRUE)
+    g3d <- gap("mmat", data=fin4.11, groupA= asbg01 == "BOY", returnVarEstInputs = TRUE, achievementLevel = c("Intermediate International Benchmark"), achievementDiscrete = TRUE)
     # gap percentile
-    g2p <- gap("mmat", fin4.11, asbg01 == "BOY", asbg01 == "GIRL", percentile = c(50, 90), pctMethod = "symmetric")
+    g2p <- gap("mmat", data=fin4.11, groupA= asbg01 == "BOY", groupB=asbg01 == "GIRL", percentile = c(50, 90), pctMethod = "symmetric")
     # gap achievement levels, discrete
-    g1al <- gap("mmat", fin4.11, asbg01 == "BOY", asbg01 == "GIRL", achievementLevel = "Low International Benchmark", achievementDiscrete = TRUE)
+    g1al <- gap("mmat", data=fin4.11, groupA= asbg01 == "BOY", groupB=asbg01 == "GIRL", achievementLevel = "Low International Benchmark", achievementDiscrete = TRUE)
     # gap percentage with recode
-    g1eq <- gap("asbg07d", fin4.11, asbg01 == "BOY", asbg01 == "GIRL", targetLevel = "ONCE OR TWICE A WEEK")
+    g1eq <- gap("asbg07d", data=fin4.11, groupA= asbg01 == "BOY", groupB= asbg01 == "GIRL", targetLevel = "ONCE OR TWICE A WEEK")
 
-    co1 <- capture.output(g3d)
-    co2 <- capture.output(g2p)
-    co3 <- capture.output(g1al)
-    co4 <- capture.output(g1eq)
+    co1 <- capture.output(print(g3d))
+    co2 <- capture.output(print(g2p))
+    co3 <- capture.output(print(g1al))
+    co4 <- capture.output(print(g1eq))
   })
 
   expect_equal(co1, g3dREF)
@@ -395,7 +395,7 @@ test_that("TIMSS gap dynamic subsets", {
   expect_equal(gapResult, gapResult2)
 
   # does not work in testthat
-  gd2 <- getData(usa4.07, c("totwgt", "itsex", "mmat"), defaultConditions = FALSE, addAttributes = TRUE)
+  gd2 <- EdSurvey::getData(usa4.07, c("totwgt", "itsex", "mmat"), defaultConditions = FALSE, addAttributes = TRUE)
   gapResult <- gap(
     variable = "mmat", data = gd2,
     groupA = itsex %in% "GIRL"
@@ -425,7 +425,7 @@ test_that("mml.sdf", {
   otherVars <- c("ROWID", "asbg05a")
 
   withr::with_options(list(digits = 4, scipen = 0), {
-    lesdf <- suppressWarnings(getData(usa4.15, varnames = c(pv, pvi, psustr, wgt, otherVars), dropOmittedLevels = FALSE, addAttributes = TRUE, returnJKreplicates = TRUE))
+    lesdf <- suppressWarnings(EdSurvey::getData(usa4.15, varnames = c(pv, pvi, psustr, wgt, otherVars), dropOmittedLevels = FALSE, addAttributes = TRUE, returnJKreplicates = TRUE))
     # run mml
     mml1 <- suppressWarnings(mml.sdf(mmat ~ 1, usa4.15, weightVar = "totwgt", verbose = TRUE))
     mml2 <- suppressWarnings(mml.sdf(mmat ~ 1, lesdf, weightVar = "totwgt", verbose = TRUE)) # test with light.edsurvey.data.frame

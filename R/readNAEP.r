@@ -405,7 +405,7 @@ linkVarAugment <- function(data, subscaleWeights, subscales, composite) {
   # actual variables
   scaledPVs <- list()
   thetaPVs <- list()
-  for (i in 1:length(subscales)) {
+  for (i in seq_along(subscales)) {
     scaledPVs <- c(scaledPVs, list(getPlausibleValue(subscales[i], data = data)))
     thetaPVs <- c(thetaPVs, list(getPlausibleValue(paste0(subscales[i], "_theta"), data = data)))
   }
@@ -508,7 +508,7 @@ linkVarAugment <- function(data, subscaleWeights, subscales, composite) {
     }
   }
 
-  for (i in 1:length(repWs)) {
+  for (i in seq_along(repWs)) {
     # y1 is for DBA
     y1 <- rep(0, nDBA)
     # z1 is for PBA
@@ -550,7 +550,7 @@ linkVarAugment <- function(data, subscaleWeights, subscales, composite) {
   newPV <- list(list(
     estVarnames = PVs,
     impVarnames = paste0(composite, "_linking_imp_", 1:RAMiFinal),
-    sampVarnames = paste0(composite, "_linking_samp_", 1:length(repWs)),
+    sampVarnames = paste0(composite, "_linking_samp_", seq_along(repWs)),
     achievementLevel = data[["pvvars"]][[composite]][["achievementLevel"]]
   ))
   names(newPV) <- paste0(composite, "_linking")
@@ -560,7 +560,7 @@ linkVarAugment <- function(data, subscaleWeights, subscales, composite) {
       newPVi <- list(
         estVarnames = scaledPVs[[k]],
         impVarnames = paste0(subscales[k], "_linking_imp_", 1:RAMiFinal),
-        sampVarnames = paste0(subscales[k], "_linking_samp_", 1:length(repWs))
+        sampVarnames = paste0(subscales[k], "_linking_samp_", seq_along(repWs))
       )
       newPV[[paste0(subscales[k], "_linking")]] <- newPVi
     }
@@ -611,7 +611,7 @@ readMRC <- function(filename) {
 
   zeroLenVars <- nchar(variableName) == 0
   if (any(zeroLenVars)) {
-    warning(paste0("Unnamed variables in .fr2 file on row(s) ", pasteItems((1:length(variableName))[zeroLenVars]), ". File located at ", filename, ". These variables renamed sequentially, starting with V1."))
+    warning(paste0("Unnamed variables in .fr2 file on row(s) ", pasteItems((seq_along(variableName))[zeroLenVars]), ". File located at ", filename, ". These variables renamed sequentially, starting with V1."))
     variableName[zeroLenVars] <- paste0("v", 1:sum(zeroLenVars))
   }
 
@@ -721,7 +721,7 @@ readMRC_LTT <- function(filename, subject) {
 
   zeroLenVars <- nchar(variableName) == 0
   if (any(zeroLenVars)) {
-    warning(paste0("Unnamed variables in .fr2 file on row(s) ", pasteItems((1:length(variableName))[zeroLenVars]), ". File located at ", filename, ". These variables renamed sequentially, starting with V1."))
+    warning(paste0("Unnamed variables in .fr2 file on row(s) ", pasteItems((seq_along(variableName))[zeroLenVars]), ". File located at ", filename, ". These variables renamed sequentially, starting with V1."))
     variableName[zeroLenVars] <- paste0("v", 1:sum(zeroLenVars))
   }
 
@@ -1016,7 +1016,7 @@ validate_NAEPFilePaths <- function(path, frPath, xmlPath) {
 
   # if LTT file there is no school level file that we will need to search
   isLTT <- grepl("Long.*Term.*Trend", datFileDesc$Assessment_Code, ignore.case = TRUE)
-  searchSchool <- !isLTT # default to check for school file if not LTT file
+  searchSchool <- datFileDesc$CheckSchoolFile
   searchStudent <- FALSE # assumes
 
   # check if the school file was specified and search for the student file instead
