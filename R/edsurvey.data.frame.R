@@ -489,6 +489,37 @@ subset.edsurvey.data.frame <- function(x, subset, ..., inside = FALSE) {
   z[j, ]
 }
 
+#' @method [[<- edsurvey.data.frame
+#' @export
+"[[<-.edsurvey.data.frame" <- function(x, i, value) {
+  #if character string passed, check the column names and data cache first, then the names of the list items second.
+  #if a numeric index value is passed, it will only be used for the data column names.
+  if (is.numeric(i)){
+    if (i > length(colnames(x))) {
+      stop("Column index out of range. The index cannot be greater than the length of number of column names in x.")
+    }
+    var <- colnames(x)[i]
+  } else {
+    var <- i
+  }
+  #if 'i' is index number, or character string, check the data first
+  if(var %in% colnames(x) || var %in% colnames(x$cache)) {
+    x[ , var] <- value
+    return(x)
+  } else {
+    #this section does not apply for numeric indexing
+    if (var %in% names(x)) {
+      cl0 <- class(x)
+      class(x) <- "list"
+      x[[var]] <- value
+      class(x) <- cl0
+      return(x)
+    } else {
+      stop(paste0("Cannot find ", dQuote(var), " as a column name or list item in this object."))
+    }
+  }
+}
+
 #' @method [<- edsurvey.data.frame
 #' @export
 "[<-.edsurvey.data.frame" <- function(x, i, j, ..., value) {
@@ -557,6 +588,10 @@ subset.edsurvey.data.frame <- function(x, subset, ..., inside = FALSE) {
   }
   if (is.numeric(j)) {
     j <- colnames(x)[j]
+  }
+  
+  if (is.na(j) || is.null(j)) {
+    stop("Column index out of range, or column name(s) not found.")
   }
   suppressWarnings(
     z <- getData(x,

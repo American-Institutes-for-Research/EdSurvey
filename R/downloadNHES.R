@@ -2,7 +2,7 @@
 #'
 #' @description Provides instructions to download the public-use National Household Education Survey (NHES) data in SPSS (*.sav) format
 #'              for use with the \code{readNHES} function.
-#'              The data originates from the \href{https://nces.ed.gov/OnlineCodebook}{NCES Online Codebook} zip files.
+#'              The data originates from the \href{https://nces.ed.gov/datalab/onlinecodebook}{NCES Online Codebook} zip files.
 #'              This function works for data from the years
 #'              1991, 1993, 1995, 1996, 1999, 2001, 2003, 2005, 2007, 2012, 2016, and 2019.
 #'
@@ -36,7 +36,7 @@ downloadNHES <- function(years = c(
     stop(paste0("Invalid Year(s) Specified: ", paste(sQuote(invalidYears), sep = "", collapse = ", "), "."))
   }
 
-  linkURL <- "https://nces.ed.gov/OnlineCodebook"
+  linkURL <- "https://nces.ed.gov/datalab/onlinecodebook"
 
   txt <- c()
   txt <- c(txt, paste0(

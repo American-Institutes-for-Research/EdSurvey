@@ -22,6 +22,41 @@ test_that("Primer reads in correctly", {
   expect_equal(c(nrow(sdf), ncol(sdf)), c(17606, 303))
 })
 
+context("[, [[, [<-, [[<- edsurvey.data.frame")
+test_that("[, [[, [<-, [[<- edsurvey.data.frame", {
+  sdf2 <- sdf
+  testVal <- sdf[ , "iep"]
+  #test index number
+  expect_equal(sdf2[ , 6], testVal)
+  expect_equal(sdf2[[6]], testVal)
+  
+  #when assigned here, the index shifts since it will be saved to the esdf 'cache' data.frame and that is first listed in 'colnames'
+  #we should document or note this somewhere
+  sdf2[ , 6] <- testVal
+  expect_equal(sdf2[ , 2], sdf[[6]], check.attributes = FALSE) #factor re-assignment won't exactly match attributes
+  
+  #note the origial index was 6, it was changed to 2 from first re-assignment
+  sdf2[[2]] <- testVal
+  expect_equal(sdf2[[2]], sdf[ , 6], check.attributes = FALSE) #factor re-assignment won't exactly match attributes
+  
+  #test by column name
+  expect_equal(sdf2[ , "iep"], testVal, check.attributes = FALSE)
+  expect_equal(sdf2[["iep"]], testVal, check.attributes = FALSE)
+  
+  testVal <- sdf[["dsex"]]
+  sdf2[ , "dsex"] <- testVal
+  expect_equal(sdf2[ , "dsex"], sdf[["dsex"]], check.attributes = FALSE)
+  
+  sdf2[["dsex"]] <- testVal
+  expect_equal(sdf2[ , "dsex"], sdf[["dsex"]], check.attributes = FALSE)
+  
+  expect_error(sdf2[ , 999999], "Column index out of range.*")
+  expect_error(sdf2[ , "NOT A COLUMN ZZZZ"], "The following variable names are required for this call.*")
+  
+  expect_error(sdf2[[9999999]] <- testVal, "Column index out of range.*")
+  expect_error(sdf2[["NOT A COLUMN ZZZ"]] <- testVal, "Cannot find.*as a column name or list item in this object")
+})
+
 context("$ assign")
 test_that("$ assign", {
   # subset then assign

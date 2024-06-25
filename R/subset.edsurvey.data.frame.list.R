@@ -5,10 +5,6 @@
 subset.edsurvey.data.frame.list <- function(x, subset, inside = FALSE, drop = FALSE, ...) {
   checkDataClass(x, c("edsurvey.data.frame.list"))
 
-  if (!inherits(x, c("edsurvey.data.frame.list"))) {
-    stop(paste0("The argument ", sQuote("x"), " must be an ", dQuote("edsurvey.data.frame.list"), "."))
-  }
-
   if (inside) {
     if (inherits(subset, "character")) {
       subset <- parse(text = subset)[[1]]

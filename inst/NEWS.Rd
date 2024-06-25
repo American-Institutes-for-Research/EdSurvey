@@ -1,6 +1,25 @@
 \name{NEWS}
 \title{NEWS for EdSurvey}
 
+\section{Changes in version 4.0.7}{
+  \subsection{UPDATES}{
+    \itemize{
+      \item \code{readNAEP} function now supports analyzing the following NAEP data products:
+      \enumerate{
+        \item the main NAEP data up to 2022
+        \item NAEP long-term trend data up to 2023
+        \item the 2022 Monthly School Survey (MSS) Linking Study
+        \item the 2021 School and Teacher Questionnaire Special Study.
+      }
+    }
+  }
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item \code{[[<-} assignment did not previously work with an \code{edsurvey.data.frame} object. This causes issues when defining new columns with a few possible methods that resulted in newly defined columns not being returned by \code{getData}. Thanks to Tao Jiang for identifying this bug.
+    }
+  }
+}
+
 \section{Changes in version 4.0.6}{
   \subsection{UPDATES}{
     \itemize{

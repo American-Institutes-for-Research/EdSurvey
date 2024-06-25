@@ -18,7 +18,7 @@
 #'                If \code{verbose = FALSE}, no information will be printed.
 #'
 #' @details
-#' Reads in the unzipped public-use files downloaded from the NCES Online Codebook (\url{https://nces.ed.gov/OnlineCodebook}) in SPSS (*.sav) format.
+#' Reads in the unzipped public-use files downloaded from the NCES Online Codebook (\url{https://nces.ed.gov/datalab/onlinecodebook}) in SPSS (*.sav) format.
 #' Other sources of NHES data, such as restricted-use files or other websites, may require additional conversion steps to generate the required SPSS data format
 #' and/or explicitly setting the \code{surveyCode} parameter.
 #'
