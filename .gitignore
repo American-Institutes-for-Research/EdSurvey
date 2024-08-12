@@ -2,3 +2,8 @@ docs/404.html
 DS_Store
 .Rproj.user
 EdSurvey.Rproj
+.Rhistory
+.Rdata
+.httr-oauth
+.DS_Store
+.quarto
