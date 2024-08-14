@@ -30,6 +30,10 @@
 #' 
 #' @param appendIRTAttributes a logical value to either append IRT attributes to the \code{edsurvey.data.frame} or not. The default value is \code{TURE}.
 #' 
+#' @param translateCountryNames a logical value to either use the inbuild english country names or a data.frame with local translations
+#' 
+#' @param local_country_names a data.frame with stringsAsFactors set to FALSE and two columns named 'cntryCode' and 'cntryName'. cntryCode should include the three leter country ISO codes and cntryName the translated country name.
+#' 
 #' @details
 #' Reads in the unzipped files downloaded from the TIMSS international
 #' database(s) using the \href{https://www.iea.nl/data-tools/repository}{IEA Study Data Repository}.
@@ -99,11 +103,13 @@ readTIMSS <- function(path,
                       gradeLvl = c("4", "8", "4b", "8b"),
                       forceReread = FALSE,
                       verbose = TRUE,
-                      appendIRTAttributes = TRUE) {
+                      appendIRTAttributes = TRUE,
+                      translateCountryNames = FALSE,
+                      local_country_names =  NULL
+                      ) {
   # temporarily adjust any necessary option settings; revert back when done
   userOp <- options(OutDec = ".")
   on.exit(options(userOp), add = TRUE)
-  
   # validate the folder path(s) the user specified to make sure they exist
   path <- suppressWarnings(normalizePath(unique(path), winslash = "/"))
   path <- ifelse(grepl("[.][a-zA-Z]{1,4}$", path, perl = TRUE, ignore.case = TRUE), dirname(path), path)
@@ -292,7 +298,9 @@ readTIMSS <- function(path,
             fnames = fnames,
             fileYrs = yrCode,
             forceReread = forceReread,
-            verbose = verbose
+            verbose = verbose,
+            translateCountryNames = translateCountryNames,
+            local_country_names = local_country_names
           )
           
           retryProc <- tryCatch(
@@ -310,7 +318,7 @@ readTIMSS <- function(path,
           
           if (retryProc) {
             if (verbose) {
-              eout(paste0("Problem reading ", convertTIMSSYearCode(yrCode), " Grade ", gradeLvl, " data for ", dQuote(paste0(cntry, ": ", getTIMSSCountryName(cntry))), ", retrying."))
+              eout(paste0("Problem reading ", convertTIMSSYearCode(yrCode), " Grade ", gradeLvl, " data for ", dQuote(paste0(cntry, ": ", getTIMSSCountryName(cntry,translate = translateCountryNames,cntryCodeLocal = local_country_names))), ", retrying."))
             }
             processArgs[["forceReread"]] <- TRUE # try it again reprocessing the data
             processedData <- tryCatch(do.call("processTIMSSGr4", processArgs, quote = TRUE),
@@ -332,7 +340,9 @@ readTIMSS <- function(path,
             fnames = fnamesNumeracy,
             fileYrs = yrCodeNumeracy,
             forceReread = forceReread,
-            verbose = verbose
+            verbose = verbose,
+            translateCountryNames = translateCountryNames,
+            local_country_names = local_country_names
           )
           
           retryProc <- tryCatch(
@@ -350,7 +360,7 @@ readTIMSS <- function(path,
           
           if (retryProc) {
             if (verbose) {
-              eout(paste0("Problem reading ", convertTIMSSYearCode(yrCode), " Grade ", gradeLvl, " numeracy data for ", dQuote(paste0(cntry, ": ", getTIMSSCountryName(cntry))), ", retrying."))
+              eout(paste0("Problem reading ", convertTIMSSYearCode(yrCode), " Grade ", gradeLvl, " numeracy data for ", dQuote(paste0(cntry, ": ", getTIMSSCountryName(cntry,translate = translateCountryNames,cntryCodeLocal = local_country_names))), ", retrying."))
             }
             processArgs[["forceReread"]] <- TRUE # try it again reprocessing the data
             processedData <- tryCatch(do.call("processTIMSSGr4", processArgs, quote = TRUE),
@@ -373,7 +383,9 @@ readTIMSS <- function(path,
             fnamesNumeracy = fnamesNumeracy,
             fileYrs = paste0(yrCode, yrCodeNumeracy), # yearcode will be a combination of both year codes
             forceReread = forceReread,
-            verbose = verbose
+            verbose = verbose,
+            translateCountryNames = translateCountryNames,
+            local_country_names = local_country_names
           )
           
           retryProc <- tryCatch(
@@ -391,7 +403,7 @@ readTIMSS <- function(path,
           
           if (retryProc) {
             if (verbose) {
-              eout(paste0("Problem reading ", convertTIMSSYearCode(yrCode), " Grade ", gradeLvl, " combined data for ", dQuote(paste0(cntry, ": ", getTIMSSCountryName(cntry))), ", retrying."))
+              eout(paste0("Problem reading ", convertTIMSSYearCode(yrCode), " Grade ", gradeLvl, " combined data for ", dQuote(paste0(cntry, ": ", getTIMSSCountryName(cntry,translate = translateCountryNames,cntryCodeLocal = local_country_names))), ", retrying."))
             }
             processArgs[["forceReread"]] <- TRUE # try it again reprocessing the data
             processedData <- tryCatch(do.call("processTIMSS4AndNumeracy", processArgs, quote = TRUE),
@@ -413,7 +425,9 @@ readTIMSS <- function(path,
           fnames = fnames,
           fileYrs = yrCode,
           forceReread = forceReread,
-          verbose = verbose
+          verbose = verbose,
+          translateCountryNames = translateCountryNames,
+          local_country_names = local_country_names
         )
         
         retryProc <- tryCatch(
@@ -431,7 +445,7 @@ readTIMSS <- function(path,
         
         if (retryProc) {
           if (verbose) {
-            eout(paste0("Problem reading ", convertTIMSSYearCode(yrCode), " Grade ", gradeLvl, " data for ", dQuote(paste0(cntry, ": ", getTIMSSCountryName(cntry))), ", retrying."))
+            eout(paste0("Problem reading ", convertTIMSSYearCode(yrCode), " Grade ", gradeLvl, " data for ", dQuote(paste0(cntry, ": ", getTIMSSCountryName(cntry,translate = translateCountryNames,cntryCodeLocal = local_country_names))), ", retrying."))
           }
           processArgs[["forceReread"]] <- TRUE # try it again reprocessing the data
           processedData <- tryCatch(do.call("processTIMSSGr8", processArgs, quote = TRUE),
@@ -521,7 +535,7 @@ readTIMSS <- function(path,
       
       
       processedData$survey <- ifelse(gradeLvl %in% c("4b", "8b"), "TIMSS - Bridge Study", "TIMSS")
-      processedData$country <- getTIMSSCountryName(cntry)
+      processedData$country <- getTIMSSCountryName(cntry,translate = translateCountryNames,cntryCodeLocal = local_country_names)
       
       procCountryData[[iProcCountry]] <- edsurvey.data.frame(
         userConditions = processedData$userConditions,
@@ -646,7 +660,7 @@ buildPVVARS_TIMSS <- function(fileFormat, defaultPV = "mmat") {
 # @param fileYrs are the specific filename year code convention (e.g., m1, m2, m3)
 # @param forceReread to force processing even if cache metadata is present
 # @param verbose to know if we want verbose output or not
-processTIMSSGr4 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceReread, verbose) {
+processTIMSSGr4 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceReread, verbose, translateCountryNames,local_country_names) {
   yearCode <- unlist(fileYrs)[1]
   isNumeracy <- grepl("^[N]", yearCode, ignore.case = TRUE) # numeracy year codes start with 'N' (e.g., N1)
   
@@ -692,9 +706,9 @@ processTIMSSGr4 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
   if (runProcessing == TRUE) {
     if (verbose == TRUE) {
       if (isNumeracy) {
-        cat(paste0("Processing Grade 4 Numeracy data for country code ", dQuote(paste0(countryCode, ": ", getTIMSSCountryName(countryCode))), ".\n"))
+        cat(paste0("Processing Grade 4 Numeracy data for country code ", dQuote(paste0(countryCode, ": ", getTIMSSCountryName(countryCode,translate = translateCountryNames,cntryCodeLocal = local_country_names))), ".\n"))
       } else {
-        cat(paste0("Processing Grade 4 data for country code ", dQuote(paste0(countryCode, ": ", getTIMSSCountryName(countryCode))), ".\n"))
+        cat(paste0("Processing Grade 4 data for country code ", dQuote(paste0(countryCode, ": ", getTIMSSCountryName(countryCode,translate = translateCountryNames,cntryCodeLocal = local_country_names))), ".\n"))
       }
     }
     
@@ -1032,9 +1046,9 @@ processTIMSSGr4 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
   } else {
     if (verbose == TRUE) {
       if (isNumeracy) {
-        cat(paste0("Found cached Grade 4 Numeracy data for country code ", dQuote(paste0(countryCode, ": ", getTIMSSCountryName(countryCode))), ".\n"))
+        cat(paste0("Found cached Grade 4 Numeracy data for country code ", dQuote(paste0(countryCode, ": ", getTIMSSCountryName(countryCode,translate = translateCountryNames,cntryCodeLocal = local_country_names))), ".\n"))
       } else {
-        cat(paste0("Found cached Grade 4 data for country code ", dQuote(paste0(countryCode, ": ", getTIMSSCountryName(countryCode))), ".\n"))
+        cat(paste0("Found cached Grade 4 data for country code ", dQuote(paste0(countryCode, ": ", getTIMSSCountryName(countryCode,translate = translateCountryNames,cntryCodeLocal = local_country_names))), ".\n"))
       }
     }
   } # end if(runProcessing==TRUE)
@@ -1052,7 +1066,7 @@ processTIMSSGr4 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
 # @param fileYrs are the specific filename year code convention (e.g., m1, m2, m3)
 # @param forceReread to force processing even if cache metadata is present
 # @param verbose to know if we want verbose output or not
-processTIMSSGr8 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceReread, verbose) {
+processTIMSSGr8 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceReread, verbose,translateCountryNames,local_country_names) {
   yearCode <- unlist(fileYrs)[1]
   
   metaCacheFP <- list.files(dataFolderPath,
@@ -1094,7 +1108,7 @@ processTIMSSGr8 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
   
   if (runProcessing == TRUE) {
     if (verbose == TRUE) {
-      cat(paste0("Processing Grade 8 data for country code ", dQuote(paste0(countryCode, ": ", getTIMSSCountryName(countryCode))), ".\n"))
+      cat(paste0("Processing Grade 8 data for country code ", dQuote(paste0(countryCode, ": ", getTIMSSCountryName(countryCode,translate = translateCountryNames,cntryCodeLocal = local_country_names))), ".\n"))
     }
     
     # delete the .meta file (if exists) before processing in case of error/issue
@@ -1441,7 +1455,7 @@ processTIMSSGr8 <- function(dataFolderPath, countryCode, fnames, fileYrs, forceR
     # ===============================================================
   } else {
     if (verbose == TRUE) {
-      cat(paste0("Found cached Grade 8 data for country code ", dQuote(paste0(countryCode, ": ", getTIMSSCountryName(countryCode))), ".\n"))
+      cat(paste0("Found cached Grade 8 data for country code ", dQuote(paste0(countryCode, ": ", getTIMSSCountryName(countryCode,translate = translateCountryNames,cntryCodeLocal = local_country_names))), ".\n"))
     }
   }
   
@@ -1718,7 +1732,7 @@ processTIMSS4AndNumeracy <- function(dataFolderPath, countryCode, fnames, fnames
   
   if (runProcessing == TRUE) {
     if (verbose == TRUE) {
-      cat(paste0("Processing Grade 4 data plus Numeracy data for country code ", dQuote(paste0(countryCode, ": ", getTIMSSCountryName(countryCode))), ".\n"))
+      cat(paste0("Processing Grade 4 data plus Numeracy data for country code ", dQuote(paste0(countryCode, ": ", getTIMSSCountryName(countryCode,translate = translateCountryNames,cntryCodeLocal = local_country_names))), ".\n"))
     }
     
     # delete the .meta file (if exists) before processing in case of error/issue
@@ -2154,7 +2168,7 @@ processTIMSS4AndNumeracy <- function(dataFolderPath, countryCode, fnames, fnames
     # ===============================================================
   } else {
     if (verbose == TRUE) {
-      cat(paste0("Found cached Grade 4 data plus Numeracy data for country code ", dQuote(paste0(countryCode, ": ", getTIMSSCountryName(countryCode))), ".\n"))
+      cat(paste0("Found cached Grade 4 data plus Numeracy data for country code ", dQuote(paste0(countryCode, ": ", getTIMSSCountryName(countryCode,translate = translateCountryNames,cntryCodeLocal = local_country_names))), ".\n"))
     }
   } # end if(runProcessing==TRUE)
   
@@ -2168,7 +2182,12 @@ processTIMSS4AndNumeracy <- function(dataFolderPath, countryCode, fnames, fnames
 # get the full country name to aide the user, so they won't have to track them down.
 # cntryCode should be the 3 character country code vector defined in the data filename scheme (e.g., usa = United States, swe = Sweden)
 # if a match is not found, this funtion will return a character value indicating it is unknown '(unknown) CountryCode: xxx'
-getTIMSSCountryName <- function(countryCode) {
+
+
+getTIMSSCountryName <- function(countryCode,translate=FALSE,cntryCodeLocal) {
+  if(translate == TRUE){
+    cntryCodeDF <- cntryCodeLocal
+  } else{
   cntryCodeDF <- data.frame(
     cntryCode = c(
       "aad", "aba", "adu", "alb", "are", "arm", "aus", "aut", "aze",
@@ -2224,7 +2243,7 @@ getTIMSSCountryName <- function(countryCode) {
     ),
     stringsAsFactors = FALSE
   ) # be sure to not create any factors::factors not needed at all
-  
+  }
   lookupNames <- vector(mode = "character", length = length(countryCode))
   
   for (i in seq_along(countryCode)) {
@@ -2239,6 +2258,8 @@ getTIMSSCountryName <- function(countryCode) {
   
   return(lookupNames)
 }
+
+
 
 # recreates a similar function to rbind.fill of plyr package, where it creates a
 # merged tibble from the two tibbles must ensure all column attributes are retained
