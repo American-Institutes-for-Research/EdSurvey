@@ -6,7 +6,7 @@
 #' @param root a character string indicating the directory where the PISA data should
 #'             be stored. Files are placed in a folder named PISA/[year].
 #' @param years an integer vector of the assessment years to download. Valid years are 2000, 2003,
-#'              2006, 2009, 2012, 2015, and 2018.
+#'              2006, 2009, 2012, 2015, 2018, and 2022.
 #' @param database a character vector to indicate which database to download from. For 2012,
 #'              three databases are available (\code{INT} = International, \code{CBA} = Computer-Based Assessment, and
 #'              \code{FIN} = Financial Literacy). For other years, only \code{INT} is available (for example, if PISA
@@ -38,10 +38,10 @@
 #' @example man/examples/downloadPISA.R
 #' @importFrom utils unzip
 #' @export
-downloadPISA <- function(root, years = c(2000, 2003, 2006, 2009, 2012, 2015, 2018), database = c("INT", "CBA", "FIN"), cache = FALSE, verbose = TRUE) {
+downloadPISA <- function(root, years = c(2000, 2003, 2006, 2009, 2012, 2015, 2018, 2022), database = c("INT", "CBA", "FIN"), cache = FALSE, verbose = TRUE) {
   fixTimeout()
   # valid years for PISA
-  validYears <- c(2000, 2003, 2006, 2009, 2012, 2015, 2018)
+  validYears <- c(2000, 2003, 2006, 2009, 2012, 2015, 2018, 2022)
   years <- as.numeric(years)
   if (missing(database)) {
     # if database is not specified, default to be INT because usually users do not want to download all databases
@@ -141,83 +141,88 @@ downloadPISA <- function(root, years = c(2000, 2003, 2006, 2009, 2012, 2015, 201
 
 pisaURLDat <- function(year, database = "INT") {
   text <- "year	database	type	url
+2022	INT	data	https://webfs.oecd.org/pisa2022/STU_QQQ_SPSS.zip
+2022	INT	data	https://webfs.oecd.org/pisa2022/SCH_QQQ_SPSS.zip
+2022	INT	data	https://webfs.oecd.org/pisa2022/STU_COG_SPSS.zip
+2022	INT	data	https://webfs.oecd.org/pisa2022/STU_TIM_SPSS.zip
+2022	INT	data	https://webfs.oecd.org/pisa2022/FLT_SPSS.zip
 2018	INT	data	https://webfs.oecd.org/pisa2018/SPSS_STU_QQQ.zip
 2018	INT	data	https://webfs.oecd.org/pisa2018/SPSS_SCH_QQQ.zip
 2018	INT	data	https://webfs.oecd.org/pisa2018/SPSS_STU_COG.zip
 2018	INT	data	https://webfs.oecd.org/pisa2018/SPSS_STU_TIM.zip
-2018	FIN	data	https://webfs.oecd.org/pisa2018/SPSS_STU_FLT.zip
+2018	INT	data	https://webfs.oecd.org/pisa2018/SPSS_STU_FLT.zip
 2015	INT	data	https://webfs.oecd.org/pisa/PUF_SPSS_COMBINED_CMB_STU_QQQ.zip
 2015	INT	data	https://webfs.oecd.org/pisa/PUF_SPSS_COMBINED_CMB_SCH_QQQ.zip
 2015	INT	data	https://webfs.oecd.org/pisa/PUF_SPSS_COMBINED_CMB_STU_COG.zip
 2015	INT	data	https://webfs.oecd.org/pisa/PUF_SPSS_COMBINED_CMB_STU_QTM.zip
 2015	INT	data	https://webfs.oecd.org/pisa/PUF_SPSS_COMBINED_CMB_STU_FLT.zip
 2015	INT	data	https://webfs.oecd.org/pisa/PUF_SPSS_COMBINED_CMB_STU_CPS.zip
-2012	INT	data	http://www.oecd.org/pisa/pisaproducts/INT_STU12_DEC03.zip
-2012	INT	data	http://www.oecd.org/pisa/pisaproducts/INT_SCQ12_DEC03.zip
-2012	INT	data	http://www.oecd.org/pisa/pisaproducts/INT_PAQ12_DEC03.zip
-2012	INT	data	http://www.oecd.org/pisa/pisaproducts/INT_COG12_DEC03.zip
-2012	INT	data	http://www.oecd.org/pisa/pisaproducts/INT_COG12_S_DEC03.zip
-2012	INT	spss	http://www.oecd.org/pisa/pisaproducts/PISA2012_SPSS_student.txt
-2012	INT	spss	http://www.oecd.org/pisa/pisaproducts/PISA2012_SPSS_school.txt
-2012	INT	spss	http://www.oecd.org/pisa/pisaproducts/PISA2012_SPSS_parent.txt
-2012	INT	spss	http://www.oecd.org/pisa/pisaproducts/PISA2012_SPSS_cognitive_item.txt
-2012	INT	spss	http://www.oecd.org/pisa/pisaproducts/PISA2012_SPSS_scored_cognitive_item.txt
-2012	CBA	data	http://www.oecd.org/pisa/pisaproducts/CBA_STU12_MAR31.zip
-2012	CBA	data	http://www.oecd.org/pisa/pisaproducts/CBA_SCQ12_MAR31.zip
-2012	CBA	data	http://www.oecd.org/pisa/pisaproducts/CBA_PAQ12_MAR31.zip
-2012	CBA	data	http://www.oecd.org/pisa/pisaproducts/CBA_COG12_MAR31.zip
-2012	CBA	data	http://www.oecd.org/pisa/pisaproducts/CBA_COG12_S_MAR31.zip
-2012	CBA	spss	http://www.oecd.org/pisa/pisaproducts/PISA2012_SPSS_CBA_student.txt
-2012	CBA	spss	http://www.oecd.org/pisa/pisaproducts/PISA2012_SPSS_CBA_school.txt
-2012	CBA	spss	http://www.oecd.org/pisa/pisaproducts/PISA2012_SPSS_CBA_parent.txt
-2012	CBA	spss	http://www.oecd.org/pisa/pisaproducts/PISA2012_SPSS_CBA_cognitive_item.txt
-2012	CBA	spss	http://www.oecd.org/pisa/pisaproducts/PISA2012_SPSS_CBA_scored_cognitive_item.txt
-2012	FIN	data	http://www.oecd.org/pisa/pisaproducts/FIN_STU12_MAR31.zip
-2012	FIN	data	http://www.oecd.org/pisa/pisaproducts/FIN_SCQ12_MAR31.zip
-2012	FIN	data	http://www.oecd.org/pisa/pisaproducts/FIN_PAQ12_MAR31.zip
-2012	FIN	data	http://www.oecd.org/pisa/pisaproducts/FIN_COG12_MAR31.zip
-2012	FIN	data	http://www.oecd.org/pisa/pisaproducts/FIN_COG12_S_MAR31.zip
-2012	FIN	spss	http://www.oecd.org/pisa/pisaproducts/PISA2012_SPSS_FIN_student.txt
-2012	FIN	spss	http://www.oecd.org/pisa/pisaproducts/PISA2012_SPSS_FIN_school.txt
-2012	FIN	spss	http://www.oecd.org/pisa/pisaproducts/PISA2012_SPSS_FIN_parent.txt
-2012	FIN	spss	http://www.oecd.org/pisa/pisaproducts/PISA2012_SPSS_FIN_cognitive_item.txt
-2012	FIN	spss	http://www.oecd.org/pisa/pisaproducts/PISA2012_SPSS_FIN_scored_cognitive_item.txt
-2009	INT	data	http://www.oecd.org/pisa/pisaproducts/INT_STQ09_DEC11.zip
-2009	INT	data	http://www.oecd.org/pisa/pisaproducts/INT_SCQ09_Dec11.zip
-2009	INT	data	http://www.oecd.org/pisa/pisaproducts/INT_PAR09_DEC11.zip
-2009	INT	data	http://www.oecd.org/pisa/pisaproducts/INT_COG09_TD_DEC11.zip
-2009	INT	data	http://www.oecd.org/pisa/pisaproducts/INT_COG09_S_DEC11.zip
-2009	INT	spss	http://www.oecd.org/pisa/pisaproducts/PISA2009_SPSS_student.txt
-2009	INT	spss	http://www.oecd.org/pisa/pisaproducts/PISA2009_SPSS_school.txt
-2009	INT	spss	http://www.oecd.org/pisa/pisaproducts/PISA2009_SPSS_parent.txt
-2009	INT	spss	http://www.oecd.org/pisa/pisaproducts/PISA2009_SPSS_cognitive_item.txt
-2009	INT	spss	http://www.oecd.org/pisa/pisaproducts/PISA2009_SPSS_score_cognitive_item.txt
-2006	INT	data	http://www.oecd.org/pisa/pisaproducts/INT_Stu06_Dec07.zip
-2006	INT	data	http://www.oecd.org/pisa/pisaproducts/INT_Sch06_Dec07.zip
-2006	INT	data	http://www.oecd.org/pisa/pisaproducts/INT_Par06_Dec07.zip
-2006	INT	data	http://www.oecd.org/pisa/pisaproducts/INT_Cogn06_T_Dec07.zip
-2006	INT	data	http://www.oecd.org/pisa/pisaproducts/INT_Cogn06_S_Dec07.zip
-2006	INT	spss	http://www.oecd.org/pisa/pisaproducts/PISA2006_SPSS_student.txt
-2006	INT	spss	http://www.oecd.org/pisa/pisaproducts/PISA2006_SPSS_school.txt
-2006	INT	spss	http://www.oecd.org/pisa/pisaproducts/PISA2006_SPSS_parent.txt
-2006	INT	spss	http://www.oecd.org/pisa/pisaproducts/PISA2006_SPSS_cognitive_item.txt
-2006	INT	spss	http://www.oecd.org/pisa/pisaproducts/PISA2006_SPSS_scored_cognitive_item.txt
-2003	INT	data	http://www.oecd.org/pisa/pisaproducts/INT_cogn_2003.zip
-2003	INT	data	http://www.oecd.org/pisa/pisaproducts/INT_stui_2003_v2.zip
-2003	INT	data	http://www.oecd.org/pisa/pisaproducts/INT_schi_2003.zip
-2003	INT	spss	http://www.oecd.org/pisa/pisaproducts/PISA2003_SPSS_cognitive_item.txt
-2003	INT	spss	http://www.oecd.org/pisa/pisaproducts/PISA2003_SPSS_student.txt
-2003	INT	spss	http://www.oecd.org/pisa/pisaproducts/PISA2003_SPSS_school.txt
-2000	INT	data	http://www.oecd.org/pisa/pisaproducts/intcogn_v4.zip
-2000	INT	data	http://www.oecd.org/pisa/pisaproducts/intscho.zip
-2000	INT	data	http://www.oecd.org/pisa/pisaproducts/intstud_math.zip
-2000	INT	data	http://www.oecd.org/pisa/pisaproducts/intstud_read.zip
-2000	INT	data	http://www.oecd.org/pisa/pisaproducts/intstud_scie.zip
-2000	INT	spss	http://www.oecd.org/pisa/pisaproducts/PISA2000_SPSS_cognitive_item.txt
-2000	INT	spss	http://www.oecd.org/pisa/pisaproducts/PISA2000_SPSS_school_questionnaire.txt
-2000	INT	spss	http://www.oecd.org/pisa/pisaproducts/PISA2000_SPSS_student_mathematics.txt
-2000	INT	spss	http://www.oecd.org/pisa/pisaproducts/PISA2000_SPSS_student_reading.txt
-2000	INT	spss	http://www.oecd.org/pisa/pisaproducts/PISA2000_SPSS_student_science.txt
+2012	INT	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/main-survey/data-sets-in-txt-format/INT_STU12_DEC03.zip
+2012	INT	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/main-survey/data-sets-in-txt-format/INT_SCQ12_DEC03.zip
+2012	INT	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/main-survey/data-sets-in-txt-format/INT_PAQ12_DEC03.zip
+2012	INT	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/main-survey/data-sets-in-txt-format/INT_COG12_DEC03.zip
+2012	INT	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/main-survey/data-sets-in-txt-format/INT_COG12_S_DEC03.zip
+2012	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/main-survey/sas-and-spss-control-files/SPSS%20syntax%20to%20read%20in%20student%20questionnaire%20data%20file.txt
+2012	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/main-survey/sas-and-spss-control-files/SPSS%20syntax%20to%20read%20in%20school%20questionnaire%20data%20file.txt
+2012	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/main-survey/sas-and-spss-control-files/SPSS%20syntax%20to%20read%20in%20parent%20questionnaire%20data%20file.txt
+2012	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/main-survey/sas-and-spss-control-files/SPSS%20syntax%20to%20read%20in%20cognitive%20item%20response%20data%20file.txt
+2012	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/main-survey/sas-and-spss-control-files/SPSS%20syntax%20to%20read%20in%20student%20questionnaire%20data%20file.txt
+2012	CBA	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/cba-pisa-2012/data-sets-in-txt-format/CBA_STU12_MAR31.zip
+2012	CBA	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/cba-pisa-2012/data-sets-in-txt-format/CBA_SCQ12_MAR31.zip
+2012	CBA	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/cba-pisa-2012/data-sets-in-txt-format/CBA_PAQ12_MAR31.zip
+2012	CBA	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/cba-pisa-2012/data-sets-in-txt-format/CBA_COG12_MAR31.zip
+2012	CBA	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/cba-pisa-2012/data-sets-in-txt-format/CBA_COG12_S_MAR31.zip
+2012	CBA	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/cba-pisa-2012/sas-and-spss-control-files/PISA2012_SPSS_CBA_student.txt
+2012	CBA	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/cba-pisa-2012/sas-and-spss-control-files/PISA2012_SPSS_CBA_school.txt
+2012	CBA	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/cba-pisa-2012/sas-and-spss-control-files/PISA2012_SPSS_CBA_parent.txt
+2012	CBA	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/cba-pisa-2012/sas-and-spss-control-files/PISA2012_SPSS_CBA_cognitive_item.txt
+2012	CBA	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/cba-pisa-2012/sas-and-spss-control-files/PISA2012_SPSS_CBA_scored_cognitive_item.txt
+2012	FIN	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/financial-literacy-pisa-2012/data-sets-in-txt-format/FIN_STU12_MAR31.zip
+2012	FIN	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/financial-literacy-pisa-2012/data-sets-in-txt-format/FIN_SCQ12_MAR31.zip
+2012	FIN	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/financial-literacy-pisa-2012/data-sets-in-txt-format/FIN_PAQ12_MAR31.zip
+2012	FIN	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/financial-literacy-pisa-2012/data-sets-in-txt-format/FIN_COG12_MAR31.zip
+2012	FIN	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/financial-literacy-pisa-2012/data-sets-in-txt-format/FIN_COG12_S_MAR31.zip
+2012	FIN	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/financial-literacy-pisa-2012/sas-and-spss-control-files/PISA2012_SPSS_FIN_student.txt
+2012	FIN	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/financial-literacy-pisa-2012/sas-and-spss-control-files/PISA2012_SPSS_FIN_school.txt
+2012	FIN	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/financial-literacy-pisa-2012/sas-and-spss-control-files/PISA2012_SPSS_FIN_parent.txt
+2012	FIN	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/financial-literacy-pisa-2012/sas-and-spss-control-files/PISA2012_SPSS_FIN_cognitive_item.txt
+2012	FIN	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/financial-literacy-pisa-2012/sas-and-spss-control-files/PISA2012_SPSS_FIN_scored_cognitive_item.txt
+2009	INT	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2009-datasets/data-sets-in-txt-format/INT_STQ09_DEC11.zip
+2009	INT	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2009-datasets/data-sets-in-txt-format/INT_SCQ09_Dec11.zip
+2009	INT	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2009-datasets/data-sets-in-txt-format/INT_PAR09_DEC11.zip
+2009	INT	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2009-datasets/data-sets-in-txt-format/INT_COG09_TD_DEC11.zip
+2009	INT	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2009-datasets/data-sets-in-txt-format/INT_COG09_S_DEC11.zip
+2009	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2009-datasets/sas-and-spss-control-files/PISA2009_SPSS_student.txt
+2009	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2009-datasets/sas-and-spss-control-files/PISA2009_SPSS_school.txt
+2009	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2009-datasets/sas-and-spss-control-files/PISA2009_SPSS_parent.txt
+2009	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2009-datasets/sas-and-spss-control-files/PISA2009_SPSS_cognitive_item.txt
+2009	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2009-datasets/sas-and-spss-control-files/PISA2009_SPSS_score_cognitive_item.txt
+2006	INT	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2006-datasets/data-sets-in-txt-format/INT_Stu06_Dec07.zip
+2006	INT	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2006-datasets/data-sets-in-txt-format/INT_Sch06_Dec07.zip
+2006	INT	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2006-datasets/data-sets-in-txt-format/INT_Par06_Dec07.zip
+2006	INT	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2006-datasets/data-sets-in-txt-format/INT_Cogn06_T_Dec07.zip
+2006	INT	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2006-datasets/data-sets-in-txt-format/INT_Cogn06_S_Dec07.zip
+2006	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2006-datasets/sas-and-spss-control-files/PISA2006_SPSS_student.txt
+2006	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2006-datasets/sas-and-spss-control-files/PISA2006_SPSS_school.txt
+2006	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2006-datasets/sas-and-spss-control-files/PISA2006_SPSS_parent.txt
+2006	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2006-datasets/sas-and-spss-control-files/PISA2006_SPSS_cognitive_item.txt
+2006	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2006-datasets/sas-and-spss-control-files/PISA2006_SPSS_scored_cognitive_item.txt
+2003	INT	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2003-datasets/data-sets-in-txt-formats/INT_cogn_2003.zip
+2003	INT	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2003-datasets/data-sets-in-txt-formats/INT_stui_2003_v2.zip
+2003	INT	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2003-datasets/data-sets-in-txt-formats/INT_schi_2003.zip
+2003	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2003-datasets/sas-and-spss-control-files/PISA2003_SPSS_cognitive_item.txt
+2003	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2003-datasets/sas-and-spss-control-files/PISA2003_SPSS_student.txt
+2003	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2003-datasets/sas-and-spss-control-files/PISA2003_SPSS_school.txt
+2000	INT	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2000-datasets/data-sets-in-txt-formats/intcogn_v4.zip
+2000	INT	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2000-datasets/data-sets-in-txt-formats/intscho.zip
+2000	INT	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2000-datasets/data-sets-in-txt-formats/intstud_math.zip
+2000	INT	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2000-datasets/data-sets-in-txt-formats/intstud_read.zip
+2000	INT	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2000-datasets/data-sets-in-txt-formats/intstud_scie.zip
+2000	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2000-datasets/sas-and-spss-control-files/PISA2000_SPSS_cognitive_item.txt
+2000	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2000-datasets/sas-and-spss-control-files/PISA2000_SPSS_school_questionnaire.txt
+2000	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2000-datasets/sas-and-spss-control-files/PISA2000_SPSS_student_mathematics.txt
+2000	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2000-datasets/sas-and-spss-control-files/PISA2000_SPSS_student_reading.txt
+2000	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2000-datasets/sas-and-spss-control-files/PISA2000_SPSS_student_science.txt
 "
   urlDat <- do.call("rbind", strsplit(unlist(strsplit(text, "\n")), "\t"))
   urlDat <- data.frame(urlDat, stringsAsFactors = FALSE)
