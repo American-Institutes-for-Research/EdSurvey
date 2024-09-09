@@ -15,7 +15,7 @@
 #'
 #' @importFrom readxl read_excel
 #' @importFrom utils browseURL
-#' @author Eric Buehler, Paul Bailey, and Trang Nguyen
+#' @author Eric Buehler, Paul Bailey, Trang Nguyen, and Yuqi Liao
 #' @example man/examples/downloadPIAAC.R
 #' @export
 downloadPIAAC <- function(root, cycle = 1, cache = FALSE, verbose = TRUE) {
@@ -55,17 +55,17 @@ downloadPIAAC <- function(root, cycle = 1, cache = FALSE, verbose = TRUE) {
       "/piaac/puf-data/CSV/prgrusp1.csv", "/piaac/puf-data/CSV/prgsgpp1.csv",
       "/piaac/puf-data/CSV/prgsvkp1.csv", "/piaac/puf-data/CSV/prgsvnp1.csv",
       "/piaac/puf-data/CSV/prgswep1.csv", "/piaac/puf-data/CSV/prgturp1.csv",
-      "/skills/piaac/data/CSV_prgusap1.zip", "/piaac/puf-data/CSV/Prgusap1_2017.csv"
+      "/content/dam/oecd/en/about/programmes/edu/piaac/data-materials/CSV-prgusap1-Combined-2012-2014-U.S-International-PUF.zip", "/piaac/puf-data/CSV/Prgusap1_2017.csv"
     )
   }
 
   url0 <- "https://webfs.oecd.org"
-  codebook <- "https://www.oecd.org/skills/piaac/data/International%20Codebook_PIAAC%20Public-use%20File%20(PUF)%20Variables%20and%20Values_Feb2023.xlsx"
+  codebook <- "https://www.oecd.org/content/dam/oecd/en/about/programmes/edu/piaac/data-materials/International-Codebook-PIAAC-Public-use-File-Variables-and-Values_Feb2023.xlsx"
   for (f in data_files) {
     fn <- basename(f)
     if (!file.exists(file.path(yroot, fn))) {
       # us12_14 download is a zip file and needs special processing
-      if (f == "/skills/piaac/data/CSV_prgusap1.zip") {
+      if (f == "/content/dam/oecd/en/about/programmes/edu/piaac/data-materials/CSV-prgusap1-Combined-2012-2014-U.S-International-PUF.zip") {
         download.file(paste0("https://www.oecd.org/", f), file.path(yroot, fn), mode = "wb", method = "auto")
         unzip(file.path(yroot, fn), "prgusap1.csv", exdir = file.path(yroot))
       } else {

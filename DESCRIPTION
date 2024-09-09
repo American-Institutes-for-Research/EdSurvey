@@ -48,7 +48,7 @@ License: GPL-2
 VignetteBuilder: knitr
 Suggests: knitr, testthat, withr, rmarkdown, RColorBrewer, doParallel,
         parallel
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Note: This publication was prepared for NCES under Contract No.
         ED-IES-12-D-0002 with the American Institutes for Research.
         Mention of trade names, commercial products, or organizations
