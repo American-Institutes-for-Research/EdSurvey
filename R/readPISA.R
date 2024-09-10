@@ -9,7 +9,7 @@
 #' @param database a character to indicate a selected database. Must be one of
 #'                 \code{INT} (general database that most people use),
 #'                 \code{CBA} (computer-based database in PISA 2012 only),
-#'                 or \code{FIN} (financial literacy database in PISA 2012 and 2018).
+#'                 or \code{FIN} (financial literacy database in PISA 2012, 2018, and 2022. Note that `INT` needs to be used for PISA 2015 financial literacy data as it could be merged to the general database).
 #'                 Defaults to \code{INT}.
 #' @param countries a character vector of the country/countries to include using the
 #'                  three-digit ISO country code. A list of country codes can be found
@@ -60,7 +60,7 @@
 #'  an \code{edsurvey.data.frame} for a single specified country or
 #'  an \code{edsurvey.data.frame.list} if multiple countries are specified
 #' @seealso \code{\link{getData}} and \code{\link{downloadPISA}}
-#' @author Tom Fink, Trang Nguyen, and Paul Bailey
+#' @author Tom Fink, Trang Nguyen, Paul Bailey, and Yuqi Liao
 #'
 #' @example man/examples/readPISA.R
 #'
@@ -157,7 +157,7 @@ readPISA <- function(path,
           # process FIN data for 2018 All countries must be processed together as only one fileFormat object is cached to ensure consistancy across countries #YL: note that I didn't change it for 2022 yet as the PISA 2022 Fin Lit data is not yet available
           cacheFile <- processPISA2018_FIN(filepath, verbose, "*", year)
         } else {
-          stop("Only INT and FIN databases are supported for year 2018.")
+          stop("Only INT and FIN databases are supported for year 2022")
         }
       } # end if (runProcessing)
       
@@ -187,7 +187,7 @@ readPISA <- function(path,
         warning("Seperate CBA data is only available in 2012, switching to INT database.")
         database <- "INT"
       }
-
+     
       # check for meta file
       runProcessing <- FALSE
       metaCacheFile <- list.files(filepath, pattern = paste0("^", database, ".*\\.meta$"), ignore.case = TRUE)
@@ -246,6 +246,7 @@ readPISA <- function(path,
       }
 
       # ====END 2018 Block====
+      # ==== 2015 and prior Block====
     } else if (length(list.files(filepath, pattern = "cy6.*\\.sav", ignore.case = TRUE, full.names = FALSE)) > 0) {
       year <- 2015
       if ("CBA" %in% database) {
@@ -1323,7 +1324,7 @@ processPISA2015 <- function(filepath, verbose, countries, year) {
       cntrys <- all_countries
     }
     for (ci in cntrys) {
-      f2 <- paste0(gsub(".sav$", "", f), "_", ci, ".rds")
+      f2 <- paste0(gsub(".sav$", "", f, ignore.case = TRUE), "_", ci, ".rds")
       if (verbose) {
         cat(paste0("  saving tmp ", sQuote(f2), "\n"))
       }
@@ -1400,7 +1401,7 @@ processPISA2015 <- function(filepath, verbose, countries, year) {
     if (verbose) {
       cat(paste0("Processing data for country code ", dQuote(cntry), "\n"))
     }
-    f2 <- paste0(gsub(".sav$", "", savFileList[[1]]), "_", cntry, ".rds")
+    f2 <- paste0(gsub(".sav$", "", savFileList[[1]], ignore.case = TRUE), "_", cntry, ".rds")
     if (!file.exists(file.path(filepath, f2))) {
       stop("Cache file ", sQuote(file.path(filepath, f2)), " missing.")
     }
@@ -1412,7 +1413,7 @@ processPISA2015 <- function(filepath, verbose, countries, year) {
     colnames(mm) <- gsub("^REPEAT$", "REPEATGRADE", colnames(mm), ignore.case = TRUE)
     colnames(mm) <- gsub("\\.$", "", colnames(mm))
     for (li in 2:length(savFileList)) {
-      f2 <- paste0(gsub(".sav$", "", savFileList[li]), "_", cntry, ".rds")
+      f2 <- paste0(gsub(".sav$", "", savFileList[li], ignore.case = TRUE), "_", cntry, ".rds")
       if (!file.exists(file.path(filepath, f2))) {
         if (verbose) {
           cat(paste(cntry, "does not have", names(savFileList)[li], "data.\n"))
@@ -1713,7 +1714,13 @@ processPISA2018_FIN <- function(filepath, verbose, countries, year) {
   # COG --> Cognitive Items - Has the item level cognitive response items
   # TTM --> Has the item level timing/process data
   # TIM --> Has the overall timing/process data
-  fileList <- list.files(filepath, pattern = "CY07_MSU_FLT_(QQQ|COG|TTM|TIM)\\.sav$", ignore.case = TRUE)
+  if (year == "2022"){
+    fileList <- list.files(filepath, pattern = "CY08MSP_FLT_(QQQ|COG|TTM|TIM)\\.sav$", ignore.case = TRUE)
+  } else if (year == "2018"){
+    fileList <- list.files(filepath, pattern = "CY07_MSU_FLT_(QQQ|COG|TTM|TIM)\\.sav$", ignore.case = TRUE)
+  } else {
+    warning("year needs to be either 2018 or 2022!")
+  }
 
   # Read in data
   mainFile <- grep("qqq", fileList, ignore.case = TRUE)
@@ -1888,6 +1895,10 @@ processPISA2018_FIN <- function(filepath, verbose, countries, year) {
         mm[[i]] <- ifelse(is.na(mm[[i]]), "", format(mm[[i]], scientific = FALSE))
       }
     }
+    
+    if (year == 2022) {
+      outf <- file.path(filepath, paste0("M_DAT_CY8_FIN_", cntry, ".txt"))
+    }
 
     if (year == 2018) {
       outf <- file.path(filepath, paste0("M_DAT_CY7_FIN_", cntry, ".txt"))
@@ -1919,3 +1930,4 @@ processPISA2018_FIN <- function(filepath, verbose, countries, year) {
   saveRDS(cacheFile, file.path(filepath, "FIN_all-countries.meta"))
   return(cacheFile)
 }
+

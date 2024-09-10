@@ -20,7 +20,7 @@ PISA-extracted fixed-width files and SPSS control files (.txt).}
 \item{database}{a character to indicate a selected database. Must be one of
 \code{INT} (general database that most people use),
 \code{CBA} (computer-based database in PISA 2012 only),
-or \code{FIN} (financial literacy database in PISA 2012 and 2018).
+or \code{FIN} (financial literacy database in PISA 2012, 2018, and 2022. Note that `INT` needs to be used for PISA 2015 financial literacy data as it could be merged to the general database).
 Defaults to \code{INT}.}
 
 \item{countries}{a character vector of the country/countries to include using the
@@ -102,5 +102,5 @@ Organisation for Economic Co-operation and Development. (2017). \emph{PISA 2015 
 \code{\link{getData}} and \code{\link{downloadPISA}}
 }
 \author{
-Tom Fink, Trang Nguyen, and Paul Bailey
+Tom Fink, Trang Nguyen, Paul Bailey, and Yuqi Liao
 }
