@@ -6,7 +6,7 @@
 \usage{
 downloadPISA(
   root,
-  years = c(2000, 2003, 2006, 2009, 2012, 2015, 2018),
+  years = c(2000, 2003, 2006, 2009, 2012, 2015, 2018, 2022),
   database = c("INT", "CBA", "FIN"),
   cache = FALSE,
   verbose = TRUE
@@ -17,7 +17,7 @@ downloadPISA(
 be stored. Files are placed in a folder named PISA/[year].}
 
 \item{years}{an integer vector of the assessment years to download. Valid years are 2000, 2003,
-2006, 2009, 2012, 2015, and 2018.}
+2006, 2009, 2012, 2015, 2018, and 2022.}
 
 \item{database}{a character vector to indicate which database to download from. For 2012,
 three databases are available (\code{INT} = International, \code{CBA} = Computer-Based Assessment, and

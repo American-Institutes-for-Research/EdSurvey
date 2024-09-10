@@ -32,5 +32,5 @@ downloadPIAAC(root="~/")
 }
 }
 \author{
-Eric Buehler, Paul Bailey, and Trang Nguyen
+Eric Buehler, Paul Bailey, Trang Nguyen, and Yuqi Liao
 }
