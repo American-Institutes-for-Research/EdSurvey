@@ -14,12 +14,16 @@
 #'              the data. Default value is \code{FALSE}.
 #' @param verbose a logical value to either print or suppress status message output.
 #'                The default value is \code{TRUE}.
+#' @param translateCountryNames If cache set to TRUE and local translation of country names are requested. See \code{\link{readTIMSS}}
+#' 
+#' @param local_country_names If cache set to TURE and local translation of country names are requested a data.frame with translations. See \code{\link{readTIMSS}}
 #' @author Tom Fink
 #' @seealso \code{\link{readTIMSS}}
 #' @example man/examples/downloadTIMSS.R
 #' @importFrom utils download.file
 #' @export
-downloadTIMSS <- function(root, years = c(2003, 2007, 2011, 2015, 2019), cache = FALSE, verbose = TRUE) {
+downloadTIMSS <- function(root, years = c(2003, 2007, 2011, 2015, 2019), cache = FALSE, verbose = TRUE, translateCountryNames = FALSE,
+                          local_country_names =  NULL) {
   fixTimeout()
   if (is.null(root)) {
     stop(paste0("The argument ", sQuote("root"), " must be specified."))
@@ -147,9 +151,9 @@ downloadTIMSS <- function(root, years = c(2003, 2007, 2011, 2015, 2019), cache =
       cat("Caching ", year, " TIMSS files.\n")
     }
 
-    notUsed <- readTIMSS(yroot, countries = "*", gradeLvl = 4, verbose = verbose)
+    notUsed <- readTIMSS(yroot, countries = "*", gradeLvl = 4, verbose = verbose, translateCountryNames = translateCountryNames, local_country_names =  local_country_names)
     notUsed <- NULL
-    notUsed <- readTIMSS(yroot, countries = "*", gradeLvl = 8, verbose = verbose)
+    notUsed <- readTIMSS(yroot, countries = "*", gradeLvl = 8, verbose = verbose, translateCountryNames = translateCountryNames, local_country_names =  local_country_names)
     notUsed <- NULL
     return(invisible(NULL))
   }
