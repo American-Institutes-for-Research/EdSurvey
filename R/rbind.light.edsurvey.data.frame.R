@@ -5,7 +5,7 @@
 rbind.light.edsurvey.data.frame <- function(..., deparse.level = 1) {
   args <- list(...)
   atrs <- NULL
-  if (all(sapply(args, function(x) {!inherits(x, "light.edsurvey.data.frame") }))) {
+  if (all(vapply(args, function(x) {!inherits(x, "light.edsurvey.data.frame") }, FUN.VALUE=logical(1)))) {
     return(do.call(base::rbind, c(args, list(deparse.level = deparse.level))))
   }
 

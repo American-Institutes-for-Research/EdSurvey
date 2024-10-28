@@ -200,7 +200,7 @@ glm.sdf <- function(formula,
       relevels = relevels,
       varMethod = varMethod,
       jrrIMax = jrrIMax,
-      omittedLevels = dropOmittedLevels,
+      dropOmittedLevels = dropOmittedLevels,
       defaultConditions = defaultConditions,
       missingDefaultConditions = missing(defaultConditions),
       recode = recode,
@@ -229,7 +229,7 @@ logit.sdf <- function(formula,
   call <- match.call()
   checkDataClass(data, c("edsurvey.data.frame", "light.edsurvey.data.frame", "edsurvey.data.frame.list"))
   if (lifecycle::is_present(omittedLevels)) {
-    lifecycle::deprecate_soft("4.0.0", "glm.sdf(omittedLevels)", "glm.sdf(dropOmittedLevels)")
+    lifecycle::deprecate_soft("4.0.0", "logit.sdf(omittedLevels)", "logit.sdf(dropOmittedLevels)")
     dropOmittedLevels <- omittedLevels
   }
   # if data is an edsurvey.data.frame.list, simply return a list with results
@@ -247,7 +247,7 @@ logit.sdf <- function(formula,
       relevels = relevels,
       varMethod = varMethod,
       jrrIMax = jrrIMax,
-      omittedLevels = dropOmittedLevels,
+      dropOmittedLevels = dropOmittedLevels,
       defaultConditions = defaultConditions,
       missingDefaultConditions = missing(defaultConditions),
       recode = recode,
@@ -294,7 +294,7 @@ probit.sdf <- function(formula,
       relevels = relevels,
       varMethod = varMethod,
       jrrIMax = jrrIMax,
-      omittedLevels = omittedLevels,
+      dropOmittedLevels = dropOmittedLevels,
       defaultConditions = defaultConditions,
       missingDefaultConditions = missing(defaultConditions),
       recode = recode,
@@ -313,7 +313,7 @@ calc.glm.sdf <- function(formula,
                          relevels = list(),
                          varMethod = c("jackknife", "Taylor"),
                          jrrIMax = 1,
-                         omittedLevels = TRUE,
+                         dropOmittedLevels = TRUE,
                          defaultConditions = TRUE,
                          missingDefaultConditions = TRUE,
                          recode = NULL,
@@ -335,7 +335,8 @@ calc.glm.sdf <- function(formula,
   # 1) check, format inputs
   # 2) get the data
   # 3) relevel
-  # 4) yvar could have plausible values
+  # 4a) yvar could have plausible values
+  # 4b) xvar could have plauisble values
   # 5) run the main regression
   # 6) form the inputs for variance estimation
   # 7) form output, including final variance estimation
@@ -356,6 +357,7 @@ calc.glm.sdf <- function(formula,
   } else {
     yvar <- all.vars(formula[[2]])
   } # End of If/Else: if (zeroLengthLHS)
+    xvar <- all.vars(formula[[3]]) #xvar allows to check whether there is a PV on the right-hand side
 
   # grab the variables needed for the Taylor series method, if that is the variance estimation method being used
   taylorVars <- c()
@@ -390,10 +392,11 @@ calc.glm.sdf <- function(formula,
     varnames = getDataVarNames,
     returnJKreplicates = (varMethod == "j"),
     drop = FALSE,
-    omittedLevels = omittedLevels,
+    dropOmittedLevels = dropOmittedLevels,
     recode = recode,
     includeNaLabel = TRUE,
-    dropUnusedLevels = TRUE
+    dropUnusedLevels = TRUE,
+    addAttributes = TRUE
   )
 
   # Default conditions should be included only if the user set it. This adds the argument only if needed
@@ -487,7 +490,7 @@ calc.glm.sdf <- function(formula,
     } # end for(i in seq_along(relevels))
   } # end if(length(relevels) > 0)
 
-  # 4) yvar and plausible values
+  # 4a) yvar and plausible values
   pvy <- hasPlausibleValue(yvar, data) # pvy is the plausible values of the y variable
   yvars <- yvar
   linkingError <- detectLinkingError(data, yvars)
@@ -499,7 +502,7 @@ calc.glm.sdf <- function(formula,
       warning("The linking error variance estimator only supports ", dQuote("jrrIMax=1"), ". Resetting to 1.")
       jrrIMax <- 1
     }
-  }
+  } 
 
   lyv <- length(yvars)
   if (any(pvy)) {
@@ -518,8 +521,55 @@ calc.glm.sdf <- function(formula,
     yvars <- "yvar"
   } # End of if statment: any(pvy)
 
-  # 5) run the main regression
+  # 4b) cvar and plausible values
+  pvx <- hasPlausibleValue(xvar, data) # pvx is the indicator of pvs on the right hand side
+  xvars <- xvar
+  linkingError <- detectLinkingError(data, xvars)
+  if(linkingError){
+    if(varMethod == "t") {
+      stop("Taylor series variance estimation not supported with NAEP linking error.")
+    }
+    if (jrrIMax != 1) {
+      warning("The linking error variance estimator only supports ", dQuote("jrrIMax=1"), ". Resetting to 1.")
+      jrrIMax <- 1
+    }
+  } # end if linkingError
 
+  lxv <- length(xvars)
+  if(any(pvx)) {
+    pvRHS <- xvar[pvx] # the name of the scale/subscale
+    pvxs <- getPlausibleValue(pvRHS, data) # the corresponding PV names
+    if (linkingError) {
+      pp <- getPlausibleValue(xvars[max(pvx)], data)
+      suffix <- ifelse(grepl("_imp_", pp, fixed = TRUE), "_imp_", "_est_")
+      suffix <- ifelse(grepl("_samp_", pp, fixed = TRUE), "_samp_", suffix)
+      xvars <- paste0("outcome", suffix, seq_along(pp))
+    } else { # end if linkingError
+      xvarPvs <- paste0("predictor", seq_along(pvxs))  # new names for the PVs
+    } # end if linkingError
+    xvarPv0 <- xvarPvs[1]
+    
+    for(i in seq_along(pvRHS)) { # number of scale/subscale on the right hand side
+      # first, by PV, rename the first PVs to be e.g. composite
+      edf[ , pvRHS[i]] <- edf[ , getPlausibleValue(pvRHS[i], data)[1]]
+    }
+
+    # then set xvarPvs[i] (e.g. predictor1) to be the evaluation at this PV point
+    for(xvi in seq_along(xvarPvs)) { # number of PVs on the right hand side
+      edf[ , xvarPvs[xvi]] <- edf[ ,pvxs[xvi]]            
+    }
+
+    #first have the predictors then the rest of the independent variables, adjusted for multiple PVs on the RHS
+    xvars <- c(xvarPvs, xvars[which(!xvars %in% pvRHS)])
+    # finally, correctly set xvar0
+    edf$xvarPv0 <- edf[ , xvarPv0]
+    # set PV name as the corresposing predictor to have the correct X
+    for(pvi in seq_along(pvRHS)){
+    predictorPV <- xvarPvs[pvxs == getPlausibleValue(pvRHS[i], data)[1]]
+    edf[ , pvRHS[pvi]] <- edf[,predictorPV]
+  } # end if(any(pvx)), no else
+  }
+  # 5) run the main regression
   # run a regression, starting with the first PV or maybe the only outcome variable
   yvar0 <- yvars[1]
 
@@ -550,6 +600,11 @@ calc.glm.sdf <- function(formula,
   frm <- update(formula, yvar0 ~ .)
   edf$w <- edf[ , wgt]
 
+ # If there is any PV on RHS update variable orders of the formula to allign with getEst results
+  if(any(pvx)){
+     frm <- formula(paste("yvar0 ~", paste0(c(xvar[!pvx], pvRHS), collapse = "+")))
+   } # end if(any(pvx)), no else
+
   # get an approximate fit without weights. Starting with weights can lead to
   # convergence problems.
   suppressWarnings(lm00 <- glm2(frm, data = edf, family = family))
@@ -567,10 +622,8 @@ calc.glm.sdf <- function(formula,
   # note we have not made the B matrix
   madeB <- FALSE
   # there is now a very long set of conditionals
-
-  # regression with each yvar
   stat_reg_glm <- function(fam = FALSE) {
-    ref <- function(pv, wg) {
+    ref <- function(pv, wg, X) {
       if (family$family %in% c("binomial", "quasibinomial") & (fam)) {
         # do this for each yvar, but not for each jk weight (in parent function)
         edf$yvar0 <- ifelse(pv %in% oneDef, 1, 0)
@@ -580,7 +633,6 @@ calc.glm.sdf <- function(formula,
       return(coef(lmi))
     }
   }
-
   # 6) form the inputs for variance estimation
   if (any(pvy)) { # the y variable is a plausible value
     # this if condition estimates both  Taylor series method and jackknife method
@@ -634,14 +686,26 @@ calc.glm.sdf <- function(formula,
         varm[1, ] <- sampVar$V
         M <- length(yvars[grep("_est", yvars)])
         Vimp <- impVar$V
-      } else {
+      } else { # end if (linkingError)
         # coefficients by PV (getEst in lm.sdf)
+      if(any(pvx)){
+          res <- getEst(
+            data = edf,
+            pvEst = yvars,
+            stat = stat_reg_glm(fam = TRUE),
+            wgt = wgt,
+            pvx = pvx,
+            xvarPvs = xvarPvs,
+            xvar = xvar
+          )
+        } else {
         res <- getEst(
           data = edf,
           pvEst = yvars,
           stat = stat_reg_glm(fam = TRUE),
           wgt = wgt
         )
+        } # end if (any(pvx))
         coefm <- res$coef
         varEstInputs[["JK"]] <- data.frame()
         jkSumMult <- getAttributes(data, "jkSumMultiplier")
@@ -652,7 +716,8 @@ calc.glm.sdf <- function(formula,
             wgtM = edf[ , paste0(wgtl$jkbase, wgtl$jksuffixes)],
             co0 = coefm[pvi, ],
             jkSumMult = jkSumMult,
-            pvName = pvi
+            pvName = pvi,
+            pvx = pvx
           )
           varM[[pvi]] <- res$Bi
           varEstInputs[["JK"]] <- rbind(varEstInputs[["JK"]], res$veiJK)
@@ -680,12 +745,24 @@ calc.glm.sdf <- function(formula,
       dofNum <- matrix(0, nrow = length(coef(lm0)), ncol = length(yvars))
       dofDenom <- matrix(0, nrow = length(coef(lm0)), ncol = length(yvars))
       # variances are calculated iteratively for all each y variable
-      est <- getEst(
-        data = edf,
-        pvEst = yvars,
-        stat = stat_reg_glm(fam = TRUE),
-        wgt = wgt
-      )
+      if(any(pvx)){
+          est <- getEst(
+          data = edf,
+          pvEst = yvars,
+          stat = stat_reg_glm(fam = TRUE),
+          wgt = wgt,
+          pvx = pvx,
+          xvarPvs = xvarPvs,
+          xvar = xvar
+          )
+        } else {
+        est <- getEst(
+          data = edf,
+          pvEst = yvars,
+          stat = stat_reg_glm(fam = TRUE),
+          wgt = wgt
+        )
+        } # end if (any(pvx))
       coefm <- est$coef
       for (mm in seq_along(yvars)) {
         edf$yvar0 <- as.numeric(edf[ , yvars[mm]])
@@ -732,12 +809,12 @@ calc.glm.sdf <- function(formula,
     } # End of if/else statment: varMethod == "j"
     # calculate van Buuren B
     B <- (1 / (M - 1)) * Reduce(
-      "+", # add up the matrix results of the sapply
-      sapply(1:nrow(coefm), function(q) {
+      "+", # add up the matrix results of the lapply
+      lapply(1:nrow(coefm), function(q) {
         # within each PV set, calculate the outer product
         # (2.19 of Van Buuren)
         outer(coefm0[q, ], coefm0[q, ])
-      }, simplify = FALSE)
+      })
     )
     madeB <- TRUE
 
@@ -757,7 +834,8 @@ calc.glm.sdf <- function(formula,
         wgtM = edf[ , paste0(wgtl$jkbase, wgtl$jksuffixes)],
         co0 = coef,
         jkSumMult = jkSumMult,
-        pvName = 1
+        pvName = 1,
+        pvx = pvx
       )
       Ubar <- res$Bi
       Vjrr <- res$VsampInp
@@ -809,15 +887,15 @@ calc.glm.sdf <- function(formula,
   fitted1 <- family$linkinv(fittedLatent)
   if (linkingError) {
     ye <- grep("_est_", yvars)
-    Y <- sapply(ye, function(yi) {
+    Y <- vapply(ye, function(yi) {
       as.vector(edf[ , yvars[yi]])
-    }, simplify = TRUE)
+    }, FUN.VALUE = numeric(nrow(edf)))
     resid1 <- Y - fitted1
     colnames(resid1) <- yvars[ye]
   } else {
-    Y <- sapply(seq_along(yvars), function(yi) {
+    Y <- vapply(seq_along(yvars), function(yi) {
       as.vector(edf[ , yvars[yi]])
-    }, simplify = TRUE)
+    }, FUN.VALUE = numeric(nrow(edf)))
     resid1 <- Y - fitted1
     colnames(resid1) <- yvars
   }
@@ -852,9 +930,9 @@ calc.glm.sdf <- function(formula,
       coefmat$dof <- (3.16 - 2.77 / sqrt(m)) * dofNum^2 / dofDenom
     }
   } else {
-    coefmat$dof <- sapply(names(coef), function(cn) {
+    coefmat$dof <- vapply(names(coef), function(cn) {
       DoFCorrection(varEstA = varEstInputs, varA = cn, method = "JR")
-    })
+    }, FUN.VALUE=numeric(1))
   }
   pti <- pt(coefmat$t, df = coefmat$dof)
   coefmat[ , "Pr(>|t|)"] <- 2 * pmin(pti, 1 - pti)
@@ -1022,9 +1100,9 @@ coef.edsurveyGlm <- function(object, ...) {
 #' @method coef edsurveyGlmList
 #' @export
 coef.edsurveyGlmList <- function(object, ...) {
-  sapply(object, function(li) {
+  do.call(cbind, lapply(object, function(li) {
     li$coef
-  })
+  }))
 }
 
 #' @method vcov edsurveyGlm

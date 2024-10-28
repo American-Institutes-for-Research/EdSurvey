@@ -123,9 +123,9 @@ edsurvey.data.frame.list <- function(datalist, cov = NULL, labels = NULL) {
 }
 
 extractCovs <- function(dataList, cov, searching) {
-  covs <- sapply(cov, function(c) {
+  covs <- lapply(cov, function(c) {
     # for each edsurvey.data.frame (z)
-    sapply(dataList, function(z) {
+    vapply(dataList, function(z) {
       # grab attribute c from edsurvey.data.frame z
       thisAttr <- getAttributes(z, c)
       # if this attribute is a character or numeric
@@ -138,8 +138,9 @@ extractCovs <- function(dataList, cov, searching) {
         thisAttr <- "" # return a blank character value in case of a missing cov value otherwise its returned as a list and won't load into the data.frame
       }
       thisAttr
-    }, simplify = TRUE)
-  }, simplify = FALSE)
+    }, FUN.VALUE=character(1))
+  })
+  names(covs) <- cov
   # make proposed covs
   covs <- data.frame(stringsAsFactors = FALSE, covs)
 

@@ -41,14 +41,15 @@ subset.edsurvey.data.frame.list <- function(x, subset, inside = FALSE, drop = FA
 
   # Remove NULL element
   if (drop) {
-    index_removed <- which(sapply(
+    index_removed <- which(vapply(
       res$datalist,
       function(i) {
         return(is.null(i) || nrow(i) == 0)
-      }
-    ))
+      },
+      FUN.VALUE=logical(1))
+    )
   } else {
-    index_removed <- which(sapply(res$datalist, is.null))
+    index_removed <- which(vapply(X=res$datalist, FUN=is.null, FUN.VALUE=logical(1)))
   }
 
 

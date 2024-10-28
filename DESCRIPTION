@@ -1,6 +1,6 @@
 Package: EdSurvey
-Version: 4.0.7
-Date: 2024-06-25
+Version: 4.0.8
+Date: 2024-10-28
 Title: Analysis of NCES Education Survey and Assessment Data
 Authors@R: c(
         person("Paul","Bailey",,"pbailey@air.org",role=c("aut","cre"), 
@@ -27,6 +27,8 @@ Authors@R: c(
                comment=c(ORCID="0009-0004-4080-9864")),
         person("Thomas","Fink",role="aut", 
                comment=c(ORCID="0009-0003-9308-2833")),
+        person("Sinan","Yavuz",role="aut", 
+               comment=c(ORCID="0000-0003-3131-7820")),
         person("Emmanuel", "Sikali", role="pdr", email = "Emmanuel.Sikali@ed.gov"),
         person("Claire","Kelley",role="ctb"),
         person("Jeppe","Bundsgaard",role="ctb"),
@@ -47,7 +49,7 @@ Description: Read in and analyze functions for education survey and assessment d
 License: GPL-2
 VignetteBuilder: knitr
 Suggests: knitr, testthat, withr, rmarkdown, RColorBrewer, doParallel,
-        parallel
+        parallel, tidyEdSurvey
 RoxygenNote: 7.3.2
 Note: This publication was prepared for NCES under Contract No.
         ED-IES-12-D-0002 with the American Institutes for Research.
@@ -55,7 +57,7 @@ Note: This publication was prepared for NCES under Contract No.
         does not imply endorsement by the U.S. Government.
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2024-06-25 18:24:25 UTC; pbailey
+Packaged: 2024-10-28 20:28:28 UTC; pbailey
 Author: Paul Bailey [aut, cre] (<https://orcid.org/0000-0003-0989-8729>),
   Ahmad Emad [aut],
   Huade Huo [aut] (<https://orcid.org/0009-0004-5014-646X>),
@@ -70,6 +72,7 @@ Author: Paul Bailey [aut, cre] (<https://orcid.org/0000-0003-0989-8729>),
   Sun-joo Lee [aut],
   Blue Webb [aut] (<https://orcid.org/0009-0004-4080-9864>),
   Thomas Fink [aut] (<https://orcid.org/0009-0003-9308-2833>),
+  Sinan Yavuz [aut] (<https://orcid.org/0000-0003-3131-7820>),
   Emmanuel Sikali [pdr],
   Claire Kelley [ctb],
   Jeppe Bundsgaard [ctb],

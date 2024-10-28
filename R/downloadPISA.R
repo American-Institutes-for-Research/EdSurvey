@@ -47,10 +47,10 @@ downloadPISA <- function(root, years = c(2000, 2003, 2006, 2009, 2012, 2015, 201
     # if database is not specified, default to be INT because usually users do not want to download all databases
     database <- "INT"
   }
-
+  
   database <- toupper(database) # ensure no case issues
   database <- match.arg(database) # uses the choices from the formal args, no need to specify directly
-
+  
   for (y in years) {
     if (verbose) {
       cat(paste0("\nProcessing PISA data for year ", y, "\n"))
@@ -59,7 +59,7 @@ downloadPISA <- function(root, years = c(2000, 2003, 2006, 2009, 2012, 2015, 201
       warning(sQuote(y), " is not a valid year. PISA had data for the following year: ", paste0(validYears, sep = " "))
       next
     }
-
+    
     # Create a year root directory
     baseroot <- file.path(root, "PISA/")
     if (!dir.exists(baseroot)) {
@@ -69,7 +69,7 @@ downloadPISA <- function(root, years = c(2000, 2003, 2006, 2009, 2012, 2015, 201
     if (!dir.exists(yroot)) {
       dir.create(yroot)
     }
-
+    
     # Download all files
     for (d in database) {
       collected_files <- pisaURLDat(y, d)
@@ -84,26 +84,61 @@ downloadPISA <- function(root, years = c(2000, 2003, 2006, 2009, 2012, 2015, 201
         fn <- basename(f)
         if (!file.exists(file.path(yroot, fn))) {
           # options(HTTPUserAgent="Mozilla/5.0 (Windows NT 6.1; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0")
-          if (grepl("http", f, ignore.case = TRUE)) {
-            download.file(f, file.path(yroot, fn), quiet = !verbose, mode = "wb")
-          } else {
-            download.file(paste0("http://www.oecd.org/", f), file.path(yroot, fn), quiet = !verbose, mode = "wb")
-          }
+          tryCatch({
+            if (grepl("http", f, ignore.case = TRUE)) {
+              download.file(f, file.path(yroot, fn), quiet = !verbose, mode = "wb")
+            } else {
+              download.file(paste0("http://www.oecd.org/", f), file.path(yroot, fn), quiet = !verbose, mode = "wb")
+            }
+          }, error = function(e) {
+            cat("Error: cannot download this file.\n")
+            cat("Sometimes downloads fails because the provider blocks connections from R itself but you can download them from a browser.\n")
+            cat("You can try to copy and paste these links into your browser and move them to your selected folder.\n\n")
+            cat("List of collected_files:\n")
+            # Print each URL on a separate line to avoid console print limit
+            for (url in collected_files) {
+              cat(url, "\n")
+            }
+            stop("Download failed.")
+          })
         } else {
           if (verbose) {
             cat(paste0("Found downloaded ", y, " PISA (", d, " database) file ", fn, ".\n"))
           }
         }
       }
+      
+      # Rename spss control files for PISA 2012 INT database (because OECD changed the file names and may change it again in the future)
+      if (y == 2012 && d == "INT") {
+        file_mappings <- list(
+          "SPSS%20syntax%20to%20read%20in%20cognitive%20item%20response%20data%20file.txt" = "PISA2012_SPSS_cognitive_item.txt",
+          "SPSS%20syntax%20to%20read%20in%20parent%20questionnaire%20data%20file.txt" = "PISA2012_SPSS_parent.txt",
+          "SPSS%20syntax%20to%20read%20in%20school%20questionnaire%20data%20file.txt" = "PISA2012_SPSS_school.txt",
+          "SPSS%20syntax%20to%20read%20in%20scored%20cognitive%20item%20response%20data%20file.txt" = "PISA2012_SPSS_scored_cognitive_item.txt",
+          "SPSS%20syntax%20to%20read%20in%20student%20questionnaire%20data%20file.txt" = "PISA2012_SPSS_student.txt"
+        )
+        
+        for (old_name in names(file_mappings)) {
+          old_path <- file.path(yroot, old_name)
+          if (file.exists(old_path)) {
+            new_path <- file.path(yroot, file_mappings[[old_name]])
+            file.rename(old_path, new_path)
+            if (verbose) {
+              cat(paste0("Renamed ", old_name, " to ", file_mappings[[old_name]], "\n"))
+            }
+          }
+        }
+      }
+      
       # Unzipping files
       zFiles <- list.files(yroot, pattern = "\\.zip$", ignore.case = TRUE, full.names = FALSE)
       zFiles <- file.path(yroot, zFiles)
       for (z in zFiles) {
         lst <- tryCatch(unzip(z, list = TRUE),
-          error = function(cond) {
-            message("File downloading for ", z, " does not work properly. Users might need to change HTTPUserAgent option. See ?downloadPISA for more information.")
-            stop(cond)
-          }
+                        error = function(cond) {
+                          message("File downloading for ", z, " does not work properly. Users might need to change HTTPUserAgent option. See ?downloadPISA for more information.")
+                          stop(cond)
+                        }
         )
         if (verbose) {
           cat(paste0("Unzipping ", y, " PISA (", d, " database) files from ", z, "\n"))
@@ -113,17 +148,17 @@ downloadPISA <- function(root, years = c(2000, 2003, 2006, 2009, 2012, 2015, 201
             if (verbose) {
               cat(paste0(" unzipping ", lst$Name[i], "\n"))
             }
-
+            
             tryCatch(unzip(z, files = lst$Name[i], exdir = yroot),
-              warning = function(w) {
-                if (w$message == "zip file is corrupt") {
-                  message("Zip format for file ", z, " is not supported. Users need to manually unzip this file. See ?downloadPISA for more information.")
-                } else {
-                  warning(w)
-                }
-              }
+                     warning = function(w) {
+                       if (w$message == "zip file is corrupt") {
+                         message("Zip format for file ", z, " is not supported. Users need to manually unzip this file. See ?downloadPISA for more information.")
+                       } else {
+                         warning(w)
+                       }
+                     }
             )
-
+            
             if (basename(lst$Name[i]) != lst$Name[i]) {
               file.rename(file.path(yroot, lst$Name[i]), file.path(yroot, basename(lst$Name[i])))
             }
@@ -166,7 +201,7 @@ pisaURLDat <- function(year, database = "INT") {
 2012	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/main-survey/sas-and-spss-control-files/SPSS%20syntax%20to%20read%20in%20school%20questionnaire%20data%20file.txt
 2012	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/main-survey/sas-and-spss-control-files/SPSS%20syntax%20to%20read%20in%20parent%20questionnaire%20data%20file.txt
 2012	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/main-survey/sas-and-spss-control-files/SPSS%20syntax%20to%20read%20in%20cognitive%20item%20response%20data%20file.txt
-2012	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/main-survey/sas-and-spss-control-files/SPSS%20syntax%20to%20read%20in%20student%20questionnaire%20data%20file.txt
+2012	INT	spss	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/main-survey/sas-and-spss-control-files/SPSS%20syntax%20to%20read%20in%20scored%20cognitive%20item%20response%20data%20file.txt
 2012	CBA	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/cba-pisa-2012/data-sets-in-txt-format/CBA_STU12_MAR31.zip
 2012	CBA	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/cba-pisa-2012/data-sets-in-txt-format/CBA_SCQ12_MAR31.zip
 2012	CBA	data	https://www.oecd.org/content/dam/oecd/en/data/datasets/pisa/pisa-2012-datasets/cba-pisa-2012/data-sets-in-txt-format/CBA_PAQ12_MAR31.zip

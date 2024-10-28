@@ -1,6 +1,6 @@
 #' @title Connect to NAEP Data
 #'
-#' @description Opens a connection to a Main NAEP, or Long-Term Trend NAEP data file residing
+#' @description Opens a connection to a NAEP data file residing
 #'              on the disk. Returns an \code{edsurvey.data.frame} with
 #'              information about the file and data.
 #'
@@ -32,9 +32,20 @@
 #' When a NAEP administration includes a linking error variable those variables are included and end in \code{_linking}.
 #' When present, simply use the \code{_linking} version of a variable to get a standard error estimate that includes linking error.
 #'
-#' This function supports both the Main NAEP data files, and Long-Term Trend NAEP data files.
-#' A table outlining the differences can be found on the \href{https://nces.ed.gov/nationsreportcard/about/ltt_main_diff.aspx}{NAEP Nations Report Card website}.
-#'
+#' This function supports the following NAEP data products:
+#' \itemize{
+#'   \item Main NAEP
+#'   \item Long-Term Trend NAEP (LTT)
+#'   \item Monthly School Survey Linking Study (MSS)
+#'   \item COVID Data Hub School Linking Study
+#'   \item School and Teacher Questionnaire Special Study (STQ)
+#' }
+#' 
+#' A table outlining the differences between the Main NAEP and Long-Term Trend (LTT) datasets can be found on the \href{https://nces.ed.gov/nationsreportcard/about/ltt_main_diff.aspx}{NAEP Nations Report Card website}.
+#' 
+#' For the School and Teacher Questionnaire Special Study (STQ), the School level data can be analyzed independently, or merged together with the Teacher level data.  The chosen variables will dynamically link the data when applicable.
+#' Some School records may not have any Teacher records and thus the \code{dimensions} of the resulting \code{edsurvey.data.frame} may not match the total teacher record count.
+#' 
 #' @return An \code{edsurvey.data.frame} for a NAEP data file.
 #'
 #' @seealso \code{\link{edsurvey.data.frame}} \code{\link{getData}}
@@ -50,6 +61,10 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
 
   # check if this is a long-term trend file
   isLTT <- grepl("long.*term.*trend", filePathInfo$FileDesc$Assessment_Code, ignore.case = TRUE)
+  
+  #check/flag if the NAEP file is a student/teacher questionnaire data file
+  isSTQ <- grepl("^questionnaire$", filePathInfo$FileDesc$Subject, ignore.case = TRUE)
+  
   dataSchLaf <- NULL # default
   schLabelsFile <- NULL
 
@@ -107,73 +122,125 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
       column_names = varNames, column_widths = widths
     )
 
-    # Defining PVs and JKs
-    ##############################################################
-    ## Accomodation not permitted weights and PVs
-    pvs <- list()
-    pv_subset <- subset(labelsFile, select = c("Type", "variableName"), labelsFile$Labels %in% c("PV", "PV2", "PVT"))
-    uniquePvTypes <- unique(pv_subset$Type)
-    for (i in uniquePvTypes) {
-      vars <- tolower(pv_subset$variableName[pv_subset$Type == i])
-      temp_list <- list(varnames = vars)
-      pvs[[i]] <- temp_list
-    }
-
-    # gets the weights (can have 'origwt' or 'aorigwt' or both)
-    weights <- list()
-    if (sum("JK" %in% labelsFile$Labels) > 0) { # origwt
-      weight_temp <- tolower(varNames[labelsFile$Labels == "JK"])
-      jksuffix <- gsub("[^0-9]", "", weight_temp)
-      base <- gsub(jksuffix[1], "", weight_temp[1])
-      weights[["origwt"]] <- list(jkbase = base, jksuffixes = jksuffix)
-    }
-    if (sum("JK2" %in% labelsFile$Labels) > 0) { # aorigwt (a = accomodations)
-      weight_temp <- tolower(varNames[labelsFile$Labels == "JK2"])
-      jksuffix <- gsub("[^0-9]", "", weight_temp)
-      base <- gsub(jksuffix[1], "", weight_temp[1])
-      weights[["aorigwt"]] <- list(jkbase = base, jksuffixes = jksuffix)
-    }
-
-    if(sum("JK-N" %in% labelsFile$Labels) > 0){ #norigwt (n = national?)
-      weight_temp <-  tolower(varNames[labelsFile$Labels == "JK-N"])
-      jksuffix <- gsub("[^0-9]","", weight_temp)
-      base <- gsub(jksuffix[1],"", weight_temp[1])
-      weights[["norigwt"]] <- list(jkbase = base, jksuffixes = jksuffix)
-    }
-    if(sum("JK-V" %in% labelsFile$Labels) > 0){ #vorigwt (v = vocabulary)
-      weight_temp <-  tolower(varNames[labelsFile$Labels == "JK-V"])
-      jksuffix <- gsub("[^0-9]","", weight_temp)
-      base <- gsub(jksuffix[1],"", weight_temp[1])
-      weights[["vorigwt"]] <- list(jkbase = base, jksuffixes = jksuffix)
-    }
-
+    #special case processing for school/teacher questionnaire (STQ) data files
+    #for STQ we will treat the school and teacher levels differently than normal NAEP files as school and teacher can be independently analyzed
+    if (isSTQ){
+      
+      pvs <- list() #empty pvvars list
+      weights <- list()
+      
+      #teacher level weight
+      if (any(tolower(labelsFile$variableName) %in% c("tqwt0"))) {
+        weight_temp <- grep("^tqwt[0-9]+$", labelsFile$variableName, ignore.case = TRUE, value = TRUE)
+        base <- "tqwt"
+        jksuffix <- gsub("[^0-9]", "", weight_temp) #replace all non-numeric values with blank character (leaving only numbers)
+        jksuffix <- jksuffix[!(jksuffix %in% c("0"))] #omit the suffix with a single '0' as that's the base weight
+        
+        psuVar <- tolower(labelsFile$variableName[toupper(labelsFile$variableName) == "TQJKUNT"])
+        strVar <- tolower(labelsFile$variableName[toupper(labelsFile$variableName) == "TQRPGR1"])
+        
+        if(length(psuVar) != 1 && length(strVar) != 1){
+          weights[["tqwt0"]] <- list(jkbase = base, jksuffixes = jksuffix)
+        } else {
+          weights[["tqwt0"]] <- list(jkbase = base, jksuffixes = jksuffix, psuVar = psuVar, stratumVar = strVar)
+        }
+      }
+      
+      #school level weight
+      if (any(tolower(schLabelsFile$variableName) %in% c("sqwt0"))) {
+        weight_temp <- grep("^sqwt[0-9]+$", schLabelsFile$variableName, ignore.case = TRUE, value = TRUE)
+        base <- "sqwt"
+        jksuffix <- gsub("[^0-9]", "", weight_temp) #replace all non-numeric values with blank character (leaving only numbers)
+        jksuffix <- jksuffix[!(jksuffix %in% c("0"))] #omit the suffix with a single '0' as that's the base weight
+        
+        psuVar <- tolower(schLabelsFile$variableName[toupper(schLabelsFile$variableName) == "SQJKUNT"])
+        strVar <- tolower(schLabelsFile$variableName[toupper(schLabelsFile$variableName) == "SQRPGR1"])
+        
+        if(length(psuVar) != 1 && length(strVar) != 1){
+          weights[["sqwt0"]] <- list(jkbase = base, jksuffixes = jksuffix)
+        } else {
+          weights[["sqwt0"]] <- list(jkbase = base, jksuffixes = jksuffix, psuVar = psuVar, stratumVar = strVar)
+        }
+      }
+      
+    } else { #regular NAEP data file processing
+      
+      # Defining PVs and JKs
+      ##############################################################
+      ## Accomodation not permitted weights and PVs
+      pvs <- list()
+      pv_subset <- subset(labelsFile, select = c("Type", "variableName"), labelsFile$Labels %in% c("PV", "PV2", "PVT"))
+      uniquePvTypes <- unique(pv_subset$Type)
+      for (i in uniquePvTypes) {
+        vars <- tolower(pv_subset$variableName[pv_subset$Type == i])
+        temp_list <- list(varnames = vars)
+        pvs[[i]] <- temp_list
+      }
+  
+      # gets the weights (can have 'origwt' or 'aorigwt' or both)
+      weights <- list()
+      if (sum("JK" %in% labelsFile$Labels) > 0) { # origwt
+        weight_temp <- tolower(varNames[labelsFile$Labels == "JK"])
+        jksuffix <- gsub("[^0-9]", "", weight_temp)
+        base <- gsub(jksuffix[1], "", weight_temp[1])
+        weights[["origwt"]] <- list(jkbase = base, jksuffixes = jksuffix)
+      }
+      if (sum("JK2" %in% labelsFile$Labels) > 0) { # aorigwt (a = accomodations)
+        weight_temp <- tolower(varNames[labelsFile$Labels == "JK2"])
+        jksuffix <- gsub("[^0-9]", "", weight_temp)
+        base <- gsub(jksuffix[1], "", weight_temp[1])
+        weights[["aorigwt"]] <- list(jkbase = base, jksuffixes = jksuffix)
+      }
+  
+      if(sum("JK-N" %in% labelsFile$Labels) > 0){ #norigwt (n = national?)
+        weight_temp <-  tolower(varNames[labelsFile$Labels == "JK-N"])
+        jksuffix <- gsub("[^0-9]","", weight_temp)
+        base <- gsub(jksuffix[1],"", weight_temp[1])
+        weights[["norigwt"]] <- list(jkbase = base, jksuffixes = jksuffix)
+      }
+      if(sum("JK-V" %in% labelsFile$Labels) > 0){ #vorigwt (v = vocabulary)
+        weight_temp <-  tolower(varNames[labelsFile$Labels == "JK-V"])
+        jksuffix <- gsub("[^0-9]","", weight_temp)
+        base <- gsub(jksuffix[1],"", weight_temp[1])
+        weights[["vorigwt"]] <- list(jkbase = base, jksuffixes = jksuffix)
+      }
+    }#end if (isSTQ)
   } #end if(isLTT)
 
-  # set default weight
-  if (missing(defaultWeight) || !any(defaultWeight %in% names(weights))) {
-    attributes(weights)$default <- names(weights)[1]
+  #check for default weight only if not the school/teacher questionnaire data product
+  checkDW <- !isSTQ
+  if (checkDW) {
+    # set default weight
+    if (missing(defaultWeight) || !any(defaultWeight %in% names(weights))) {
+      attributes(weights)$default <- names(weights)[1]
+    } else {
+      attributes(weights)$default <- defaultWeight
+    }
   } else {
-    attributes(weights)$default <- defaultWeight
+    attr(weights, "default") <- "" # no default weight but must have a default attribute applied
   }
 
-  if (all(is.null(defaultPvs)) || all(is.na(defaultPvs))) {
-    warning(paste0("Argument ", dQuote("defaultPvs"), " not specified. There will not be a default PV value."))
-  } else {
-    if (!defaultPvs[1] %in% names(pvs)) {
-      defPV <- names(pvs[1])
-      defi <- 1
-      while (grepl("theta", defPV, fixed = TRUE) && length(pvs) > defi) {
-        defi <- defi + 1
-        defPV <- names(pvs[defi])
-      }
-      if (length(pvs) > 0) {
-        warning(paste0("Updating name of default plausible value since ", sQuote(defaultPvs[1]), " not found. Setting to ", sQuote(defPV), "."))
-        defaultPvs <- defPV
-      } else {
-        warning(paste0("No plausible values found. If plausible value(s) expected, check the ", sQuote("defaultPvs"), " argument."))
-      }
-    } # end if(!defaultPvs %in% names(pvs))
-  }
+  #for the NAEP student/teacher questionnaire study skip checking PVs, there are no plausible values in the data. warning will not be thrown
+  checkPVs <- !isSTQ 
+  
+  if(checkPVs){
+    if (all(is.null(defaultPvs)) || all(is.na(defaultPvs))) {
+      # in some NAEP studies there is not a default. The user can specify one. Here we just tell them at they are not specifying one.
+      message(paste0("Argument ", dQuote("defaultPvs"), " not specified. There will not be a default PV value."))
+    } else {
+      if (!defaultPvs[1] %in% names(pvs)) {
+        defPV <- names(pvs[1])
+        defi <- 1
+        while (grepl("theta", defPV, fixed = TRUE) && length(pvs) > defi) {
+          defi <- defi + 1
+          defPV <- names(pvs[defi])
+        }
+        if (length(pvs) > 0) {
+          defaultPvs <- defPV
+        }
+      } # end if(!defaultPvs %in% names(pvs))
+    }
+  } #end if(checkPVs)
 
   if (length(pvs) > 0) {
     attributes(pvs)$default <- defaultPvs[1]
@@ -181,12 +248,18 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
 
   # achievementLevelsHelp located in descriptionOfFile.R
   # each file will only have one achievement level scale associated with the file
-  levels <- achievementLevelsHelp(
-    filePathInfo$FileDesc$Grade_Level,
-    filePathInfo$FileDesc$Year,
-    filePathInfo$FileDesc$Subject,
-    filePathInfo$FileDesc$Assessment_Code
-  )
+  # skip this check for the student/teacher quesntionnaire since that dataset doesn't contain any PVs, it will have no AL
+  checkAL <- !isSTQ 
+  levels <- NULL
+  
+  if(checkAL){
+    levels <- achievementLevelsHelp(
+      filePathInfo$FileDesc$Grade_Level,
+      filePathInfo$FileDesc$Year,
+      filePathInfo$FileDesc$Subject,
+      filePathInfo$FileDesc$Assessment_Code
+    )
+  } #end if(checkAL)
 
   # apply the achievement levels only to the non-theta pvs
   # levels will only have one row here for NAEP data files
@@ -202,7 +275,8 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
   names(levels) <- levelName
 
   # add reporting sample default condition if the column exists
-  if ("rptsamp" %in% tolower(names(dataLaf))) {
+  #omit this check for school/teaher questionnaire data
+  if ("rptsamp" %in% tolower(names(dataLaf)) && !isSTQ) {
     defaultConditions <- quote(tolower(rptsamp) == "reporting sample")
   } else {
     defaultConditions <- NULL
@@ -211,6 +285,7 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
   # get psu and stratum variables for Taylor series variance
   checkVars <- tolower(labelsFile$variableName)
   psCheck <- TRUE
+  
   if (psCheck && all(c("jkpair", "jkrepl") %in% checkVars)) {
     ps <- c(stratum = "jkpair", psu = "jkrepl")
     psCheck <- FALSE
@@ -245,15 +320,16 @@ readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", o
     assessCode <- paste0(assessCode, " - ", filePathInfo$FileDesc$Assessment_Sample)
   }
   # build the result list and return
+  
+  if (isSTQ) {
+    dL <- buildNAEP_STQ_dataList(dataLaf, labelsFile, dataSchLaf, schLabelsFile)
+  } else {
+    dL <- buildNAEP_dataList(dataLaf, labelsFile, dataSchLaf, schLabelsFile)
+  }
   res <- edsurvey.data.frame(
     userConditions = list(),
     defaultConditions = list(defaultConditions),
-    dataList = buildNAEP_dataList(
-      dataLaf,
-      labelsFile,
-      dataSchLaf,
-      schLabelsFile
-    ),
+    dataList = dL,
     weights = weights,
     pvvars = pvs,
     subject = filePathInfo$FileDesc$Subject,
@@ -671,7 +747,8 @@ readMRC <- function(filename) {
 
   # identify weights
   labels <- tolower(Labels)
-  weights <- grepl("^(a|n|v){0,1}(origwt)$", variableName, ignore.case = TRUE) #T/F if variable is a weight
+  # tqwt0 is for the School and Teacher Questionnaire Special Study (STQ)
+  weights <- grepl("^(a|n|v){0,1}(origwt)$", variableName, ignore.case = TRUE) | grepl("^tqwt0$", variableName, ignore.case = TRUE) #T/F if variable is a weight
 
   #only do this check if the above does not locate any weights, this will be only applicable for old NAEP files
   if (!any(weights)){
@@ -942,6 +1019,56 @@ buildNAEP_dataList <- function(stuLaf, stuFF, schLaf, schFF) {
       isDimLevel = FALSE
     )
   }
+
+  return(dataList)
+}
+
+# builds the NAEP dataList object for the student/teacher questionnare data files
+buildNAEP_STQ_dataList <- function(tchLaf, tchFF, schLaf, schFF) {
+  dataList <- list()
+  
+  # school datafile won't always be present, only add it if applicable
+  if (!is.null(schLaf)) {
+    # build the list hierarchical based on the order in which the data levels would be merged in getData
+    dataList[["School"]] <- dataListItem(
+      lafObject = schLaf,
+      fileFormat = schFF,
+      levelLabel = "School",
+      forceMerge = FALSE,
+      parentMergeLevels = NULL,
+      parentMergeVars = NULL,
+      mergeVars = NULL,
+      ignoreVars = NULL,
+      isDimLevel = FALSE
+    )
+    
+    dataList[["Teacher"]] <- dataListItem(
+      lafObject = tchLaf,
+      fileFormat = tchFF,
+      levelLabel = "Teacher",
+      forceMerge = FALSE, #only merge teacher data if teacher variables are requested
+      parentMergeLevels = c("School"),
+      parentMergeVars = c("sscrpsu"),
+      mergeVars = c("scrpsu"),
+      ignoreVars = NULL,
+      isDimLevel = TRUE
+    )
+    
+    return(dataList)
+  }
+  
+  #only teacher level when school level not supplied
+  dataList[["Teacher"]] <- dataListItem(
+    lafObject = tchLaf,
+    fileFormat = tchFF,
+    levelLabel = "Teacher",
+    forceMerge = FALSE, #only merge teacher data if teacher variables are requested
+    parentMergeLevels = NULL,
+    parentMergeVars = NULL,
+    mergeVars = NULL,
+    ignoreVars = NULL,
+    isDimLevel = TRUE
+  )
 
   return(dataList)
 }

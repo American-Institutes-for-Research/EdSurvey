@@ -468,7 +468,7 @@ timssParamForm <- function(itemParamDf, itemInfoDf, transConst, theYear, theLeve
   # clean
   params$TIMSSid <- tolower(params$TIMSSid)
   colsNum <- c("a", "b", "c", "d1", "d2")
-  params[colsNum] <- sapply(params[colsNum], as.numeric)
+  params[colsNum] <- vapply(params[colsNum], as.numeric, FUN.VALUE=numeric(nrow(params)))
   params$content_subtest <- ifelse(params$content_subtest %in% c("Data Display","Data","Data and Probability","Data and Chance"), "mdat", params$content_subtest)
   params$content_subtest <- ifelse(params$content_subtest %in% c("Geometric Shapes and Measures","Measurement and Geometry","Geometry"), "mgeo", params$content_subtest)
   params$content_subtest <- ifelse(params$content_subtest == "Number", "mnum", params$content_subtest)

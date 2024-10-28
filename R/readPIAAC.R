@@ -30,7 +30,7 @@
 #'
 #' @details
 #' Reads in the unzipped .csv files downloaded from the PIAAC dataset using
-#' the OECD repository (\url{https://www.oecd.org/skills/piaac/}). Users can use
+#' the OECD repository (\url{https://www.oecd.org/skills/piaac.html}). Users can use
 #' \code{\link{downloadPIAAC}} to download all required files automatically.
 #'
 #' @return

@@ -27,7 +27,8 @@ descriptionOfFile <- function(filename) {
     Science = "S",
     Music = "U",
     "Visual Arts" = "V",
-    Writing = "W"
+    Writing = "W",
+    Questionnaire = "Q"
   )
   if (!any(subjC %in% validSubj)) {
     stop(paste0(

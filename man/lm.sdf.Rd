@@ -231,6 +231,11 @@ lm4 <- lm.sdf(formula=composite ~ dsex + b017451, data=sdf,
                                        to=c("Frequently"))))
 # Note: "Infrequently" is the dropped level for the recoded b017451
 summary(lm4)
+
+# use plausible values as predictors in a linear regression model
+lm5 <- lm.sdf(formula=algebra ~ dsex + geometry, data=sdf)
+lm5
+summary(lm5)
 }
 }
 \references{

@@ -451,7 +451,7 @@ checkParamTabAgainstItems <- function(data, scoreInfo) {
   apparentScorePoints <- apply(ppt[ , dCols, drop = FALSE], 1, function(x) {
     length(dCols) - sum(is.na(x))
   })
-  if (!"socrePoints" %in% colnames(ppt)) {
+  if (!"scorePoints" %in% colnames(ppt)) {
     ppt$scorePoints <- apparentScorePoints
   }
   ppt[is.na(ppt$scorePoints), "scorePoints"] <- 0
@@ -518,6 +518,7 @@ fixIdVar <- function(data, idVar, verbose) {
 
 # returns TRUE/FALSE if an edsurvey.data.frame or light.edsurvey.data.frame have appropriate IRT attributes set
 # set errorCheck = TRUE to throw warning about what part of the irt attributes are missing
+#' @importFrom stats reformulate
 has_IRTAttributes <- function(esdf, errorCheck = FALSE) {
   # validate inputs
   checkDataClass(esdf, c("edsurvey.data.frame", "light.edsurvey.data.frame"))
@@ -552,4 +553,83 @@ has_IRTAttributes <- function(esdf, errorCheck = FALSE) {
 
   # ALL TESTS PASSED, RETURN TRUE
   return(TRUE)
+}
+
+# this function removes covariates that have exactly one level from the right hand side.
+# it also removed associated interactions. This is purely to speed up the SVD.
+# dat a data frame
+# all_covs is a vector with all the terms on the right hand side of an equation.
+fix_all_covs <- function(data, formula) {
+  # note that terms with e.g. x*z become "x", "z", "x:z" in term.labels, so we need to
+  # search for ":" and never "*"
+  ft <- terms(formula)
+  all_covs <- attr(ft, "term.labels")
+  a <- data
+  # levels we are keeping
+  covs_all <- all_covs[grepl("[:]", all_covs)]
+  for(i in 1:length(all_covs)) {
+    if(!grepl("[:]", all_covs[i])) {
+      if(length(unique(a[,all_covs[i]])) > 1) {
+        # keep this
+        covs_all <- c(covs_all, all_covs[i])
+      } else {
+        # drop this (simply do not add it to covs_all)
+        # also drop covariates that have this in it before a colon
+        also_drop <- covs_all[grepl(paste0("^",all_covs[i],"[:]"), covs_all)]
+        for(j in seq_along(also_drop)) {
+          covs_all <- covs_all[covs_all != also_drop[j]]
+        }
+        # also drop covariates that have this in it after a colon
+        also_drop <- covs_all[grepl(paste0("[:]",all_covs[i],"$"), covs_all)]
+        for(j in seq_along(also_drop)) {
+           covs_all <- covs_all[covs_all != also_drop[j]]
+        }
+      }
+    }  
+  }
+  response <- all.vars(formula)[attr(ft, "response")]
+  use_intercept <- attr(ft, "intercept")==1
+  new_formula <- reformulate(covs_all, response, intercept=use_intercept)
+  return(new_formula)
+}
+
+#' @title variable recoding function
+#' @description Prep variables for calls to \code{\link{mml.sdf}}
+#'
+#' @param data a data frame to be edited
+#' @param vars variables to modify
+#' @param from recode from these levels
+#' @param to recode to this level, or levels
+#'
+#' @details
+#' If \code{to} is length 1, then all variables in \code{vars} are recoded from every \code{from}
+#' to the level of \code{to}.
+#'
+#' When \code{to} is the same length as \code{from} then the ith level of \code{from} is recoded
+#' to the ith level of \code{to}.
+#' 
+#' @return
+#' the data with each variable in \code{vars} recoded from \code{missingFrom} to \code{missingTo}
+#' @export
+es_recode <- function(data, vars, from, to) {
+  if(!all(vars %in% colnames(data))) {
+    stop("Could not find these columns on data argument ", paste(dQuote(vars[!vars %in% colnames(data)]), collapse=", "))
+  }
+  if(length(to) %in% 1) {
+    for(i in 1:length(vars)) {
+      data[ , vars[i]] <- factor(ifelse(data[ , vars[i]] %in% from, to, as.character(data[ , vars[i]])))
+    }
+  } else{
+    if(length(to) %in% length(from)) {
+      for(i in 1:length(vars)) {
+        data[ , vars[i]] <- as.character(data[ , vars[i]])
+        for(j in 1:length(to)) {
+          data[ , vars[i]] <- ifelse(data[ , vars[i]] %in% from[j], to[j], data[ , vars[i]])
+        }
+      data[ , vars[i]] <- factor(data[ , vars[i]])
+      }
+    } else {
+      stop("Either the length of missingTo should be length 1 or it should be the same length as from")
+    }
+  }
 }

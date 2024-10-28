@@ -20,7 +20,7 @@ PISA-extracted fixed-width files and SPSS control files (.txt).}
 \item{database}{a character to indicate a selected database. Must be one of
 \code{INT} (general database that most people use),
 \code{CBA} (computer-based database in PISA 2012 only),
-or \code{FIN} (financial literacy database in PISA 2012 and 2018).
+or \code{FIN} (financial literacy database in PISA 2012, 2018, and 2022. Note that `INT` needs to be used for PISA 2015 financial literacy data as it could be merged to the general database).
 Defaults to \code{INT}.}
 
 \item{countries}{a character vector of the country/countries to include using the
@@ -59,7 +59,7 @@ Opens a connection to a PISA data file and
 }
 \details{
 Reads in the unzipped files downloaded from the PISA database using the
-OECD Repository (\url{https://www.oecd.org/pisa/}). Users can use
+OECD Repository (\url{https://www.oecd.org/pisa.html}). Users can use
 \code{\link{downloadPISA}} to download all required files.
 Student questionnaire files (with weights and plausible values) are used as
 main files, which are then
@@ -96,11 +96,11 @@ edsurveyTable(formula=read ~ st04q01 + st20q01, data = sgp2012)
 }
 }
 \references{
-Organisation for Economic Co-operation and Development. (2017). \emph{PISA 2015 technical report}. Paris, France: OECD Publishing. Retrieved from \emph{\url{https://www.oecd.org/pisa/data/2015-technical-report/}}
+Organisation for Economic Co-operation and Development. (2017). \emph{PISA 2015 technical report}. Paris, France: OECD Publishing. Retrieved from \emph{\url{ https://www.oecd.org/pisa/data/2015-technical-report.html}}
 }
 \seealso{
 \code{\link{getData}} and \code{\link{downloadPISA}}
 }
 \author{
-Tom Fink, Trang Nguyen, and Paul Bailey
+Tom Fink, Trang Nguyen, Paul Bailey, and Yuqi Liao
 }

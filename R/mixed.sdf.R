@@ -431,7 +431,7 @@ mixed.sdf <- function(formula,
       })
     )
     res$B <- (1 / (M - 1)) * Reduce(
-      "+", # add up the matrix results of the sapply
+      "+", # add up the matrix results of the lapply
       lapply(results, function(r) {
         # within each PV set, calculate the outer product
         # (2.19 of Van Buuren)
@@ -459,16 +459,16 @@ mixed.sdf <- function(formula,
     # get enrivonment of WeMix likelihood function to later extract covariance from
     env <- environment(results[[1]]$lnlf)
     # Coefficients are just average value
-    avg_coef <- rowSums(matrix(sapply(results, function(x) {
+    avg_coef <- rowSums(matrix(vapply(results, function(x) {
       x$coef
-    }), nrow = length(results[[1]]$coef))) / length(yvars)
+    }, FUN.VALUE=numeric(length(results[[1]]$coef))), nrow = length(results[[1]]$coef))) / length(yvars)
     names(avg_coef) <- names(results[[1]]$coef)
 
     # calcuate imputation variance for SEs and Residuals
     M <- length(yvars)
-    imputation_var <- ((M + 1) / ((M - 1) * M)) * rowSums(matrix(sapply(results, function(x) {
+    imputation_var <- ((M + 1) / ((M - 1) * M)) * rowSums(matrix(vapply(results, function(x) {
       x$coef - avg_coef
-    })^2, nrow = length(avg_coef)))
+    }, FUN.VALUE=numeric(length(avg_coef)))^2, nrow = length(avg_coef)))
 
     res$coef <- avg_coef
     # Variation in coefficients comes from imputation and also sampling
@@ -479,9 +479,9 @@ mixed.sdf <- function(formula,
     res$se <- sqrt(sampling_var[seq_along(imputation_var)] + imputation_var)
     # ICC is mean ICC
     res$ICC <- tryCatch(
-      sum(sapply(results, function(x) {
+      sum(vapply(results, function(x) {
         x$ICC
-      })) / length(yvars),
+      }, FUN.VALUE=numeric(1))) / length(yvars),
       error = function(cond) {
         return(NA)
       }
@@ -493,9 +493,9 @@ mixed.sdf <- function(formula,
     # put the corred vcov in it
     m <- length(yvars)
     varsmat0$vcov <- rowSums(matrix(
-      sapply(results, function(x) {
+      vapply(results, function(x) {
         x$varDF$vcov
-      }),
+      }, FUN.VALUE=numeric(length(results[[1]]$varDF$vcov))),
       nrow = nrow(results[[1]]$varDF)
     )) / m
     varsmat <- varsmat0[is.na(varsmat0$var2), c("level", "grp", "var1", "vcov", "SEvcov")]
@@ -530,15 +530,15 @@ mixed.sdf <- function(formula,
     # get the var of var.
     # 1, imputation is var of vars
     imputation_var_for_vars <- ((M + 1) / ((M - 1) * M)) *
-      apply(sapply(results, function(x) {
+      apply(vapply(results, function(x) {
         x$varDF$vcov
-      }), 1, function(x) {
+      }, FUN.VALUE=numeric(length(results[[1]]$varDF$vcov))), 1, function(x) {
         sum((x - mean(x))^2)
       })
     # 2, sampling is mean of var of vars
-    sampling_var_for_vars <- apply(sapply(results, function(x) {
+    sampling_var_for_vars <- apply(vapply(results, function(x) {
       x$varDF$SEvcov^2
-    }), 1, mean)
+    }, FUN.VALUE=numeric(length(results[[1]]$varDF$SEvcov))), 1, mean)
     res$varDF$SEvcov <- sqrt(sampling_var_for_vars + imputation_var_for_vars)
     # Add on SE of residuals from sandwich estimator
     res$se <- c(res$se, sqrt(sampling_var_for_vars + imputation_var_for_vars))

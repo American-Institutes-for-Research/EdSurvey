@@ -1213,10 +1213,10 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
     if (achievementDiscrete) {
       # get index of desired achievement levels from the results
       if (typeof(als) == "character") {
-        lA <- sapply(achievementLevel, function(al) {
+        lA <- unlist(lapply(achievementLevel, function(al) {
           lal <- addALPrefix(al = al, als = als, discrete = TRUE)
           grep(lal, meanA$discrete$Level, ignore.case = TRUE)
-        })
+        }))
       } else {
         lA <- rep(TRUE, length(als[[achievementLevel]]))
       }
@@ -1226,10 +1226,10 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
       }
       if (!skipB) {
         if (typeof(als) == "character") {
-          lB <- sapply(achievementLevel, function(al) {
+          lB <- unlist(lapply(achievementLevel, function(al) {
             lal <- addALPrefix(al = al, als = als, discrete = TRUE)
             grep(lal, meanB$discrete$Level, ignore.case = TRUE)
-          })
+          }))
         } else {
           lB <- rep(TRUE, length(als[[achievementLevel]]))
         }
@@ -1250,10 +1250,10 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
     } else {
       # get index of desired achievement levels from the results
       if (typeof(als) == "character") {
-        lA <- sapply(achievementLevel, function(al) {
+        lA <- unlist(lapply(achievementLevel, function(al) {
           lal <- addALPrefix(al = al, als = als, discrete = FALSE)
           grep(lal, meanA$cumulative$Level, ignore.case = TRUE)
-        })
+        }))
       } else {
         lA <- rep(TRUE, length(als[[achievementLevel]]))
       }
@@ -1262,10 +1262,10 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
       }
       if (!skipB) {
         if (typeof(als) == "character") {
-          lB <- sapply(achievementLevel, function(al) {
+          lB <- unlist(lapply(achievementLevel, function(al) {
             lal <- addALPrefix(al = al, als = als, discrete = FALSE)
             grep(lal, meanB$cumulative$Level, ignore.case = TRUE)
-          })
+          }))
         } else {
           lB <- rep(TRUE, length(als[[achievementLevel]]))
         }
@@ -1589,12 +1589,12 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
     pctB <- sum(dB[ , wgt]) / sum(d0[ , wgt])
     # calculate covAB using JK method
     wgtl <- getAttributes(data, "weights")[[wgt]]
-    pctJK <- t(sapply(wgtl$jksuffixes, function(suffix) {
+    pctJK <- t(vapply(wgtl$jksuffixes, function(suffix) {
       w0 <- sum(d0[ , paste0(wgtl$jkbase, suffix)])
       wA <- sum(dA[ , paste0(wgtl$jkbase, suffix)])
       wB <- sum(dB[ , paste0(wgtl$jkbase, suffix)])
       c(pctA = wA / w0, pctB = wB / w0)
-    }))
+    }, FUN.VALUE=numeric(2)))
     seA <- 100 * sqrt(getAttributes(data, "jkSumMultiplier") * sum((pctJK[ , 1] - pctA)^2))
     seB <- 100 * sqrt(getAttributes(data, "jkSumMultiplier") * sum((pctJK[ , 2] - pctB)^2))
     varJK <- data.frame(
@@ -1786,11 +1786,11 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
     wgtcallA <- c(callv, list(data = dataA))
     dA <- do.call(getData, wgtcallA)
     pctA <- sum(dA[ , wgt]) / sum(d0[ , wgt])
-    pctJK <- t(sapply(wgtl$jksuffixes, function(suffix) {
+    pctJK <- t(vapply(wgtl$jksuffixes, function(suffix) {
       w0 <- sum(d0[ , paste0(wgtl$jkbase, suffix)])
       wA <- sum(dA[ , paste0(wgtl$jkbase, suffix)])
       c(pctA = wA / w0, pctB = 0)
-    }))
+    }, FUN.VALUE=numeric(2)))
     seA <- 100 * sqrt(getAttributes(data, "jkSumMultiplier") * sum((pctJK[ , 1] - pctA)^2))
     varJK <- data.frame(
       stringsAsFactors = FALSE,

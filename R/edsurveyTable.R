@@ -625,7 +625,7 @@ calcEdsurveyTable <- function(formula,
 
         res_no0[ , "SE(PCT)"] <- NA
         # for every group (row of the table)
-        sapply(unique(res_no0$group), function(z) {
+        lapply(unique(res_no0$group), function(z) {
           # get the Taylor series SE for this row of the table
           res_no0i <- res_no0[res_no0$group == z, ] # subset(res_no0, group == z)
           n <- nrow(res_no0i)
@@ -720,7 +720,7 @@ calcEdsurveyTable <- function(formula,
             # so the percent will be 100. The frequentist SE on this will be zero.
             res_no0[res_no0$group == z, "SE(PCT)"] <<- 0
           } # end else for if(n!=1) {
-        }) # end sapply(unique(res_no0$group), function(z) {
+        }) # end lapply(unique(res_no0$group), function(z) {
         res <- merge(res, res_no0[ , c(rhs_vars, "SE(PCT)")], by = rhs_vars, sort = FALSE, all.x = TRUE)
       } # end else for if(varMethod == "j") {
       # these methods can produce NaN, return NA in those cases
@@ -949,7 +949,7 @@ sumna <- function(x) {
 
 typeOfVariable <- function(var, data) {
   if (inherits(data, "light.edsurvey.data.frame")) {
-    return(sapply(var, function(v) {
+    return(vapply(var, function(v) {
       if (hasPlausibleValue(v, data)) {
         return("continuous")
       }
@@ -961,7 +961,7 @@ typeOfVariable <- function(var, data) {
       } else {
         return("discrete")
       }
-    }))
+    }, FUN.VALUE=character(1)))
   }
 
   fileFormat <- do.call("rbind", lapply(
@@ -970,7 +970,7 @@ typeOfVariable <- function(var, data) {
       dl$fileFormat
     }
   ))
-  sapply(var, function(v) {
+  vapply(var, function(v) {
     if (hasPlausibleValue(v, data)) {
       return("continuous")
     }
@@ -991,5 +991,5 @@ typeOfVariable <- function(var, data) {
     } else {
       return("discrete")
     }
-  })
+  }, FUN.VALUE=character(1))
 }

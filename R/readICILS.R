@@ -223,7 +223,7 @@ readICILS <- function(path,
         weights <- NULL # default value
 
         for (i in seq_along(testJKprefix)) {
-          ujkz <- unique(tolower(grep(paste0("^", "(", testJKprefix[i], ")", "[1-9]"), c(names(processedData$dataList$student), names(processedData$dataList$teacher)), value = TRUE, ignore.case = TRUE)))
+          ujkz <- unique(tolower(grep(paste0("^", "(", testJKprefix[i], ")", "\\d{1,2}"), c(names(processedData$dataList$student), names(processedData$dataList$teacher)), value = TRUE, ignore.case = TRUE)))
           ujkz <- gsub(tolower(testJKprefix[i]), "", ujkz, fixed = TRUE) # remove jk to leave the numeric values
 
           if (length(ujkz) > 0) {

@@ -40,13 +40,13 @@ dim.edsurvey.data.frame <- function(x) {
 
 #' @export
 dim.edsurvey.data.frame.list <- function(x) {
-  res <- sapply(x$data, function(li) {
+  res <- vapply(x$data, function(li) {
     if (is.null(li)) {
       c(NA, NA)
     } else {
       dim(li)
     }
-  })
+  }, FUN.VALUE=integer(2))
   return(list(nrow = res[1, ], ncol = res[2, ]))
 }
 

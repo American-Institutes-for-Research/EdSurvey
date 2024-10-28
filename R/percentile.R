@@ -170,7 +170,7 @@ percentile <- function(variable, percentiles, data,
     # this pmatch will return a vector like c(0,0,1,0) if `data` is the third element
     datapos <- which.max(pmatch(names(call), "data", 0L))
     warns <- c()
-    results <- sapply(1:ll, function(i) {
+    results <- lapply(1:ll, function(i) {
       call[[datapos]] <- data$datalist[[i]]
       tryCatch(suppressWarnings(eval(call)),
         error = function(cond) {
@@ -191,7 +191,7 @@ percentile <- function(variable, percentiles, data,
           return(nullRes)
         }
       )
-    }, simplify = FALSE)
+    })
     if (length(warns) > 0) {
       if (length(warns) > 1) {
         datasets <- "datasets"
@@ -202,16 +202,17 @@ percentile <- function(variable, percentiles, data,
     }
 
     # a block consists of the covs and the results for a percentile level:
-    resdf <- cbind(data$covs, t(sapply(1:ll, function(ii) {
+    resdf <- cbind(data$covs, do.call(rbind, lapply(1:ll, function(ii) {
       results[[ii]][1, ]
-    }, simplify = TRUE)))
+    })))
+    rownames(resdf) <- NULL
 
     ind <- 2 # iteration starts at second column
     while (ind <= lp) { # lp is the number of percentiles
       # this just grabs blocks, for each percentile level
-      newblock <- cbind(data$covs, t(sapply(1:ll, function(ii) {
+      newblock <- cbind(data$covs, t(vapply(1:ll, function(ii) {
         results[[ii]][ind, ]
-      }, simplify = TRUE)))
+      }, FUN.VALUE = numeric(length(results[[1]][ind,])))))
       # and then appends them to the bottom of the results
       resdf <- rbind(resdf, newblock)
       ind <- ind + 1
@@ -298,7 +299,8 @@ percentile <- function(variable, percentiles, data,
     # for each variable to find percentiles in
     percentileGen <- function(thesePercentiles, pctMethod) {
       # make sure these are not out of bounds
-      fnp <- function(pv, w) {
+      fnp <- function(pv, w, X) {
+        # X is not used for this, but will be in the call
         # data frame with x and w on it. It will eventually get the percentile for that point
         xpw <- data.frame(
           x = pv[w > 0],
@@ -350,17 +352,20 @@ percentile <- function(variable, percentiles, data,
           xpwc$w[1] <- xpwc$w[nrow(xpwc)] <- 0
           xpwc$p <- c(0, resp, 100)
           # could be larger than max, handle that
-          resv <- sapply(1:len, function(ri) {
+          if (is.matrix(thesePercentiles)) {
+            res_length <- 2
+          } else {
+            res_length <- 1
+          }
+          resv <- vapply(1:len, function(ri) {
             if (is.matrix(thesePercentiles)) {
               # for lower and upper latent_ci
-              n <- 2
               p <- thesePercentiles[ri, ]
             } else {
-              n <- 1
               p <- thesePercentiles[ri]
             }
 
-            sapply(1:n, function(r_i) {
+            vapply(1:res_length, function(r_i) {
               p <- p[r_i]
               p <- min(max(p, 0), 100) # enforce 0 to 100 range
               # k + 1 (or, in short hand kp1)
@@ -379,8 +384,8 @@ percentile <- function(variable, percentiles, data,
                 # interpolate between k and k+1
                 (1 - gamma) * xpwc$x[k] + gamma * xpwc$x[kp1]
               }
-            })
-          })
+            }, FUN.VALUE=numeric(1))
+          }, FUN.VALUE=numeric(res_length))
           for (i in 1:len) {
             names(resv)[i] <- paste0("P", thesePercentiles[i])
           }
@@ -489,7 +494,7 @@ percentile <- function(variable, percentiles, data,
 
       jkSumMult <- getAttributes(data, "jkSumMultiplier")
       pctfi <- percentileGen(percentiles, pctMethod)
-      esti <- getEst(edf, variables, stat = pctfi, wgt = wgt)
+      esti <- getEst(data=edf, pvEst=variables, stat = pctfi, wgt = wgt)
       names(esti$est) <- paste0("P", percentiles)
       colnames(esti$coef) <- paste0("P", percentiles)
 
@@ -540,7 +545,7 @@ percentile <- function(variable, percentiles, data,
             # remove missings
             xpw <- xpw[!is.na(xpw$x), ]
             # order the results by x
-            xpw <- xpw[ord <- order(xpw$x), ] # keep order as ord for use in sapply later
+            xpw <- xpw[ord <- order(xpw$x), ] # keep order as ord for use in *apply later
 
             WW <- sum(xpw$w)
             nn <- nrow(xpw)
@@ -565,7 +570,7 @@ percentile <- function(variable, percentiles, data,
               if (jmax) {
                 # k + 1 (or, in short hand kp1)
                 # which.max returns the index of the first value of TRUE
-                jkrp <- sapply(seq_along(jkwc), function(jki) {
+                jkrp <- vapply(seq_along(jkwc), function(jki) {
                   # xpw has been reordered, so have to reorder
                   # edf in the same way to use it here
                   # set the bottom and top weight to 0 so the sum is still correct
@@ -598,7 +603,7 @@ percentile <- function(variable, percentiles, data,
                     # interpolate between k and k+1
                     (1 - gamma) * xpwc$x[k] + gamma * xpwc$x[kp1]
                   }
-                })
+                }, FUN.VALUE=numeric(1))
 
                 rpr <- jkrp - rp
                 # if difference rpr is very small round to 0 for DOF correctness
@@ -672,7 +677,8 @@ percentile <- function(variable, percentiles, data,
         # percentages when plausible values are present, using the jackknife
         # method" is implemented when they are present.
         belowGen <- function(cutoffs) {
-          f <- function(pv, w) {
+          f <- function(pv, w, X) {
+            # X not used
             res <- rep(NA, length(cutoffs))
             for (i in seq_along(cutoffs)) {
               below <- pv < cutoffs[i]
@@ -708,9 +714,9 @@ percentile <- function(variable, percentiles, data,
         # Taylor series method for confidence intervals
         r0 <- esti$est
         # We need the pi value, the proportion under the Pth percentile
-        mu0 <- sapply(seq_along(percentiles), function(i) {
+        mu0 <- vapply(seq_along(percentiles), function(i) {
           # get the mean of the estimates across pvs
-          mean(sapply(seq_along(variables), function(vari) {
+          mean(vapply(seq_along(variables), function(vari) {
             # for an individual PV, get the estimated fraction below r0[i]
             vv <- variables[vari]
             xpw <- data.frame(
@@ -720,8 +726,8 @@ percentile <- function(variable, percentiles, data,
             xpw <- xpw[!is.na(xpw$x), ]
             xpw$below <- (xpw$x <= r0[i])
             s0 <- sum(xpw$w[xpw$below]) / sum(xpw$w)
-          }))
-        })
+          },FUN.VALUE=numeric(1)))
+        }, FUN.VALUE=numeric(1))
 
         # there are two states here, above and below the percentile
         # so the D matrix and Z matrix are 1x1s
@@ -734,7 +740,7 @@ percentile <- function(variable, percentiles, data,
         D <- 1 / sum(Ws)
 
         # calculate the pVjrr (Z) and pVimp together
-        pV <- sapply(seq_along(percentiles), function(ri) {
+        pV <- vapply(seq_along(percentiles), function(ri) {
           est <- getEstPcTy(
             data = edf,
             pvEst = variables,
@@ -746,7 +752,7 @@ percentile <- function(variable, percentiles, data,
             psuV = edf[ , getPSUVar(data, wgt)],
             stratV = edf[ , getStratumVar(data, wgt)]
           )
-        })
+        }, FUN.VALUE=list(pVjrrs=numeric(length(variables)), pVimps=numeric(length(variables))))
 
         pVjrr <- do.call(cbind, pV["pVjrrs", ])
         pVimp <- do.call(cbind, pV["pVimps", ])

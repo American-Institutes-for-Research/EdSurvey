@@ -150,12 +150,8 @@ getData <- function(data,
   dConditions <- NULL
   varNamesDefaults <- c()
   if (defaultConditions & !is.null(sdf$defaultConditions)) {
-    if (inherits(sdf, "edsurvey.data.frame")) {
-      dConditions <- sdf$defaultConditions[[1]]
-    } else {
-      dConditions <- attr(sdf, "defaultConditions")[[1]]
-    }
-    varNamesDefaults <- all.vars(dConditions)
+    dConditions <- getAttributes(sdf,"defaultConditions")
+    varNamesDefaults <- unlist(lapply(dConditions, all.vars))
   }
 
   # check if the variable names in recodes are in the data
@@ -281,7 +277,7 @@ getData <- function(data,
     names(mergeVars) <- sapply(sdf$dataList, function(dl) {
       dl$levelLabel
     })
-
+    
     # loop through dataList in reverse order to determine the highest levels that have requested variables.  mark those levels, and their required parent levels as 'TRUE'
     for (dlevel in rev(sdf$dataList)) {
       # check if the level requires to be merged either by:
@@ -454,12 +450,14 @@ getData <- function(data,
         sQuote("defaultConditionts"), " to ", dQuote("FALSE"), "."
       ))
       defaultConditions <- FALSE
+      #remove the missing default condition variable names from varnamesTotal here for further processing downstream
+      varnamesTotal <- varnamesTotal[!(varnamesTotal %in% varNamesDefaults2)]
     }
 
     # then actually apply defaultConditions
     if (defaultConditions) {
-      if (length(dConditions) > 0) {
-        r <- eval(dConditions, data)
+      for(i in seq_along(dConditions)) {
+        r <- eval(dConditions[[i]], data)
         data <- data[r, , drop = FALSE]
       }
     }
@@ -923,7 +921,7 @@ applyValueLabels <- function(data, lblList, labelDF, esdf, includeNaLabel = FALS
       data[ , vari] <- getFactorValue(lvls = lvls, lbls = lbls, dataVals = data[[vari]], factorOnly = (isTaylorVal || isPISA_IDVar), includeNaLabel = includeNaLabel)
     } # end else if(esdf$survey != "PIAAC" && all(lblVals %in% omittedLevels))
   } # end for(i in seq_along(labels)
-
+  
   return(data)
 }
 
@@ -1043,3 +1041,4 @@ isAllNumeric <- function(vals) {
   naX <- sum(is.na(valsX)) # count how many NA values after coercion
   return(naOrig == naX) # compare before/after NA counts
 }
+

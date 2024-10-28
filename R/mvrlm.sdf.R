@@ -637,12 +637,12 @@ calc.mvrlm.sdf <- function(formula,
 
     coefm0 <- t(t(coefm) - apply(coefm, 2, mean))
     B <- (1 / (nrow(coefm) - 1)) * Reduce(
-      "+", # add up the matrix results of the sapply
-      sapply(1:nrow(coefm), function(q) {
+      "+", # add up the matrix results of the lapply
+      lapply(1:nrow(coefm), function(q) {
         # within each PV set, calculate the outer product
         # (2.19 of Van Buuren)
         outer(coefm0[q, ], coefm0[q, ])
-      }, simplify = FALSE)
+      })
     )
     madeB <- TRUE
 
@@ -831,9 +831,9 @@ calc.mvrlm.sdf <- function(formula,
 
       cmyvar <- coefmat[[var]]
 
-      dof <- sapply(rownames(cmyvar), function(cn) {
+      dof <- vapply(rownames(cmyvar), function(cn) {
         DoFCorrection(varEstA = vei, varA = cn, method = "JR")
-      })
+      }, FUN.VALUE=numeric(1))
 
       coefmat[[var]]$dof <- dof
 
@@ -846,9 +846,9 @@ calc.mvrlm.sdf <- function(formula,
 
       cmyvar <- coefmat[[var]]
 
-      dof <- sapply(rownames(cmyvar), function(cn) {
+      dof <- vapply(rownames(cmyvar), function(cn) {
         DoFCorrection(varEstA = vei, varA = cn, method = "JR")
-      })
+      }, FUN.VALUE=numeric(1))
 
       coefmat[[var]]$dof <- dof
 
@@ -934,7 +934,6 @@ coef.edsurveyMvrlm <- function(object, ...) {
     colnames(object$coef),
     rownames(object$coef)
   )
-
   coef <- as.vector(t(object$coef))
   names(coef) <- apply(X = names, MARGIN = 1, FUN = function(x) {
     paste(x, collapse = "_")
@@ -949,12 +948,7 @@ coef.edsurveyMvrlmList <- function(object, ...) {
   yvar <- names(object[[1]]$coefmat)
   coeflist <- list()
   for (i in 1:object[[1]]$nDV) {
-    cat(paste0("\n", yvar[i], "\n"))
-    print(sapply(object, function(x) {
-      x$coef[ , i]
-    }))
-    cat("\n")
-    coeflist[[yvar[i]]] <- sapply(object, function(x) {
+    coeflist[[yvar[i]]] <- lapply(object, function(x) {
       x$coef[ , i]
     })
   }

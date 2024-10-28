@@ -939,9 +939,9 @@ parseSAS_FileFormat_HSB <- function(sasFile) {
   inputLinesSplit <- strsplit(inputLinesSplit, "/*", fixed = TRUE)
 
   # grab the second part after split, then split it again on the '-' to get the start and end numeric positions
-  fwfPos <- sapply(inputLinesSplit, function(x) {
+  fwfPos <- vapply(inputLinesSplit, function(x) {
     x[2]
-  })
+  }, FUN.VALUE=character(1))
   fwfPos <- strsplit(fwfPos, "-", fixed = TRUE)
 
   startPos <- as.numeric(trimws(sapply(fwfPos, function(x) {

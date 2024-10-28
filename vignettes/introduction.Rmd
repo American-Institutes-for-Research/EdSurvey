@@ -1,6 +1,6 @@
 ---
 title: "Introduction to Analyzing NCES Data Using EdSurvey"
-author: "Developed by Paul Bailey, Charles Blankenship, Eric Buehler, Ren C'deBaca, Nancy Collins, Ahmad Emad, Thomas Fink,  Huade Huo, Frank Fonseca, Julian Gerez, Sun-joo Lee, Michael Lee, Jiayi Li, Yuqi Liao, Alex Lishinski, Thanh Mai, Trang Nguyen, Emmanuel Sikali, Qingshu Xie, Sinan Yavuz, Jiao Yu, and Ting Zhang"
+author: "Developed by Paul Bailey, Charles Blankenship, Eric Buehler, Ren C'deBaca, Nancy Collins, Ahmad Emad, Thomas Fink, Huade Huo, Frank Fonseca, Julian Gerez, Sun-joo Lee, Michael Lee, Jiayi Li, Yuqi Liao, Alex Lishinski, Thanh Mai, Trang Nguyen, Emmanuel Sikali, Qingshu Xie, Sinan Yavuz, Jiao Yu, and Ting Zhang"
 date: "`r gsub(' 202',', 202', format(Sys.Date(), format='%B %d %Y'))`"
 output:
   html_document: default
@@ -11,15 +11,90 @@ vignette: |
   
 # Overview of the EdSurvey Package
   
-The `EdSurvey` package is designed to help users analyze data from the National Center for Education Statistics (NCES), including the National Assessment of Educational Progress (NAEP) datasets. Because of their scope and complexity, these datasets require special statistical methods to analyze. The `EdSurvey` package gives users functions to perform analyses that account for both complex sample survey designs and the use of plausible values.
+The `EdSurvey` package is designed to help users analyze data from the National Center for Education Statistics (NCES), including the National Assessment of Educational Progress (NAEP) datasets. Due to the scope and complexity of these datasets, special statistical methods are required for analysis. `EdSurvey` provides functions to perform analyses that account for both complex sample survey designs and the use of plausible values.
 
-The `EdSurvey` package also seamlessly takes advantage of the `LaF` package to read in data only when it is required for an analysis. Users with computers that have insufficient memory to read in the entire NAEP datasets can still do analyses without having to write special code to read in just the appropriate variables. This is all addressed directly in the `EdSurvey` package---behind the scenes and without additional work by the user.
+The `EdSurvey` package also seamlessly takes advantage of the `LaF` package to read in data only when it is required for an analysis. Users with computers that lack sufficient memory to load the entire NAEP datasets can still perform analyses without having to write special code to access only the relevant variables. This is all handled by the `EdSurvey` package behind the scenes, without requiring additional work by the user.
+
+# Brief demo
+
+First, install `EdSurvey` and its helper package `tidyEdSurvey`, which supports `tidyverse` integration.
+
+```{r, eval=FALSE}
+install.packages(c("EdSurvey", "tidyEdSurvey"))
+```
+This will also install several other packages, so the process may take a few minutes.
+
+The user can then load the EdSurvey package.
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+library("EdSurvey")
+```
+
+NCES provides the NAEP Primer, which includes demo NAEP data and is automatically downloaded with `EdSurvey`. The following line reads that in and displays relevant information about the anonymized NAEP data from the survey.
+```{r}
+naep_primer <- readNAEP(path=system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
+naep_primer
+```
+One of the subject scales is `composite`, which is a scaled score. To calculate weighted summary statistics for this score, use the EdSurvey's `summary2` function. The summary statistics are weighted by `origwt`, which is the default weight:
+```{r}
+summary2("composite", data=naep_primer)
+```
+The output shows that the weighted mean is 275.8892 and the standard deviation (`SD`) is 36.5713. 
+
+If a user is interested in parents' education levels, the `searchSDF` function can find the appropriate variable. The `searchSDF` function searches the dataset for variables that match a given string, helping the user identify relevant variables for analysis.
+
+```{r}
+searchSDF(string="parent", data=naep_primer)
+```
+The variable is `pared`, and the user can see the distribution of the variable and how it is related to test scores.
+```{r}
+edsurveyTable(composite ~ pared, data=naep_primer)
+```
+
+To simplify the analysis, the variable can be recoded into broader categories. The user can then check that the variable was recoded accordingly. Here, the categories are collapsed into "less than HS", "HS", and "any after HS".
+```{r recode pared}
+naep_primer$pared_recode <- ifelse(naep_primer$pared %in% "Did not finish H.S.", "less than HS", "unknown")
+naep_primer$pared_recode <- ifelse(naep_primer$pared %in% "Graduated H.S.", "HS", naep_primer$pared_recode)
+naep_primer$pared_recode <- ifelse(naep_primer$pared %in% "Some ed after H.S.", "any after HS", naep_primer$pared_recode)
+naep_primer$pared_recode <- ifelse(naep_primer$pared %in% "Graduated college", "any after HS", naep_primer$pared_recode)
+# the tidyEdSurvey package allows this call to with to work
+require(tidyEdSurvey)
+with(naep_primer, table(pared_recode, pared))
+```
+Once recoded, the new variable can be used in a regression. The `lm.sdf` function fits a linear model, using weights and variance estimates appropriate for the data.
+```{r use pared_recode}
+lm1 <- lm.sdf(composite ~ pared_recode, data=naep_primer)
+summary(lm1)
+```
+The summary output provides estimates of the regression coefficients, standard errors, t-values, degrees of freedom, and p-values, allowing users to assess the relationship between composite scores and parental education levels.
+
+Following the regression analysis, a Wald test can be used to determine whether the entire set of coefficients associated with `pared_recode` is statistically significant.
+```{r}
+waldTest(lm1, "pared_recode")
+```
+Two versions of the Wald test are shown here; the user can decide which is applicable to their situation. Generally, the F-test is considered valid, while the chi-square is applicable under more restrictive conditions. The p-value for the F-test is nearly zero and so was rounded to zero.
+
+## International data
+EdSurvey also supports analysis of international datasets, including those from the International Association for the Evaluation of Educational Achievement (IEA) and the Organisation for Economic Co-operation and Development (OECD). This includes studies such as the Trends in International Mathematics and Science Study (TIMSS) and the Program for International Student Assessment (PISA). Starting with TIMSS and looking at the association between parents' highest education level and math test scores in North America:
+```{r, eval=FALSE}
+downloadTIMSS("~/EdSurveyData/", years=2015)
+timss_NA15 <- readTIMSS("~/EdSurveyData/TIMSS/2015/", countries=c("usa", "can"), grade=8)
+searchSDF(c("parent", "education"), data=timss_NA15)
+edsurveyTable(data=timss_NA15, mmat ~ bsdgedup)
+```
+Now, the same analysis using PISA data:
+```{r, eval=FALSE}
+downloadPISA("~/EdSurveyData/", years=2015)
+pisa_NA15 <- readPISA("~/EdSurveyData/PISA/2015/", countries=c("usa", "can", "max"))
+searchSDF(c("parent", "education"), data=pisa_NA15)
+edsurveyTable(data=pisa_NA15, math ~ hisced)
+```
+
+EdSurvey offers many other functions, including mixed models (`mixed.sdf`), gap analysis (`gap`), correlation analysis (`cor.sdf`), achievement level analysis (`achievementLevels`), direct estimation (`mml.sdf`), percentiles (`percentile`), logit/probit analysis (`logit.sdf`/`probit.sdf`), and quantile regression (`rq.sdf`).
 
 # Book
-
-Please see our book, [Analyzing NCES Data Using EdSurvey: A User's Guide](https://naep-research.airprojects.org/portals/0/edsurvey_a_users_guide/_book/index.html). Please refer to the book for further information about installing, using, and understanding the statistical methodology in EdSurvey.
+For further information about installing, using, and understanding the statistical methodology in EdSurvey, please see [Analyzing NCES Data Using EdSurvey: A User's Guide](https://naep-research.airprojects.org/portals/0/edsurvey_a_users_guide/_book/index.html).
  
-# Journal Publications
+# Publications
 
-Bailey, P., Lee, M., Nguyen, T., & Zhang, T. (2020). [*Using EdSurvey to Analyse PIAAC Data*](https://link.springer.com/content/pdf/10.1007/978-3-030-47515-4_9.pdf). In *Large-Scale Cognitive Assessment* (pp. 209-237). Springer, Cham.
+Bailey, P., Lee, M., Nguyen, T., & Zhang, T. (2020). Using EdSurvey to Analyse PIAAC Data. In Maehler, D., & Rammstedt, B. (Eds.), *Large-Scale Cognitive Assessment* (pp. 209-237). Springer, Cham. [https://link.springer.com/content/pdf/10.1007/978-3-030-47515-4_9.pdf] (https://link.springer.com/content/pdf/10.1007/978-3-030-47515-4_9.pdf)
 

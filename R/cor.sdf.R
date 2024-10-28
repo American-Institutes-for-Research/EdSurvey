@@ -340,7 +340,7 @@ cor.sdf <- function(x,
   variables <- c()
   # this line tests if either is longer than zero
   if (length(levels(lsdf[[x]])) || length(levels(lsdf[[y]])) > 0) {
-    nums <- !sapply(lsdf, is.numeric)
+    nums <- !vapply(lsdf, is.numeric, FUN.VALUE=logical(1))
     variables <- subset(names(nums), nums %in% TRUE)
     for (i in unique(variables)) {
       varn <- c()
@@ -414,7 +414,7 @@ cor.sdf <- function(x,
     npv <- min(npvx, npvy)
   }
   # the results, across the PVs (vector of length PV)
-  diagVar <- sapply(1:npv, function(i) {
+  diagVar <- unlist(lapply(1:npv, function(i) {
     weightedCorr(xvarlsdf[ , min(i, npvx)],
       yvarlsdf[ , min(i, npvy)],
       method = pm,
@@ -422,7 +422,7 @@ cor.sdf <- function(x,
       fast = TRUE,
       ML = FALSE
     )
-  })
+  }))
 
   # for Pearson we will do a forward transform and inverse transform
   # to keep the code simple we simply set the transofmr an intervse transform
@@ -446,7 +446,7 @@ cor.sdf <- function(x,
 
   # rerun with JK replicate weights
   for (i in 1:jrrIMax) {
-    diagVarWgt[ , i] <- sapply(length(wgts):1, function(jki) {
+    diagVarWgt[ , i] <- vapply(length(wgts):1, function(jki) {
       trans(weightedCorr(xvarlsdf[posFilter[ , jki], min(i, npvx)],
         yvarlsdf[posFilter[ , jki], min(i, npvy)],
         method = pm,
@@ -454,7 +454,7 @@ cor.sdf <- function(x,
         fast = TRUE,
         ML = FALSE
       )) - ft[i]
-    })
+    }, FUN.VALUE=numeric(1))
   }
 
   # see documentation for defintion of Vjrr, Vimp, M

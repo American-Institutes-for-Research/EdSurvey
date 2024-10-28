@@ -22,7 +22,7 @@
 cbind.light.edsurvey.data.frame <- function(..., deparse.level=1) {
   args <- list(...)
   atrs <- NULL
-  if (all(sapply(args, function(x) { !inherits(x, "light.edsurvey.data.frame") }))) {
+  if (all(unlist(lapply(args, function(x) { !inherits(x, "light.edsurvey.data.frame") })))) {
     return(do.call(base::cbind, c(args, list(deparse.level = deparse.level))))
   }
   for (x in list(...)) {

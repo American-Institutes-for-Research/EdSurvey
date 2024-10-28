@@ -76,7 +76,9 @@ print.summary.mml.sdf <- function(x, use_es_round=getOption("EdSurvey_round_outp
   } else {
     cat(paste0("Convergence = ", paste(x$Summary$Convergence, collapse = ", "), "\n"))
   }
-  cat(paste0("Iterations = ", paste(x$Summary$iterations, collapse = ", "), "\n"))
+  if("iterations" %in% x$Summary && !is.na(x$Summary$iterations)) {
+    cat(paste0("Iterations = ", paste(x$Summary$iterations, collapse = ", "), "\n"))
+  }
   if ("LogLik" %in% names(x$Summary)) {
     cat(paste0("LogLike = ", paste(round(x$Summary$LogLik, 2), collapse = ", "), "\n"))
   }

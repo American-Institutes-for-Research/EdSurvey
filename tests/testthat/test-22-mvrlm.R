@@ -149,13 +149,12 @@ test_that("wald test works", {
   mvr <- mvrlm.sdf(algebra | geometry ~ dsex | m072801, data = sdf, jrrIMax = 5, returnVarEstInputs = TRUE)
   hypothesis <- c("geometry_dsexFemale = 0", "algebra_dsexFemale = 0")
 
-  test1 <- linearHypothesis.edsurveyMvrlm(mvr, hypothesis = hypothesis, test = "F")
-  test2 <- linearHypothesis.edsurveyMvrlm(mvr, hypothesis = hypothesis, test = "Chisq")
+  test1 <- linearHypothesis(mvr, hypothesis = hypothesis, test = "F")
+  test2 <- linearHypothesis(mvr, hypothesis = hypothesis, test = "Chisq")
 
   waldtestF <- c(
-    "Linear hypothesis test",
     "",
-    "Hypothesis:",
+    "Linear hypothesis test:",
     "geometry_dsexFemale = 0",
     "algebra_dsexFemale = 0",
     "",
@@ -170,9 +169,8 @@ test_that("wald test works", {
     "0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1"
   )
   waldtestChisq <- c(
-    "Linear hypothesis test",
     "",
-    "Hypothesis:",
+    "Linear hypothesis test:",
     "geometry_dsexFemale = 0",
     "algebra_dsexFemale = 0",
     "",

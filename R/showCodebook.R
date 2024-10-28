@@ -36,7 +36,7 @@ showCodebook <- function(data, fileFormat = NULL, labelLevels = FALSE, includeRe
   }
 
   # include only the data fileFormats that exist in the data connection
-  dataList <- dataList[!sapply(dataList, is.null)]
+  dataList <- dataList[!vapply(dataList, is.null, FUN.VALUE=logical(1))]
 
   # create an empty data.frame (vars) that will contain our variable information
   vars <- data.frame()
@@ -102,18 +102,18 @@ showCodebook <- function(data, fileFormat = NULL, labelLevels = FALSE, includeRe
     # if label levels aren't returned AND output should include recodes, parse out the "^" and the value level and replace it with "; "
     if (all(includeRecodes & !labelLevels)) {
       varsData$labelValueRecodes <- as.character(lapply(strsplit(varsData$labelValueRecodes, "^", fixed = TRUE), function(x) {
-        paste(sapply(strsplit(x, "\\="), function(z) {
+        paste(vapply(strsplit(x, "\\="), function(z) {
           z[2]
-        }), collapse = "; ")
+        }, FUN.VALUE=character(1) ), collapse = "; ")
       }))
     }
 
     # if label levels aren't returned, parse out the "^" and the value level and replace it with "; "
     if (!labelLevels) {
       varsData$labelValues <- as.character(lapply(strsplit(varsData$labelValues, "^", fixed = TRUE), function(x) {
-        paste(sapply(strsplit(x, "=", fixed = TRUE), function(z) {
+        paste(vapply(strsplit(x, "=", fixed = TRUE), function(z) {
           z[2]
-        }), collapse = "; ")
+        }, FUN.VALUE=character(1)), collapse = "; ")
       }))
     }
 

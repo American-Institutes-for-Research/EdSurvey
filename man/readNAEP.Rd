@@ -43,7 +43,7 @@ the parent directory for the corresponding \code{.xml} file for the specified \c
 An \code{edsurvey.data.frame} for a NAEP data file.
 }
 \description{
-Opens a connection to a Main NAEP, or Long-Term Trend NAEP data file residing
+Opens a connection to a NAEP data file residing
              on the disk. Returns an \code{edsurvey.data.frame} with
              information about the file and data.
 }
@@ -55,8 +55,19 @@ The \code{readNAEP} function includes both scaled scores and theta scores, with 
 When a NAEP administration includes a linking error variable those variables are included and end in \code{_linking}.
 When present, simply use the \code{_linking} version of a variable to get a standard error estimate that includes linking error.
 
-This function supports both the Main NAEP data files, and Long-Term Trend NAEP data files.
-A table outlining the differences can be found on the \href{https://nces.ed.gov/nationsreportcard/about/ltt_main_diff.aspx}{NAEP Nations Report Card website}.
+This function supports the following NAEP data products:
+\itemize{
+  \item Main NAEP
+  \item Long-Term Trend NAEP (LTT)
+  \item Monthly School Survey Linking Study (MSS)
+  \item COVID Data Hub School Linking Study
+  \item School and Teacher Questionnaire Special Study (STQ)
+}
+
+A table outlining the differences between the Main NAEP and Long-Term Trend (LTT) datasets can be found on the \href{https://nces.ed.gov/nationsreportcard/about/ltt_main_diff.aspx}{NAEP Nations Report Card website}.
+
+For the School and Teacher Questionnaire Special Study (STQ), the School level data can be analyzed independently, or merged together with the Teacher level data.  The chosen variables will dynamically link the data when applicable.
+Some School records may not have any Teacher records and thus the \code{dimensions} of the resulting \code{edsurvey.data.frame} may not match the total teacher record count.
 }
 \examples{
 \dontrun{

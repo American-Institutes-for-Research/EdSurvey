@@ -62,6 +62,8 @@ Authors:
   \item Eric Buehler (\href{https://orcid.org/0009-0004-6354-2015}{ORCID})
   \item Sun-joo Lee
   \item Blue Webb (\href{https://orcid.org/0009-0004-4080-9864}{ORCID})
+  \item Thomas Fink (\href{https://orcid.org/0009-0003-9308-2833}{ORCID})
+  \item Sinan Yavuz (\href{https://orcid.org/0000-0003-3131-7820}{ORCID})
 }
 
 Other contributors:

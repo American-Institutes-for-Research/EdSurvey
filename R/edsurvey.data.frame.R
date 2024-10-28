@@ -527,7 +527,7 @@ subset.edsurvey.data.frame <- function(x, subset, ..., inside = FALSE) {
   if (!missing(i)) {
     i <- eval(i)
   }
-  if (missing(j)) {
+  if (missing(j) || length(j) > 1) {
     stop("Assignmeht by row is not allowed on an edsurvey.data.frame. Try assigning a single column at a time.")
   }
   j <- eval(j)
@@ -590,7 +590,7 @@ subset.edsurvey.data.frame <- function(x, subset, ..., inside = FALSE) {
     j <- colnames(x)[j]
   }
   
-  if (is.na(j) || is.null(j)) {
+  if (any(is.na(j) | is.null(j))) {
     stop("Column index out of range, or column name(s) not found.")
   }
   suppressWarnings(

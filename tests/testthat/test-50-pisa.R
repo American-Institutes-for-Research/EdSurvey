@@ -16,8 +16,6 @@ if (!exists("forceCacheUpdate")) {
   forceCacheUpdate <- FALSE
 }
 
-# Test =================
-
 # 1. Check data read-in
 test_that("PISA data reads in correctly", {
   expect_silent(downloadPISA(root = edsurveyHome, year = c(2000, 2003, 2006, 2009, 2012, 2015, 2018), cache = FALSE, verbose = FALSE))

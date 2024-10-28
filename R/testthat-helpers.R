@@ -6,8 +6,10 @@
 # numbers will have differing values between computer architectures and systems and are not to be compared
 # e.g. 'Iterations = 11' will be returned for a Windows X64 call, but on MacOS M1 call it will a value of 'Iterations = 49'
 dropIterations <- function(capturedText) {
-  iterationRegex <- "iterations.*[=].*\\d{1, }"
+  iterationRegex <- "iterations.*[=].*\\d{0, }"
   idx <- which(grepl(iterationRegex, capturedText, ignore.case = TRUE), arr.ind = TRUE)
-
-  return(capturedText[-idx])
+  if(length(idx) > 0) {
+    capturedText <- capturedText[-idx]
+  }
+  return(capturedText)
 }

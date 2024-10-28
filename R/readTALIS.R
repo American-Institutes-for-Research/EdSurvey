@@ -18,7 +18,7 @@
 #' @param verbose a logical value that will determine if you want verbose output while the function is running to indicate the progress.
 #'        Defaults to \code{TRUE}.
 #'
-#' @details Reads in the unzipped files downloaded from the TALIS database using the OECD Repository (\url{https://www.oecd.org/education/talis/}).
+#' @details Reads in the unzipped files downloaded from the TALIS database using the OECD Repository (\url{https://www.oecd.org/education/talis.html}).
 #'        If \code{dataLevel} is set to be \code{teacher}, it treats the teacher data file as the main dataset, and merges school data into teacher data for
 #'        each country automatically. Use this option if wanting to analyze just teacher variables, or both teacher and school level variables together.
 #'        If \code{dataLevel} is set \code{school}, it uses only the school data file (no teacher data will be available).

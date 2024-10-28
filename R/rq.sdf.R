@@ -364,7 +364,7 @@ calc.rq.sdf <- function(formula,
   madeB <- FALSE
   X_lmi <- model.matrix(frm, edf)
   # used to estimate a regression at a particular y and weight. X is fixed.
-  stat_rq <- function(pv, w) {
+  stat_rq <- function(pv, w, X) { # X is unused
     lmi <- rq.wfit(x = X_lmi, y = pv, weights = w, tau = tau, ...)
     coi <- coef(lmi)
     # rho from bottom of second column of 1296 in Kronker and Machado 1999
@@ -480,12 +480,12 @@ calc.rq.sdf <- function(formula,
     # imputaiton variance / variance due to uncertaintly about PVs
     # calculate van Buuren B
     B <- (1 / (M - 1)) * Reduce(
-      "+", # add up the matrix results of the sapply
-      sapply(1:nrow(coefm), function(q) {
+      "+", # add up the matrix results of the lapply
+      lapply(1:nrow(coefm), function(q) {
         # within each PV set, calculate the outer product
         # (2.19 of Van Buuren)
         outer(coefm0[q, ], coefm0[q, ])
-      }, simplify = FALSE)
+      })
     )
     madeB <- TRUE
 
@@ -537,13 +537,13 @@ calc.rq.sdf <- function(formula,
   fitted1 <- as.vector(X %*% coef)
   if (linkingError) {
     yve <- yvars[grep("_est", yvars)]
-    Y <- sapply(seq_along(yve), function(yi) {
+    Y <- vapply(seq_along(yve), function(yi) {
       as.vector(edf[ , yve[yi]])
-    }, simplify = TRUE)
+    }, FUN.VALUE=numeric(nrow(edf)))
   } else {
-    Y <- sapply(seq_along(yvars), function(yi) {
+    Y <- vapply(seq_along(yvars), function(yi) {
       as.vector(edf[ , yvars[yi]])
-    }, simplify = TRUE)
+    }, FUN.VALUE=numeric(nrow(edf)))
   }
   resid1 <- Y - fitted1
   colnames(resid1) <- NULL
@@ -579,9 +579,9 @@ calc.rq.sdf <- function(formula,
     varEstInputs$JK$value[which(abs(varEstInputs$JK$value) < (sqrt(.Machine$double.eps) * sqrt(nrow(varEstInputs$JK))))] <- 0
   }
   if (varMethod == "j") {
-    coefmat$dof <- sapply(names(coef), function(cn) {
+    coefmat$dof <- vapply(names(coef), function(cn) {
       DoFCorrection(varEstA = varEstInputs, varA = cn, method = "JR")
-    })
+    }, FUN.VALUE=numeric(1))
   } else {
     # error message
     stop("Quantile Regression requires Jackknife as the variance estimation method.")
@@ -739,9 +739,9 @@ coef.edsurveyRq <- function(object, ...) {
 #' @method coef edsurveyRqList
 #' @export
 coef.edsurveyRqList <- function(object, ...) {
-  sapply(object, function(li) {
+  vapply(object, function(li) {
     li$coef
-  })
+  }, FUN.VALEU=numeric(length(object[[1]]$coef)))
 }
 
 #' @method vcov edsurveyRq

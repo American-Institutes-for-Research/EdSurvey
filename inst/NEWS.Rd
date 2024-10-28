@@ -1,6 +1,21 @@
 \name{NEWS}
 \title{NEWS for EdSurvey}
 
+\section{Changes in version 4.0.8}{
+  \subsection{DATA UPDATES}{
+    \itemize{
+      \item \code{lm.sdf} and \code{glm.sdf} now allow users to put plausible values on the right side of the regression equation.
+      \item The coefficient of determination formula was updated to apply Fisher Z-transformation and aggregation of $R^2$ values. This causes a slight difference in the $R^2$ estimates compared to earlier versions.
+      \item \code{readNAEP} now supports \code{mml.sdf} for more subjects (e.g., NAEP Science) when the xml file does not specify a composite but there is one.
+    }
+  }
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item \code{readICILS} now works properly for more 2023 data by readin in replicate weights 1 to 9 which were being skipped.
+    }
+  }
+}
+
 \section{Changes in version 4.0.7}{
   \subsection{UPDATES}{
     \itemize{
@@ -10,11 +25,13 @@
         \item NAEP long-term trend data up to 2023
         \item the 2022 Monthly School Survey (MSS) Linking Study
         \item the 2021 School and Teacher Questionnaire Special Study.
+
       }
     }
   }
   \subsection{BUG FIXES}{
     \itemize{
+
       \item \code{[[<-} assignment did not previously work with an \code{edsurvey.data.frame} object. This causes issues when defining new columns with a few possible methods that resulted in newly defined columns not being returned by \code{getData}. Thanks to Tao Jiang for identifying this bug.
     }
   }

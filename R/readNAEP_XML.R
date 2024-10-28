@@ -151,7 +151,7 @@ parseNAEP_XML_ToEdSurveyFileFormat <- function(fileContents) {
   varDF <- fileContents$DataFields$DataFields
   wgtVar <- varDF$fieldname[trimws(tolower(varDF$designrole))=="w"]
   
-  ff$weights <- grepl("^(a|n|v){0,1}(origwt)$", ff$variableName, ignore.case = TRUE) #T/F if variable is a weight
+  ff$weights <- grepl("^(a|n|v){0,1}(origwt)$", ff$variableName, ignore.case = TRUE) | ff$variableName %in% wgtVar #T/F if variable is a weight
   
   #only do this check if the above does not locate any weights, this will be only applicable for old NAEP files
   if (!any(ff$weights)){
@@ -556,18 +556,56 @@ parseNAEP_XML_Groups <- function(groups) {
 # 5: ScoreDict
 # 6: ScoreCard
 parseNAEP_XML_mmlIRT_Params <- function(fileContents, scoreDict, fileFormat_pvvars) {
-  compositeRegex <- "composite"
+  
+  compositeRegex <- "(composite|composite_ap|overall|scale_compos)"
 
   testData <- parseNAEP_XML_IRT_TestData(fileContents, fileFormat_pvvars)
 
-  pvvarsNotInScales <- fileFormat_pvvars[!fileFormat_pvvars %in% testData$subtest]
-  hasComposite <- grepl(compositeRegex, pvvarsNotInScales, ignore.case = TRUE)
-
+  pvvarsNotInScales <- character(0)
+  for(pv in fileFormat_pvvars){
+    if(!any(grepl(pv, testData$subtest, ignore.case = TRUE))){
+      pvvarsNotInScales <- c(pvvarsNotInScales, pv)
+    }
+  }
+  #composite scales will be a plausible value, but not be included in the subtests (since the composite is a combination of all subtests)
+  #the composite will be added to the 'tests' column of the test
+  if(length(pvvarsNotInScales) > 0){
+    hasComposite <- grepl(compositeRegex, pvvarsNotInScales, ignore.case = TRUE)
+  }else{
+    hasComposite <- FALSE
+  }
+  
+  
+  if (hasComposite && (length(pvvarsNotInScales) > 1)){
+    warning(paste0("Multiple Composite Plausible Values found! Only first one will be used."))
+    pvvarsNotInScales <- pvvarsNotInScales[1]
+  }
 
   dichotParamTab <- parseNAEP_XML_IRT_DichotParam(fileContents, fileFormat_pvvars)
   polyParamTab <- parseNAEP_XML_IRT_PolyParam(fileContents, fileFormat_pvvars)
   adjustedData <- parseNAEP_XML_IRT_AdjustedData(fileContents) # returns formatted empty data.frame with matching columns
 
+  if (hasComposite) {
+    if(nrow(testData) > 0){
+      testData$test <- pvvarsNotInScales
+    }
+    if(nrow(dichotParamTab) > 0){
+      dichotParamTab$test <- pvvarsNotInScales
+    }
+    if(nrow(polyParamTab) > 0){
+      polyParamTab$test <- pvvarsNotInScales
+    }
+  } else { #blank entries
+    if(nrow(testData) > 0){
+      testData$test <- NA
+    }
+    if(nrow(dichotParamTab) > 0){
+      dichotParamTab$test <- NA
+    }
+    if(nrow(polyParamTab) > 0){
+      polyParamTab$test <- NA
+    }
+  }
   # score dict required for processing score card
   scoreCard <- parseNAEP_XML_IRT_ScoreCard(fileContents, scoreDict)
 

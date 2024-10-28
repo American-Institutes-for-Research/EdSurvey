@@ -43,11 +43,11 @@ rename.sdf <- function(x,
     stratumVarList <- getAttributes(x, "stratumVar", errorCheck = FALSE)
     defaultTaylorVar <- TRUE
     if (is.null(psuVarList) || psuVarList == "") {
-      psuVarList <- sapply(weights, function(w) w$psuVar)
+      psuVarList <- vapply(weights, function(w) w$psuVar, FUN.VALUE=character(1))
       defaultTaylorVar <- FALSE
     }
     if (is.null(stratumVarList) || stratumVarList == "") {
-      stratumVarList <- sapply(weights, function(w) w$stratumVar)
+      stratumVarList <- vapply(weights, function(w) w$stratumVar, FUN.VALUE=character(1))
       defaultTaylorVar <- FALSE
     }
     if (inherits(x, "edsurvey.data.frame")) {

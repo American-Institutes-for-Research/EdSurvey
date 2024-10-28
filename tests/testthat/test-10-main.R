@@ -55,6 +55,17 @@ test_that("[, [[, [<-, [[<- edsurvey.data.frame", {
   
   expect_error(sdf2[[9999999]] <- testVal, "Column index out of range.*")
   expect_error(sdf2[["NOT A COLUMN ZZZ"]] <- testVal, "Cannot find.*as a column name or list item in this object")
+  
+  #new tests for vector assignment and retrieval
+  sdf$testVar <- paste0(sdf$dsex, "-", sdf$iep)
+  testDF <- sdf[ , c("dsex", "iep", "testVar")]
+  
+  for(i in seq_along(testDF)){
+    sdf2[ , colnames(testDF[i])] <- testDF[i]
+  }
+  
+  expect_error(sdf[ , c("dsex", "iep", "testVar")] <- testDF, "Try assigning a single column at a time")
+  expect_equal(sdf[ , c("dsex", "iep", "testVar")], sdf2[ , c("dsex", "iep", "testVar")], check.attributes = FALSE)
 })
 
 context("$ assign")
@@ -901,15 +912,21 @@ context("glm")
 test_that("glm", {
   skip_on_cran()
   # data to test against
-  logitDat <- getData(data = sdf, varnames = c("iep", "b017451", "dsex", "b013801", "origwt", "composite", "geometry"), dropOmittedLevels = FALSE, addAttributes = TRUE)
+  logitDat <- getData(data = sdf, varnames = c("iep", "b017451", "dsex", "b013801", "origwt", "composite", "geometry", "algebra"), dropOmittedLevels = FALSE, addAttributes = TRUE)
 
   # test logit with no PVs
   logit0 <- logit.sdf(I(iep %in% "Yes") ~ dsex + b013801, data = sdf)
   # run just coef
-  logitDat0 <- getData(data = logitDat, varnames = c("iep", "dsex", "b013801", "origwt"), dropOmittedLevels = TRUE)
+  logitDat0 <- getData(data = logitDat, varnames = c("iep", "dsex", "b013801", "origwt", "composite", "geometry", "algebra"), dropOmittedLevels = TRUE)
   logitDat0$iepY <- ifelse(logitDat0$iep %in% "Yes", 1, 0)
   suppressWarnings(ccoef <- coef(glm.sdf(iepY ~ dsex + b013801, data = logitDat0, weightVar = "origwt", family = binomial(link = "logit"))))
   expect_equal(coef(logit0), ccoef)
+
+  # test plausible values on the right hand side
+  glma <- glm.sdf(iepY ~ composite + dsex + b013801, data = logitDat0, weightVar = "origwt", family = binomial(link = "logit"))
+  expect_is(glma, "edsurveyGlm")
+  glmb <- glm.sdf(iepY ~ geometry + algebra, data = logitDat0, weightVar = "origwt", family = binomial(link = "logit"))
+  expect_is(glmb, "edsurveyGlm")
 
   logit1 <- logit.sdf(I(composite > 300) ~ dsex + b013801, data = sdf)
   logitDat1 <- getData(data = logitDat, varnames = c("composite", "dsex", "b013801", "origwt"), dropOmittedLevels = TRUE)

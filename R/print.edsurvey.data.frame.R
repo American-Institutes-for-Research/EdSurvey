@@ -99,7 +99,7 @@ print.edsurvey.data.frame <- function(x, printColnames = FALSE, use_es_round=get
       eout("\nAchievement Levels:\n")
       eout(paste0(names(al)[ali], ": \n"))
       if (length(al[[ali]]) == 0) {
-        eout("  Achievement levels for this subject is not defined this year. \n")
+        eout("  Achievement levels for this subject are not defined. \n")
       } else {
         noms <- names(al[[ali]])
         for (i in seq_along(al[[ali]])) {

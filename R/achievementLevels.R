@@ -224,7 +224,7 @@ calAL <- function(achievementVars = NULL,
 
   # Check to see only one variable in all the supplied variables has plausible values
   vars <- unique(c(achievementVars, aggregateBy))
-  n.pvs <- sum(sapply(vars, FUN = function(x) hasPlausibleValue(x, data)))
+  n.pvs <- sum(unlist(lapply(vars, FUN = function(x) hasPlausibleValue(x, data))))
 
   # Determine if weight supplied, otherwise use default weight
   if (is.null(weightVar)) {
@@ -235,21 +235,22 @@ calAL <- function(achievementVars = NULL,
   assertArgument(wgt, data)
 
   # Get yvar, if no yvar is specified
-  has.pv <- sum(sapply(vars, FUN = function(x) hasPlausibleValue(x, data)))
+  has.pv <- sum(unlist(lapply(vars, FUN = function(x) hasPlausibleValue(x, data))))
 
   if (has.pv == 0) {
     achievementVars <- attributes(getAttributes(data, "pvvars"))$default
     vars <- c(vars, achievementVars)
   }
-  yvar <- as.list(vars[sapply(vars, FUN = function(x) hasPlausibleValue(x, data))])
+  yvar <- as.list(vars[unlist(lapply(vars, FUN = function(x) hasPlausibleValue(x, data)))])
   assertArgument(yvar)
-  achievementVarsNoPV <- vars[sapply(vars, FUN = function(x) !hasPlausibleValue(x, data))]
-  aggregateByNoPV <- unlist(sapply(aggregateBy, function(x) {
+  achievementVarsNoPV <- vars[unlist(lapply(vars, FUN = function(x) !hasPlausibleValue(x, data)))]
+  aggregateByNoPV <- unlist(lapply(aggregateBy, function(x) {
     if (hasPlausibleValue(x, data)) {
       return("Level")
     }
     return(x)
   }))
+  names(aggregateByNoPV) <- aggregateBy
 
   # with yvar in hand check for linking error
   linkingError <- detectLinkingError(data, yvar)
@@ -270,7 +271,7 @@ calAL <- function(achievementVars = NULL,
       getPlausibleValue(x, data)
     })
   }
-  jrrIMax <- min(jrrIMax, sapply(pvs, length))
+  jrrIMax <- min(jrrIMax, unlist(lapply(pvs, length)))
 
   getDataVarNames <- c(vars, wgt)
   tryCatch(getDataVarNames <- c(getDataVarNames, PSUStratumNeeded(returnNumberOfPSU, data)),
@@ -360,7 +361,7 @@ calAL <- function(achievementVars = NULL,
   jkWeights <- getWeightJkReplicates(wgt, data)
 
   # Gather information about the call.
-  npv <- min(sapply(pvs, length))
+  npv <- min(unlist(lapply(pvs, length)))
   callVars <- list(
     achievementVars = achievementVars,
     aggregateBy = aggregateBy,
@@ -372,8 +373,8 @@ calAL <- function(achievementVars = NULL,
     njk = length(jkWeights)
   )
   # Show levels of achievement Vars
-  levelsOfEdfDT <- sapply(edfDT, levels)
-  levelsOfEdfDT[sapply(levelsOfEdfDT, is.null)] <- NULL
+  levelsOfEdfDT <- unlist(lapply(edfDT, levels))
+  levelsOfEdfDT[unlist(lapply(levelsOfEdfDT, is.null))] <- NULL
   levelsOfEdfDTGrid <- expand.grid(levelsOfEdfDT)
   levelsOfEdfDTGrid <- levelsOfEdfDTGrid[ , intersect(unique(c(aggregateByNoPV, colnames(levelsOfEdfDTGrid))), colnames(levelsOfEdfDTGrid)), drop = FALSE]
   # Calculate discrete achievement levels
@@ -389,7 +390,7 @@ calAL <- function(achievementVars = NULL,
   })
 
   calculateALStatF <- function(achievementVars, data, aggregateBy, cum = FALSE) {
-    f <- function(pv, w, short = TRUE) {
+    f <- function(pv, w, X, short = TRUE) { # X is unused and NULL
       # calculate overall sum of weights
       # eval requested by data.table, unique because some variables will be in both achievementVars and aggregateBy
       aggregateBy2 <- aggregateBy

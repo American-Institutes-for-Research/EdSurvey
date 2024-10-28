@@ -27,7 +27,7 @@ downloadPIAAC <- function(root, cycle = 1, cache = FALSE, verbose = TRUE) {
   root <- normalizePath(root)
   root <- gsub("/$", "", root)
   dirname <- file.path(root, "PIAAC")
-
+  
   if (!dir.exists(dirname)) {
     dir.create(dirname)
   }
@@ -35,7 +35,7 @@ downloadPIAAC <- function(root, cycle = 1, cache = FALSE, verbose = TRUE) {
   if (!dir.exists(yroot)) {
     dir.create(yroot)
   }
-
+  
   if (cycle == 1) {
     data_files <- c(
       "/piaac/puf-data/CSV/prgautp1.csv", "/piaac/puf-data/CSV/prgbelp1.csv",
@@ -58,7 +58,7 @@ downloadPIAAC <- function(root, cycle = 1, cache = FALSE, verbose = TRUE) {
       "/content/dam/oecd/en/about/programmes/edu/piaac/data-materials/CSV-prgusap1-Combined-2012-2014-U.S-International-PUF.zip", "/piaac/puf-data/CSV/Prgusap1_2017.csv"
     )
   }
-
+  
   url0 <- "https://webfs.oecd.org"
   codebook <- "https://www.oecd.org/content/dam/oecd/en/about/programmes/edu/piaac/data-materials/International-Codebook-PIAAC-Public-use-File-Variables-and-Values_Feb2023.xlsx"
   for (f in data_files) {
@@ -85,16 +85,16 @@ downloadPIAAC <- function(root, cycle = 1, cache = FALSE, verbose = TRUE) {
       cat(paste0("Found downloaded cycle ", cycle, " PIAAC codebook file ", fn, ".\n"))
     }
   }
-
+  
   test <- tryCatch(read_excel(file.path(yroot, fn), sheet = 1, progress = FALSE),
-    error = function(cond) {
-      cache <<- FALSE
-      cat(paste0("The downloaded codebook file is corrupt. You need to manually download the codebook at the given link: ", sQuote(codebook), " to the folder ", sQuote(yroot), ".\n"))
-      nav <- readline(prompt = "Please enter 'Y' if you wish to launch this URL in your browser: ")
-      if (tolower(trimws(nav)) == "y") {
-        browseURL(codebook)
-      }
-    }
+                   error = function(cond) {
+                     cache <<- FALSE
+                     cat(paste0("The downloaded codebook file is corrupt. You need to manually download the codebook at the given link: ", sQuote(codebook), " to the folder ", sQuote(yroot), ".\n"))
+                     nav <- readline(prompt = "Please enter 'Y' if you wish to launch this URL in your browser: ")
+                     if (tolower(trimws(nav)) == "y") {
+                       browseURL(codebook)
+                     }
+                   }
   )
   if (cache) {
     notUsed <- readPIAAC(yroot, countries = "*", verbose = verbose)
