@@ -29,6 +29,12 @@ The user can then load the EdSurvey package.
 library("EdSurvey")
 ```
 
+Now we will do two more things, first load `tidyEdSurvey` to make some data management a bit easier. Second, we'll turn on the default rounding.
+```{r}
+require(tidyEdSurvey)
+options(EdSurvey_round_output = TRUE)
+```
+
 NCES provides the NAEP Primer, which includes demo NAEP data and is automatically downloaded with `EdSurvey`. The following line reads that in and displays relevant information about the anonymized NAEP data from the survey.
 ```{r}
 naep_primer <- readNAEP(path=system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))

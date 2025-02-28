@@ -1,8 +1,12 @@
 ## ----eval=FALSE---------------------------------------------------------------
-#  install.packages(c("EdSurvey", "tidyEdSurvey"))
+# install.packages(c("EdSurvey", "tidyEdSurvey"))
 
 ## ----echo=FALSE,warning=FALSE,message=FALSE-----------------------------------
 library("EdSurvey")
+
+## -----------------------------------------------------------------------------
+require(tidyEdSurvey)
+options(EdSurvey_round_output = TRUE)
 
 ## -----------------------------------------------------------------------------
 naep_primer <- readNAEP(path=system.file("extdata/data", "M36NT2PM.dat", package = "NAEPprimer"))
@@ -34,14 +38,14 @@ summary(lm1)
 waldTest(lm1, "pared_recode")
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  downloadTIMSS("~/EdSurveyData/", years=2015)
-#  timss_NA15 <- readTIMSS("~/EdSurveyData/TIMSS/2015/", countries=c("usa", "can"), grade=8)
-#  searchSDF(c("parent", "education"), data=timss_NA15)
-#  edsurveyTable(data=timss_NA15, mmat ~ bsdgedup)
+# downloadTIMSS("~/EdSurveyData/", years=2015)
+# timss_NA15 <- readTIMSS("~/EdSurveyData/TIMSS/2015/", countries=c("usa", "can"), grade=8)
+# searchSDF(c("parent", "education"), data=timss_NA15)
+# edsurveyTable(data=timss_NA15, mmat ~ bsdgedup)
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  downloadPISA("~/EdSurveyData/", years=2015)
-#  pisa_NA15 <- readPISA("~/EdSurveyData/PISA/2015/", countries=c("usa", "can", "max"))
-#  searchSDF(c("parent", "education"), data=pisa_NA15)
-#  edsurveyTable(data=pisa_NA15, math ~ hisced)
+# downloadPISA("~/EdSurveyData/", years=2015)
+# pisa_NA15 <- readPISA("~/EdSurveyData/PISA/2015/", countries=c("usa", "can", "max"))
+# searchSDF(c("parent", "education"), data=pisa_NA15)
+# edsurveyTable(data=pisa_NA15, math ~ hisced)
 

@@ -11,7 +11,7 @@
 
 <meta name="author" content="Developed by Paul Bailey, Charles Blankenship, Eric Buehler, Ren C’deBaca, Nancy Collins, Ahmad Emad, Thomas Fink, Huade Huo, Frank Fonseca, Julian Gerez, Sun-joo Lee, Michael Lee, Jiayi Li, Yuqi Liao, Alex Lishinski, Thanh Mai, Trang Nguyen, Emmanuel Sikali, Qingshu Xie, Sinan Yavuz, Jiao Yu, and Ting Zhang" />
 
-<meta name="date" content="2024-10-28" />
+<meta name="date" content="2025-02-28" />
 
 <title>Introduction to Analyzing NCES Data Using EdSurvey</title>
 
@@ -357,7 +357,7 @@ Buehler, Ren C’deBaca, Nancy Collins, Ahmad Emad, Thomas Fink, Huade
 Huo, Frank Fonseca, Julian Gerez, Sun-joo Lee, Michael Lee, Jiayi Li,
 Yuqi Liao, Alex Lishinski, Thanh Mai, Trang Nguyen, Emmanuel Sikali,
 Qingshu Xie, Sinan Yavuz, Jiao Yu, and Ting Zhang</h4>
-<h4 class="date">October 28, 2024</h4>
+<h4 class="date">February 28, 2025</h4>
 
 </div>
 
@@ -388,6 +388,19 @@ integration.</p>
 <p>This will also install several other packages, so the process may
 take a few minutes.</p>
 <p>The user can then load the EdSurvey package.</p>
+<p>Now we will do two more things, first load <code>tidyEdSurvey</code>
+to make some data management a bit easier. Second, we’ll turn on the
+default rounding.</p>
+<pre class="r"><code>require(tidyEdSurvey)</code></pre>
+<pre><code>## Loading required package: tidyEdSurvey</code></pre>
+<pre><code>## tidyEdSurvey v0.1.3
+## A package for using &#39;dplyr&#39; and &#39;ggplot2&#39; with student level data in an edsurvey.data.frame. To work with teacher or school level data, see ?EdSurvey::getData</code></pre>
+<pre><code>## 
+## Attaching package: &#39;tidyEdSurvey&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:base&#39;:
+## 
+##     attach</code></pre>
+<pre class="r"><code>options(EdSurvey_round_output = TRUE)</code></pre>
 <p>NCES provides the NAEP Primer, which includes demo NAEP data and is
 automatically downloaded with <code>EdSurvey</code>. The following line
 reads that in and displays relevant information about the anonymized
@@ -396,7 +409,7 @@ NAEP data from the survey.</p>
 naep_primer</code></pre>
 <pre><code>## edsurvey.data.frame for 2005 NAEP National - Primer (Mathematics; Grade
 ##   8) in USA
-## Dimensions: 17606 rows and 303 columns.
+## Dimensions: 17600 rows and 303 columns.
 ## 
 ## There is 1 full sample weight in this edsurvey.data.frame:
 ##   &#39;origwt&#39; with 62 JK replicate weights (the default).
@@ -435,7 +448,7 @@ weight:</p>
 <pre class="r"><code>summary2(&quot;composite&quot;, data=naep_primer)</code></pre>
 <pre><code>## Estimates are weighted using the weight variable &#39;origwt&#39;
 ##    Variable     N Weighted N   Min.  1st Qu.   Median     Mean  3rd Qu.    Max.
-## 1 composite 16915   16932.46 126.11 251.9626 277.4784 275.8892 301.1827 404.184
+## 1 composite 16900      16900 126.11 251.9626 277.4784 275.8892 301.1827 404.184
 ##        SD NA&#39;s Zero weights
 ## 1 36.5713    0            0</code></pre>
 <p>The output shows that the weighted mean is 275.8892 and the standard
@@ -459,17 +472,17 @@ distribution of the variable and how it is related to test scores.</p>
 ## Weight variable: &#39;origwt&#39;
 ## Variance method: jackknife
 ## JK replicates: 62
-## full data n: 17606
-## n used: 16328
+## full data n: 17600
+## n used: 16300
 ## 
 ## 
 ## Summary Table:
-##                pared    N    WTD_N       PCT   SE(PCT)     MEAN  SE(MEAN)
-##  Did not finish H.S. 1280 1414.508  8.453085 0.3770753 260.7158 1.3274437
-##       Graduated H.S. 3091 3179.318 18.999564 0.4926714 265.1290 1.0170015
-##   Some ed after H.S. 2905 2962.733 17.705257 0.3732471 279.0351 0.9194085
-##    Graduated college 7265 7240.987 43.272050 0.8528701 287.9227 1.0704070
-##         I Don&#39;t Know 1787 1936.089 11.570043 0.4133281 256.8176 1.3438868</code></pre>
+##                pared    N WTD_N PCT SE(PCT)    MEAN SE(MEAN)
+##  Did not finish H.S. 1300  1400   8     0.4 260.716   1.3274
+##       Graduated H.S. 3100  3200  19     0.5 265.129   1.0170
+##   Some ed after H.S. 2900  3000  18     0.4 279.035   0.9194
+##    Graduated college 7300  7200  43     0.9 287.923   1.0704
+##         I Don&#39;t Know 1800  1900  12     0.4 256.818   1.3439</code></pre>
 <p>To simplify the analysis, the variable can be recoded into broader
 categories. The user can then check that the variable was recoded
 accordingly. Here, the categories are collapsed into “less than HS”,
@@ -479,16 +492,8 @@ naep_primer$pared_recode &lt;- ifelse(naep_primer$pared %in% &quot;Graduated H.S
 naep_primer$pared_recode &lt;- ifelse(naep_primer$pared %in% &quot;Some ed after H.S.&quot;, &quot;any after HS&quot;, naep_primer$pared_recode)
 naep_primer$pared_recode &lt;- ifelse(naep_primer$pared %in% &quot;Graduated college&quot;, &quot;any after HS&quot;, naep_primer$pared_recode)
 # the tidyEdSurvey package allows this call to with to work
-require(tidyEdSurvey)</code></pre>
-<pre><code>## Loading required package: tidyEdSurvey</code></pre>
-<pre><code>## tidyEdSurvey v0.1.3
-## A package for using &#39;dplyr&#39; and &#39;ggplot2&#39; with student level data in an edsurvey.data.frame. To work with teacher or school level data, see ?EdSurvey::getData</code></pre>
-<pre><code>## 
-## Attaching package: &#39;tidyEdSurvey&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:base&#39;:
-## 
-##     attach</code></pre>
-<pre class="r"><code>with(naep_primer, table(pared_recode, pared))</code></pre>
+require(tidyEdSurvey)
+with(naep_primer, table(pared_recode, pared))</code></pre>
 <pre><code>##               pared
 ## pared_recode   Did not finish H.S. Graduated H.S. Some ed after H.S.
 ##   HS                             0           3091                  0
@@ -514,15 +519,15 @@ summary(lm1)</code></pre>
 ## JK replicates: 62
 ## Plausible values: 5
 ## jrrIMax: 1
-## full data n: 17606
-## n used: 16915
+## full data n: 17600
+## n used: 16900
 ## 
 ## Coefficients:
 ##                              coef       se        t    dof  Pr(&gt;|t|)    
-## (Intercept)              265.1290   1.0170 260.6967 25.227 &lt; 2.2e-16 ***
-## pared_recodeany after HS  20.2131   1.1150  18.1278 69.674 &lt; 2.2e-16 ***
-## pared_recodeless than HS  -4.4132   1.5935  -2.7695 62.168  0.007393 ** 
-## pared_recodeunknown       -8.3422   1.5871  -5.2564 41.282 4.816e-06 ***
+## (Intercept)              265.1290   1.0170 260.6967 25.226 &lt; 2.2e-16 ***
+## pared_recodeany after HS  20.2130   1.1150  18.1278 69.674 &lt; 2.2e-16 ***
+## pared_recodeless than HS  -4.4130   1.5935  -2.7695 62.168  0.007393 ** 
+## pared_recodeunknown       -8.3420   1.5871  -5.2564 41.282 4.816e-06 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 

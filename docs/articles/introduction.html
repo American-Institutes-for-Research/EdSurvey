@@ -8,8 +8,8 @@
 <title>Introduction to Analyzing NCES Data Using EdSurvey • EdSurvey</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Introduction to Analyzing NCES Data Using EdSurvey">
 </head>
 <body>
@@ -63,7 +63,7 @@ Gerez, Sun-joo Lee, Michael Lee, Jiayi Li, Yuqi Liao, Alex Lishinski,
 Thanh Mai, Trang Nguyen, Emmanuel Sikali, Qingshu Xie, Sinan Yavuz, Jiao
 Yu, and Ting Zhang</h4>
             
-            <h4 data-toc-skip class="date">October 28, 2024</h4>
+            <h4 data-toc-skip class="date">February 28, 2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/American-Institutes-for-Research/EdSurvey/blob/HEAD/vignettes/introduction.Rmd" class="external-link"><code>vignettes/introduction.Rmd</code></a></small>
       <div class="d-none name"><code>introduction.Rmd</code></div>
@@ -100,16 +100,31 @@ integration.</p>
 <p>This will also install several other packages, so the process may
 take a few minutes.</p>
 <p>The user can then load the EdSurvey package.</p>
+<p>Now we will do two more things, first load <code>tidyEdSurvey</code>
+to make some data management a bit easier. Second, we’ll turn on the
+default rounding.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">tidyEdSurvey</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Loading required package: tidyEdSurvey</span></span></code></pre>
+<pre><code><span><span class="co">## tidyEdSurvey v0.1.3</span></span>
+<span><span class="co">## A package for using 'dplyr' and 'ggplot2' with student level data in an edsurvey.data.frame. To work with teacher or school level data, see ?EdSurvey::getData</span></span></code></pre>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## Attaching package: 'tidyEdSurvey'</span></span></code></pre>
+<pre><code><span><span class="co">## The following object is masked from 'package:base':</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##     attach</span></span></code></pre>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>EdSurvey_round_output <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>NCES provides the NAEP Primer, which includes demo NAEP data and is
 automatically downloaded with <code>EdSurvey</code>. The following line
 reads that in and displays relevant information about the anonymized
 NAEP data from the survey.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">naep_primer</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readNAEP.html">readNAEP</a></span><span class="op">(</span>path<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/data"</span>, <span class="st">"M36NT2PM.dat"</span>, package <span class="op">=</span> <span class="st">"NAEPprimer"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">naep_primer</span></span></code></pre></div>
 <pre><code><span><span class="co">## edsurvey.data.frame for 2005 NAEP National - Primer (Mathematics; Grade</span></span>
 <span><span class="co">##   8) in USA</span></span>
-<span><span class="co">## Dimensions: 17606 rows and 303 columns.</span></span>
+<span><span class="co">## Dimensions: 17600 rows and 303 columns.</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## There is 1 full sample weight in this edsurvey.data.frame:</span></span>
 <span><span class="co">##   'origwt' with 62 JK replicate weights (the default).</span></span>
@@ -145,11 +160,11 @@ scaled score. To calculate weighted summary statistics for this score,
 use the EdSurvey’s <code>summary2</code> function. The summary
 statistics are weighted by <code>origwt</code>, which is the default
 weight:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/summary2.html">summary2</a></span><span class="op">(</span><span class="st">"composite"</span>, data<span class="op">=</span><span class="va">naep_primer</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Estimates are weighted using the weight variable 'origwt'</span></span>
 <span><span class="co">##    Variable     N Weighted N   Min.  1st Qu.   Median     Mean  3rd Qu.    Max.</span></span>
-<span><span class="co">## 1 composite 16915   16932.46 126.11 251.9626 277.4784 275.8892 301.1827 404.184</span></span>
+<span><span class="co">## 1 composite 16900      16900 126.11 251.9626 277.4784 275.8892 301.1827 404.184</span></span>
 <span><span class="co">##        SD NA's Zero weights</span></span>
 <span><span class="co">## 1 36.5713    0            0</span></span></code></pre>
 <p>The output shows that the weighted mean is 275.8892 and the standard
@@ -159,13 +174,13 @@ deviation (<code>SD</code>) is 36.5713.</p>
 <code>searchSDF</code> function searches the dataset for variables that
 match a given string, helping the user identify relevant variables for
 analysis.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/searchSDF.html">searchSDF</a></span><span class="op">(</span>string<span class="op">=</span><span class="st">"parent"</span>, data<span class="op">=</span><span class="va">naep_primer</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##   variableName                                      Labels fileFormat</span></span>
 <span><span class="co">## 1        pared Parental education level (from 2 questions)    Student</span></span></code></pre>
 <p>The variable is <code>pared</code>, and the user can see the
 distribution of the variable and how it is related to test scores.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/edsurveyTable.html">edsurveyTable</a></span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">pared</span>, data<span class="op">=</span><span class="va">naep_primer</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## Formula: composite ~ pared </span></span>
@@ -175,38 +190,29 @@ distribution of the variable and how it is related to test scores.</p>
 <span><span class="co">## Weight variable: 'origwt'</span></span>
 <span><span class="co">## Variance method: jackknife</span></span>
 <span><span class="co">## JK replicates: 62</span></span>
-<span><span class="co">## full data n: 17606</span></span>
-<span><span class="co">## n used: 16328</span></span>
+<span><span class="co">## full data n: 17600</span></span>
+<span><span class="co">## n used: 16300</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Summary Table:</span></span>
-<span><span class="co">##                pared    N    WTD_N       PCT   SE(PCT)     MEAN  SE(MEAN)</span></span>
-<span><span class="co">##  Did not finish H.S. 1280 1414.508  8.453085 0.3770753 260.7158 1.3274437</span></span>
-<span><span class="co">##       Graduated H.S. 3091 3179.318 18.999564 0.4926714 265.1290 1.0170015</span></span>
-<span><span class="co">##   Some ed after H.S. 2905 2962.733 17.705257 0.3732471 279.0351 0.9194085</span></span>
-<span><span class="co">##    Graduated college 7265 7240.987 43.272050 0.8528701 287.9227 1.0704070</span></span>
-<span><span class="co">##         I Don't Know 1787 1936.089 11.570043 0.4133281 256.8176 1.3438868</span></span></code></pre>
+<span><span class="co">##                pared    N WTD_N PCT SE(PCT)    MEAN SE(MEAN)</span></span>
+<span><span class="co">##  Did not finish H.S. 1300  1400   8     0.4 260.716   1.3274</span></span>
+<span><span class="co">##       Graduated H.S. 3100  3200  19     0.5 265.129   1.0170</span></span>
+<span><span class="co">##   Some ed after H.S. 2900  3000  18     0.4 279.035   0.9194</span></span>
+<span><span class="co">##    Graduated college 7300  7200  43     0.9 287.923   1.0704</span></span>
+<span><span class="co">##         I Don't Know 1800  1900  12     0.4 256.818   1.3439</span></span></code></pre>
 <p>To simplify the analysis, the variable can be recoded into broader
 categories. The user can then check that the variable was recoded
 accordingly. Here, the categories are collapsed into “less than HS”,
 “HS”, and “any after HS”.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">naep_primer</span><span class="op">$</span><span class="va">pared_recode</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">naep_primer</span><span class="op">$</span><span class="va">pared</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="st">"Did not finish H.S."</span>, <span class="st">"less than HS"</span>, <span class="st">"unknown"</span><span class="op">)</span></span>
 <span><span class="va">naep_primer</span><span class="op">$</span><span class="va">pared_recode</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">naep_primer</span><span class="op">$</span><span class="va">pared</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="st">"Graduated H.S."</span>, <span class="st">"HS"</span>, <span class="va">naep_primer</span><span class="op">$</span><span class="va">pared_recode</span><span class="op">)</span></span>
 <span><span class="va">naep_primer</span><span class="op">$</span><span class="va">pared_recode</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">naep_primer</span><span class="op">$</span><span class="va">pared</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="st">"Some ed after H.S."</span>, <span class="st">"any after HS"</span>, <span class="va">naep_primer</span><span class="op">$</span><span class="va">pared_recode</span><span class="op">)</span></span>
 <span><span class="va">naep_primer</span><span class="op">$</span><span class="va">pared_recode</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">naep_primer</span><span class="op">$</span><span class="va">pared</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="st">"Graduated college"</span>, <span class="st">"any after HS"</span>, <span class="va">naep_primer</span><span class="op">$</span><span class="va">pared_recode</span><span class="op">)</span></span>
 <span><span class="co"># the tidyEdSurvey package allows this call to with to work</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">tidyEdSurvey</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Loading required package: tidyEdSurvey</span></span></code></pre>
-<pre><code><span><span class="co">## tidyEdSurvey v0.1.3</span></span>
-<span><span class="co">## A package for using 'dplyr' and 'ggplot2' with student level data in an edsurvey.data.frame. To work with teacher or school level data, see ?EdSurvey::getData</span></span></code></pre>
-<pre><code><span><span class="co">## </span></span>
-<span><span class="co">## Attaching package: 'tidyEdSurvey'</span></span></code></pre>
-<pre><code><span><span class="co">## The following object is masked from 'package:base':</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">##     attach</span></span></code></pre>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">naep_primer</span>, <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">pared_recode</span>, <span class="va">pared</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">tidyEdSurvey</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">naep_primer</span>, <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">pared_recode</span>, <span class="va">pared</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##               pared</span></span>
 <span><span class="co">## pared_recode   Did not finish H.S. Graduated H.S. Some ed after H.S.</span></span>
 <span><span class="co">##   any after HS                   0              0               2905</span></span>
@@ -222,7 +228,7 @@ accordingly. Here, the categories are collapsed into “less than HS”,
 <p>Once recoded, the new variable can be used in a regression. The
 <code>lm.sdf</code> function fits a linear model, using weights and
 variance estimates appropriate for the data.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lm.sdf.html">lm.sdf</a></span><span class="op">(</span><span class="va">composite</span> <span class="op">~</span> <span class="va">pared_recode</span>, data<span class="op">=</span><span class="va">naep_primer</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">lm1</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
@@ -233,15 +239,15 @@ variance estimates appropriate for the data.</p>
 <span><span class="co">## JK replicates: 62</span></span>
 <span><span class="co">## Plausible values: 5</span></span>
 <span><span class="co">## jrrIMax: 1</span></span>
-<span><span class="co">## full data n: 17606</span></span>
-<span><span class="co">## n used: 16915</span></span>
+<span><span class="co">## full data n: 17600</span></span>
+<span><span class="co">## n used: 16900</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Coefficients:</span></span>
-<span><span class="co">##                               coef        se       t    dof  Pr(&gt;|t|)    </span></span>
-<span><span class="co">## (Intercept)              285.34209   0.91315 312.480 45.346 &lt; 2.2e-16 ***</span></span>
-<span><span class="co">## pared_recodeHS           -20.21310   1.11504 -18.128 69.674 &lt; 2.2e-16 ***</span></span>
-<span><span class="co">## pared_recodeless than HS -24.62629   1.50206 -16.395 47.911 &lt; 2.2e-16 ***</span></span>
-<span><span class="co">## pared_recodeunknown      -28.55526   1.49044 -19.159 55.628 &lt; 2.2e-16 ***</span></span>
+<span><span class="co">##                              coef       se       t    dof  Pr(&gt;|t|)    </span></span>
+<span><span class="co">## (Intercept)              285.3420   0.9132 312.481 45.346 &lt; 2.2e-16 ***</span></span>
+<span><span class="co">## pared_recodeHS           -20.2130   1.1150 -18.128 69.674 &lt; 2.2e-16 ***</span></span>
+<span><span class="co">## pared_recodeless than HS -24.6260   1.5021 -16.395 47.911 &lt; 2.2e-16 ***</span></span>
+<span><span class="co">## pared_recodeunknown      -28.5550   1.4904 -19.159 55.628 &lt; 2.2e-16 ***</span></span>
 <span><span class="co">## ---</span></span>
 <span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
 <span><span class="co">## </span></span>
@@ -253,7 +259,7 @@ education levels.</p>
 <p>Following the regression analysis, a Wald test can be used to
 determine whether the entire set of coefficients associated with
 <code>pared_recode</code> is statistically significant.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/waldTest.html">waldTest</a></span><span class="op">(</span><span class="va">lm1</span>, <span class="st">"pared_recode"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Wald test:</span></span>
 <span><span class="co">## ----------</span></span>
@@ -283,13 +289,13 @@ Trends in International Mathematics and Science Study (TIMSS) and the
 Program for International Student Assessment (PISA). Starting with TIMSS
 and looking at the association between parents’ highest education level
 and math test scores in North America:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/downloadTIMSS.html">downloadTIMSS</a></span><span class="op">(</span><span class="st">"~/EdSurveyData/"</span>, years<span class="op">=</span><span class="fl">2015</span><span class="op">)</span></span>
 <span><span class="va">timss_NA15</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readTIMSS.html">readTIMSS</a></span><span class="op">(</span><span class="st">"~/EdSurveyData/TIMSS/2015/"</span>, countries<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"usa"</span>, <span class="st">"can"</span><span class="op">)</span>, grade<span class="op">=</span><span class="fl">8</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/searchSDF.html">searchSDF</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"parent"</span>, <span class="st">"education"</span><span class="op">)</span>, data<span class="op">=</span><span class="va">timss_NA15</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/edsurveyTable.html">edsurveyTable</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">timss_NA15</span>, <span class="va">mmat</span> <span class="op">~</span> <span class="va">bsdgedup</span><span class="op">)</span></span></code></pre></div>
 <p>Now, the same analysis using PISA data:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/downloadPISA.html">downloadPISA</a></span><span class="op">(</span><span class="st">"~/EdSurveyData/"</span>, years<span class="op">=</span><span class="fl">2015</span><span class="op">)</span></span>
 <span><span class="va">pisa_NA15</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/readPISA.html">readPISA</a></span><span class="op">(</span><span class="st">"~/EdSurveyData/PISA/2015/"</span>, countries<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"usa"</span>, <span class="st">"can"</span>, <span class="st">"max"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/searchSDF.html">searchSDF</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"parent"</span>, <span class="st">"education"</span><span class="op">)</span>, data<span class="op">=</span><span class="va">pisa_NA15</span><span class="op">)</span></span>
