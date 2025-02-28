@@ -37,7 +37,7 @@ Authors@R: c(
       )
 Maintainer: Paul Bailey <pbailey@air.org>
 Depends: R (>= 4.0.0), car (>= 3.1-2), lfactors (>= 1.0.3), Dire (>=
-        2.2.0)
+        3.0.0)
 Imports: data.table (>= 1.11.4), Formula, glm2, haven (>= 2.2.0), LaF
         (>= 0.8.6), lifecycle, lme4, MASS, Matrix (>= 1.5-4.1),
         methods, NAEPprimer (>= 1.0.1), quantreg, readxl, tibble, wCorr
