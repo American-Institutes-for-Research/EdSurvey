@@ -19,7 +19,7 @@
 #'                   and levels (if applicable) from an \code{edsurvey.data.frame} or a \code{light.edsurvey.data.frame} based on a matching character string
 #'
 #' @author Michael Lee and Paul Bailey
-#' @example \man\examples\searchSDF.R
+#' @example man/examples/searchSDF.R
 #' @export
 searchSDF <- function(string, data, fileFormat = NULL, levels = FALSE) {
   if (inherits(data, c("edsurvey.data.frame.list"))) {

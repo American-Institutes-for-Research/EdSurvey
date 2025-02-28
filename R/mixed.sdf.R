@@ -105,7 +105,7 @@
 #'
 #' @author Paul Bailey, Trang Nguyen, and Claire Kelley
 #' @seealso \ifelse{latex}{WeMix \code{mix} function}{\code{\link[WeMix]{mix}}} and \code{\link{lm.sdf}}
-#' @example \man\examples\mixed.sdf.R
+#' @example man/examples/mixed.sdf.R
 #' @export
 #' @importFrom WeMix mix
 #' @importFrom utils getFromNamespace
@@ -188,7 +188,7 @@ mixed.sdf <- function(formula,
     varnames = unique(c(all.vars(formula), weightVars, yvars)),
     returnJKreplicates = FALSE,
     drop = FALSE,
-    omittedLevels = FALSE,
+    dropOmittedLevels = FALSE,
     recode = recode,
     includeNaLabel = TRUE,
     dropUnusedLevels = TRUE

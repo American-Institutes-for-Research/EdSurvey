@@ -1,7 +1,41 @@
 \name{NEWS}
 \title{NEWS for EdSurvey}
 
+\section{Changes in version 4.1.0}{
+  \subsection{DATA UPDATES}{
+    \itemize{
+      \item This version now supports 2024 NAEP restricted use data.
+      \item This version includes improved support for PISA 2022 download and read-in functions for main domains including mathematics, reading and science. This functionality is currently experimental.
+    }
+  }
+  \subsection{NEW FEATURES}{
+    \itemize{
+      \item This version works with the new \code{Dire} version 3.0 package that is much faster. The parallel processing option was removed because it no longer works with the new \code{mml} call.
+    }
+  }
+  \subsection{OTHER UPDATES}{
+    \itemize{
+      \item When summarizing the result of a call to \code{lm.sdf}, standardized regression coefficients were adjusted to allow the user to standardize just the outcome, just the predictor, or both. More details are documented in the EdSurvey User’s Guide. For backwards compatibility, the function still accepts logical arguments (which turn on/off the "both" option). 
+      \item Due to superior simulations results, the \code{drawPVs} function always uses \code{stochasticBeta} argument set to \code{TRUE} now. This is consistent with the results that we will share at NCME 2025.
+      \item The Introduction.Rmd was expanded and now uses the helper package \code{tidyEdSurvey} for \code{tidyverse} package integration.
+      \item Exhaustive testing has been overhauled, with most tests now removed from CRAN testing. The majority of internal testing is conducted before release. This speeds up the CRAN testing and also makes the package smaller on disk.
+      \item The \code{EdSurvey} package previously worked around a bug in the \code{LaF} package that was fixed in 0.8.6. This version work only with 0.8.6, so an update to \code{LaF} is required.
+    }
+  }
+  \subsection{BUG FIXES}{
+    \itemize{
+      \item \code{mixed.sdf}, \code{mvrlm.sdf}, and \code{rq.sdf} now use \code{dropOmittedLevels} like the rest of the \code{EdSurvey} package. Previously, using them would lead to an error.
+    }
+  }
+}
+
+
 \section{Changes in version 4.0.8}{
+  \subsection{NEW FEATURES}{
+    \itemize{
+      \item the \code{summary} of an \code{lm.sdf} now allows the standardized regression coefficients that standardize only the numerator or denominator. This is more natural for survey responses where the standard deviation is not entirely intuitive. The \code{src} argument can now be set to character levels of \code{both} to get the current behavior and return a typical standardized regression coefficient, \code{outcome} to standardize just with respect to the outcomes, or \code{coef} to standardized just with respect to the coefficients.
+    }
+  }
   \subsection{DATA UPDATES}{
     \itemize{
       \item \code{lm.sdf} and \code{glm.sdf} now allow users to put plausible values on the right side of the regression equation.
@@ -25,13 +59,11 @@
         \item NAEP long-term trend data up to 2023
         \item the 2022 Monthly School Survey (MSS) Linking Study
         \item the 2021 School and Teacher Questionnaire Special Study.
-
       }
     }
   }
   \subsection{BUG FIXES}{
     \itemize{
-
       \item \code{[[<-} assignment did not previously work with an \code{edsurvey.data.frame} object. This causes issues when defining new columns with a few possible methods that resulted in newly defined columns not being returned by \code{getData}. Thanks to Tao Jiang for identifying this bug.
     }
   }

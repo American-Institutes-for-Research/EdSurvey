@@ -144,7 +144,6 @@ sdfl4 <- append.edsurvey.data.frame.list(
 identical(sdfl, sdfl4) #TRUE
 
 # show label deconflicting
-downloadTIMSS(root="~/", years=c(2011, 2015))
 t11 <- readTIMSS(path="~/TIMSS/2011", countries = c("fin", "usa"), gradeLvl = 4)
 t15 <- readTIMSS(path="~/TIMSS/2015", countries = c("fin", "usa"), gradeLvl = 4)
 # these would not be unique

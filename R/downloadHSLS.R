@@ -16,7 +16,7 @@
 #'
 #' @author Tom Fink
 #' @seealso \code{\link{readHSLS}}
-#' @example man\examples\downloadHSLS.R
+#' @example man/examples/downloadHSLS.R
 #' @importFrom utils download.file
 #' @export
 downloadHSLS <- function(root, years = c(2009), cache = FALSE, verbose = TRUE) {

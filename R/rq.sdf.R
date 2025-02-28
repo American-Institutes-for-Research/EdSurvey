@@ -99,7 +99,7 @@
 #' @seealso \ifelse{latex}{\code{rq}}{\code{\link[quantreg]{rq}}}
 #' @author Trang Nguyen, Paul Bailey, and Yuqi Liao
 #'
-#' @example \man\examples\rq.sdf.R
+#' @example man/examples/rq.sdf.R
 #' @importFrom Matrix sparse.model.matrix rankMatrix
 #' @importFrom quantreg rq rq.wfit
 #' @importFrom stats aggregate pt relevel model.matrix as.formula complete.cases
@@ -234,7 +234,7 @@ calc.rq.sdf <- function(formula,
     varnames = getDataVarNames,
     returnJKreplicates = (varMethod == "j"),
     drop = FALSE,
-    omittedLevels = omittedLevels,
+    dropOmittedLevels = omittedLevels,
     recode = recode,
     includeNaLabel = TRUE,
     dropUnusedLevels = TRUE

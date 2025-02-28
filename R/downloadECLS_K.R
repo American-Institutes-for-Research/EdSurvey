@@ -21,7 +21,7 @@
 #'
 #' @author Tom Fink
 #' @seealso \code{\link{readECLS_K1998}} and \code{\link{readECLS_K2011}}
-#' @example man\examples\downloadECLS_K.R
+#' @example man/examples/downloadECLS_K.R
 #' @importFrom utils download.file
 #' @export
 downloadECLS_K <- function(root, years = c(1998, 2011), cache = FALSE, verbose = TRUE) {

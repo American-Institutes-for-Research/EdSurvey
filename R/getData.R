@@ -84,7 +84,7 @@
 #' @seealso \code{\link{rebindAttributes}}
 #'
 #' @author Tom Fink, Paul Bailey, and Ahmad Emad
-#' @example man\examples\getData.R
+#' @example man/examples/getData.R
 #' @importFrom LaF laf_open_fwf laf_open_csv
 #' @importFrom data.table as.data.table merge.data.table
 #' @export
@@ -457,8 +457,10 @@ getData <- function(data,
     # then actually apply defaultConditions
     if (defaultConditions) {
       for(i in seq_along(dConditions)) {
-        r <- eval(dConditions[[i]], data)
-        data <- data[r, , drop = FALSE]
+        if(!is.null(dConditions[[i]])) {
+          r <- eval(dConditions[[i]], data)
+          data <- data[r, , drop = FALSE]
+        }
       }
     }
 
@@ -877,6 +879,7 @@ applyValueLabels <- function(data, lblList, labelDF, esdf, includeNaLabel = FALS
         if (any(needNewLabels)) {
           warning(paste0("Updating labels on ", sQuote(vari), " because there are multiples of the label ", sQuote(dnames), "."))
         }
+        # linked to a line in getNAEPScoreCard. If you edit this, edit that line as well
         lbls[needNewLabels] <- paste(lbls[needNewLabels], 1:(sum(needNewLabels)), sep = ":")
       }
 
@@ -938,6 +941,10 @@ getFactorValue <- function(lvls, lbls, dataVals, factorOnly = FALSE, includeNaLa
   lvlsAllNumeric <- isAllNumeric(lvls)
   valsAllNumeric <- isAllNumeric(dataVals)
   lbls <- as.character(lbls)
+  
+  if(lvlsAllNumeric){
+    lvls <- as.numeric(lvls)
+  }
 
   if (!lvlsAllNumeric && !valsAllNumeric) {
     if (anyNA(dataVals) && includeNaLabel) {

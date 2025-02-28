@@ -16,7 +16,7 @@
 #'
 #' @author Tom Fink
 #' @seealso \code{\link{readELS}}
-#' @example man\examples\downloadELS.R
+#' @example man/examples/downloadELS.R
 #' @importFrom utils download.file
 #' @export
 downloadELS <- function(root, years = c(2002), cache = FALSE, verbose = TRUE) {

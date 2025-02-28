@@ -18,7 +18,7 @@
 #'                        or an \code{edsurvey.data.frame.list}
 #'
 #' @author Michael Lee and Paul Bailey
-#' @example \man\examples\showCodebook.R
+#' @example man/examples/showCodebook.R
 #' @export
 showCodebook <- function(data, fileFormat = NULL, labelLevels = FALSE, includeRecodes = FALSE) {
   if (inherits(data, c("edsurvey.data.frame.list"))) {

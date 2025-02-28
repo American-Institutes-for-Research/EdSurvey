@@ -137,7 +137,7 @@ extractCovs <- function(dataList, cov, searching) {
       } else {
         thisAttr <- "" # return a blank character value in case of a missing cov value otherwise its returned as a list and won't load into the data.frame
       }
-      thisAttr
+      as.character(thisAttr)
     }, FUN.VALUE=character(1))
   })
   names(covs) <- cov

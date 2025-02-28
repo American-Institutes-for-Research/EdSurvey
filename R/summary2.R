@@ -43,7 +43,7 @@
 #'
 #' @importFrom stats quantile
 #' @export
-#' @example man\examples\summary2.R
+#' @example man/examples/summary2.R
 #' @seealso \code{\link{percentile}}
 #' @author Paul Bailey and Trang Nguyen
 summary2 <- function(data, variable,

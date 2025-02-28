@@ -13,7 +13,7 @@
 #' Each line names the subject and then shows the cut point for each achievement level.
 #'
 #' @author Michael Lee and Paul Bailey
-#' @example \man\examples\showCutPoints.R
+#' @example man/examples/showCutPoints.R
 #' @export
 showCutPoints <- function(data) {
   if (inherits(data, c("edsurvey.data.frame.list"))) {

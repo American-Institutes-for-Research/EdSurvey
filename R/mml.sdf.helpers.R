@@ -1,25 +1,18 @@
 #' @method summary mml.sdf
 #' @export
-summary.mml.sdf <- function(object, gradientHessian = FALSE,
+summary.mml.sdf <- function(object, gradientHessian = TRUE,
                             varType = c("Taylor"),
-                            clusterVar = NULL, jkSumMultiplier = 1, # cluster
-                            repWeight = NULL, # replicate
-                            strataVar = NULL, PSUVar = NULL, singletonFix = c("drop", "use mean"), ...) {
+                            strataVar = NULL, PSUVar = NULL, singletonFix = c("use mean", "drop"), ...) {
   x <- object
   # sunmary
   summary <- summary(
-    x$mml,
-    gradientHessian,
-    varType,
-    clusterVar, jkSumMultiplier, # cluster
-    repWeight, # replicate
-    strataVar, PSUVar, singletonFix, ...
+    object=x$mml,
+    varType=varType,
+    strataVar=strataVar, PSUVar=PSUVar, singletonFix=match.arg(singletonFix), ...
   )
   # get calls
   summaryCall <- match.call()
   call <- x$Call
-  # item mapping
-  mapping <- x$itemMapping
   # item score dictionary
   scoreDict <- x$scoreDict
   return(structure(
@@ -27,7 +20,6 @@ summary.mml.sdf <- function(object, gradientHessian = FALSE,
       "Call" = call,
       "Summary Call" = summaryCall,
       "Summary" = summary,
-      "itemMapping" = mapping,
       "scoreDict" = scoreDict,
       object = x
     ),
@@ -76,7 +68,7 @@ print.summary.mml.sdf <- function(x, use_es_round=getOption("EdSurvey_round_outp
   } else {
     cat(paste0("Convergence = ", paste(x$Summary$Convergence, collapse = ", "), "\n"))
   }
-  if("iterations" %in% x$Summary && !is.na(x$Summary$iterations)) {
+  if("iterations" %in% names(x$Summary) && all(!is.na(x$Summary$iterations)) && all(x$Summary$iterations != -1)) {
     cat(paste0("Iterations = ", paste(x$Summary$iterations, collapse = ", "), "\n"))
   }
   if ("LogLik" %in% names(x$Summary)) {

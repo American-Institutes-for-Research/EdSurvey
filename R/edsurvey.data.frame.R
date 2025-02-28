@@ -163,7 +163,7 @@
 #' use the \code{setAttributes} method.
 #'
 #' @seealso \code{\link{rebindAttributes}}
-#' @example \man\examples\edsurvey-class.R
+#' @example man/examples/edsurvey-class.R
 #'
 #' @importFrom LaF close
 #' @importFrom utils capture.output

@@ -85,7 +85,7 @@
 #' @seealso \code{\link{readNAEP}}, \code{\link{getData}}, and \code{\link{downloadTIMSS}}
 #' @author Tom Fink
 #'
-#' @example \man\examples\readTIMSS.R
+#' @example man/examples/readTIMSS.R
 #'
 #' @importFrom haven read_sav
 #' @importFrom utils write.csv

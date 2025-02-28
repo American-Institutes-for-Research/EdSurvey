@@ -1,5 +1,9 @@
 \dontrun{
 require(dplyr)
+if(!exists(edsurveyHome)) {
+  edsurveyHome <- "~/"
+}
+downloadPISA(edsurveyHome, year=2012)
 PISA2012 <- readPISA(path = paste0(edsurveyHome, "PISA/2012"),
                      database = "INT",
                      countries = "ALB", verbose=TRUE)
@@ -19,7 +23,7 @@ PISA2012_ledf <- ledf %>%
   rowwise() %>% 
   mutate(avg_3 = mean(c(st62q04, st62q11, st62q13), na.rm = TRUE)) %>% 
   ungroup() %>%
-  rebindAttributes(data=PISA2012) # could also be called with ledf
+  rebindAttributes(attributeData=PISA2012) # could also be called with ledf
 class(PISA2012_ledf) 
 # again, a light.edsurvey.data.frame
 lma <- lm.sdf(formula=math ~ avg_3, data=PISA2012_ledf)
@@ -29,7 +33,7 @@ PISA2012_ledf <- ledf %>%
   rowwise() %>% 
   mutate(avg_3 = mean(c(st62q04, st62q11, st62q13), na.rm = TRUE)) %>% 
   ungroup() %>%
-  rebindAttributes(data=ledf) # return attributes and make a light.edsurvey.data.frame 
+  rebindAttributes(attributeData=ledf) # return attributes and make a light.edsurvey.data.frame 
 # again a light.edsurvey.data.frame
 lma <- lm.sdf(formula=math ~ avg_3, data=PISA2012_ledf)
 summary(lma)

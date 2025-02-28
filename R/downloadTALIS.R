@@ -17,7 +17,7 @@
 #' @author Tom Fink and Trang Nguyen
 #' @seealso \code{\link{readTALIS}}
 #' @importFrom utils download.file
-#' @example  man/examples/downloadTALIS.R
+#' @example man/examples/downloadTALIS.R
 #' @export
 downloadTALIS <- function(root, years = c(2008, 2013, 2018), cache = FALSE, verbose = TRUE) {
   fixTimeout()

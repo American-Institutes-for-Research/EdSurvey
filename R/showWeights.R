@@ -9,7 +9,7 @@
 #'                otherwise, prints only the full sample weights
 #'
 #' @author Michael Lee and Paul Bailey
-#' @example \man\examples\showWeights.R
+#' @example man/examples/showWeights.R
 #' @export
 showWeights <- function(data, verbose = FALSE) {
   if (inherits(data, c("edsurvey.data.frame.list"))) {
@@ -60,7 +60,7 @@ showWeights <- function(data, verbose = FALSE) {
 #'          for making estimates but not if it is one of the individual jackknife replicates.
 #'
 #' @author Michael Lee and Paul Bailey
-#' @example \man\examples\isWeight.R
+#' @example man/examples/isWeight.R
 #' @export
 isWeight <- function(var, data) {
   if (inherits(data, c("edsurvey.data.frame.list"))) {
@@ -86,7 +86,7 @@ isWeight <- function(var, data) {
 #'
 #' @return a character vector of the jackknife replicate weights
 #'
-#' @example \man\examples\getWeightJkReplicates.R
+#' @example man/examples/getWeightJkReplicates.R
 #' @author Michael Lee and Paul Bailey
 #' @export
 getWeightJkReplicates <- function(var, data) {

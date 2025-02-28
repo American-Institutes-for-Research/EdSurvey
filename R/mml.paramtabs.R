@@ -249,8 +249,9 @@ naepParamTabs <- function(params_use) {
   # polyParamTab
   poly <- params_use[!is.na(params_use$d1), ]
   polyParamTab <- poly[ , colnames(poly)[!colnames(poly) %in% c("c")]]
-  polyParamTab <- polyParamTab[ , c("NAEPid", "subtest", "a", "b", paste0("d", 1:5))]
-  colnames(polyParamTab) <- c("ItemID", "subtest", "slope", "itemLocation", paste0("d", 1:5))
+  polyParamTab$d0 <- 0
+  polyParamTab <- polyParamTab[ , c("NAEPid", "subtest", "a", "b", paste0("d", 0:5))]
+  colnames(polyParamTab) <- c("ItemID", "subtest", "slope", "itemLocation", paste0("d", 0:5))
   polyParamTab$ItemID <- tolower(polyParamTab$ItemID)
   if (nrow(polyParamTab) > 0) {
     polyParamTab$D <- 1.7

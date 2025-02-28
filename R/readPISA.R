@@ -1911,16 +1911,6 @@ processPISA2018_FIN <- function(filepath, verbose, countries, year) {
     # validate the file format against the full dataset (for each country) before it's cached in the .meta file
     ff <- validateFileFormat_PISA_2015(mm, ff)
     
-    #for an identified LaF bug (as of LaF v0.84) relating to the FIRST ROW of data containing a ',' (comma) character, will then cause the LaF object to not return any data for CSV files!!
-    #see issue: 
-    hasCommaRow1 <- grepl(",", mm[1, ], fixed = TRUE)
-    if(any(hasCommaRow1)) {
-      commaVars <- which(hasCommaRow1)
-      
-      for(iFix in seq_along(commaVars)){
-        mm[1, commaVars[iFix]] <- gsub(",", ";", mm[1, commaVars[iFix]], fixed = TRUE) #replace the 'comma' value with a semi-colon in the first row only
-      }
-    }
     write.table(mm, file = outf, col.names = FALSE, row.names = FALSE, sep = ",", na = "")
   }
   ff$variableName <- gsub("^REPEAT\\.$", "REPEATGRADE", ff$variableName, ignore.case = TRUE)

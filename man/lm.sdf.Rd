@@ -150,7 +150,7 @@ the average \emph{R}-squared using the average across the plausible values.
 
 \subsection{Standardized regression coefficients}{
   Standardized regression coefficients can be returned in a call to \code{summary},
-  by setting the argument \code{src} to \code{TRUE}. See Examples.
+  by setting the argument \code{src} to \code{coef}, \code{outcome}, or \code{both}. See Examples.
 
   By default, the standardized coefficients are calculated using standard
   deviations of the variables themselves, including averaging the standard

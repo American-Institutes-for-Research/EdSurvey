@@ -16,7 +16,7 @@
 #'
 #' @author Tom Fink
 #' @seealso \code{\link{read_ePIRLS}}
-#' @example man\examples\download_ePIRLS.R
+#' @example man/examples/download_ePIRLS.R
 #' @importFrom utils download.file
 #' @export
 download_ePIRLS <- function(root, years = c(2016), cache = FALSE, verbose = TRUE) {

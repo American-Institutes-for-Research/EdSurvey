@@ -39,50 +39,66 @@ scoreTIMSS <- function(edf, polyParamTab, dichotParamTab, scoreCard = NULL) {
   multIncorrect <- scoreDict[scoreDict$resCat == "Incorrect", "pointMult"]
   multNotR <- scoreDict[scoreDict$resCat == "Not reached", "pointMult"]
   multOmit <- scoreDict[scoreDict$resCat == "Omitted", "pointMult"]
+  missing_items <- c()
   if(!is.null(polyParamTab)) {
     for (item in polyParamTab$ItemID) {
-      # Get rid of factor levels
-      edf[[item]] <- as.character(edf[[item]])
-      # Correct - 2 points
-      edf[[item]] <- gsub(correct.string, replacement = constCorrect, x = edf[[item]])
-      # Partial - 1 point
-      edf[[item]] <- gsub(partial.string, replacement = constPart, x = edf[[item]])
-      # Incorrect - 0 points
-      edf[[item]] <- gsub(incorrect.string, replacement = constIncorrect, x = edf[[item]])
-      # Not reached, invalid
-      edf[[item]] <- gsub("NOT REACHED", replacement = constNotR, x = edf[[item]])
-      edf[[item]] <- gsub("OMITTED OR INVALID", replacement = constOmit, x = edf[[item]])
-      edf[[item]] <- gsub("OMITTED", replacement = constOmit, x = edf[[item]])
-      # check if all scored
-      check <- unique(edf[[item]])
-      check_sum <- sum(check %in% valid2)
-      if (length(check) < check_sum) {
-        stop(paste0(item, " was not scored properly"))
+      if(item %in% colnames(edf)) {
+        # Get rid of factor levels
+        i0 <- edf[[item]] <- as.character(edf[[item]])
+        # Correct - 2 points
+        edf[[item]] <- gsub(correct.string, replacement = constCorrect, x = edf[[item]])
+        # Partial - 1 point
+        edf[[item]] <- gsub(partial.string, replacement = constPart, x = edf[[item]])
+        # Incorrect - 0 points
+        edf[[item]] <- gsub(incorrect.string, replacement = constIncorrect, x = edf[[item]])
+        # Not reached, invalid
+        edf[[item]] <- gsub("NOT REACHED", replacement = constNotR, x = edf[[item]])
+        edf[[item]] <- gsub("OMITTED OR INVALID", replacement = constOmit, x = edf[[item]])
+        edf[[item]] <- gsub("OMITTED", replacement = constOmit, x = edf[[item]])
+        # check if all scored
+        check <- unique(edf[[item]])
+        check_sum <- sum(check %in% valid2)
+        if (length(check) < check_sum) {
+          print(table(original=i0, scored=edf[[item]]))
+          stop(paste0(item, " was not scored properly"))
+        }
+        # Change to numeric
+        edf[[item]] <- as.numeric(edf[[item]])
+      } else {
+        # could not find this item
+        missing_items <- c(missing_items, item)
       }
-      # Change to numeric
-      edf[[item]] <- as.numeric(edf[[item]])
     }
   }
   
   for (item in dichotParamTab$ItemID) {
-    # Get rid of factor levels
-    edf[[item]] <- as.character(edf[[item]])
-    # Correct - 1 point
-    edf[[item]] <- gsub(one_point.string, replacement = multCorrect, x = edf[[item]])
-    # Incorrect - 0 points
-    edf[[item]] <- gsub(zero_point.string, replacement = multIncorrect, x = edf[[item]])
-    # Not reached, invalid
-    edf[[item]] <- gsub("NOT REACHED", replacement = multNotR, x = edf[[item]])
-    edf[[item]] <- gsub("OMITTED OR INVALID", replacement = multOmit, x = edf[[item]])
-    edf[[item]] <- gsub("OMITTED", replacement = multOmit, x = edf[[item]])
-    # check if all scored
-    check <- unique(edf[[item]])
-    check_sum <- sum(check %in% valid1)
-    if (length(check) > check_sum) {
-      stop(paste0(item, " was not scored properly"))
+    if(item %in% colnames(edf)) {
+      # Get rid of factor levels
+      i0 <- edf[[item]] <- as.character(edf[[item]])
+      # Correct - 1 point
+      edf[[item]] <- gsub(one_point.string, replacement = multCorrect, x = edf[[item]])
+      # Incorrect - 0 points
+      edf[[item]] <- gsub(zero_point.string, replacement = multIncorrect, x = edf[[item]])
+      # Not reached, invalid
+      edf[[item]] <- gsub("NOT REACHED", replacement = multNotR, x = edf[[item]])
+      edf[[item]] <- gsub("OMITTED OR INVALID", replacement = multOmit, x = edf[[item]])
+      edf[[item]] <- gsub("OMITTED", replacement = multOmit, x = edf[[item]])
+      # check if all scored
+      check <- unique(edf[[item]])
+      check_sum <- sum(check %in% valid1)
+      if (length(check) > check_sum) {
+        print(table(original=i0, scored=edf[[item]]))
+        stop(paste0(item, " was not scored properly"))
+      }
+      # Change to numeric
+      edf[[item]] <- as.numeric(edf[[item]])
+    } else {
+      # could not find this item
+      missing_items <- c(missing_items, item)
     }
-    # Change to numeric
-    edf[[item]] <- as.numeric(edf[[item]])
+  }
+  if(length(missing_items) > 0) {
+    warning(paste0("Could not find items: ", pasteItems(dQuote(missing_items))))
   }
   return(edf)
 }

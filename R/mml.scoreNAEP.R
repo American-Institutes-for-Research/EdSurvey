@@ -23,7 +23,7 @@ getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, sco
   t <- try(mrcFile <- readLines(filename), silent = TRUE)
 
   # Split mrcFile by "\n"
-  mrcFile <- strsplit(mrcFile, "\n", fixed = T)
+  mrcFile <- strsplit(mrcFile, "\n", fixed = TRUE)
   mrcFile <- unlist(mrcFile)
 
   specs <- getNAEP_FR2Specs(mrcFile) # in readNAEP.R file to get FR2 info
@@ -86,12 +86,17 @@ getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, sco
 
     vals <- as.numeric(NA * c(1:12)) # create numeric vector of length 12, (not ideal, but to be consistent)
     labels <- as.character(NA * c(1:12))
-
     for (ii in seq_along(tokens)) { # use 1:12 here to keep consistent with sizing (yes, a bit strange)
       vals[ii] <- as.numeric(strsplit(tokens[ii], "=", fixed = TRUE)[[1]][1])
       labels[ii] <- paste0(strsplit(tokens[ii], "=", fixed = TRUE)[[1]][-1], collapse = "=")
     }
-
+    # linked to line in applyValueLabels, if you adjust this line, adjust that line as well
+    dup_levels <- unique(labels[duplicated(labels)])
+    dup_levels <- dup_levels[!is.na(dup_levels)] # NA is not a duplicate
+    needNewLabels <- labels %in% dup_levels
+    if(sum(needNewLabels) > 0) {
+      labels[needNewLabels] <- paste(labels[needNewLabels], 1:(sum(needNewLabels)), sep = ":")
+    }
     # set points for other types of answers (like omitted, illegible, etc.)
     if (itemId %in% dichotItems) {
       # this is a multiple choice question
@@ -103,7 +108,7 @@ getNAEPScoreCard <- function(filename, polyItems, dichotItems, adjustedData, sco
         }
       }
     } else {
-      # this is a constructed answer question
+      # this is a constructed response question
       for (l in seq_along(labels)) {
         newScore <- scoreDict$pointConst[match(tolower(labels[l]), tolower(scoreDict$resCat))]
         if (!is.na(newScore)) {
@@ -168,7 +173,7 @@ defaultNAEPScoreCard <- function() {
 #'                parameters and subscale/subtest weights for NAEP assessments compared with those provided in the \code{NAEPirtparams} package.
 #'
 #' @return a NAEP \code{edsurvey.data.frame} with updated attributes
-#' @example \man\examples\setNAEPScoreCard.R
+#' @example man/examples/setNAEPScoreCard.R
 #' @export
 setNAEPScoreCard <- function(data, dctPath = NULL) {
   # check if we can continue

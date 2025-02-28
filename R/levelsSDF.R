@@ -9,7 +9,7 @@
 #' @param showN a Boolean indicating if (unweighted) \emph{n}-sizes should be shown for each response level
 #'
 #' @author Michael Lee and Paul Bailey
-#' @example  man/examples/levelsSDF.R
+#' @example man/examples/levelsSDF.R
 #' @export
 levelsSDF <- function(varnames, data, showOmitted = TRUE, showN = TRUE) {
   if (inherits(data, c("edsurvey.data.frame.list"))) {

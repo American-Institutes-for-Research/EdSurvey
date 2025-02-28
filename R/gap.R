@@ -90,7 +90,6 @@
 #'                            comparisons between digitally based assessments (DBA) and
 #'                            paper-based assessments (PBA) data.
 #'                            This option is supported only for NAEP data.
-#'
 #' @param omittedLevels this argument is deprecated. Use \code{dropOmittedLevels}.
 #'
 #' @details This function calculates the gap between \code{groupA} and \code{groupB} (which
@@ -298,8 +297,8 @@
 #'                       reference line.}
 #'
 #' @author Paul Bailey, Trang Nguyen, and Huade Huo
-#' @importFrom stats formula
 #' @example man/examples/gap.R
+#' @importFrom stats formula
 #' @export
 gap <- function(variable, data, groupA = "default", groupB = "default",
                 percentiles = NULL,

@@ -23,7 +23,7 @@
 #'
 #' @seealso \code{\link{gap}}
 #' @author Trang Nguyen
-#' @example \man\examples\rename.sdf.R
+#' @example man/examples/rename.sdf.R
 rename.sdf <- function(x,
                        oldnames,
                        newnames,

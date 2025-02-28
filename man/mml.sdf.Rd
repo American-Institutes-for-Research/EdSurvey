@@ -20,7 +20,8 @@ mml.sdf(
   Q = 34,
   idVar = NULL,
   returnMmlCall = FALSE,
-  omittedLevels = deprecated()
+  omittedLevels = deprecated(),
+  optimizer = c("EM", "QN")
 )
 }
 \arguments{
@@ -69,12 +70,22 @@ as the student identifier.}
 \item{returnMmlCall}{logical; when \code{TRUE}, do not process the mml call but instead return it for the user to edit before calling}
 
 \item{omittedLevels}{this argument is deprecated. Use \code{dropOmittedLevels}}
+
+\item{optimizer}{passed to \ifelse{latex}{\code{mml}}{\code{\link[Dire]{mml}}}}
 }
 \value{
-An \code{mml.sdf} object, which is the outcome from \code{mml.sdf}, with the following elements:
+An \code{mml.sdf} object, which is the fit for the \code{mml.sdf}, with the following elements:
+   \item{Call}{the call used to generate this object}
    \item{mml}{an object containing information from the \code{mml} procedure.
-   \code{?mml} can be used for further information.}
-   \item{scoreDict}{the scoring used in the \code{mml} procedure}.
+              \code{?mml} can be used for further information.}
+   \item{survey}{the name of the survey}
+   \item{getDataArgs}{the arguments used to call getData}
+   \item{scoreDict}{a dictionary used when building the scoring function}
+   \item{scoreFunction}{the function that scores the data, turning the data in the format it was provided to a numeric raw score}
+   \item{idVar}{the name of the id variable used to uniquely identify a row}
+   \item{waldDenomBaseDof}{the denominator degrees of freedom for Wald tests}
+   \item{data}{the data object used in the call}
+   \item{theSubject}{the name of the outcome variable}
    \item{itemMapping}{the item mapping used in the \code{mml} procedure}.
 }
 \description{

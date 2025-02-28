@@ -50,7 +50,7 @@
 #' @seealso \code{\link{readNAEP}}, \code{\link{readTIMSS}}, \code{\link{getData}}, and \code{\link{downloadTIMSSAdv}}
 #' @author Tom Fink
 #'
-#' @example \man\examples\readTIMSSAdv.R
+#' @example man/examples/readTIMSSAdv.R
 #'
 #' @importFrom haven read_sav
 #' @import tibble

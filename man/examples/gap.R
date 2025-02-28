@@ -47,26 +47,3 @@ sdfl <- edsurvey.data.frame.list(datalist=list(sdfA, sdfB, sdfC, sdfD),
 
 gap(variable="composite", data=sdfl, groupA=dsex=="Male", groupB=dsex=="Female", percentile=c(50))
 }
-
-\dontrun{
-# example showing using linking error with gap
-# load Grade 4 math data
-# requires NAEP RUD license with these files in the folder the user is currectly in
-g4math2015 <- readNAEP("M46NT1AT.dat")
-g4math2017 <- readNAEP("M48NT1AT.dat")
-g4math2019 <- readNAEP("M50NT1AT.dat")
-
-# make an edsurvey.data.frame.list from math grade 4 2015, 2017, and 2019 data
-g4math <- edsurvey.data.frame.list(datalist=list(g4math2019, g4math2017, g4math2015),
-                                   labels = c("2019", "2017", "2015"))
-
-# gap analysis with linking error in variance estimation across surveys
-gap(variable="composite", data=g4math,
-    groupA=dsex=="Male", groupB=dsex=="Female", includeLinkingError=TRUE)
-gap(variable="composite", data=g4math,
-    groupA=dsex=="Male", groupB=dsex=="Female", percentiles = c(10, 25), 
-    includeLinkingError=TRUE)
-gap(variable="composite", data=g4math, groupA=dsex=="Male", groupB=dsex=="Female", 
-    achievementDiscrete = TRUE, achievementLevel=c("Basic", "Proficient", "Advanced"), 
-    includeLinkingError=TRUE)
-}

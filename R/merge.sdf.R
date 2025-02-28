@@ -88,7 +88,8 @@ merge.light.edsurvey.data.frame <- function(x, y, by = "id", by.x = by, by.y = b
       cl$suffixes <- rev(cl$suffixes)
     }
   }
-
+  # without ::: this function cannot be found when checking covr
+  # but CRAN does not like ::: for the local package, so add it before running covr
   cl[[1]] <- quote(merge.edsurvey.data.frame) # use quote function here as the action, not a string value!
   return(eval(cl, envir = parent.frame()))
 }

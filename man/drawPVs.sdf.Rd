@@ -8,8 +8,8 @@
   x,
   npv = 5L,
   pvVariableNameSuffix = "_dire",
+  stochasticBeta = deprecated(),
   data,
-  stochasticBeta = FALSE,
   construct = NULL,
   ...
 )
@@ -22,9 +22,9 @@
 
 \item{pvVariableNameSuffix}{suffix to append to the name of the new plausible values}
 
-\item{data}{an \code{edsurvey.data.frame} or \code{light.edsurvey.data.frame} to which the plausible values will be added and from which the covariates and item responses will be taken to generate them}
+\item{stochasticBeta}{this is deprecated}
 
-\item{stochasticBeta}{logical when \code{TRUE} the regressopm coefficients will be drawn from their posterior distribution. Can also be a data frame of values (see Details).}
+\item{data}{an \code{edsurvey.data.frame} or \code{light.edsurvey.data.frame} to which the plausible values will be added and from which the covariates and item responses will be taken to generate them}
 
 \item{construct}{the construct to draw PVs for}
 

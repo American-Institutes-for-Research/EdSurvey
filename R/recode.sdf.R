@@ -11,7 +11,7 @@
 #' @usage recode.sdf(x, recode)
 #'
 #' @author Trang Nguyen and Paul Bailey
-#' @example man\examples\recode.sdf.R
+#' @example man/examples/recode.sdf.R
 #' @export recode.sdf
 recode.sdf <- function(x, recode) {
   checkDataClass(x, c("edsurvey.data.frame.list", "edsurvey.data.frame", "light.edsurvey.data.frame"))

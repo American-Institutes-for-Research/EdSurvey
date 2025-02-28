@@ -10,7 +10,7 @@
 #'                that use plausible values.
 #'
 #' @author Michael Lee and Paul Bailey
-#' @example \man\examples\showPlausibleValues.R
+#' @example man/examples/showPlausibleValues.R
 #' @export
 showPlausibleValues <- function(data, verbose = FALSE) {
   if (inherits(data, c("edsurvey.data.frame.list"))) {
@@ -78,7 +78,7 @@ showPlausibleValues <- function(data, verbose = FALSE) {
 #'
 #' @seealso \code{\link{showPlausibleValues}}, \code{\link{updatePlausibleValue}}
 #' @author Michael Lee and Paul Bailey
-#' @example \man\examples\getPlausibleValue.R
+#' @example man/examples/getPlausibleValue.R
 #' @export
 getPlausibleValue <- function(var, data) {
   if (inherits(data, c("edsurvey.data.frame.list"))) {
@@ -125,7 +125,7 @@ getPlausibleValue <- function(var, data) {
 #'
 #' @seealso \code{\link{getPlausibleValue}} and \code{\link{showPlausibleValues}}
 #' @author Michael Lee and Paul Bailey
-#' @example \man\examples\updatePlausibleValue.R
+#' @example man/examples/updatePlausibleValue.R
 #' @export
 updatePlausibleValue <- function(oldVar, newVar, data) {
   if (oldVar == newVar) {
@@ -176,7 +176,7 @@ updatePlausibleValue <- function(oldVar, newVar, data) {
 #'          the actual data (such as \code{"mrpcm1"} or \code{"dsex"}) are not.
 #'
 #' @author Michael Lee and Paul Bailey
-#' @example \man\examples\hasPlausibleValue.R
+#' @example man/examples/hasPlausibleValue.R
 #' @export
 hasPlausibleValue <- function(var, data) {
   if (inherits(data, c("edsurvey.data.frame.list"))) {

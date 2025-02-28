@@ -11,7 +11,7 @@
 #' @note if \code{construct} is a vector, all item names will be returned for those constructs. Use \code{getAllItems} with \code{getData} when creating a \code{light.edsurvey.data.frame}, see example for use.
 #'
 #' @author Tom Fink, Sun-Joo Lee, Eric Buehler, and Paul Bailey
-#' @example \man\examples\getAllItems.R
+#' @example /man/examples/getAllItems.R
 #' @seealso \code{\link{mml.sdf}}
 #' @export
 getAllItems <- function(sdf, construct = NULL) {

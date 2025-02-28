@@ -80,7 +80,7 @@
 #'
 #' \subsection{Standardized regression coefficients}{
 #'   Standardized regression coefficients can be returned in a call to \code{summary},
-#'   by setting the argument \code{src} to \code{TRUE}. See Examples.
+#'   by setting the argument \code{src} to \code{coef}, \code{outcome}, or \code{both}. See Examples.
 #'
 #'   By default, the standardized coefficients are calculated using standard
 #'   deviations of the variables themselves, including averaging the standard
@@ -180,7 +180,7 @@
 #' @seealso \ifelse{latex}{\code{lm}}{\code{\link[stats]{lm}}}
 #' @author Paul Bailey
 #'
-#' @example \man\examples\lm.sdf.R
+#' @example man/examples/lm.sdf.R
 #' @importFrom Matrix sparse.model.matrix rankMatrix
 #' @importFrom stats lm aggregate pt relevel model.matrix lm.wfit as.formula complete.cases
 #' @importFrom Formula Formula
@@ -460,7 +460,8 @@ calc.lm.sdf <- function(formula,
   if(any(pvy)) {
     if(linkingError) {
       if(standardizeWithSamplingVar) {
-        stop(paste0(sQuote("standardizeWithSamplingVar"), " not supported with linking error."))
+        warning(paste0(sQuote("standardizeWithSamplingVar"), " not supported with linking error. Proceeding without that option."))
+        standardizeWithSamplingVar <- FALSE
       }
       pvs <- getPlausibleValue(yvars[max(pvy)], data)
       yvars <- paste0(
@@ -510,7 +511,8 @@ calc.lm.sdf <- function(formula,
     pvxs <- getPlausibleValue(pvRHS, data) # the corresponding PV names
     if(linkingError) {
       if(standardizeWithSamplingVar) {
-        stop(paste0(sQuote("standardizeWithSamplingVar"), " not supported with linking error."))
+        warning(paste0(sQuote("standardizeWithSamplingVar"), " not supported with linking error. Proceeding without that option."))
+        standardizeWithSamplingVar <- FALSE
       }
       lxv <- length(yvars) <- paste0("predictor", 1:length(pvxs),
                         ifelse(grepl("_imp_", pvxs), "_imp",
@@ -1040,14 +1042,24 @@ print.edsurveyLmList <- function(x, ..., use_es_round=getOption("EdSurvey_round_
 }
 
 
-# @param src a logical indicating if the the standardized regression coefficients
-#            should be included in the coefficients table
+# @param src a character indicating if standardized coefficients should be excluded (\code{none}) from
+#            the coefficients table,
+#            the coefficient alone should be standardized (\code{coef}), the outcome variable alone
+#            should be standardized (\code{outcome}) or both should be standardized (\code{both}).
+#            for backwards compatiblity, also accepts a logical indicating if the the standardized regression coefficients
+#            should be included in the coefficients table. 
 #' @method summary edsurveyLm
 #' @export
-summary.edsurveyLm <- function(object, src = FALSE, ...) {
+summary.edsurveyLm <- function(object, src = c("none", "both", "coef", "outcome"), ...) {
   class(object) <- "summary.edsurveyLm"
+  if(is.logical(src)) {
+    src_type <- ifelse(src, "both", "none")
+  } else {
+    src_type <- match.arg(src)
+    src <- ifelse(src_type %in% "none", FALSE, TRUE)
+  }
   if (src) {
-    if ("coefmatStd" %in% names(object)) {
+    if ("coefmatStd" %in% names(object) & src_type %in% "both") {
       cm <- object$coefmat
       cm$stdCoef <- object$coefmatStd$coef
       cm$stdSE <- object$coefmatStd$se
@@ -1059,9 +1071,27 @@ summary.edsurveyLm <- function(object, src = FALSE, ...) {
       for (i in 1:nrow(cm)) {
         if (rownames(cm)[i] %in% names(std) && std[rownames(cm)[i]] > 0) {
           # standardize regression coef = sdX_i/sdY * coef_i
-          cm$stdCoef[i] <- (std[[rownames(cm)[i]]] / std[["outcome.std"]]) * cm$coef[i]
+          if(src_type == "both") {
+            cm$stdCoef[i] <- cm$coef[i] * (std[[rownames(cm)[i]]] / std[["outcome.std"]]) 
+            cm$stdSE[i] <- cm$se[i] * (std[[rownames(cm)[i]]] / std[["outcome.std"]])
+          } else {
+            if("coefmatStd" %in% names(object)) {
+              warning(paste0("when this edsurveyLm was created, ",
+                             dQuote("standardizeWithSamplingVar"),
+                             " was set to TRUE. This is not supported unless the src is set to ",
+                             dQuote("both"), " proceeding with coefficients standarized based on the",
+                             " standard devation of the variables(s) in the full sample weights."))
+            }
+          }
+          if(src_type == "coef") {
+            cm$stdCoef[i] <- cm$coef[i] * std[[rownames(cm)[i]]] 
+            cm$stdSE[i] <-  cm$se[i] * std[[rownames(cm)[i]]]
+          }
+          if(src_type == "outcome") {
+            cm$stdCoef[i] <- cm$coef[i] * (1 / std[["outcome.std"]])
+            cm$stdSE[i] <- cm$se[i] * (1 / std[["outcome.std"]])
+          }
           # same formula for standareized SE
-          cm$stdSE[i] <- (std[[rownames(cm)[i]]] / std[["outcome.std"]]) * cm$se[i]
         }
       }
     } # end else for if("coefmatStd" %in% names(object))
@@ -1452,25 +1482,26 @@ getVarEstJK <- function(stat, yvar, wgtM, co0, jkSumMult, pvName, pvx = NULL, X 
         stat(pv = yvar, w = wgtM[ , wgti], X = X)
       })
     } else {
-    coefa <- lapply(1:nwgt, function(wgti) {
-      stat(pv = yvar, w = wgtM[ , wgti], X = X)
-    })
-     } # end if any(pvx)
+      coefa <- lapply(1:nwgt, function(wgti) {
+        stat(pv = yvar, w = wgtM[ , wgti], X = X)
+      })
+    } # end if any(pvx)
     
     coefa <- do.call(cbind, coefa)
     colnames(coefa) <- colnames(wgtM)
   } else {
-  # wgtM is a vector of names, used in AL
+    # wgtM is a vector of names, used in AL
     nwgt <- length(wgtM)
     if(any(pvx)){
       X=X[,names(co0)]
       coefa <- lapply(1:nwgt, function(wgti) {
-      stat(pv = yvar, w = wgtM[wgti], X = X)
-    })
+        stat(pv = yvar, w = wgtM[wgti], X = X)
+      })
     } else {
       coefa <- lapply(1:nwgt, function(wgti) {
-      stat(pv = yvar, w = wgtM[wgti], X = X)
-    })}
+        stat(pv = yvar, w = wgtM[wgti], X = X)
+      })
+    }
     coefa <- do.call(cbind, coefa)
     colnames(coefa) <- wgtM
     rownames(coefa) <- names(co0)
@@ -1660,16 +1691,16 @@ getVarEstJKPercentile <- function(data, pvEst, stat, wgt, jkw, rvs, jmaxN) {
   w <- data[ , wgt]
   pv_1 <- data[ , pvEst[1]]
   jkws <- data[ , jkw]
-  T_n <- stat(pv = pv_1, w = w, jkw = jkws, rv = rvs[1, ], jmax = T)
+  T_n <- stat(pv = pv_1, w = w, jkw = jkws, rv = rvs[1, ], jmax = TRUE)
   if (length(pvEst) > 1) {
     for (n in 2:length(pvEst)) {
       pv_n <- data[ , pvEst[n]]
       if (n <= jmaxN) {
-        T_p <- stat(pv = pv_n, w = w, jkw = jkws, rv = rvs[n, ], jmax = T)
+        T_p <- stat(pv = pv_n, w = w, jkw = jkws, rv = rvs[n, ], jmax = TRUE)
         T_n$rprs <- rbind(T_n$rprs, T_p$rprs)
         T_n$nsmall <- rbind(T_n$nsmall, T_p$nsmall)
       } else {
-        T_p <- stat(pv = pv_n, w = w, jkw = jkws, rv = rvs[n, ], jmax = F)
+        T_p <- stat(pv = pv_n, w = w, jkw = jkws, rv = rvs[n, ], jmax = FALSE)
         T_n$nsmall <- rbind(T_n$nsmall, T_p$nsmall)
       }
     }

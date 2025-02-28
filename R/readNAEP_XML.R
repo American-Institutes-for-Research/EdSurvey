@@ -570,52 +570,49 @@ parseNAEP_XML_mmlIRT_Params <- function(fileContents, scoreDict, fileFormat_pvva
   #composite scales will be a plausible value, but not be included in the subtests (since the composite is a combination of all subtests)
   #the composite will be added to the 'tests' column of the test
   if(length(pvvarsNotInScales) > 0){
-    hasComposite <- grepl(compositeRegex, pvvarsNotInScales, ignore.case = TRUE)
+    isComposite <- grepl(compositeRegex, pvvarsNotInScales, ignore.case = TRUE)
+    compositePVs <- pvvarsNotInScales[isComposite]
+    hasComposite <- any(isComposite)
   }else{
     hasComposite <- FALSE
   }
   
-  
-  if (hasComposite && (length(pvvarsNotInScales) > 1)){
+  if (hasComposite && (length(compositePVs) > 1)){
     warning(paste0("Multiple Composite Plausible Values found! Only first one will be used."))
-    pvvarsNotInScales <- pvvarsNotInScales[1]
+    compositePVs <- compositePVs[1]
   }
 
   dichotParamTab <- parseNAEP_XML_IRT_DichotParam(fileContents, fileFormat_pvvars)
   polyParamTab <- parseNAEP_XML_IRT_PolyParam(fileContents, fileFormat_pvvars)
   adjustedData <- parseNAEP_XML_IRT_AdjustedData(fileContents) # returns formatted empty data.frame with matching columns
 
+  #add the 'test' field to all of the required tables for consis
+  testData$test <- character(length = nrow(testData))
+  dichotParamTab$test <- character(length = nrow(dichotParamTab))
+  polyParamTab$test <- character(length = nrow(polyParamTab))
+  
   if (hasComposite) {
     if(nrow(testData) > 0){
-      testData$test <- pvvarsNotInScales
+      testData$test <- compositePVs
     }
     if(nrow(dichotParamTab) > 0){
-      dichotParamTab$test <- pvvarsNotInScales
+      dichotParamTab$test <- compositePVs
     }
     if(nrow(polyParamTab) > 0){
-      polyParamTab$test <- pvvarsNotInScales
-    }
-  } else { #blank entries
-    if(nrow(testData) > 0){
-      testData$test <- NA
-    }
-    if(nrow(dichotParamTab) > 0){
-      dichotParamTab$test <- NA
-    }
-    if(nrow(polyParamTab) > 0){
-      polyParamTab$test <- NA
+      polyParamTab$test <- compositePVs
     }
   }
   # score dict required for processing score card
   scoreCard <- parseNAEP_XML_IRT_ScoreCard(fileContents, scoreDict)
 
+  #swap the 'scoreDict' and 'scoreCard' objects.  see internal issue #2028 for details 
   res <- list(
     TestData = testData,
     DichotParamTab = dichotParamTab,
     PolyParamTab = polyParamTab,
     AdjsutedData = adjustedData,
-    ScoreDict = scoreDict,
-    ScoreCard = scoreCard
+    ScoreDict = scoreCard,
+    ScoreCard = scoreDict
   )
   return(res)
 }

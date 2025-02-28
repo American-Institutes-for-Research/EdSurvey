@@ -116,7 +116,7 @@
 #' @seealso \ifelse{latex}{the stats package \code{lm}}{\code{\link[stats]{lm}}}, \code{\link{lm.sdf}}
 #' @author Alex Lishinski and Paul Bailey
 #'
-#' @example \man\examples\mvrlm.sdf.R
+#' @example man/examples/mvrlm.sdf.R
 #' @importFrom Matrix sparse.model.matrix Diagonal
 #' @importFrom Formula Formula as.Formula model.part
 #' @importFrom stats lm aggregate pt relevel model.matrix lm.wfit as.formula model.frame
@@ -212,7 +212,7 @@ calc.mvrlm.sdf <- function(formula,
     varnames = c(all.vars(formula), wgt), # , taylorVars),
     returnJKreplicates = (varMethod == "jackknife"),
     drop = FALSE,
-    omittedLevels = omittedLevels,
+    dropOmittedLevels = omittedLevels,
     recode = recode,
     includeNaLabel = TRUE,
     dropUnusedLevels = TRUE

@@ -16,7 +16,7 @@
 #'
 #' @author Tom Fink
 #' @seealso \code{\link{readPIRLS}}
-#' @example man\examples\downloadPIRLS.R
+#' @example man/examples/downloadPIRLS.R
 #' @importFrom utils download.file
 #' @export
 downloadPIRLS <- function(root, years = c(2001, 2006, 2011, 2016, 2021), cache = FALSE, verbose = TRUE) {

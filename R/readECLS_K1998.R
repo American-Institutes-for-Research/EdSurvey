@@ -27,7 +27,7 @@
 #' @seealso \code{\link{readECLS_K2011}}, \code{\link{readNAEP}}, \code{\link{getData}}, \code{\link{downloadECLS_K}}
 #' @author Tom Fink
 #'
-#' @example \man\examples\readECLS_K1998.R
+#' @example man/examples/readECLS_K1998.R
 #'
 #' @export
 readECLS_K1998 <- function(path = getwd(),

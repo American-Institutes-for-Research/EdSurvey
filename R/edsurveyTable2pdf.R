@@ -38,7 +38,7 @@
 #' For more details, see the vignette titled
 #' \href{https://www.air.org/sites/default/files/EdSurvey-LaTeXtables.pdf}{\emph{Producing \code{LaTeX} Tables From \code{edsurveyTable} Results With \code{edsurveyTable2pdf}}}.
 #'
-#' @example /man/examples/edsurveyTable2pdf.R
+#' @example man/examples/edsurveyTable2pdf.R
 #' @author Huade Huo
 #'
 #' @importFrom tools texi2pdf

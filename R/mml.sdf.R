@@ -32,6 +32,7 @@
 #'              variable to be used from \code{data}. Defaults to \code{NULL}, and \code{sid} is used
 #'              as the student identifier.
 #' @param returnMmlCall logical; when \code{TRUE}, do not process the mml call but instead return it for the user to edit before calling
+#' @param optimizer passed to \ifelse{latex}{\code{mml}}{\code{\link[Dire]{mml}}}
 #'
 #' @param omittedLevels this argument is deprecated. Use \code{dropOmittedLevels}
 #'
@@ -46,10 +47,18 @@
 #' an incorrect response, an NA does not change the student's score, and 1 is correct. TIMSS does not require a \code{scoreDict}.
 #'
 #' @return
-#' An \code{mml.sdf} object, which is the outcome from \code{mml.sdf}, with the following elements:
+#' An \code{mml.sdf} object, which is the fit for the \code{mml.sdf}, with the following elements:
+#'    \item{Call}{the call used to generate this object}
 #'    \item{mml}{an object containing information from the \code{mml} procedure.
-#'    \code{?mml} can be used for further information.}
-#'    \item{scoreDict}{the scoring used in the \code{mml} procedure}.
+#'               \code{?mml} can be used for further information.}
+#'    \item{survey}{the name of the survey}
+#'    \item{getDataArgs}{the arguments used to call getData}
+#'    \item{scoreDict}{a dictionary used when building the scoring function}
+#'    \item{scoreFunction}{the function that scores the data, turning the data in the format it was provided to a numeric raw score}
+#'    \item{idVar}{the name of the id variable used to uniquely identify a row}
+#'    \item{waldDenomBaseDof}{the denominator degrees of freedom for Wald tests}
+#'    \item{data}{the data object used in the call}
+#'    \item{theSubject}{the name of the outcome variable}
 #'    \item{itemMapping}{the item mapping used in the \code{mml} procedure}.
 #' @references
 #' Cohen, J., & Jiang, T. (1999). Comparison of partially measured latent traits across nominal subgroups.
@@ -75,10 +84,12 @@ mml.sdf <- function(formula,
                     Q = 34,
                     idVar = NULL,
                     returnMmlCall = FALSE,
-                    omittedLevels = deprecated()) {
+                    omittedLevels = deprecated(),
+                    optimizer = c("EM", "QN")) {
   stopifnot(inherits(verbose, c("numeric", "integer", "logical")))
   ### check data class
   checkDataClass(data, c("edsurvey.data.frame", "light.edsurvey.data.frame"))
+  optimizer <- match.arg(optimizer)
 
   if (lifecycle::is_present(omittedLevels)) {
     lifecycle::deprecate_soft("4.0.0", "mml.sdf(omittedLevels)", "mml.sdf(dropOmittedLevels)")
@@ -97,8 +108,6 @@ mml.sdf <- function(formula,
   }
 
   idVar <- fixIdVar(data, idVar, verbose)
-
-  multiCoreSetup <- setupMulticore(multiCore, numberOfCores, verbose)
 
   if (verbose > 0) {
     message("Gathering item information.")
@@ -158,6 +167,9 @@ mml.sdf <- function(formula,
   # # get dependent vars, weight, and items from data
   indepVars <- all.vars(formula)
   indepVars <- indepVars[!indepVars %in% theSubject]
+  if(verbose > 0) {
+    message("Preparing data.")
+  }
   getDataArgs <- list(
     data = data, varnames = c(scoreInfo$itemsUse, theSubject, indepVars, weightVar, strataVar, psuVar, idVar),
     dropOmittedLevels = dropOmittedLevels
@@ -168,34 +180,19 @@ mml.sdf <- function(formula,
 
   # check completeness
   edf <- filterOutIncompleteZeroWeight(edf, indepVars, weightVar, verbose)
-  scoreCall <- getScoreCall(data, scoreInfo)
-  # make the score call enviornment
-  scoreCallEnv <- list2env(scoreInfo)
-  assign("edf", edf, envir = scoreCallEnv) # add edf to the environment
-  edf <- eval(scoreCall, envir = scoreCallEnv)
-  scoreFunction <- scoreCall[[1]]
+  if(verbose > 0) {
+    message("Scoring data.")
+  }
+  scoreDict <- data$scoreDict
+  scoreFunction <- scoreInfo$scoreFunction
+  edf <- scoreFunction(edf, scoreInfo$polyParamTab, scoreInfo$dichotParamTab, scoreInfo$scoreDict)
 
   # return scored data
   pvs <- edf[ , c(scoreInfo$itemsUse, idVar)]
-  pvs$id <- pvs[ , idVar]
-  pvs[ , idVar] <- NULL
   # robust to light or full data frame
-  data <- mergePVGeneral(data, pvs, idVar)
+  data <- merge(data, pvs, by=idVar)
 
-  # make long stuItems from the wide edf
-
-  stuItems <- as.data.frame(melt(as.data.table(edf[ , c(scoreInfo$itemsUse, idVar)]),
-    id.vars = idVar,
-    measure.vars = c(scoreInfo$itemsUse)
-  ))
-  # creat stuItems
-  colnames(stuItems) <- c(idVar, "key", "score")
-  stuItems <- stuItems[!is.na(stuItems$score), ]
-  if (nrow(stuItems) == 0) {
-    stop("No students on this data have valid test data.")
-  }
-  # create stuDat
-  stuDat <- edf[edf[ , idVar] %in% unique(stuItems[ , idVar]), c(idVar, indepVars, weightVar, strataVar, psuVar)]
+  stuDat <- edf[, c(idVar, indepVars, weightVar, strataVar, psuVar, scoreInfo$itemsUse)]
   if (nrow(stuDat) == 0) {
     stop("No students with valid test data also have valid covariates.")
   }
@@ -215,19 +212,11 @@ mml.sdf <- function(formula,
     # the user seems to know what they are doing, they added weights. So allow it
   }
 
-
-  # setting up cluster for multi-core
-  startMulticore(multiCoreSetup, verbose = verbose)
-
-  if (verbose > 0) {
-    message("Starting MML Procedure.")
-  }
-
   waldDenomBaseDof <- waldDof(edf, getStratumVar(data), getPSUVar(data))
+  multiCoreSetup <- setupMulticore(multiCore, numberOfCores, verbose)
 
   clObj <- list(
     formula = formula,
-    stuItems = stuItems,
     stuDat = stuDat,
     idVar = idVar,
     dichotParamTab = scoreInfo$dichotParamTab,
@@ -240,29 +229,23 @@ mml.sdf <- function(formula,
     strataVar = strataVar,
     PSUVar = psuVar,
     weightVar = weightVar,
-    fast = TRUE,
     verbose= max(0,verbose -1),
-    multiCore = multiCoreSetup$multiCore
+    multiCore = multiCoreSetup$multiCore,
+    optimizer = optimizer
   )
   if (returnMmlCall) {
-    obj <- structure(
-      list(
-        "Call" = clObj,
-        "survey" = survey,
-        "getDataArgs" = getDataArgs,
-        "scoreDict" = scoreInfo$scoreDict,
-        "idVar" = idVar,
-        "scoreFunction" = scoreFunction,
-        "waldDenomBaseDof" = waldDenomBaseDof
-      ),
-      class = "mml.sdf.precall"
-    )
-    return(obj)
+    return(clObj)
   }
+  if (verbose > 0) {
+    message("Starting MML Procedure.")
+  }
+  # setting up cluster for multi-core
+  startMulticore(multiCoreSetup, verbose = verbose)
   mmlObj <- do.call(mml, clObj)
 
   # get call
   call <- match.call()
+  mmlObj$call <- call
   # main mml.sdf class
   obj <- structure(
     list(
@@ -390,28 +373,6 @@ filterParamTabToSubject <- function(paramTab, survey, subject) {
   return(paramTab)
 }
 
-getScoreCall <- function(data, scoreInfo) {
-  scoreFunction <- getAttributes(data, "scoreFunction")
-  if (is.null(scoreFunction)) {
-    stop("attribute scoreFunction must be set on the data.")
-  }
-  if (inherits(scoreFunction, "function")) {
-    if(!"polyParamTab" %in% names(scoreInfo)) {
-      scoreCall <- list(scoreFunction, quote(edf), quote(NULL), quote(dichotParamTab), quote(scoreDict))
-    }else {
-      scoreCall <- list(scoreFunction, quote(edf), quote(polyParamTab), quote(dichotParamTab), quote(scoreDict))
-    }
-    mode(scoreCall) <- "call"
-  } else {
-    if(!"polyParamTab" %in% names(scoreInfo)) {
-      scoreCall <- call(scoreFunction, quote(edf), quote(NULL), quote(dichotParamTab), quote(scoreDict))
-    }else {
-      scoreCall <- call(scoreFunction, quote(edf), quote(polyParamTab), quote(dichotParamTab), quote(scoreDict))
-    }
-  }
-  return(scoreCall)
-}
-
 getScoreInfo <- function(data, survey, theSubject) {
   polyParamTab <- getAttributes(data, "polyParamTab", errorCheck = FALSE)
   polyParamTab <- filterParamTabToSubject(polyParamTab, survey, theSubject)
@@ -419,14 +380,14 @@ getScoreInfo <- function(data, survey, theSubject) {
   dichotParamTab <- filterParamTabToSubject(dichotParamTab, survey, theSubject)
   testDat <- getAttributes(data, "testData", errorCheck = FALSE)
   scoreDict <- getAttributes(data, "scoreDict", errorCheck = FALSE)
-
   if (!theSubject %in% c(testDat$subtest, testDat$test)) {
     stop(paste0("Cannot find ", dQuote(theSubject), " in the testData columns ", dQuote("subtest"), " or ", dQuote("test")))
   }
   if (!theSubject %in% c(dichotParamTab$subtest, dichotParamTab$test, polyParamTab$subtest, polyParamTab$test)) {
     stop(paste0("Cannot find ", dQuote(theSubject), " in either the dichotParamTab nor polyParamTab columns ", dQuote("subtest"), " or ", dQuote("test")))
   }
-  return(list(polyParamTab = polyParamTab, dichotParamTab = dichotParamTab, testDat = testDat, scoreDict = scoreDict))
+  scoreFunction <- getAttributes(data, "scoreFunction", errorCheck = TRUE)
+  return(list(polyParamTab = polyParamTab, dichotParamTab = dichotParamTab, testDat = testDat, scoreDict = scoreDict, scoreFunction = scoreFunction))
 }
 
 checkParamTabAgainstItems <- function(data, scoreInfo) {
@@ -435,7 +396,6 @@ checkParamTabAgainstItems <- function(data, scoreInfo) {
   items <- c(ppt$ItemID, dpt$ItemID)
   itemsUse <- items[items %in% colnames(data)]
   itemsNotInData <- setdiff(items, itemsUse)
-
   if (length(itemsNotInData) > 0) {
     
     ppt <- ppt[ppt$ItemID %in% itemsUse, ]
@@ -447,8 +407,11 @@ checkParamTabAgainstItems <- function(data, scoreInfo) {
   }
 
   # check poly param tab has score points that agree with parameters
+  if(!"d0" %in% colnames(ppt)) {
+    ppt$d0 <- 0
+  }
   dCols <- grep("d[0-9]", colnames(ppt), value = TRUE)
-  apparentScorePoints <- apply(ppt[ , dCols, drop = FALSE], 1, function(x) {
+  apparentScorePoints <- -1 + apply(ppt[ , dCols, drop = FALSE], 1, function(x) {
     length(dCols) - sum(is.na(x))
   })
   if (!"scorePoints" %in% colnames(ppt)) {

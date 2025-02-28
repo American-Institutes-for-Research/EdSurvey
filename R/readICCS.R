@@ -50,7 +50,7 @@
 #' @seealso \code{\link{readNAEP}}, \code{\link{readTIMSS}}, \code{\link{getData}}, and \code{\link{downloadCivEDICCS}}
 #' @author Tom Fink
 #'
-#' @example \man\examples\readICCS.R
+#' @example man/examples/readICCS.R
 #'
 #' @importFrom haven read_sav
 #' @import tibble

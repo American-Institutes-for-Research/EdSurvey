@@ -50,7 +50,7 @@
 #'
 #' @seealso \code{\link{edsurvey.data.frame}} \code{\link{getData}}
 #' @author Tom Fink and Ahmad Emad
-#' @example \man\examples\readNAEP.R
+#' @example man/examples/readNAEP.R
 #' @importFrom xml2 read_xml as_list xml_find_all
 #' @export
 readNAEP <- function(path, defaultWeight = "origwt", defaultPvs = "composite", omittedLevels = c("Multiple", NA, "Omitted"), frPath = NULL, xmlPath = NULL) {

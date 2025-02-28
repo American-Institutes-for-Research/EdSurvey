@@ -172,7 +172,7 @@ percentile <- function(variable, percentiles, data,
     warns <- c()
     results <- lapply(1:ll, function(i) {
       call[[datapos]] <- data$datalist[[i]]
-      tryCatch(suppressWarnings(eval(call)),
+      res <- tryCatch(suppressWarnings(eval(call)),
         error = function(cond) {
           warns <<- c(warns, dQuote(paste(data$covs[i, ], collapse = " ")))
           nullRes <- data.frame(
@@ -191,6 +191,8 @@ percentile <- function(variable, percentiles, data,
           return(nullRes)
         }
       )
+      attr(res,"call") <- NULL
+      return(res)
     })
     if (length(warns) > 0) {
       if (length(warns) > 1) {
@@ -211,9 +213,10 @@ percentile <- function(variable, percentiles, data,
     while (ind <= lp) { # lp is the number of percentiles
       # this just grabs blocks, for each percentile level
       newblock <- cbind(data$covs, t(vapply(1:ll, function(ii) {
-        results[[ii]][ind, ]
-      }, FUN.VALUE = numeric(length(results[[1]][ind,])))))
+        as.numeric(results[[ii]][ind, ])
+      }, FUN.VALUE = numeric(ncol(results[[1]])))))
       # and then appends them to the bottom of the results
+      colnames(newblock) <- colnames(resdf)
       resdf <- rbind(resdf, newblock)
       ind <- ind + 1
     }
