@@ -976,7 +976,8 @@ getFactorValue <- function(lvls, lbls, dataVals, factorOnly = FALSE, includeNaLa
           lfactor(dataVals, levels = lvls, labels = lbls)
         },
         error = function(e) {
-          if (grepl("must either be identical or the labels must not be numbers", e)) {
+          if (grepl("must either be identical or the labels must not be numbers", e) ||
+              grepl("class integer or numeric", e)) {
             factor(dataVals, levels = lvls, labels = lbls)
           } else {
             stop(e)
