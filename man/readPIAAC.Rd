@@ -38,7 +38,7 @@ Defaults to \code{TRUE}.}
 \item{usaOption}{a character value of \code{12_14} or \code{17} that specifies
 what year of the USA survey should be used when loading all countries by
 using \code{*} in the \code{countries} argument. This will only make a difference
-when loading all countries. Defaults to \code{12_14}.}
+when loading all countries. Defaults to \code{12_14}.  Applicable only for Cycle 1 data.}
 }
 \value{
 an \code{edsurvey.data.frame} for a single specified country or
