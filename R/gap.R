@@ -371,7 +371,7 @@ gap <- function(variable, data, groupA = "default", groupB = "default",
   # check if linking error is supported for this survey
   if (!missing(includeLinkingError) && includeLinkingError) {
     checkDataClass(data, c("edsurvey.data.frame.list"))
-    if (!any(c("NAEP", "PISA") %in% survey)) {
+    if (!any(c("NAEP", "PISA", "PIAAC") %in% survey)) {
       stop("the argument ", dQuote("includeLinkingError"), " can only be set to ", dQuote("TRUE"), " when EdSurvey suports linking error for the survey. Currently EdSurvey supports linking error for NAEP and PISA.")
     }
   }
@@ -380,7 +380,7 @@ gap <- function(variable, data, groupA = "default", groupB = "default",
   dbaLabels <- NULL
 
   # gapStat required for PISA regardless of linking error
-  if ("PISA" %in% survey) {
+  if (any(c("PISA", "PIAAC") %in% survey)) {
     if (!is.null(percentiles)) {
       gapStat <- "percentile"
     } else if (!is.null(achievementLevel)) {
@@ -666,17 +666,24 @@ gap <- function(variable, data, groupA = "default", groupB = "default",
               }
               resdf$sameSurvey[i] <- TRUE
             } else {
-              if ("PISA" %in% survey) {
+              if (any(c("PISA", "PIAAC") %in% survey)) {
                 linke <- 0
-                if (includeLinkingError & gapStat %in% c("Mean", "percentile", "SD")) {
-                  if (variable %in% c("read", "math", "scie")) {
+                if (includeLinkingError & gapStat %in% c("Mean")) {
+                  if (variable %in% c("read", "math", "scie", "lit", "num")) {
                     yearref <- getAttributes(data$datalist[[refi]], "year")
                     yeari <- getAttributes(data$datalist[[i]], "year")
-                    if (yeari != yearref) {
+                    if ("PISA" %in% survey & yeari != yearref) {
                       linke <- calLinkingErrorPISA(subject = variable, years = c(yearref, yeari))
                     }
+                    if ("PIAAC" %in% survey & yeari != yearref) {
+                      linke <- calLinkingErrorPIAAC(subject = variable, cycles = c(yearref, yeari))
+                    }
                   } else {
-                    warning("No published linking error for variable ", dQuote(variable), "\n")
+                    warning("No published linking error for statistic ", dQuote(variable), "\n")
+                  }
+                } else {
+                	if(includeLinkingError) {
+                  	warning(paste0("No published linking error for ", sQuote(gapStat), " Setting to zero."))
                   }
                 }
                 covvars <- c("covAA", "covBB", "covABAB")
@@ -1892,10 +1899,10 @@ gapHelper <- function(variable, data, groupA = "default", groupB = "default",
 
 # @title Linking error for PISA 2015 and subsequent DBA v prior PBA
 # @param years a vector of two years involved, including 2000, 2003, 2006, 2009, 2012, 2015 or 2018
-# @param subject, one of "read", "math", or "scei"
+# @param subject, one of "fin", "read", "math", or "scei"
 # The linking error for PISA is entirely cross year and one value
 # @author Paul Bailey
-calLinkingErrorPISA <- function(subject = c("read", "math", "scie"),
+calLinkingErrorPISA <- function(subject = c("fin", "read", "math", "scie"),
                                 years = c(2000, 2003, 2006, 2009, 2012, 2015, 2018)) {
   years <- as.numeric(years)
   linkingErrorsFinance <- data.frame(
@@ -1937,6 +1944,51 @@ calLinkingErrorPISA <- function(subject = c("read", "math", "scie"),
   res <- expand.grid(yearSmall = years, yearBig = years)
   res <- res[res$yearSmall < res$yearBig, ]
   res <- merge(lep, res, by = c("yearSmall", "yearBig"), all = FALSE)
+  if (nrow(res) == 0) {
+    return(0)
+  }
+  if (nrow(res) > 1) {
+    stop("Multiple returns.")
+  }
+  return(res$error)
+}
+
+# @title Linking error for PIAAC between cycles 1 and 2 
+# @param cycles cycle numbers ("cycle 1" and "Cycle 2")
+# @param subject, one of "lit" or "num", no other subjec has appeared in multiple cycles
+# The linking error for PIAAC is like PISA. See Table 10.8 of
+# Ali, U; Robin, F. "Outcomes of scaling the direct assessment" in
+# OECD (2025), Survey of Adult Skills 2023 Technical Report, OECD Skills Studies, OECD Publishing, Paris,
+# https://doi.org/10.1787/80d9f692-en.
+# @author Paul Bailey
+calLinkingErrorPIAAC <- function(subject = c("lit", "num"),
+                                 cycles = c("Cycle 1", "Cycle 2")) {
+  cycles <- as.numeric(gsub("[^0-9]", "", cycles))
+  linkingErrorsLit <- data.frame(
+    subject = rep("lit", 1),
+    cycleSmall = c(1),
+    cycleBig = c(2),
+    error = c(3.42),
+    stringsAsFactors = FALSE
+  )
+  linkingErrorsNum <- data.frame(
+    subject = rep("num", 1),
+    cycleSmall = c(1),
+    cycleBig = c(2),
+    error = c(2.95),
+    stringsAsFactors = FALSE
+  )
+  linkingErrorsPIAAC <- rbind(linkingErrorsLit, linkingErrorsNum)
+  sbj <- match.arg(subject)
+  cycles <- cycles[cycles %in% c(1, 2)]
+  if (length(cycles) != 2) {
+    stop("Argument ", dQuote("cycles"), " must have 2 valid cycles so there are two cycles to contrast.")
+  }
+  lep <- linkingErrorsPIAAC[linkingErrorsPIAAC$subject == sbj, ]
+
+  res <- expand.grid(cycleSmall = cycles, cycleBig = cycles)
+  res <- res[res$cycleSmall < res$cycleBig, ]
+  res <- merge(lep, res, by = c("cycleSmall", "cycleBig"), all = FALSE)
   if (nrow(res) == 0) {
     return(0)
   }
