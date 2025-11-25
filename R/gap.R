@@ -89,7 +89,7 @@
 #'                            \code{diffBBpValue}, and \code{diffABABpValue}) would be adjusted for
 #'                            comparisons between digitally based assessments (DBA) and
 #'                            paper-based assessments (PBA) data.
-#'                            This option is supported only for NAEP data.
+#'                            This option is supported for NAEP, PISA, and PIAAC data.
 #' @param omittedLevels this argument is deprecated. Use \code{dropOmittedLevels}.
 #'
 #' @details This function calculates the gap between \code{groupA} and \code{groupB} (which
@@ -296,6 +296,9 @@
 #'                       survey as the reference line. Set to \code{NA} for the
 #'                       reference line.}
 #'
+#' The linking error for PIAAC is like PISA. See Table 10.8 of Ali, U; Robin, F. "Outcomes of scaling the direct assessment" in
+#' OECD (2025), Survey of Adult Skills 2023 Technical Report, OECD Skills Studies, OECD Publishing, Paris,
+#' https://doi.org/10.1787/80d9f692-en.
 #' @author Paul Bailey, Trang Nguyen, and Huade Huo
 #' @example man/examples/gap.R
 #' @importFrom stats formula
