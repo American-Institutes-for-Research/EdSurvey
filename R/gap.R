@@ -296,9 +296,9 @@
 #'                       survey as the reference line. Set to \code{NA} for the
 #'                       reference line.}
 #'
-#' The linking error for PIAAC is like PISA. See Table 10.8 of Ali, U; Robin, F. "Outcomes of scaling the direct assessment" in
-#' OECD (2025), Survey of Adult Skills 2023 Technical Report, OECD Skills Studies, OECD Publishing, Paris,
-#' https://doi.org/10.1787/80d9f692-en.
+#' @references
+#'  PIAAC linking error: OECD (2024), Do Adults Have the Skills They Need to Thrive in a Changing World?: Survey of Adult Skills 2023, OECD Skills Studies, OECD Publishing, Paris, https://doi.org/10.1787/b263dc5d-en. 
+#'
 #' @author Paul Bailey, Trang Nguyen, and Huade Huo
 #' @example man/examples/gap.R
 #' @importFrom stats formula
@@ -1959,10 +1959,8 @@ calLinkingErrorPISA <- function(subject = c("fin", "read", "math", "scie"),
 # @title Linking error for PIAAC between cycles 1 and 2 
 # @param cycles cycle numbers ("cycle 1" and "Cycle 2")
 # @param subject, one of "lit" or "num", no other subjec has appeared in multiple cycles
-# The linking error for PIAAC is like PISA. See Table 10.8 of
-# Ali, U; Robin, F. "Outcomes of scaling the direct assessment" in
-# OECD (2025), Survey of Adult Skills 2023 Technical Report, OECD Skills Studies, OECD Publishing, Paris,
-# https://doi.org/10.1787/80d9f692-en.
+# The linking error for PIAAC is like PISA. See page 18
+#  OECD (2024), Do Adults Have the Skills They Need to Thrive in a Changing World?: Survey of Adult Skills 2023, OECD Skills Studies, OECD Publishing, Paris, https://doi.org/10.1787/b263dc5d-en. 
 # @author Paul Bailey
 calLinkingErrorPIAAC <- function(subject = c("lit", "num"),
                                  cycles = c("Cycle 1", "Cycle 2")) {
@@ -1971,7 +1969,7 @@ calLinkingErrorPIAAC <- function(subject = c("lit", "num"),
     subject = rep("lit", 1),
     cycleSmall = c(1),
     cycleBig = c(2),
-    error = c(3.42),
+    error = c(3.27), # note that the technical report has 3.42, which is wrong
     stringsAsFactors = FALSE
   )
   linkingErrorsNum <- data.frame(
